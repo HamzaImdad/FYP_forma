@@ -1,0 +1,26 @@
+# Data files (too large for git)
+data/datasets/
+data/raw/
+data/processed/
+
+# Models
+models/*.task
+models/*.onnx
+models/*.pt
+models/*.pth
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.venv/
+
+# IDE / Tools
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
