@@ -3,11 +3,14 @@ data/datasets/
 data/raw/
 data/processed/
 
-# Models
-models/*.task
-models/*.onnx
-models/*.pt
-models/*.pth
+# Models (too large for git)
+models/trained/
+models/mediapipe/
+*.pkl
+*.pt
+*.pth
+*.task
+*.onnx
 
 # Python
 __pycache__/
@@ -20,6 +23,14 @@ venv/
 # IDE / Tools
 .vscode/
 .idea/
+
+# Logs
+*.log
+extraction_log.txt
+extraction_parallel_log.txt
+
+# Personal documents
+*.pdf
 
 # OS
 .DS_Store

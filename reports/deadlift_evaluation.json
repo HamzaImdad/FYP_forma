@@ -1,0 +1,11 @@
+{
+  "accuracy": 0.9389012794928983,
+  "precision": 0.9542712589998054,
+  "recall": 0.9449850659986512,
+  "f1": 0.9496054606186765,
+  "test_samples": 17038,
+  "correct_in_test": 10379,
+  "incorrect_in_test": 6659,
+  "model_type": "RandomForestClassifier",
+  "auc": 0.9815948230628051
+}

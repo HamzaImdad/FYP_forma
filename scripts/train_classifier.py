@@ -2,8 +2,8 @@
 Train per-exercise classifiers on extracted features.
 
 Trains Random Forest, SVM, and Logistic Regression models for each exercise.
-Performs stratified train/val/test splits and 5-fold cross-validation.
-Saves trained models and evaluation reports.
+Uses GROUP-BASED train/val/test splits by video_id to prevent data leakage.
+Performs GroupKFold cross-validation.
 
 Usage:
     python scripts/train_classifier.py
@@ -20,7 +20,9 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
+from sklearn.model_selection import (
+    cross_val_score, GroupKFold, GroupShuffleSplit,
+)
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
@@ -43,15 +45,15 @@ MODELS_DIR.mkdir(parents=True, exist_ok=True)
 MODEL_CONFIGS = {
     "random_forest": lambda: Pipeline([
         ("scaler", StandardScaler()),
-        ("clf", RandomForestClassifier(n_estimators=100, random_state=42)),
+        ("clf", RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=-1)),
     ]),
     "svm": lambda: Pipeline([
         ("scaler", StandardScaler()),
-        ("clf", CalibratedClassifierCV(LinearSVC(max_iter=2000, random_state=42), cv=3)),
+        ("clf", CalibratedClassifierCV(LinearSVC(max_iter=5000, random_state=42), cv=3)),
     ]),
     "logistic_regression": lambda: Pipeline([
         ("scaler", StandardScaler()),
-        ("clf", LogisticRegression(max_iter=1000, random_state=42)),
+        ("clf", LogisticRegression(max_iter=2000, random_state=42)),
     ]),
 }
 
@@ -92,6 +94,7 @@ def train_exercise(
 ) -> dict:
     """
     Train and evaluate models for a single exercise.
+    Uses group-based splitting by video_id to prevent data leakage.
     Returns dict of model_name -> metrics.
     """
     if model_types is None:
@@ -101,36 +104,66 @@ def train_exercise(
     df = df.copy()
     df["label_encoded"] = (df["label"] == "correct").astype(int)
 
-    # Subsample if too large (video frames are highly correlated)
+    # Subsample if too large, but keep all frames within each video together
     if max_samples > 0 and len(df) > max_samples:
-        df = df.groupby("label", group_keys=False).apply(
-            lambda x: x.sample(n=min(len(x), max_samples // 2), random_state=42)
-        ).reset_index(drop=True)
+        # Sample at video level to maintain group integrity
+        video_labels = df.groupby("video_id")["label_encoded"].first()
+        correct_vids = video_labels[video_labels == 1].index.tolist()
+        incorrect_vids = video_labels[video_labels == 0].index.tolist()
+
+        np.random.seed(42)
+        n_vids = max(10, max_samples // df.groupby("video_id").size().median().astype(int))
+        n_per_class = n_vids // 2
+        sampled_vids = (
+            list(np.random.choice(correct_vids, min(len(correct_vids), n_per_class), replace=False))
+            + list(np.random.choice(incorrect_vids, min(len(incorrect_vids), n_per_class), replace=False))
+        )
+        df = df[df["video_id"].isin(sampled_vids)].reset_index(drop=True)
 
     # Get feature columns (exclude metadata)
-    meta_cols = {"exercise", "label", "source", "label_encoded"}
+    meta_cols = {"exercise", "label", "source", "label_encoded", "video_id"}
     feature_cols = [c for c in df.columns if c not in meta_cols]
 
     X = df[feature_cols].fillna(0).values
     y = df["label_encoded"].values
+    groups = df["video_id"].values
 
     if len(np.unique(y)) < 2:
         print(f"  [SKIP] {exercise}: only one class present ({np.unique(y)})")
         return {}
 
-    # Stratified train/test split (70/15/15)
-    X_train, X_temp, y_train, y_temp = train_test_split(
-        X, y, test_size=0.30, stratify=y, random_state=42
-    )
-    X_val, X_test, y_val, y_test = train_test_split(
-        X_temp, y_temp, test_size=0.50, stratify=y_temp, random_state=42
-    )
+    n_unique_groups = len(np.unique(groups))
+    if n_unique_groups < 3:
+        print(f"  [SKIP] {exercise}: only {n_unique_groups} video groups (need >=3)")
+        return {}
+
+    # Group-based train/test split (70/30) -- no video in both train and test
+    gss = GroupShuffleSplit(n_splits=1, test_size=0.30, random_state=42)
+    train_idx, temp_idx = next(gss.split(X, y, groups=groups))
+
+    X_train, y_train = X[train_idx], y[train_idx]
+    X_temp, y_temp = X[temp_idx], y[temp_idx]
+    groups_train = groups[train_idx]
+    groups_temp = groups[temp_idx]
+
+    # Split temp into val/test (each 15%)
+    if len(np.unique(groups_temp)) >= 2:
+        gss2 = GroupShuffleSplit(n_splits=1, test_size=0.50, random_state=42)
+        val_idx, test_idx = next(gss2.split(X_temp, y_temp, groups=groups_temp))
+        X_val, y_val = X_temp[val_idx], y_temp[val_idx]
+        X_test, y_test = X_temp[test_idx], y_temp[test_idx]
+    else:
+        # Not enough groups for val/test split -- use all temp as test
+        X_val, y_val = X_temp, y_temp
+        X_test, y_test = X_temp, y_temp
 
     print(f"\n{'='*60}")
     print(f"Exercise: {exercise}")
     print(f"  Total samples: {len(y)} (correct: {y.sum()}, incorrect: {len(y)-y.sum()})")
+    print(f"  Unique videos: {n_unique_groups}")
     print(f"  Train: {len(y_train)}, Val: {len(y_val)}, Test: {len(y_test)}")
     print(f"  Features: {len(feature_cols)}")
+    print(f"  Split: GROUP-BASED by video_id (no data leakage)")
 
     model_results = {}
 
@@ -140,9 +173,16 @@ def train_exercise(
 
         model = MODEL_CONFIGS[model_name]()
 
-        # 3-fold cross-validation on training data
-        cv = StratifiedKFold(n_splits=min(3, min(np.bincount(y_train))), shuffle=True, random_state=42)
-        cv_scores = cross_val_score(model, X_train, y_train, cv=cv, scoring="f1")
+        # GroupKFold cross-validation on training data
+        n_splits = min(3, len(np.unique(groups_train)))
+        if n_splits >= 2:
+            cv = GroupKFold(n_splits=n_splits)
+            cv_scores = cross_val_score(
+                model, X_train, y_train, cv=cv,
+                scoring="f1", groups=groups_train,
+            )
+        else:
+            cv_scores = np.array([0.0])
 
         # Train on full training set
         model.fit(X_train, y_train)
@@ -152,6 +192,8 @@ def train_exercise(
         metrics = evaluate_classifier(y_test, y_pred)
         metrics["cv_f1_mean"] = float(cv_scores.mean())
         metrics["cv_f1_std"] = float(cv_scores.std())
+        metrics["n_train_videos"] = int(len(np.unique(groups_train)))
+        metrics["n_test_videos"] = int(len(np.unique(groups[temp_idx] if len(np.unique(groups_temp)) >= 2 else groups_temp)))
 
         print(f"\n  {model_name}:")
         print(f"    CV F1: {cv_scores.mean():.3f} (+/- {cv_scores.std():.3f})")
@@ -213,6 +255,11 @@ def main():
         if len(df) == 0:
             print(f"[SKIP] No data for {exercise}")
             continue
+
+        if "video_id" not in df.columns:
+            print(f"[ERROR] Feature CSV missing 'video_id' column. "
+                  f"Re-run build_features.py to generate updated features.")
+            sys.exit(1)
 
         results = train_exercise(df, exercise, model_types, max_samples=args.max_samples)
         if results:

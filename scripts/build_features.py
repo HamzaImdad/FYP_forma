@@ -14,6 +14,7 @@ import os
 import sys
 import argparse
 from pathlib import Path
+from collections import deque
 
 import numpy as np
 import pandas as pd
@@ -84,7 +85,7 @@ def process_image_landmarks():
 
         feature_names = fe.get_feature_names(exercise)
 
-        for _, row in df.iterrows():
+        for idx, (_, row) in enumerate(df.iterrows()):
             # Skip rows where all landmarks are zero (failed detection)
             if row.get("nose_vis", 0) == 0:
                 continue
@@ -96,6 +97,7 @@ def process_image_landmarks():
                 "exercise": exercise,
                 "label": label,
                 "source": row.get("source", "kaggle_images"),
+                "video_id": f"img_{csv_path.stem}_{idx}",
             }
             for fname in feature_names:
                 feat_row[fname] = features.get(fname)
@@ -151,7 +153,14 @@ def process_video_landmarks():
         if len(df) == 0:
             continue
 
-        feature_names = fe.get_feature_names(exercise)
+        # Use all feature names including temporal
+        feature_names = fe.get_all_feature_names(exercise)
+
+        # Video-level ID for group splitting (prevents data leakage)
+        vid_id = csv_path.stem
+
+        # Sliding window for temporal feature extraction
+        frame_buffer = deque(maxlen=30)
 
         for _, row in df.iterrows():
             pose = row_to_pose_result(row, fmt="video")
@@ -160,12 +169,16 @@ def process_video_landmarks():
             if pose.detection_confidence < 0.1:
                 continue
 
-            features = fe.extract(pose, exercise)
+            frame_buffer.append(pose)
+
+            # Extract features with temporal context
+            features = fe.extract_with_temporal(pose, exercise, list(frame_buffer))
 
             feat_row = {
                 "exercise": exercise,
                 "label": label,
                 "source": source,
+                "video_id": vid_id,
             }
             for fname in feature_names:
                 feat_row[fname] = features.get(fname)
@@ -186,8 +199,10 @@ def process_video_landmarks():
 def combine_all():
     """Combine image and video features into a single CSV."""
     dfs = []
-    for f in FEATURES_DIR.glob("*_features.csv"):
-        dfs.append(pd.read_csv(f))
+    for name in ["image_features.csv", "video_features.csv"]:
+        f = FEATURES_DIR / name
+        if f.exists():
+            dfs.append(pd.read_csv(f))
 
     if dfs:
         combined = pd.concat(dfs, ignore_index=True)

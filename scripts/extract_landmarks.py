@@ -86,7 +86,7 @@ def get_csv_headers():
     return headers
 
 
-def extract_from_video(video_path: str, output_csv: str, max_frames: int = 0) -> dict:
+def extract_from_video(video_path: str, output_csv: str, max_frames: int = 0, frame_skip: int = 1) -> dict:
     """
     Extract landmarks from a single video file.
 
@@ -94,6 +94,7 @@ def extract_from_video(video_path: str, output_csv: str, max_frames: int = 0) ->
         video_path: Path to the video file
         output_csv: Path to save the CSV output
         max_frames: Maximum frames to process (0 = all frames)
+        frame_skip: Process every Nth frame (1 = all, 3 = every 3rd frame)
 
     Returns:
         dict with stats: total_frames, valid_frames, fps, duration
@@ -135,6 +136,11 @@ def extract_from_video(video_path: str, output_csv: str, max_frames: int = 0) ->
 
         if max_frames > 0 and frame_count >= max_frames:
             break
+
+        # Skip frames if frame_skip > 1
+        if frame_skip > 1 and frame_count % frame_skip != 0:
+            frame_count += 1
+            continue
 
         # Convert BGR to RGB for MediaPipe
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -193,7 +199,7 @@ def extract_from_video(video_path: str, output_csv: str, max_frames: int = 0) ->
     return stats
 
 
-def process_youtube_videos():
+def process_youtube_videos(frame_skip: int = 1):
     """Process all downloaded YouTube videos."""
     youtube_dir = DATA_DIR / "datasets" / "youtube"
     if not youtube_dir.exists():
@@ -216,10 +222,10 @@ def process_youtube_videos():
                     videos.append((str(video_file), exercise, label, video_file.stem))
 
     print(f"\nFound {len(videos)} YouTube videos to process")
-    process_video_list(videos, "youtube")
+    process_video_list(videos, "youtube", frame_skip=frame_skip)
 
 
-def process_kaggle_videos():
+def process_kaggle_videos(frame_skip: int = 1):
     """Process Kaggle workout videos."""
     kaggle_dir = DATA_DIR / "datasets" / "kaggle_workout"
     if not kaggle_dir.exists():
@@ -281,10 +287,32 @@ def process_kaggle_videos():
                 videos.append((str(filepath), exercise, "correct", filepath.stem))
 
     print(f"\nFound {len(videos)} Kaggle videos matching our exercises")
-    process_video_list(videos, "kaggle")
+    process_video_list(videos, "kaggle", frame_skip=frame_skip)
 
 
-def process_raw_videos():
+def process_youtube_incorrect_videos(frame_skip: int = 1):
+    """Process newly downloaded incorrect-form YouTube videos."""
+    yt_dir = DATA_DIR / "datasets" / "youtube_incorrect"
+    if not yt_dir.exists():
+        print("No youtube_incorrect directory found.")
+        return
+
+    video_extensions = {".mp4", ".webm", ".mkv", ".avi", ".mov"}
+    videos = []
+
+    for exercise_dir in sorted(yt_dir.iterdir()):
+        if not exercise_dir.is_dir():
+            continue
+        exercise = exercise_dir.name
+        for video_file in sorted(exercise_dir.iterdir()):
+            if video_file.suffix.lower() in video_extensions:
+                videos.append((str(video_file), exercise, "incorrect", video_file.stem))
+
+    print(f"\nFound {len(videos)} YouTube incorrect-form videos to process")
+    process_video_list(videos, "ytincorrect", frame_skip=frame_skip)
+
+
+def process_raw_videos(frame_skip: int = 1):
     """Process self-recorded videos in data/raw/."""
     raw_dir = DATA_DIR / "raw"
     if not raw_dir.exists():
@@ -307,10 +335,10 @@ def process_raw_videos():
                     videos.append((str(video_file), exercise, label, video_file.stem))
 
     print(f"\nFound {len(videos)} raw videos to process")
-    process_video_list(videos, "raw")
+    process_video_list(videos, "raw", frame_skip=frame_skip)
 
 
-def process_video_list(videos: list, source: str):
+def process_video_list(videos: list, source: str, frame_skip: int = 1):
     """
     Process a list of (video_path, exercise, label, video_id) tuples.
     """
@@ -319,6 +347,9 @@ def process_video_list(videos: list, source: str):
 
     download_model()  # Ensure model is available
 
+    if frame_skip > 1:
+        print(f"  Frame skip: processing every {frame_skip}th frame")
+
     total_stats = {"processed": 0, "failed": 0, "total_frames": 0, "valid_frames": 0}
 
     for video_path, exercise, label, video_id in tqdm(videos, desc=f"Processing {source}"):
@@ -326,24 +357,28 @@ def process_video_list(videos: list, source: str):
 
         # Skip if already processed
         if output_csv.exists():
-            print(f"  [SKIP] Already processed: {output_csv.name}")
+            safe_name = output_csv.name.encode("ascii", errors="replace").decode("ascii")
+            print(f"  [SKIP] Already processed: {safe_name}")
             continue
 
-        stats = extract_from_video(str(video_path), str(output_csv))
+        stats = extract_from_video(str(video_path), str(output_csv), frame_skip=frame_skip)
 
         if stats["total_frames"] > 0:
             total_stats["processed"] += 1
             total_stats["total_frames"] += stats["total_frames"]
             total_stats["valid_frames"] += stats["valid_frames"]
+            # Sanitize video_id for safe printing (avoid Unicode encode errors)
+            safe_id = video_id.encode("ascii", errors="replace").decode("ascii")
             tqdm.write(
-                f"  {exercise}/{label}/{video_id}: "
+                f"  {exercise}/{label}/{safe_id}: "
                 f"{stats['total_frames']} frames, "
                 f"{stats['detection_rate']}% detected, "
                 f"{stats['duration']}s"
             )
         else:
             total_stats["failed"] += 1
-            tqdm.write(f"  [FAIL] {video_path}")
+            safe_path = str(video_path).encode("ascii", errors="replace").decode("ascii")
+            tqdm.write(f"  [FAIL] {safe_path}")
 
     print(f"\n{'='*60}")
     print(f"Source: {source}")
@@ -359,7 +394,8 @@ def process_video_list(videos: list, source: str):
 
 def main():
     parser = argparse.ArgumentParser(description="Extract landmarks from exercise videos")
-    parser.add_argument("--source", type=str, choices=["youtube", "kaggle", "raw", "all"],
+    parser.add_argument("--source", type=str,
+                        choices=["youtube", "youtube_incorrect", "kaggle", "raw", "all"],
                         help="Which video source to process")
     parser.add_argument("--video", type=str, help="Process a single video file")
     parser.add_argument("--exercise", type=str, help="Exercise name (for single video)")
@@ -367,6 +403,8 @@ def main():
                         help="Form label (for single video)")
     parser.add_argument("--max-frames", type=int, default=0,
                         help="Max frames per video (0=all)")
+    parser.add_argument("--frame-skip", type=int, default=1,
+                        help="Process every Nth frame (1=all, 3=every 3rd frame)")
 
     args = parser.parse_args()
 
@@ -380,17 +418,19 @@ def main():
 
         download_model()
         print(f"Processing: {args.video}")
-        stats = extract_from_video(args.video, str(output_csv), args.max_frames)
+        stats = extract_from_video(args.video, str(output_csv), args.max_frames, args.frame_skip)
         print(f"Done: {stats}")
         print(f"Output: {output_csv}")
 
     elif args.source:
         if args.source in ("youtube", "all"):
-            process_youtube_videos()
+            process_youtube_videos(frame_skip=args.frame_skip)
+        if args.source in ("youtube_incorrect", "all"):
+            process_youtube_incorrect_videos(frame_skip=args.frame_skip)
         if args.source in ("kaggle", "all"):
-            process_kaggle_videos()
+            process_kaggle_videos(frame_skip=args.frame_skip)
         if args.source in ("raw", "all"):
-            process_raw_videos()
+            process_raw_videos(frame_skip=args.frame_skip)
     else:
         parser.print_help()
 

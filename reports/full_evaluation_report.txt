@@ -1,0 +1,117 @@
+ExerVision Model Evaluation Report
+============================================================
+
+=== squat (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.91      0.83      0.87     17588
+     Correct       0.75      0.85      0.80     10349
+
+    accuracy                           0.84     27937
+   macro avg       0.83      0.84      0.83     27937
+weighted avg       0.85      0.84      0.84     27937
+
+=== lunge (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.98      0.96      0.97      5597
+     Correct       0.94      0.98      0.95      3412
+
+    accuracy                           0.97      9009
+   macro avg       0.96      0.97      0.96      9009
+weighted avg       0.97      0.97      0.97      9009
+
+=== deadlift (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.92      0.93      0.92      6659
+     Correct       0.95      0.94      0.95     10379
+
+    accuracy                           0.94     17038
+   macro avg       0.93      0.94      0.94     17038
+weighted avg       0.94      0.94      0.94     17038
+
+=== bench_press (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.58      0.81      0.67     23015
+     Correct       0.92      0.78      0.84     61573
+
+    accuracy                           0.79     84588
+   macro avg       0.75      0.79      0.76     84588
+weighted avg       0.82      0.79      0.80     84588
+
+=== overhead_press (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.99      0.97      0.98      6604
+     Correct       0.95      0.99      0.97      4403
+
+    accuracy                           0.97     11007
+   macro avg       0.97      0.98      0.97     11007
+weighted avg       0.97      0.97      0.97     11007
+
+=== pullup (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.98      0.96      0.97      5151
+     Correct       0.94      0.97      0.96      3434
+
+    accuracy                           0.96      8585
+   macro avg       0.96      0.97      0.96      8585
+weighted avg       0.97      0.96      0.97      8585
+
+=== pushup (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.99      0.96      0.97      7180
+     Correct       0.94      0.98      0.96      4787
+
+    accuracy                           0.97     11967
+   macro avg       0.97      0.97      0.97     11967
+weighted avg       0.97      0.97      0.97     11967
+
+=== plank (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.91      0.89      0.90      1877
+     Correct       0.93      0.94      0.94      2816
+
+    accuracy                           0.92      4693
+   macro avg       0.92      0.92      0.92      4693
+weighted avg       0.92      0.92      0.92      4693
+
+=== bicep_curl (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.98      0.95      0.97      6792
+     Correct       0.93      0.98      0.95      4527
+
+    accuracy                           0.96     11319
+   macro avg       0.96      0.96      0.96     11319
+weighted avg       0.96      0.96      0.96     11319
+
+=== tricep_dip (RandomForestClassifier) ===
+              precision    recall  f1-score   support
+
+   Incorrect       0.69      0.58      0.63      2198
+     Correct       0.75      0.82      0.78      3297
+
+    accuracy                           0.73      5495
+   macro avg       0.72      0.70      0.71      5495
+weighted avg       0.72      0.73      0.72      5495
+
+
+
+Overall Summary
+------------------------------------------------------------
+bench_press: F1=0.842, Acc=0.788, Model=RandomForestClassifier
+bicep_curl: F1=0.951, Acc=0.960, Model=RandomForestClassifier
+deadlift: F1=0.950, Acc=0.939, Model=RandomForestClassifier
+lunge: F1=0.955, Acc=0.965, Model=RandomForestClassifier
+overhead_press: F1=0.968, Acc=0.974, Model=RandomForestClassifier
+plank: F1=0.935, Acc=0.922, Model=RandomForestClassifier
+pullup: F1=0.957, Acc=0.965, Model=RandomForestClassifier
+pushup: F1=0.962, Acc=0.969, Model=RandomForestClassifier
+squat: F1=0.800, Acc=0.842, Model=RandomForestClassifier
+tricep_dip: F1=0.783, Acc=0.726, Model=RandomForestClassifier

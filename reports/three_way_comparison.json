@@ -1,0 +1,242 @@
+{
+  "rule_based_squat": {
+    "classifier": "Rule-Based",
+    "exercise": "squat",
+    "accuracy": 0.775536809815951,
+    "precision": 0.1206896551724138,
+    "recall": 0.0012048192771084338,
+    "f1": 0.0023858214042263124
+  },
+  "rule_based_lunge": {
+    "classifier": "Rule-Based",
+    "exercise": "lunge",
+    "accuracy": 0.893982617926093,
+    "precision": 0.09108159392789374,
+    "recall": 0.13043478260869565,
+    "f1": 0.10726256983240223
+  },
+  "rule_based_deadlift": {
+    "classifier": "Rule-Based",
+    "exercise": "deadlift",
+    "accuracy": 0.5550793502903817,
+    "precision": 0.04640468227424749,
+    "recall": 0.009131293188548864,
+    "f1": 0.01525982952983228
+  },
+  "rule_based_bench_press": {
+    "classifier": "Rule-Based",
+    "exercise": "bench_press",
+    "accuracy": 0.2442325715521592,
+    "precision": 0.7306473517428701,
+    "recall": 0.14032037210111065,
+    "f1": 0.23542711277235848
+  },
+  "rule_based_overhead_press": {
+    "classifier": "Rule-Based",
+    "exercise": "overhead_press",
+    "accuracy": 0.5692607618947257,
+    "precision": 0.17613850207000376,
+    "recall": 0.1977604056623706,
+    "f1": 0.1863242759032547
+  },
+  "rule_based_pullup": {
+    "classifier": "Rule-Based",
+    "exercise": "pullup",
+    "accuracy": 0.772757093652616,
+    "precision": 0.31833150384193193,
+    "recall": 0.11885245901639344,
+    "f1": 0.17308266189197255
+  },
+  "rule_based_pushup": {
+    "classifier": "Rule-Based",
+    "exercise": "pushup",
+    "accuracy": 0.879940784603997,
+    "precision": 0.45985401459854014,
+    "recall": 0.02601156069364162,
+    "f1": 0.0492379835873388
+  },
+  "rule_based_plank": {
+    "classifier": "Rule-Based",
+    "exercise": "plank",
+    "accuracy": 0.7661013475431675,
+    "precision": 0.17168011738811445,
+    "recall": 0.06376021798365122,
+    "f1": 0.09298629048281343
+  },
+  "rule_based_bicep_curl": {
+    "classifier": "Rule-Based",
+    "exercise": "bicep_curl",
+    "accuracy": 0.5287188757361946,
+    "precision": 0.1656338028169014,
+    "recall": 0.10301331464611072,
+    "f1": 0.1270252754374595
+  },
+  "rule_based_tricep_dip": {
+    "classifier": "Rule-Based",
+    "exercise": "tricep_dip",
+    "accuracy": 0.7209519030893843,
+    "precision": 0.2511261261261261,
+    "recall": 0.14822200066467264,
+    "f1": 0.1864158829676071
+  },
+  "rf_squat": {
+    "classifier": "Random Forest",
+    "exercise": "squat",
+    "accuracy": 0.944133435582822,
+    "precision": 0.9909767651703135,
+    "recall": 0.7561101549053356,
+    "f1": 0.857756516645514
+  },
+  "rf_lunge": {
+    "classifier": "Random Forest",
+    "exercise": "lunge",
+    "accuracy": 0.986698069395608,
+    "precision": 0.868547832071576,
+    "recall": 0.8573369565217391,
+    "f1": 0.8629059829059829
+  },
+  "rf_deadlift": {
+    "classifier": "Random Forest",
+    "exercise": "deadlift",
+    "accuracy": 0.9743159725457312,
+    "precision": 0.9934663298196708,
+    "recall": 0.9381375452451465,
+    "f1": 0.9650095197799873
+  },
+  "rf_bench_press": {
+    "classifier": "Random Forest",
+    "exercise": "bench_press",
+    "accuracy": 0.3641950832672482,
+    "precision": 0.9224531569831522,
+    "recall": 0.2546675650416223,
+    "f1": 0.39914155780007154
+  },
+  "rf_overhead_press": {
+    "classifier": "Random Forest",
+    "exercise": "overhead_press",
+    "accuracy": 0.8863480689182781,
+    "precision": 0.8226452905811623,
+    "recall": 0.6938516796957532,
+    "f1": 0.7527793696275071
+  },
+  "rf_pullup": {
+    "classifier": "Random Forest",
+    "exercise": "pullup",
+    "accuracy": 0.9416926357224865,
+    "precision": 0.8210174526550316,
+    "recall": 0.9061475409836065,
+    "f1": 0.8614845119812975
+  },
+  "rf_pushup": {
+    "classifier": "Random Forest",
+    "exercise": "pushup",
+    "accuracy": 0.9951640759930915,
+    "precision": 0.9611111111111111,
+    "recall": 1.0,
+    "f1": 0.9801699716713881
+  },
+  "rf_plank": {
+    "classifier": "Random Forest",
+    "exercise": "plank",
+    "accuracy": 0.912537787569811,
+    "precision": 0.7234236284998862,
+    "recall": 0.8659400544959128,
+    "f1": 0.7882921989333995
+  },
+  "rf_bicep_curl": {
+    "classifier": "Random Forest",
+    "exercise": "bicep_curl",
+    "accuracy": 0.8825004373432853,
+    "precision": 0.8865396692484823,
+    "recall": 0.7419411352487737,
+    "f1": 0.8078206962327134
+  },
+  "rf_tricep_dip": {
+    "classifier": "Random Forest",
+    "exercise": "tricep_dip",
+    "accuracy": 0.8833058562110243,
+    "precision": 0.7846248969497115,
+    "recall": 0.6326021934197408,
+    "f1": 0.700459981600736
+  },
+  "bilstm_squat": {
+    "classifier": "BiLSTM",
+    "exercise": "squat",
+    "accuracy": 0.8198644421272159,
+    "precision": 0.13984674329501914,
+    "recall": 0.23174603174603176,
+    "f1": 0.17443249701314217
+  },
+  "bilstm_lunge": {
+    "classifier": "BiLSTM",
+    "exercise": "lunge",
+    "accuracy": 0.8126463700234192,
+    "precision": 0.12955465587044535,
+    "recall": 0.5614035087719298,
+    "f1": 0.21052631578947367
+  },
+  "bilstm_deadlift": {
+    "classifier": "BiLSTM",
+    "exercise": "deadlift",
+    "accuracy": 0.5554901383573742,
+    "precision": 0.4814603536794067,
+    "recall": 0.5840830449826989,
+    "f1": 0.5278298936835523
+  },
+  "bilstm_bench_press": {
+    "classifier": "BiLSTM",
+    "exercise": "bench_press",
+    "accuracy": 0.7111420612813371,
+    "precision": 0.6989558232931727,
+    "recall": 0.9560536145902,
+    "f1": 0.8075352635486266
+  },
+  "bilstm_overhead_press": {
+    "classifier": "BiLSTM",
+    "exercise": "overhead_press",
+    "accuracy": 0.7494232987312572,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0
+  },
+  "bilstm_pullup": {
+    "classifier": "BiLSTM",
+    "exercise": "pullup",
+    "accuracy": 0.9631415776782639,
+    "precision": 0.10416666666666667,
+    "recall": 0.3225806451612903,
+    "f1": 0.15748031496062992
+  },
+  "bilstm_pushup": {
+    "classifier": "BiLSTM",
+    "exercise": "pushup",
+    "accuracy": 0.6501046025104602,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0
+  },
+  "bilstm_plank": {
+    "classifier": "BiLSTM",
+    "exercise": "plank",
+    "accuracy": 0.8124658283214872,
+    "precision": 0.13119533527696792,
+    "recall": 0.5,
+    "f1": 0.20785219399538107
+  },
+  "bilstm_bicep_curl": {
+    "classifier": "BiLSTM",
+    "exercise": "bicep_curl",
+    "accuracy": 0.825722273998136,
+    "precision": 0.2780487804878049,
+    "recall": 0.59375,
+    "f1": 0.3787375415282392
+  },
+  "bilstm_tricep_dip": {
+    "classifier": "BiLSTM",
+    "exercise": "tricep_dip",
+    "accuracy": 0.17629482071713148,
+    "precision": 0.03055229142185664,
+    "recall": 0.9285714285714286,
+    "f1": 0.05915813424345848
+  }
+}
