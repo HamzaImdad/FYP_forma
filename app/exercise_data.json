@@ -1,0 +1,182 @@
+{
+    "squat": {
+        "display_name": "Barbell Squat",
+        "muscles": ["Quadriceps", "Glutes", "Hamstrings", "Core"],
+        "instructions": [
+            "Stand with feet shoulder-width apart, toes slightly turned out",
+            "Keep your chest up and core braced throughout the movement",
+            "Push your hips back and bend your knees to descend",
+            "Lower until your thighs are at least parallel to the floor",
+            "Drive through your heels to return to standing"
+        ],
+        "common_mistakes": [
+            "Knees caving inward (valgus)",
+            "Excessive forward lean of the torso",
+            "Not reaching parallel depth",
+            "Rising onto toes instead of driving through heels",
+            "Rounding the lower back"
+        ]
+    },
+    "lunge": {
+        "display_name": "Forward Lunge",
+        "muscles": ["Quadriceps", "Glutes", "Hamstrings", "Calves"],
+        "instructions": [
+            "Stand with feet hip-width apart",
+            "Step forward with one leg, lowering your hips",
+            "Both knees should bend to approximately 90 degrees",
+            "Keep your torso upright and core engaged",
+            "Push through the front heel to return to start"
+        ],
+        "common_mistakes": [
+            "Front knee extending past the toes",
+            "Leaning the torso too far forward",
+            "Back knee not lowering enough",
+            "Losing balance due to narrow stance",
+            "Uneven weight distribution"
+        ]
+    },
+    "deadlift": {
+        "display_name": "Conventional Deadlift",
+        "muscles": ["Hamstrings", "Glutes", "Lower Back", "Traps", "Core"],
+        "instructions": [
+            "Stand with feet hip-width apart, bar over mid-foot",
+            "Hinge at the hips and grip the bar just outside your knees",
+            "Keep your back straight and chest up",
+            "Drive through your legs and hips to lift the bar",
+            "Stand tall at the top, then reverse the motion to lower"
+        ],
+        "common_mistakes": [
+            "Rounding the lower back during the lift",
+            "Bar drifting away from the body",
+            "Jerking the weight off the floor",
+            "Hyperextending at the top",
+            "Hips shooting up before the chest"
+        ]
+    },
+    "bench_press": {
+        "display_name": "Barbell Bench Press",
+        "muscles": ["Chest", "Shoulders", "Triceps"],
+        "instructions": [
+            "Lie on the bench with eyes under the bar",
+            "Grip the bar slightly wider than shoulder-width",
+            "Unrack and lower the bar to your mid-chest with control",
+            "Keep your elbows at roughly 45 degrees from your body",
+            "Press the bar back up to lockout"
+        ],
+        "common_mistakes": [
+            "Flaring elbows out to 90 degrees",
+            "Bouncing the bar off the chest",
+            "Uneven bar path or grip",
+            "Lifting hips off the bench",
+            "Not using a full range of motion"
+        ]
+    },
+    "overhead_press": {
+        "display_name": "Overhead Press",
+        "muscles": ["Shoulders", "Triceps", "Upper Chest", "Core"],
+        "instructions": [
+            "Stand with feet shoulder-width apart, bar at shoulder height",
+            "Grip the bar just outside shoulder-width",
+            "Brace your core and press the bar overhead",
+            "Lock out your arms at the top",
+            "Lower the bar with control back to shoulders"
+        ],
+        "common_mistakes": [
+            "Excessive lower back arching",
+            "Pressing the bar forward instead of straight up",
+            "Not achieving full lockout",
+            "Using leg drive (turning it into a push press)",
+            "Flaring the ribcage"
+        ]
+    },
+    "pullup": {
+        "display_name": "Pull-Up",
+        "muscles": ["Lats", "Biceps", "Upper Back", "Core"],
+        "instructions": [
+            "Hang from the bar with an overhand grip, slightly wider than shoulders",
+            "Engage your lats and pull your chest toward the bar",
+            "Pull until your chin clears the bar",
+            "Lower yourself with control to full arm extension",
+            "Avoid swinging or kipping"
+        ],
+        "common_mistakes": [
+            "Using excessive kipping or swinging",
+            "Not achieving full range of motion",
+            "Chin not clearing the bar",
+            "Not fully extending arms at the bottom",
+            "Shrugging shoulders instead of engaging lats"
+        ]
+    },
+    "pushup": {
+        "display_name": "Push-Up",
+        "muscles": ["Chest", "Shoulders", "Triceps", "Core"],
+        "instructions": [
+            "Start in a plank position with hands slightly wider than shoulders",
+            "Keep your body in a straight line from head to heels",
+            "Lower your chest toward the floor by bending your elbows",
+            "Go down until elbows are at 90 degrees or chest nearly touches floor",
+            "Push back up to the starting position"
+        ],
+        "common_mistakes": [
+            "Hips sagging toward the floor",
+            "Hips piking up too high",
+            "Elbows flaring out to 90 degrees",
+            "Not going through full range of motion",
+            "Head dropping or looking up"
+        ]
+    },
+    "plank": {
+        "display_name": "Plank Hold",
+        "muscles": ["Core", "Shoulders", "Glutes", "Lower Back"],
+        "instructions": [
+            "Start on forearms and toes, elbows under shoulders",
+            "Keep your body in a straight line from head to heels",
+            "Engage your core by pulling your belly button toward your spine",
+            "Keep your hips level - not sagging or piking",
+            "Breathe steadily and hold the position"
+        ],
+        "common_mistakes": [
+            "Hips sagging toward the floor",
+            "Hips piking up too high",
+            "Head dropping or looking up",
+            "Holding breath instead of breathing steadily",
+            "Elbows too far forward or backward"
+        ]
+    },
+    "bicep_curl": {
+        "display_name": "Bicep Curl",
+        "muscles": ["Biceps", "Forearms"],
+        "instructions": [
+            "Stand with feet hip-width apart, arms at your sides",
+            "Hold dumbbells with palms facing forward",
+            "Keep your upper arms stationary against your torso",
+            "Curl the weights up by bending your elbows",
+            "Lower with control to full arm extension"
+        ],
+        "common_mistakes": [
+            "Swinging the body to generate momentum",
+            "Moving the upper arms/elbows forward",
+            "Not using full range of motion",
+            "Going too fast without control",
+            "Leaning back to lift heavier weight"
+        ]
+    },
+    "tricep_dip": {
+        "display_name": "Tricep Dip",
+        "muscles": ["Triceps", "Chest", "Shoulders"],
+        "instructions": [
+            "Grip the dip bars or bench with arms straight",
+            "Lower your body by bending your elbows to about 90 degrees",
+            "Keep your elbows pointing backward, not flaring out",
+            "Press back up to full arm extension",
+            "Keep your torso relatively upright for tricep focus"
+        ],
+        "common_mistakes": [
+            "Going too deep and stressing the shoulders",
+            "Flaring elbows out to the sides",
+            "Leaning too far forward",
+            "Not achieving full lockout at the top",
+            "Using momentum instead of controlled movement"
+        ]
+    }
+}

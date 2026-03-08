@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ExerVision - Exercise Form Evaluator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- ── Header (always visible) ── -->
+    <header id="main-header">
+        <div class="header-inner">
+            <h1 id="header-title" class="clickable">Exer<span class="brand-accent">Vision</span></h1>
+            <p class="subtitle">Real-Time Exercise Form Evaluator</p>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 1: Exercise Selection                                     -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="view-select" class="view active">
+        <div class="container">
+            <h2 class="section-title">Choose Your Exercise</h2>
+            <div id="exercise-grid" class="exercise-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 2: Exercise Guide                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="view-guide" class="view">
+        <div class="container">
+            <button id="guide-back-btn" class="btn btn-back">&larr; Back</button>
+
+            <div class="guide-header">
+                <h2 id="guide-title">Exercise Name</h2>
+                <div id="guide-muscles" class="muscle-tags"></div>
+            </div>
+
+            <div class="guide-section">
+                <h3>Instructions</h3>
+                <ol id="guide-instructions" class="guide-list"></ol>
+            </div>
+
+            <div class="guide-section">
+                <h3>Common Mistakes</h3>
+                <ul id="guide-mistakes" class="guide-list mistakes"></ul>
+            </div>
+
+            <div class="guide-section">
+                <h3>Classifier</h3>
+                <div class="classifier-select">
+                    <label class="radio-card">
+                        <input type="radio" name="classifier" value="rule_based" checked>
+                        <span class="radio-label">Rule-Based</span>
+                        <span class="radio-desc">Biomechanical thresholds</span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="classifier" value="ml">
+                        <span class="radio-label">Random Forest</span>
+                        <span class="radio-desc">Traditional ML model</span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="classifier" value="bilstm">
+                        <span class="radio-label">BiLSTM</span>
+                        <span class="radio-desc">Deep learning (GPU)</span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="begin-session-btn" class="btn btn-begin">Begin Exercise</button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 3: Active Session                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="view-session" class="view">
+        <div class="session-layout">
+            <!-- Video area -->
+            <div class="video-area">
+                <div class="video-wrapper">
+                    <video id="local-video" autoplay playsinline muted></video>
+                    <canvas id="output-canvas"></canvas>
+                    <div id="no-camera" class="overlay-msg">
+                        <p>Initialising camera...</p>
+                    </div>
+                    <div id="spinner-overlay" class="spinner-overlay hidden">
+                        <div class="spinner"></div>
+                        <span class="spinner-text">Connecting...</span>
+                    </div>
+                    <div id="pause-overlay" class="pause-overlay hidden">
+                        <span class="pause-text">Paused</span>
+                    </div>
+                    <div id="reconnect-banner" class="reconnect-banner hidden"></div>
+                </div>
+            </div>
+
+            <!-- Session HUD -->
+            <div class="session-hud">
+                <div class="hud-top">
+                    <div class="exercise-label" id="session-exercise-label">Squat</div>
+                    <div class="session-timer" id="session-timer">00:00</div>
+                </div>
+
+                <div class="hud-center">
+                    <div class="rep-circle" id="rep-circle">
+                        <span class="rep-number" id="rep-number">0</span>
+                        <span class="rep-label">REPS</span>
+                    </div>
+
+                    <div class="confidence-gauge">
+                        <div class="gauge-bar" id="gauge-bar"></div>
+                        <span class="gauge-text" id="gauge-text">--</span>
+                    </div>
+
+                    <div id="status-badge" class="status-badge neutral">Waiting</div>
+                </div>
+
+                <div class="rep-history" id="rep-history">
+                    <!-- Colored dots for each rep -->
+                </div>
+
+                <div id="feedback-details" class="feedback-details">
+                    Perform the exercise to receive feedback.
+                </div>
+
+                <div class="hud-bottom">
+                    <span class="fps-display" id="fps-display">FPS: --</span>
+                    <span class="classifier-label" id="classifier-label">Rule-Based</span>
+                    <button id="mirror-btn" class="btn-icon" title="Mirror camera">&#x21C4;</button>
+                    <button id="pause-btn" class="btn btn-pause">Pause</button>
+                    <button id="end-session-btn" class="btn btn-end">End Session</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- VIEW 4: Session Report                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="view-report" class="view">
+        <div class="container">
+            <div class="report-hero">
+                <div class="report-hero-icon" id="report-hero-icon"></div>
+                <h2 class="section-title">Session Report</h2>
+                <p class="report-subtitle" id="report-subtitle"></p>
+            </div>
+
+            <div class="report-summary">
+                <div class="report-card score-card">
+                    <span class="report-value" id="report-score">--%</span>
+                    <span class="report-label">Form Score</span>
+                </div>
+                <div class="report-card">
+                    <span class="report-value" id="report-reps">0</span>
+                    <span class="report-label">Total Reps</span>
+                </div>
+                <div class="report-card">
+                    <span class="report-value" id="report-good">0</span>
+                    <span class="report-label">Good Reps</span>
+                </div>
+                <div class="report-card">
+                    <span class="report-value" id="report-duration">0s</span>
+                    <span class="report-label">Duration</span>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h3>Rep-by-Rep Breakdown</h3>
+                <div class="rep-table-wrapper">
+                    <table id="rep-table" class="rep-table">
+                        <thead>
+                            <tr>
+                                <th>Rep</th>
+                                <th>Score</th>
+                                <th>Issues</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rep-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="report-section" id="common-issues-section">
+                <h3>Areas to Improve</h3>
+                <ul id="common-issues-list" class="issues-list"></ul>
+            </div>
+
+            <div class="report-actions">
+                <button id="try-again-btn" class="btn btn-begin">Try Again</button>
+                <button id="choose-exercise-btn" class="btn btn-back">Choose Exercise</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden canvas for capturing frames -->
+    <canvas id="capture-canvas" style="display:none;"></canvas>
+
+    <footer>
+        <p>ExerVision &copy; 2026 | BSc Computer Science FYP</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
