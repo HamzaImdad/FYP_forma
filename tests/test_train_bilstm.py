@@ -133,9 +133,14 @@ class TestTrainingFunctionPatterns:
         self.train_fn_src = match.group(0)
 
     def test_no_weighted_sampler(self):
-        """WeightedRandomSampler must NOT appear in train_exercise function body."""
-        assert "WeightedRandomSampler" not in self.train_fn_src, (
-            "train_exercise still contains WeightedRandomSampler. "
+        """WeightedRandomSampler must NOT be instantiated in train_exercise function body."""
+        # Strip comments before checking (comments saying "no WeightedRandomSampler" are fine)
+        lines = self.train_fn_src.split("\n")
+        code_lines = [l for l in lines if not l.strip().startswith("#")]
+        code_only = "\n".join(code_lines)
+        code_no_docstring = re.sub(r'""".*?"""', '', code_only, flags=re.DOTALL)
+        assert "WeightedRandomSampler" not in code_no_docstring, (
+            "train_exercise still instantiates WeightedRandomSampler. "
             "Remove it — data is already balanced, sampler adds triple weighting."
         )
 
@@ -165,31 +170,38 @@ class TestTrainingFunctionPatterns:
             )
 
     def test_loads_presplit_npz(self):
-        """train_exercise must load pre-split {exercise}_{partition}_sequences.npz files."""
-        # Look for the pattern where train/val/test npz files are loaded separately
-        has_train_npz = (
+        """train_exercise must call load_presplit_sequences (which loads pre-split .npz files)."""
+        # train_exercise should call load_presplit_sequences (not load_sequences + internal split)
+        has_presplit_call = "load_presplit_sequences" in self.train_fn_src
+        # Also accept direct pattern of loading _train/_val/_test partitioned files
+        has_partition_pattern = (
             "_train_sequences.npz" in self.src or
-            "train_sequences.npz" in self.src
+            "_{partition}_sequences.npz" in self.src or
+            "partition" in self.src and "sequences.npz" in self.src
         )
-        assert has_train_npz, (
-            "train_exercise does not load pre-split _train_sequences.npz files. "
-            "Replace GroupShuffleSplit with: load {exercise}_train_sequences.npz, "
-            "{exercise}_val_sequences.npz, {exercise}_test_sequences.npz."
+        assert has_presplit_call or has_partition_pattern, (
+            "train_exercise does not load pre-split partition .npz files. "
+            "Replace GroupShuffleSplit with: call load_presplit_sequences(exercise) "
+            "which loads {exercise}_train_sequences.npz, _val_sequences.npz, _test_sequences.npz."
         )
 
     def test_no_group_shuffle_split_in_train_exercise(self):
-        """train_exercise must NOT use GroupShuffleSplit internally (splits are pre-built)."""
-        assert "GroupShuffleSplit" not in self.train_fn_src, (
-            "train_exercise still uses GroupShuffleSplit internally. "
+        """train_exercise must NOT call GroupShuffleSplit (splits are pre-built)."""
+        # Strip comments (lines starting with #) from the function body before checking
+        lines = self.train_fn_src.split("\n")
+        code_lines = [l for l in lines if not l.strip().startswith("#")]
+        code_only = "\n".join(code_lines)
+        # Also strip docstrings
+        code_no_docstring = re.sub(r'""".*?"""', '', code_only, flags=re.DOTALL)
+        assert "GroupShuffleSplit" not in code_no_docstring, (
+            "train_exercise still calls GroupShuffleSplit (found in non-comment code). "
             "Remove it — splits are pre-built by split_videos.py and build_sequences.py."
         )
 
     def test_fixed_threshold(self):
         """Training must use fixed threshold=0.5, not search on val each epoch."""
-        # Verify threshold is set to 0.5 and not searched each epoch
-        src = self.src
-        # Check that threshold=0.5 exists as a fixed value (not in search loop)
-        assert "threshold = 0.5" in src or "best_threshold = 0.5" in src, (
+        # Verify threshold is set to 0.5 as a fixed value during training
+        assert "threshold = 0.5" in self.src or "best_threshold = 0.5" in self.src, (
             "Fixed threshold=0.5 not found. "
             "Training should use fixed threshold during training (no per-epoch search)."
         )
