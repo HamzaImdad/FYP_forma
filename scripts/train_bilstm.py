@@ -98,7 +98,7 @@ class SequenceDataset(Dataset):
             if torch.rand(1).item() < 0.15:
                 mask = torch.rand_like(x) > 0.05  # 5% dropout
                 x = x * mask
-            # Time warp via numpy.interp — replaces torch.roll which created impossible transitions
+            # Time warp via numpy.interp — proper temporal stretching without frame wrapping
             if torch.rand(1).item() < 0.3:
                 scale = 0.85 + torch.rand(1).item() * 0.30  # 0.85-1.15
                 seq_len = x.shape[0]
