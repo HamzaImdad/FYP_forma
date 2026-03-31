@@ -103,10 +103,11 @@ class SequenceDataset(Dataset):
                 scale = 0.85 + torch.rand(1).item() * 0.30  # 0.85-1.15
                 seq_len = x.shape[0]
                 x_np = x.numpy()
-                old_idx = np.linspace(0, seq_len - 1, int(seq_len * scale))
-                new_idx = np.linspace(0, seq_len - 1, seq_len)
+                orig_idx = np.arange(seq_len)
+                warped_idx = np.linspace(0, seq_len - 1, seq_len) / scale
+                warped_idx = np.clip(warped_idx, 0, seq_len - 1)
                 x_warped = np.stack([
-                    np.interp(new_idx, old_idx, x_np[:, f])
+                    np.interp(warped_idx, orig_idx, x_np[:, f])
                     for f in range(x_np.shape[1])
                 ], axis=1)
                 x = torch.tensor(x_warped, dtype=torch.float32)
