@@ -470,15 +470,30 @@ def train_exercise(
     y_true = np.array(all_labels)
     y_pred = (y_prob >= threshold).astype(int)
 
+    # Compute train F1 (no augmentation, same fixed threshold=0.5 as test eval)
+    train_ds_eval = SequenceDataset(X_train, y_train, augment=False)
+    train_loader_eval = DataLoader(train_ds_eval, batch_size=batch_size, shuffle=False)
+    train_probs_list, train_labels_list = [], []
+    swa_model.eval()
+    with torch.no_grad():
+        for X_batch, y_batch in train_loader_eval:
+            X_batch = X_batch.to(device)
+            logits = swa_model(X_batch)
+            train_probs_list.extend(torch.sigmoid(logits).cpu().numpy())
+            train_labels_list.extend(y_batch.numpy())
+    train_preds = (np.array(train_probs_list) >= threshold).astype(int)
+    train_f1_val = float(f1_score(np.array(train_labels_list), train_preds, zero_division=0))
+
     metrics = {
         "accuracy": float(accuracy_score(y_true, y_pred)),
         "precision": float(precision_score(y_true, y_pred, zero_division=0)),
         "recall": float(recall_score(y_true, y_pred, zero_division=0)),
         "f1": float(f1_score(y_true, y_pred, zero_division=0)),
+        "train_f1": train_f1_val,
         "best_epoch": best_epoch,
         "best_val_loss": float(best_val_loss),
         "best_val_f1": float(best_val_f1),
-        "best_threshold": float(threshold),
+        "threshold_used_for_eval": float(threshold),
         "val_best_thresh_info": float(best_thresh_info),
         "n_train": len(X_train),
         "n_val": len(X_val),
@@ -497,6 +512,7 @@ def train_exercise(
     print(f"    Precision: {metrics['precision']:.3f}")
     print(f"    Recall:    {metrics['recall']:.3f}")
     print(f"    F1:        {metrics['f1']:.3f}")
+    print(f"    Train F1:  {train_f1_val:.3f}")
 
     # Print diagnostics
     cm_stats = print_diagnostics(y_true, y_pred, y_prob, exercise, threshold)
@@ -511,7 +527,7 @@ def train_exercise(
         "dropout": dropout,
         "use_conv": True,
         "best_epoch": best_epoch,
-        "best_threshold": threshold,
+        "threshold_used_for_eval": threshold,
         "metrics": metrics,
         "feature_names": list(feature_names),
         "swa_used": True,
@@ -609,12 +625,13 @@ def main():
         print(f"\n{'='*60}")
         print("BiLSTM v2 TRAINING SUMMARY")
         print(f"{'='*60}")
-        print(f"{'Exercise':<18} {'Acc':>6} {'Prec':>6} {'Rec':>6} {'F1':>6} {'Epoch':>6} {'Thresh':>7}")
-        print("-" * 65)
+        print(f"{'Exercise':<18} {'Acc':>6} {'Prec':>6} {'Rec':>6} {'F1':>6} {'Train F1':>9} {'Epoch':>6} {'Thresh':>7}")
+        print("-" * 72)
         for ex in sorted(all_results.keys()):
             m = all_results[ex]
             print(f"{ex:<18} {m['accuracy']:>6.3f} {m['precision']:>6.3f} "
-                  f"{m['recall']:>6.3f} {m['f1']:>6.3f} {m['best_epoch']:>6} {m['best_threshold']:>7.2f}")
+                  f"{m['recall']:>6.3f} {m['f1']:>6.3f} {m.get('train_f1', 0.0):>9.3f} "
+                  f"{m['best_epoch']:>6} {m['threshold_used_for_eval']:>7.2f}")
 
         avg_f1 = np.mean([m["f1"] for m in all_results.values()])
         print("-" * 65)
@@ -627,10 +644,15 @@ def main():
             if m["best_epoch"] == 0:
                 print(f"  WARNING: {ex} best_epoch=0 — model never improved beyond init")
 
-        # Save summary
+        # Save summary — accumulate across sequential single-exercise runs (load-merge-save)
         summary_path = REPORTS_DIR / "bilstm_v2_training_summary.json"
-        with open(summary_path, "w") as f:
-            json.dump(all_results, f, indent=2)
+        existing = {}
+        if summary_path.exists():
+            with open(summary_path, encoding="utf-8") as f:
+                existing = json.load(f)
+        existing.update(all_results)
+        with open(summary_path, "w", encoding="utf-8") as f:
+            json.dump(existing, f, indent=2)
         print(f"\nSummary saved to: {summary_path}")
 
 
