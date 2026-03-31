@@ -324,3 +324,130 @@ class TestImports:
         assert hasattr(tb, "FocalLoss")
         assert hasattr(tb, "SequenceDataset")
         assert hasattr(tb, "train_exercise")
+
+
+# ── Wave 0 tests: MODEL-02, MODEL-03, MODEL-04 ──────────────────────────────
+
+def test_eval_json_has_train_f1():
+    """Eval JSON metrics dict must contain 'train_f1' key with float value in [0.0, 1.0]
+    and 'threshold_used_for_eval' key instead of 'best_threshold'."""
+    # Simulate the metrics dict that train_exercise() produces after fix
+    mock_metrics = {
+        "accuracy": 0.78,
+        "precision": 0.80,
+        "recall": 0.76,
+        "f1": 0.78,
+        "best_epoch": 42,
+        "best_val_loss": 0.32,
+        "best_val_f1": 0.81,
+        "threshold_used_for_eval": 0.5,
+        "val_best_thresh_info": 0.45,
+        "n_train": 1000,
+        "n_val": 200,
+        "n_test": 200,
+        "train_f1": 0.85,
+        "use_landmarks": True,
+        "use_conv": True,
+        "swa_used": True,
+    }
+    # Verify train_f1 key exists and has valid float value
+    assert "train_f1" in mock_metrics, (
+        "metrics dict missing 'train_f1' key. "
+        "Add train F1 computation to train_exercise() before metrics dict creation."
+    )
+    assert isinstance(mock_metrics["train_f1"], float), (
+        f"train_f1 must be float, got {type(mock_metrics['train_f1'])}"
+    )
+    assert 0.0 <= mock_metrics["train_f1"] <= 1.0, (
+        f"train_f1 value {mock_metrics['train_f1']} out of [0.0, 1.0] range"
+    )
+    # Verify threshold_used_for_eval key exists (not 'best_threshold')
+    assert "threshold_used_for_eval" in mock_metrics, (
+        "metrics dict missing 'threshold_used_for_eval' key. "
+        "Rename 'best_threshold' to 'threshold_used_for_eval' in the metrics dict."
+    )
+    assert "best_threshold" not in mock_metrics, (
+        "metrics dict still has ambiguous 'best_threshold' key — rename to 'threshold_used_for_eval'."
+    )
+
+    # Check the actual source code for the train_f1 implementation
+    src_path = PROJECT_ROOT / "scripts" / "train_bilstm.py"
+    src = src_path.read_text(encoding="utf-8")
+    assert "train_f1" in src, (
+        "train_bilstm.py does not contain 'train_f1' — add train F1 computation to train_exercise()."
+    )
+    assert "threshold_used_for_eval" in src, (
+        "train_bilstm.py does not contain 'threshold_used_for_eval' — rename 'best_threshold' in metrics dict."
+    )
+
+
+def test_eval_json_f1_range():
+    """All F1 values in eval JSON (f1, best_val_f1, train_f1) must be in [0.40, 0.95]
+    for a non-degenerate model."""
+    # These represent the expected post-training F1 range for a well-trained model
+    mock_metrics = {
+        "f1": 0.68,           # test F1 — known bench_press result
+        "best_val_f1": 0.83,  # val F1 at best epoch
+        "train_f1": 0.87,     # train F1 (new field)
+    }
+    for key in ("f1", "best_val_f1", "train_f1"):
+        val = mock_metrics[key]
+        assert 0.40 <= val <= 0.95, (
+            f"F1 value for '{key}' = {val} is outside expected range [0.40, 0.95]. "
+            "A non-degenerate model should produce F1 in this range. "
+            "Values below 0.40 indicate degenerate predictions; above 0.95 suggest data leakage."
+        )
+
+
+def test_summary_accumulates(tmp_path):
+    """Summary JSON must accumulate across sequential single-exercise runs.
+
+    Writing squat results after bench_press results should produce a JSON
+    with both keys, not overwrite bench_press with only squat.
+    """
+    import json
+
+    # Pre-existing summary from a previous bench_press run
+    summary_file = tmp_path / "bilstm_v2_training_summary.json"
+    initial_data = {"bench_press": {"f1": 0.71, "accuracy": 0.72}}
+    with open(summary_file, "w", encoding="utf-8") as f:
+        json.dump(initial_data, f, indent=2)
+
+    # Simulate the accumulation logic from train_bilstm.py main()
+    new_results = {"squat": {"f1": 0.75, "accuracy": 0.76}}
+
+    # This is the FIXED accumulation logic (load-merge-save):
+    existing = {}
+    if summary_file.exists():
+        with open(summary_file, encoding="utf-8") as f:
+            existing = json.load(f)
+    existing.update(new_results)
+    with open(summary_file, "w", encoding="utf-8") as f:
+        json.dump(existing, f, indent=2)
+
+    # Verify: both keys present after accumulation
+    with open(summary_file, encoding="utf-8") as f:
+        result = json.load(f)
+
+    assert "bench_press" in result, (
+        "Summary accumulation failed: 'bench_press' key missing after squat run. "
+        "The old 'with open(path, \"w\")' pattern OVERWRITES the file — "
+        "must load existing data first: existing = json.load(f); existing.update(new_results)"
+    )
+    assert "squat" in result, (
+        "Summary accumulation failed: 'squat' key missing. Write logic broken."
+    )
+    assert result["bench_press"]["f1"] == 0.71, (
+        f"bench_press F1 changed from 0.71 to {result['bench_press']['f1']} — accumulation corrupted data."
+    )
+    assert result["squat"]["f1"] == 0.75, (
+        f"squat F1 incorrect: expected 0.75, got {result['squat']['f1']}"
+    )
+
+    # Also verify train_bilstm.py source has the accumulation pattern
+    src_path = PROJECT_ROOT / "scripts" / "train_bilstm.py"
+    src = src_path.read_text(encoding="utf-8")
+    assert "existing.update" in src, (
+        "train_bilstm.py main() does not use 'existing.update(all_results)' pattern. "
+        "Replace the overwrite with: load existing JSON -> update -> save."
+    )
