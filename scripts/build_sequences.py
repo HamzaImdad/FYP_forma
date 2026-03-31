@@ -112,7 +112,7 @@ def _check_manifest_staleness(
     for partition in ("train", "val", "test"):
         manifest = splits_dir / f"{exercise}_{partition}.txt"
         if manifest.exists():
-            for line in manifest.read_text().splitlines():
+            for line in manifest.read_text(encoding="utf-8").splitlines():
                 line = line.strip()
                 if line:
                     all_in_manifests.add(line)
@@ -180,7 +180,7 @@ def build_partition_sequences(
 
     csv_names = [
         line.strip()
-        for line in manifest_path.read_text().splitlines()
+        for line in manifest_path.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
 

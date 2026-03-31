@@ -212,11 +212,11 @@ def split_exercise_videos(
     if dry_run:
         return "dry-run"
 
-    # Write manifests
+    # Write manifests (UTF-8 to handle special characters in video titles)
     splits_dir.mkdir(parents=True, exist_ok=True)
-    train_path.write_text("\n".join(train_files) + ("\n" if train_files else ""))
-    val_path.write_text("\n".join(val_files) + ("\n" if val_files else ""))
-    test_path.write_text("\n".join(test_files) + ("\n" if test_files else ""))
+    train_path.write_text("\n".join(train_files) + ("\n" if train_files else ""), encoding="utf-8")
+    val_path.write_text("\n".join(val_files) + ("\n" if val_files else ""), encoding="utf-8")
+    test_path.write_text("\n".join(test_files) + ("\n" if test_files else ""), encoding="utf-8")
 
     print(f"  -> Written to {splits_dir}/")
     return "ok"
