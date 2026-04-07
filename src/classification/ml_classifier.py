@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 import numpy as np
 
 from .base import FormClassifier, ClassificationResult
+from .rule_based import RuleBasedClassifier
 from ..feature_extraction.features import FeatureExtractor
 from ..feature_extraction.exercise_features import EXERCISE_FEATURES
 from ..utils.config import Config
@@ -25,6 +26,7 @@ class MLClassifier(FormClassifier):
         self.config = config or Config()
         self._models = {}  # exercise -> trained model
         self._feature_extractor = FeatureExtractor()
+        self._rule_classifier = RuleBasedClassifier()
 
     def load_model(self, exercise: str, model_path: str = None):
         """Load a trained model for a specific exercise."""
@@ -73,12 +75,26 @@ class MLClassifier(FormClassifier):
         else:
             confidence = 1.0 if is_correct else 0.0
 
+        # Use rule-based classifier for joint-level feedback
+        rule_result = self._rule_classifier.classify(features, exercise)
+        joint_feedback = rule_result.joint_feedback if rule_result else {}
+
+        # Blend ML confidence with rule-based form score
+        rule_score = rule_result.form_score if rule_result else 0.0
+        form_score = 0.7 * confidence + 0.3 * rule_score
+
+        # Filter out internal details from user-facing feedback
+        user_details = {k: v for k, v in (rule_result.details or {}).items()
+                        if k not in ("model", "confidence", "threshold")}
+
         return ClassificationResult(
             exercise=exercise,
             is_correct=is_correct,
             confidence=confidence,
-            joint_feedback={},
-            details={"model": type(model).__name__, "confidence": f"{confidence:.2f}"},
+            joint_feedback=joint_feedback,
+            details=user_details,
+            form_score=form_score,
+            is_active=rule_result.is_active if rule_result else True,
         )
 
     def get_supported_exercises(self) -> List[str]:

@@ -112,12 +112,15 @@ def get_exercises():
                 models_available[model_type] = {"available": True, "f1": round(f1, 3) if f1 is not None else None}
         # Rule-based is always available
         models_available["rule_based"] = {"available": True, "f1": None}
+        # Dedicated detector always available for all exercises
+        models_available["detector"] = {"available": True, "f1": None}
 
         result.append({
             "id": ex,
             "display_name": info.get("display_name", ex.replace("_", " ").title()),
             "muscles": info.get("muscles", []),
             "models": models_available,
+            "has_detector": True,
         })
     return jsonify({"exercises": result})
 
@@ -139,15 +142,18 @@ def get_exercise_guide(exercise):
     })
 
 
-def _add_pushup_fields(feedback, pipeline, result):
-    """Add push-up specific fields (set/phase/progress) to the response."""
-    if pipeline.exercise == "pushup":
-        pd = pipeline._pushup_detector
-        feedback["set_count"] = pd.set_count
-        feedback["reps_in_set"] = pd.reps_in_current_set
+def _add_detector_fields(feedback, pipeline, result):
+    """Add detector-specific fields (set/phase/progress) to the response."""
+    detector = pipeline._detectors.get(pipeline.exercise)
+    if detector:
+        feedback["set_count"] = detector.set_count
+        feedback["reps_in_set"] = detector.reps_in_current_set
         if result and isinstance(result.details, dict):
             feedback["phase"] = result.details.get("phase", "")
             feedback["progress"] = result.details.get("progress", "")
+            # Plank: include hold duration
+            if hasattr(detector, '_hold_duration'):
+                feedback["hold_duration"] = round(detector._hold_duration, 1)
         else:
             feedback["phase"] = ""
             feedback["progress"] = ""
@@ -159,7 +165,7 @@ def _add_pushup_fields(feedback, pipeline, result):
 def handle_connect():
     sid = request.sid
     pipelines[sid] = ExerVisionPipeline(
-        exercise="squat", classifier_type="ml", config=REALTIME_CONFIG,
+        exercise="squat", classifier_type="rule_based", config=REALTIME_CONFIG,
         preloaded_classifier=_preloaded_ml,
     )
     processing[sid] = False
@@ -251,7 +257,7 @@ def handle_frame(data):
     if processing.get(sid, False):
         return
 
-    # Server-side rate limiting: max 15 fps
+    # Server-side rate limiting: max 20 fps
     now = time.monotonic()
     if now - last_frame_time.get(sid, 0) < MIN_FRAME_INTERVAL:
         return
@@ -340,7 +346,7 @@ def handle_frame(data):
         feedback["joint_feedback"] = {}
 
     # Push-up specific: send set/phase info for on-video HUD
-    _add_pushup_fields(feedback, pipeline, result)
+    _add_detector_fields(feedback, pipeline, result)
 
     processing[sid] = False
     emit("processed", feedback)
@@ -417,7 +423,7 @@ def handle_landmarks(data):
             }
 
         # Push-up specific: send set/phase info for on-video HUD
-        _add_pushup_fields(feedback, pipeline, result)
+        _add_detector_fields(feedback, pipeline, result)
 
         emit("result", feedback)
 

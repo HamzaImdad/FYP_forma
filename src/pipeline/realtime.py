@@ -21,6 +21,15 @@ from ..classification.base import ClassificationResult
 from ..classification.rule_based import RuleBasedClassifier
 from ..classification.ml_classifier import MLClassifier
 from ..classification.pushup_detector import PushUpDetector
+from ..classification.squat_detector import SquatDetector
+from ..classification.deadlift_detector import DeadliftDetector
+from ..classification.bicep_curl_detector import BicepCurlDetector
+from ..classification.lunge_detector import LungeDetector
+from ..classification.plank_detector import PlankDetector
+from ..classification.tricep_dip_detector import TricepDipDetector
+from ..classification.bench_press_detector import BenchPressDetector
+from ..classification.overhead_press_detector import OverheadPressDetector
+from ..classification.pullup_detector import PullUpDetector
 from ..feedback.feedback_engine import FeedbackEngine
 from ..visualization.overlay import draw_skeleton, draw_angle_zones, draw_angle_labels, draw_feedback_panel, draw_exercise_label
 from ..utils.temporal import TemporalSmoother, OneEuroSmoother
@@ -76,8 +85,19 @@ class ExerVisionPipeline:
         # Rule-based fallback for confidence gating
         self._fallback = RuleBasedClassifier()
 
-        # Dedicated push-up detector (bypasses generic classifier)
-        self._pushup_detector = PushUpDetector()
+        # Dedicated exercise detectors (bypass generic classifier)
+        self._detectors = {
+            "pushup": PushUpDetector(),
+            "squat": SquatDetector(),
+            "deadlift": DeadliftDetector(),
+            "bicep_curl": BicepCurlDetector(),
+            "lunge": LungeDetector(),
+            "plank": PlankDetector(),
+            "tricep_dip": TricepDipDetector(),
+            "bench_press": BenchPressDetector(),
+            "overhead_press": OverheadPressDetector(),
+            "pullup": PullUpDetector(),
+        }
 
         # Temporal smoothing — One-Euro filter (adaptive, near-zero lag during movement)
         self._smoother = OneEuroSmoother(min_cutoff=0.05, beta=80.0, d_cutoff=1.0) if smooth else None
@@ -143,8 +163,9 @@ class ExerVisionPipeline:
             self._smoother.reset()
         self._last_result = None
         self._quality_checker.reset()
-        # Reset dedicated detectors
-        self._pushup_detector.reset()
+        # Reset all dedicated detectors
+        for det in self._detectors.values():
+            det.reset()
         # Reset BiLSTM buffer if applicable
         if hasattr(self._classifier, "reset"):
             self._classifier.reset(value)
@@ -155,8 +176,9 @@ class ExerVisionPipeline:
 
     @property
     def rep_count(self) -> int:
-        if self._exercise == "pushup":
-            return self._pushup_detector.rep_count
+        detector = self._detectors.get(self._exercise)
+        if detector:
+            return detector.rep_count
         return self._rep_counter.get_rep_count()
 
     @property
@@ -190,13 +212,14 @@ class ExerVisionPipeline:
 
     def get_session_summary(self) -> Dict:
         """Compile a session report with per-rep scores."""
-        # Use pushup detector's detailed summary for pushups
-        if self._exercise == "pushup":
-            summary = self._pushup_detector.get_session_summary()
+        # Use dedicated detector's summary if available
+        detector = self._detectors.get(self._exercise)
+        if detector:
+            summary = detector.get_session_summary()
             summary["duration_sec"] = round(
                 time.time() - self._session_start_time if self._session_start_time else 0, 1
             )
-            summary["classifier"] = "pushup_detector"
+            summary["classifier"] = "detector"
             return summary
 
         duration = 0.0
@@ -315,9 +338,10 @@ class ExerVisionPipeline:
         now: float,
     ) -> ClassificationResult:
         """Core classification logic shared by process_frame and process_landmarks."""
-        # ── Push-up: use dedicated detector (bypasses generic pipeline) ──
-        if self._exercise == "pushup":
-            return self._classify_pushup(pose, now)
+        # ── Dedicated detector: bypasses generic pipeline ──
+        detector = self._detectors.get(self._exercise)
+        if detector:
+            return self._classify_with_detector(detector, pose, now)
 
         # Detection quality gate — reject ghost/incomplete poses
         quality, quality_msg = self._quality_checker.check(pose, self._exercise)
@@ -399,11 +423,11 @@ class ExerVisionPipeline:
 
         return result
 
-    def _classify_pushup(self, pose: PoseResult, now: float) -> ClassificationResult:
-        """Push-up classification using dedicated detector.
+    def _classify_with_detector(self, detector, pose: PoseResult, now: float) -> ClassificationResult:
+        """Classification using a dedicated exercise detector.
 
         Bypasses generic feature extraction, activity gate, and classifier.
-        The PushUpDetector handles everything: rep counting, form scoring,
+        The detector handles everything: rep counting, form scoring,
         joint feedback, and actionable text — all in one state machine.
         """
         # Apply temporal smoothing to the pose
@@ -413,24 +437,24 @@ class ExerVisionPipeline:
             if smoothed:
                 pose = smoothed
 
-        # Run the dedicated push-up detector
-        result = self._pushup_detector.classify(pose)
+        # Run the dedicated detector
+        result = detector.classify(pose)
         self._last_result = result
 
-        # Track session reps using pushup detector's count
+        # Track session reps using detector's count
         if self._session_active:
-            pd_count = self._pushup_detector.rep_count
-            if pd_count > self._prev_rep_count:
-                last_rep = (self._pushup_detector._rep_history[-1]
-                            if self._pushup_detector._rep_history else None)
+            det_count = detector.rep_count
+            if det_count > self._prev_rep_count:
+                last_rep = (detector._rep_history[-1]
+                            if detector._rep_history else None)
                 self._last_rep_completed = {
-                    "rep_num": pd_count,
+                    "rep_num": det_count,
                     "form_score": last_rep["score"] if last_rep else 0.0,
-                    "issues": last_rep["issues"] if last_rep else [],
+                    "issues": last_rep.get("issues", []) if last_rep else [],
                     "timestamp": round(time.time() - (self._session_start_time or now), 1),
                 }
                 self._rep_results.append(self._last_rep_completed)
-                self._prev_rep_count = pd_count
+                self._prev_rep_count = det_count
 
         return result
 
@@ -450,10 +474,13 @@ class ExerVisionPipeline:
         self._last_result = None
         self._frame_times.clear()
         self._frame_count = 0
-        self._pushup_detector.reset()
+        for det in self._detectors.values():
+            det.reset()
         if hasattr(self._classifier, "reset"):
             self._classifier.reset()
 
     def close(self):
         """Release resources."""
         self._estimator.close()
+        if hasattr(self._classifier, 'close'):
+            self._classifier.close()

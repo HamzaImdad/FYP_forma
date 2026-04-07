@@ -53,7 +53,9 @@ MIN_REP_DURATION = 0.4  # seconds — prevents counting jitter
 SET_REST_TIMEOUT = 8.0  # seconds of inactivity to end a set
 
 # Smoothing
-ANGLE_SMOOTH_WINDOW = 2  # frames for moving average (low to avoid lag in state transitions)
+ANGLE_SMOOTH_WINDOW = 3  # frames for moving average (low to avoid lag in state transitions)
+NO_POSE_RESET_FRAMES = 30  # re-validate form if no pose detected for this many frames
+MAX_REP_HISTORY = 200  # cap rep history to prevent unbounded growth
 
 
 class PushUpState:
@@ -110,7 +112,7 @@ class PushUpDetector:
         self._shoulder_buf: deque = deque(maxlen=ANGLE_SMOOTH_WINDOW)
 
         # Form score smoothing
-        self._score_buf: deque = deque(maxlen=5)
+        self._score_buf: deque = deque(maxlen=8)
 
         # Activity tracking
         self._pose_detected = False
@@ -166,6 +168,13 @@ class PushUpDetector:
         # Need elbows AND hips visible — partial body won't work
         if smooth_elbow is None or smooth_hip is None:
             self._frames_since_pose += 1
+            # Reset form validation if pose lost for too long
+            if self._frames_since_pose >= NO_POSE_RESET_FRAMES and self._form_validated:
+                self._form_validated = False
+                self._state = PushUpState.UP
+                self._elbow_buf.clear()
+                self._hip_buf.clear()
+                self._shoulder_buf.clear()
             missing = []
             if smooth_elbow is None:
                 missing.append("arms")
@@ -262,13 +271,14 @@ class PushUpDetector:
             quality = (RepQuality.GOOD if avg_score >= 0.7
                        else RepQuality.MODERATE if avg_score >= 0.4
                        else RepQuality.BAD)
-            self._rep_history.append({
-                "rep": self._rep_count,
-                "score": round(avg_score, 2),
-                "quality": quality,
-                "issues": self._current_rep_issues[:3],
-                "duration": round(now - self._rep_start_time, 1),
-            })
+            if len(self._rep_history) < MAX_REP_HISTORY:
+                self._rep_history.append({
+                    "rep": self._rep_count,
+                    "score": round(avg_score, 2),
+                    "quality": quality,
+                    "issues": self._current_rep_issues[:3],
+                    "duration": round(now - self._rep_start_time, 1),
+                })
 
         # ── Smooth form score ──
         self._score_buf.append(frame_score)

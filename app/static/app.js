@@ -1535,6 +1535,7 @@ function updateTimer() {
 // ── Session Report ──────────────────────────────────────────────────────
 
 function showReport(summary) {
+    if (!summary) summary = { total_reps: 0, good_reps: 0, avg_form_score: 0, duration_sec: 0, reps: [], common_issues: [] };
     const totalReps = summary.total_reps || 0;
     const goodReps = summary.good_reps || 0;
     const avgScore = summary.avg_form_score || 0;
@@ -1653,7 +1654,7 @@ function showReport(summary) {
                 const url = URL.createObjectURL(recordingBlob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `pushup-session-${new Date().toISOString().slice(0, 10)}.webm`;
+                a.download = `${selectedExercise}-session-${new Date().toISOString().slice(0, 10)}.webm`;
                 a.click();
                 URL.revokeObjectURL(url);
             };

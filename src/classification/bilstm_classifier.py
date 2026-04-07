@@ -309,16 +309,16 @@ class BiLSTMClassifier(FormClassifier):
         else:
             form_score = bilstm_score
 
+        # Filter out internal keys from user-facing details
+        user_details = {k: v for k, v in rb_result.details.items()
+                        if k not in ("model", "confidence", "threshold")}
+
         result = ClassificationResult(
             exercise=exercise,
             is_correct=is_correct,
             confidence=max(prob, 1.0 - prob),
             joint_feedback=rb_result.joint_feedback,
-            details={
-                **rb_result.details,
-                "model": "BiLSTM",
-                "bilstm_confidence": f"{prob:.2f}",
-            },
+            details=user_details,
             is_active=rb_result.is_active,
             form_score=max(0.0, min(1.0, form_score)),
         )
@@ -336,6 +336,19 @@ class BiLSTMClassifier(FormClassifier):
                 buf.clear()
             self._frame_counter.clear()
             self._last_bilstm_result.clear()
+
+    def close(self):
+        """Release ONNX sessions and model resources."""
+        for name, sess in self._onnx_sessions.items():
+            try:
+                del sess
+            except Exception:
+                pass
+        self._onnx_sessions.clear()
+        self._models.clear()
+        self._buffers.clear()
+        self._last_bilstm_result.clear()
+        logger.info("BiLSTMClassifier closed, resources released")
 
     def get_supported_exercises(self) -> List[str]:
         return list(self._models.keys())
