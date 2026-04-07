@@ -2021,6 +2021,54 @@ h4 {
     padding: 16px 20px;
 }
 
+/* Joint Health Panel — real-time per-joint status */
+.joint-health-panel {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 120px;
+}
+
+.joint-health-panel:empty {
+    display: none;
+}
+
+.joint-health-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.65rem;
+    font-family: var(--font-body);
+    text-transform: capitalize;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+}
+
+.joint-health-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+.joint-health-dot.good { background: var(--good); box-shadow: 0 0 4px var(--good); }
+.joint-health-dot.warn { background: var(--warn); box-shadow: 0 0 4px var(--warn); }
+.joint-health-dot.bad { background: var(--bad); box-shadow: 0 0 4px var(--bad); }
+.joint-health-dot.neutral { background: var(--text-muted); }
+
 .rep-display {
     display: flex;
     flex-direction: column;

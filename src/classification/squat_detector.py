@@ -40,7 +40,7 @@ TORSO_WARNING = 45      # too much forward lean
 TORSO_BAD = 60          # excessive lean
 
 # Knee valgus — knee should track over toes, not cave inward
-VALGUS_THRESHOLD = 0.03  # normalized x-offset threshold
+VALGUS_THRESHOLD = 0.04  # meters x-offset threshold (world coords)
 
 
 class SquatDetector(BaseExerciseDetector):
@@ -94,13 +94,13 @@ class SquatDetector(BaseExerciseDetector):
         return float(np.degrees(np.arccos(np.clip(cos_angle, -1, 1))))
 
     def _compute_knee_valgus(self, pose: PoseResult) -> Optional[float]:
-        """Compute average knee valgus (inward collapse) as normalized x-offset."""
+        """Compute average knee valgus (inward collapse) using world x-offset in meters."""
         offsets = []
         for knee_idx, ankle_idx in [(LEFT_KNEE, LEFT_ANKLE), (RIGHT_KNEE, RIGHT_ANKLE)]:
             if pose.is_visible(knee_idx) and pose.is_visible(ankle_idx):
-                knee = pose.get_landmark(knee_idx)
-                ankle = pose.get_landmark(ankle_idx)
-                offsets.append(abs(knee[0] - ankle[0]))
+                knee = pose.get_world_landmark(knee_idx)
+                ankle = pose.get_world_landmark(ankle_idx)
+                offsets.append(abs(knee[0] - ankle[0]))  # x-offset in meters
 
         if not offsets:
             return None
@@ -127,7 +127,7 @@ class SquatDetector(BaseExerciseDetector):
     def _assess_form(self, angles: Dict[str, Optional[float]]) -> Tuple[float, Dict[str, str], List[str]]:
         joint_feedback = {}
         issues = []
-        scores = []
+        scores = {}
 
         knee = angles.get("knee")
         hip = angles.get("hip")
@@ -140,25 +140,25 @@ class SquatDetector(BaseExerciseDetector):
                 if knee <= KNEE_PARALLEL:
                     joint_feedback["left_knee"] = "correct"
                     joint_feedback["right_knee"] = "correct"
-                    scores.append(1.0)
+                    scores["knee"] = 1.0
                 elif knee <= KNEE_HALF:
                     joint_feedback["left_knee"] = "warning"
                     joint_feedback["right_knee"] = "warning"
                     issues.append("Go deeper — thighs should reach parallel")
-                    scores.append(0.5)
+                    scores["knee"] = 0.5
                 else:
                     joint_feedback["left_knee"] = "correct"
                     joint_feedback["right_knee"] = "correct"
-                    scores.append(0.8)
+                    scores["knee"] = 0.8
             else:
                 if knee >= KNEE_STANDING - 10:
                     joint_feedback["left_knee"] = "correct"
                     joint_feedback["right_knee"] = "correct"
-                    scores.append(1.0)
+                    scores["knee"] = 1.0
                 else:
                     joint_feedback["left_knee"] = "warning"
                     joint_feedback["right_knee"] = "warning"
-                    scores.append(0.7)
+                    scores["knee"] = 0.7
 
         # ── Hip depth assessment (weighted 1.5x) ──
         if hip is not None:
@@ -166,57 +166,52 @@ class SquatDetector(BaseExerciseDetector):
                 if hip <= HIP_GOOD_DEPTH + 5:
                     joint_feedback["left_hip"] = "correct"
                     joint_feedback["right_hip"] = "correct"
-                    scores.append(1.0)
+                    scores["hip"] = 1.0
                 elif hip <= HIP_WARNING:
                     joint_feedback["left_hip"] = "warning"
                     joint_feedback["right_hip"] = "warning"
                     issues.append("Drop hips lower — aim for hip crease below knee")
-                    scores.append(0.5)
+                    scores["hip"] = 0.5
                 else:
                     joint_feedback["left_hip"] = "warning"
                     joint_feedback["right_hip"] = "warning"
-                    scores.append(0.7)
+                    scores["hip"] = 0.7
             else:
                 joint_feedback["left_hip"] = "correct"
                 joint_feedback["right_hip"] = "correct"
-                scores.append(1.0)
+                scores["hip"] = 1.0
 
         # ── Torso lean ──
         if torso is not None:
             if torso <= TORSO_GOOD:
                 joint_feedback["left_shoulder"] = "correct"
                 joint_feedback["right_shoulder"] = "correct"
-                scores.append(1.0)
+                scores["torso"] = 1.0
             elif torso <= TORSO_WARNING:
                 joint_feedback["left_shoulder"] = "warning"
                 joint_feedback["right_shoulder"] = "warning"
                 issues.append("Keep chest up — reduce forward lean")
-                scores.append(0.5)
+                scores["torso"] = 0.5
             else:
                 joint_feedback["left_shoulder"] = "incorrect"
                 joint_feedback["right_shoulder"] = "incorrect"
                 issues.append("Excessive forward lean — keep torso upright")
-                scores.append(0.2)
+                scores["torso"] = 0.2
 
         # ── Knee valgus ──
         if valgus is not None and self._state in ("bottom", "going_down", "going_up"):
             if valgus > VALGUS_THRESHOLD * 2:
                 issues.append("Knees caving in — push knees out over toes")
-                scores.append(0.3)
+                scores["valgus"] = 0.3
             elif valgus > VALGUS_THRESHOLD:
-                scores.append(0.7)
+                scores["valgus"] = 0.7
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        # Weight hip depth higher
-        if hip is not None and len(scores) >= 2:
-            weighted = []
-            for i, s in enumerate(scores):
-                w = 1.5 if i == 1 else 1.0  # hip is index 1
-                weighted.append(s * w)
-            total = sum(weighted) / sum(1.5 if i == 1 else 1.0 for i in range(len(scores)))
-        else:
-            total = sum(scores) / len(scores)
+        WEIGHTS = {"knee": 1.0, "hip": 1.5, "torso": 1.0, "valgus": 1.0}
+        weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
+        weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
+        total = weighted_sum / weight_total
 
         return max(0.0, min(1.0, total)), joint_feedback, issues

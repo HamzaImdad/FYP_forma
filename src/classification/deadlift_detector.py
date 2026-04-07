@@ -85,7 +85,7 @@ class DeadliftDetector(BaseExerciseDetector):
     def _assess_form(self, angles: Dict[str, Optional[float]]) -> Tuple[float, Dict[str, str], List[str]]:
         joint_feedback = {}
         issues = []
-        scores = []
+        scores = {}
 
         hip = angles.get("hip")
         knee = angles.get("knee")
@@ -97,49 +97,49 @@ class DeadliftDetector(BaseExerciseDetector):
                 if hip <= HIP_BOTTOM + 10:
                     joint_feedback["left_hip"] = "correct"
                     joint_feedback["right_hip"] = "correct"
-                    scores.append(1.0)
+                    scores["hip"] = 1.0
                 elif hip <= HIP_HALF:
                     joint_feedback["left_hip"] = "warning"
                     joint_feedback["right_hip"] = "warning"
                     issues.append("Hinge deeper — push hips back further")
-                    scores.append(0.5)
+                    scores["hip"] = 0.5
                 else:
                     joint_feedback["left_hip"] = "correct"
                     joint_feedback["right_hip"] = "correct"
-                    scores.append(0.8)
+                    scores["hip"] = 0.8
             else:
                 # At top — should be fully extended
                 if hip >= HIP_STANDING - 10:
                     joint_feedback["left_hip"] = "correct"
                     joint_feedback["right_hip"] = "correct"
-                    scores.append(1.0)
+                    scores["hip"] = 1.0
                 else:
                     joint_feedback["left_hip"] = "warning"
                     joint_feedback["right_hip"] = "warning"
                     issues.append("Stand up fully at the top — lock out hips")
-                    scores.append(0.6)
+                    scores["hip"] = 0.6
 
         # ── Knee bend (should NOT squat) — weighted 1.3x ──
         if knee is not None:
             if knee >= KNEE_MIN:
                 joint_feedback["left_knee"] = "correct"
                 joint_feedback["right_knee"] = "correct"
-                scores.append(1.0)
+                scores["knee"] = 1.0
             elif knee >= KNEE_MAX_BEND:
                 joint_feedback["left_knee"] = "warning"
                 joint_feedback["right_knee"] = "warning"
                 issues.append("Keep legs straighter — this is a hip hinge, not a squat")
-                scores.append(0.5)
+                scores["knee"] = 0.5
             elif knee >= KNEE_SQUAT:
                 joint_feedback["left_knee"] = "incorrect"
                 joint_feedback["right_knee"] = "incorrect"
                 issues.append("Too much knee bend — push hips back instead of bending knees")
-                scores.append(0.2)
+                scores["knee"] = 0.2
             else:
                 joint_feedback["left_knee"] = "incorrect"
                 joint_feedback["right_knee"] = "incorrect"
                 issues.append("You're squatting, not deadlifting — keep knees soft but mostly straight")
-                scores.append(0.1)
+                scores["knee"] = 0.1
 
         # ── Back straightness (most important — weighted 1.5x) ──
         if back is not None:
@@ -148,27 +148,24 @@ class DeadliftDetector(BaseExerciseDetector):
             if back >= BACK_WARNING:
                 joint_feedback["left_shoulder"] = "correct"
                 joint_feedback["right_shoulder"] = "correct"
-                scores.append(1.0)
+                scores["back"] = 1.0
             elif back >= BACK_BAD:
                 joint_feedback["left_shoulder"] = "warning"
                 joint_feedback["right_shoulder"] = "warning"
                 issues.append("Keep back straight — chest up, shoulders back")
-                scores.append(0.4)
+                scores["back"] = 0.4
             else:
                 joint_feedback["left_shoulder"] = "incorrect"
                 joint_feedback["right_shoulder"] = "incorrect"
                 issues.append("Back rounding! Straighten spine — risk of injury")
-                scores.append(0.1)
+                scores["back"] = 0.1
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        # Weight back straightness highest
-        if len(scores) >= 3:
-            weights = [1.0, 1.3, 1.5]  # hip, knee, back
-            weighted = [s * w for s, w in zip(scores, weights)]
-            total = sum(weighted) / sum(weights[:len(scores)])
-        else:
-            total = sum(scores) / len(scores)
+        WEIGHTS = {"hip": 1.0, "knee": 1.3, "back": 1.5}
+        weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
+        weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
+        total = weighted_sum / weight_total
 
         return max(0.0, min(1.0, total)), joint_feedback, issues

@@ -65,7 +65,7 @@ class BicepCurlDetector(BaseExerciseDetector):
                 s = np.array(pose.get_world_landmark(s_idx))
                 e = np.array(pose.get_world_landmark(e_idx))
                 diff = e - s
-                vertical = np.array([0, -1, 0])  # down is negative y in world coords
+                vertical = np.array([0, 1, 0])  # down is positive y in MediaPipe world coords
                 cos = np.dot(diff, vertical) / (np.linalg.norm(diff) + 1e-8)
                 angles.append(float(np.degrees(np.arccos(np.clip(cos, -1, 1)))))
         return sum(angles) / len(angles) if angles else None
@@ -100,7 +100,7 @@ class BicepCurlDetector(BaseExerciseDetector):
     def _assess_form(self, angles: Dict[str, Optional[float]]) -> Tuple[float, Dict[str, str], List[str]]:
         joint_feedback = {}
         issues = []
-        scores = []
+        scores = {}
 
         elbow = angles.get("elbow")
         upper_arm = angles.get("upper_arm")
@@ -112,70 +112,67 @@ class BicepCurlDetector(BaseExerciseDetector):
                 if elbow <= ELBOW_CURLED + 15:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 elif elbow <= ELBOW_HALF:
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
                     issues.append("Curl higher — squeeze at the top")
-                    scores.append(0.5)
+                    scores["elbow"] = 0.5
                 else:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(0.8)
+                    scores["elbow"] = 0.8
             else:
                 if elbow >= ELBOW_EXTENDED - 10:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 else:
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
                     issues.append("Extend arms fully at the bottom")
-                    scores.append(0.6)
+                    scores["elbow"] = 0.6
 
         # ── Upper arm stability (most important — weighted 1.5x) ──
         if upper_arm is not None:
             if upper_arm <= UPPER_ARM_GOOD:
                 joint_feedback["left_shoulder"] = "correct"
                 joint_feedback["right_shoulder"] = "correct"
-                scores.append(1.0)
+                scores["upper_arm"] = 1.0
             elif upper_arm <= UPPER_ARM_WARNING:
                 joint_feedback["left_shoulder"] = "warning"
                 joint_feedback["right_shoulder"] = "warning"
                 issues.append("Pin elbows to your sides — upper arm is moving")
-                scores.append(0.5)
+                scores["upper_arm"] = 0.5
             else:
                 joint_feedback["left_shoulder"] = "incorrect"
                 joint_feedback["right_shoulder"] = "incorrect"
                 issues.append("Elbows swinging! Keep upper arms stationary")
-                scores.append(0.2)
+                scores["upper_arm"] = 0.2
 
         # ── Torso swing (cheating with momentum) ──
         if torso is not None:
             if torso <= TORSO_GOOD:
                 joint_feedback["left_hip"] = "correct"
                 joint_feedback["right_hip"] = "correct"
-                scores.append(1.0)
+                scores["torso"] = 1.0
             elif torso <= TORSO_WARNING:
                 joint_feedback["left_hip"] = "warning"
                 joint_feedback["right_hip"] = "warning"
                 issues.append("Slight body swing — stay more upright")
-                scores.append(0.5)
+                scores["torso"] = 0.5
             else:
                 joint_feedback["left_hip"] = "incorrect"
                 joint_feedback["right_hip"] = "incorrect"
                 issues.append("Too much body swing — reduce weight or slow down")
-                scores.append(0.2)
+                scores["torso"] = 0.2
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        # Weight upper arm stability highest
-        if len(scores) >= 2:
-            weights = [1.0, 1.5, 1.2][:len(scores)]
-            weighted = [s * w for s, w in zip(scores, weights)]
-            total = sum(weighted) / sum(weights)
-        else:
-            total = sum(scores) / len(scores)
+        WEIGHTS = {"elbow": 1.0, "upper_arm": 1.5, "torso": 1.2}
+        weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
+        weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
+        total = weighted_sum / weight_total
 
         return max(0.0, min(1.0, total)), joint_feedback, issues

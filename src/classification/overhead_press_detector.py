@@ -68,10 +68,17 @@ class OverheadPressDetector(BaseExerciseDetector):
         elbow = angles.get("elbow")
         if elbow is None:
             return False, ["Stand facing camera — arms must be visible"]
-        # Accept either bar at shoulders OR arms locked out as starting position
-        if ELBOW_SHOULDER - 20 <= elbow <= ELBOW_LOCKED + 10:
+        # Accept bar at shoulders (65-95°) OR arms locked out (150-175°)
+        at_shoulders = 65 <= elbow <= 95
+        locked_out = 150 <= elbow <= 175
+        if at_shoulders or locked_out:
             return True, []
-        issues.append("Hold bar at shoulder height or press overhead to begin")
+        if elbow < 65:
+            issues.append("Raise bar to shoulder height to begin")
+        elif elbow > 175:
+            issues.append("Arms too far back — bring bar to shoulders")
+        else:
+            issues.append("Hold bar at shoulder height or lock out overhead to begin")
         return False, issues
 
     def _get_missing_parts(self, angles: Dict[str, Optional[float]]) -> List[str]:
@@ -82,7 +89,7 @@ class OverheadPressDetector(BaseExerciseDetector):
     def _assess_form(self, angles: Dict[str, Optional[float]]) -> Tuple[float, Dict[str, str], List[str]]:
         joint_feedback = {}
         issues = []
-        scores = []
+        scores = {}
 
         elbow = angles.get("elbow")
         torso = angles.get("torso")
@@ -94,52 +101,50 @@ class OverheadPressDetector(BaseExerciseDetector):
                 if elbow >= ELBOW_LOCKED:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 elif elbow >= ELBOW_HALF:
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
                     issues.append("Lock out arms fully overhead")
-                    scores.append(0.6)
+                    scores["elbow"] = 0.6
                 else:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(0.8)
+                    scores["elbow"] = 0.8
             else:
                 # At bottom — bar should be at shoulders
                 if elbow <= ELBOW_SHOULDER + 10:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 else:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(0.8)
+                    scores["elbow"] = 0.8
 
         # ── Torso lean (weighted 1.5x — back arch is dangerous) ──
         if torso is not None:
             if torso <= TORSO_GOOD:
                 joint_feedback["left_hip"] = "correct"
                 joint_feedback["right_hip"] = "correct"
-                scores.append(1.0)
+                scores["torso"] = 1.0
             elif torso <= TORSO_WARNING:
                 joint_feedback["left_hip"] = "warning"
                 joint_feedback["right_hip"] = "warning"
                 issues.append("Don't arch back — brace core, stay upright")
-                scores.append(0.5)
+                scores["torso"] = 0.5
             else:
                 joint_feedback["left_hip"] = "incorrect"
                 joint_feedback["right_hip"] = "incorrect"
                 issues.append("Excessive back arch — reduce weight, brace core!")
-                scores.append(0.2)
+                scores["torso"] = 0.2
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        if len(scores) >= 2:
-            weights = [1.0, 1.5]
-            weighted = [s * w for s, w in zip(scores, weights)]
-            total = sum(weighted) / sum(weights)
-        else:
-            total = sum(scores) / len(scores)
+        WEIGHTS = {"elbow": 1.0, "torso": 1.5}
+        weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
+        weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
+        total = weighted_sum / weight_total
 
         return max(0.0, min(1.0, total)), joint_feedback, issues

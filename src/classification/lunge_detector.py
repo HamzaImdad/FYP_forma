@@ -42,26 +42,45 @@ class LungeDetector(BaseExerciseDetector):
     DESCENT_THRESHOLD = 15.0
     ASCENT_THRESHOLD = 10.0
 
+    FRONT_LEG_LOCK_FRAMES = 15  # keep front leg decision stable for this many frames
+
     def __init__(self):
         super().__init__()
         self._front_leg = None  # "left" or "right"
+        self._front_leg_lock = 0  # frames remaining in current lock
 
     def reset(self):
         super().reset()
         self._front_leg = None
+        self._front_leg_lock = 0
 
     def _compute_angles(self, pose: PoseResult) -> Dict[str, Optional[float]]:
         left_knee = self._angle_at(pose, LEFT_HIP, LEFT_KNEE, LEFT_ANKLE)
         right_knee = self._angle_at(pose, RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE)
 
         # Determine which leg is in front (lower knee angle = front leg)
+        # Use hysteresis: once decided, lock for FRONT_LEG_LOCK_FRAMES frames
         if left_knee is not None and right_knee is not None:
-            if left_knee < right_knee:
-                self._front_leg = "left"
+            if self._front_leg_lock > 0:
+                self._front_leg_lock -= 1
+            else:
+                # Re-evaluate: only switch if difference is significant (>15°)
+                diff = left_knee - right_knee
+                if diff < -15:
+                    self._front_leg = "left"
+                    self._front_leg_lock = self.FRONT_LEG_LOCK_FRAMES
+                elif diff > 15:
+                    self._front_leg = "right"
+                    self._front_leg_lock = self.FRONT_LEG_LOCK_FRAMES
+                elif self._front_leg is None:
+                    # First detection — use smaller threshold
+                    self._front_leg = "left" if left_knee < right_knee else "right"
+                    self._front_leg_lock = self.FRONT_LEG_LOCK_FRAMES
+
+            if self._front_leg == "left":
                 front_knee = left_knee
                 back_knee = right_knee
             else:
-                self._front_leg = "right"
                 front_knee = right_knee
                 back_knee = left_knee
         elif left_knee is not None:
@@ -115,7 +134,7 @@ class LungeDetector(BaseExerciseDetector):
     def _assess_form(self, angles: Dict[str, Optional[float]]) -> Tuple[float, Dict[str, str], List[str]]:
         joint_feedback = {}
         issues = []
-        scores = []
+        scores = {}
 
         front_knee = angles.get("front_knee")
         back_knee = angles.get("back_knee")
@@ -129,56 +148,54 @@ class LungeDetector(BaseExerciseDetector):
             if self._state in ("bottom", "going_up", "going_down"):
                 if front_knee <= KNEE_LUNGED + 10:
                     joint_feedback[f"{fl}_knee"] = "correct"
-                    scores.append(1.0)
+                    scores["front_knee"] = 1.0
                 elif front_knee <= KNEE_HALF:
                     joint_feedback[f"{fl}_knee"] = "warning"
                     issues.append("Go deeper — front thigh should be parallel to floor")
-                    scores.append(0.5)
+                    scores["front_knee"] = 0.5
                 else:
                     joint_feedback[f"{fl}_knee"] = "correct"
-                    scores.append(0.8)
+                    scores["front_knee"] = 0.8
             else:
                 joint_feedback[f"{fl}_knee"] = "correct"
-                scores.append(1.0)
+                scores["front_knee"] = 1.0
 
         # ── Back knee depth ──
         if back_knee is not None and self._state in ("bottom", "going_up", "going_down"):
             if back_knee <= BACK_KNEE_GOOD:
                 joint_feedback[f"{bl}_knee"] = "correct"
-                scores.append(1.0)
+                scores["back_knee"] = 1.0
             elif back_knee <= BACK_KNEE_WARNING:
                 joint_feedback[f"{bl}_knee"] = "warning"
                 issues.append("Drop back knee closer to floor")
-                scores.append(0.5)
+                scores["back_knee"] = 0.5
             else:
                 joint_feedback[f"{bl}_knee"] = "warning"
-                scores.append(0.7)
+                scores["back_knee"] = 0.7
 
         # ── Torso upright (weighted 1.3x) ──
         if torso is not None:
             if torso <= TORSO_GOOD:
                 joint_feedback["left_shoulder"] = "correct"
                 joint_feedback["right_shoulder"] = "correct"
-                scores.append(1.0)
+                scores["torso"] = 1.0
             elif torso <= TORSO_WARNING:
                 joint_feedback["left_shoulder"] = "warning"
                 joint_feedback["right_shoulder"] = "warning"
                 issues.append("Keep torso upright — don't lean forward")
-                scores.append(0.5)
+                scores["torso"] = 0.5
             else:
                 joint_feedback["left_shoulder"] = "incorrect"
                 joint_feedback["right_shoulder"] = "incorrect"
                 issues.append("Excessive forward lean — chest up!")
-                scores.append(0.2)
+                scores["torso"] = 0.2
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        if len(scores) >= 3:
-            weights = [1.0, 1.0, 1.3][:len(scores)]
-            weighted = [s * w for s, w in zip(scores, weights)]
-            total = sum(weighted) / sum(weights)
-        else:
-            total = sum(scores) / len(scores)
+        WEIGHTS = {"front_knee": 1.0, "back_knee": 1.0, "torso": 1.3}
+        weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
+        weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
+        total = weighted_sum / weight_total
 
         return max(0.0, min(1.0, total)), joint_feedback, issues

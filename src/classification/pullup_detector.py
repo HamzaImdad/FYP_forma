@@ -109,7 +109,7 @@ class PullUpDetector(BaseExerciseDetector):
     def _assess_form(self, angles: Dict[str, Optional[float]]) -> Tuple[float, Dict[str, str], List[str]]:
         joint_feedback = {}
         issues = []
-        scores = []
+        scores = {}
 
         elbow = angles.get("elbow")
         chin_above = angles.get("chin_above")
@@ -121,64 +121,62 @@ class PullUpDetector(BaseExerciseDetector):
                 if elbow <= ELBOW_TOP + 15:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 elif elbow <= ELBOW_HALF:
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
                     issues.append("Pull higher — chin should clear the bar")
-                    scores.append(0.5)
+                    scores["elbow"] = 0.5
                 else:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(0.8)
+                    scores["elbow"] = 0.8
             else:
                 # At bottom — should be fully extended
                 if elbow >= ELBOW_HANGING - 15:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 else:
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
                     issues.append("Extend arms fully at the bottom — full dead hang")
-                    scores.append(0.6)
+                    scores["elbow"] = 0.6
 
-        # ── Chin above bar ──
-        if chin_above is not None and self._state in ("bottom",):
+        # ── Chin above bar (check at top of pull and during pull) ──
+        if chin_above is not None and self._state in ("bottom", "going_down"):
             if chin_above > 0.02:
-                scores.append(1.0)
+                scores["chin"] = 1.0
             elif chin_above > -0.02:
                 issues.append("Pull a bit higher — chin just below bar level")
-                scores.append(0.6)
+                scores["chin"] = 0.6
             else:
                 issues.append("Not high enough — chin must clear the bar")
-                scores.append(0.3)
+                scores["chin"] = 0.3
 
         # ── Body swing (kipping) — weighted 1.3x ──
         if body_swing is not None:
             if body_swing <= SWING_GOOD:
                 joint_feedback["left_hip"] = "correct"
                 joint_feedback["right_hip"] = "correct"
-                scores.append(1.0)
+                scores["swing"] = 1.0
             elif body_swing <= SWING_WARNING:
                 joint_feedback["left_hip"] = "warning"
                 joint_feedback["right_hip"] = "warning"
                 issues.append("Body swinging — keep core tight, no kipping")
-                scores.append(0.5)
+                scores["swing"] = 0.5
             else:
                 joint_feedback["left_hip"] = "incorrect"
                 joint_feedback["right_hip"] = "incorrect"
                 issues.append("Excessive kipping — use strict form, no swinging")
-                scores.append(0.2)
+                scores["swing"] = 0.2
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        if len(scores) >= 3:
-            weights = [1.0, 1.0, 1.3][:len(scores)]
-            weighted = [s * w for s, w in zip(scores, weights)]
-            total = sum(weighted) / sum(weights)
-        else:
-            total = sum(scores) / len(scores)
+        WEIGHTS = {"elbow": 1.0, "chin": 1.0, "swing": 1.3}
+        weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
+        weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
+        total = weighted_sum / weight_total
 
         return max(0.0, min(1.0, total)), joint_feedback, issues

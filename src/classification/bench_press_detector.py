@@ -82,7 +82,7 @@ class BenchPressDetector(BaseExerciseDetector):
     def _assess_form(self, angles: Dict[str, Optional[float]]) -> Tuple[float, Dict[str, str], List[str]]:
         joint_feedback = {}
         issues = []
-        scores = []
+        scores = {}
 
         elbow = angles.get("elbow")
         symmetry = angles.get("symmetry")
@@ -94,67 +94,65 @@ class BenchPressDetector(BaseExerciseDetector):
                 if elbow <= ELBOW_BOTTOM + 10:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 elif elbow <= ELBOW_HALF:
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
                     issues.append("Lower the bar more — touch or near chest")
-                    scores.append(0.5)
+                    scores["elbow"] = 0.5
                 else:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(0.8)
+                    scores["elbow"] = 0.8
             else:
                 if elbow >= ELBOW_EXTENDED - 10:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 else:
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
                     issues.append("Lock out arms at the top")
-                    scores.append(0.6)
+                    scores["elbow"] = 0.6
 
         # ── Symmetry ──
         if symmetry is not None:
             if symmetry <= SYMMETRY_GOOD:
-                scores.append(1.0)
+                scores["symmetry"] = 1.0
             elif symmetry <= SYMMETRY_WARNING:
                 issues.append("Uneven press — one arm ahead of the other")
-                scores.append(0.5)
+                scores["symmetry"] = 0.5
             else:
                 issues.append("Arms very uneven — press both sides equally")
-                scores.append(0.2)
+                scores["symmetry"] = 0.2
 
         # ── Shoulder flare (weighted 1.3x) ──
         if shoulder is not None:
             if SHOULDER_GOOD_MIN <= shoulder <= SHOULDER_GOOD_MAX:
                 joint_feedback["left_shoulder"] = "correct"
                 joint_feedback["right_shoulder"] = "correct"
-                scores.append(1.0)
+                scores["shoulder"] = 1.0
             elif shoulder <= SHOULDER_WARNING_MAX:
                 joint_feedback["left_shoulder"] = "warning"
                 joint_feedback["right_shoulder"] = "warning"
                 issues.append("Elbows flaring — tuck elbows ~45° to body")
-                scores.append(0.5)
+                scores["shoulder"] = 0.5
             elif shoulder <= SHOULDER_BAD_MAX:
                 joint_feedback["left_shoulder"] = "incorrect"
                 joint_feedback["right_shoulder"] = "incorrect"
                 issues.append("Elbows too wide — shoulder impingement risk!")
-                scores.append(0.2)
+                scores["shoulder"] = 0.2
             else:
                 joint_feedback["left_shoulder"] = "incorrect"
                 joint_feedback["right_shoulder"] = "incorrect"
-                scores.append(0.1)
+                scores["shoulder"] = 0.1
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        if len(scores) >= 3:
-            weights = [1.0, 1.0, 1.3][:len(scores)]
-            weighted = [s * w for s, w in zip(scores, weights)]
-            total = sum(weighted) / sum(weights)
-        else:
-            total = sum(scores) / len(scores)
+        WEIGHTS = {"elbow": 1.0, "symmetry": 1.0, "shoulder": 1.3}
+        weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
+        weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
+        total = weighted_sum / weight_total
 
         return max(0.0, min(1.0, total)), joint_feedback, issues

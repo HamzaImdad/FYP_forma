@@ -196,7 +196,7 @@ class PushUpDetector:
         if not self._form_validated:
             if (smooth_elbow > ELBOW_UP and
                     smooth_hip > HIP_WARNING and
-                    (smooth_shoulder is None or SHOULDER_MIN < smooth_shoulder < SHOULDER_MAX)):
+                    smooth_shoulder is not None and SHOULDER_MIN < smooth_shoulder < SHOULDER_MAX):
                 self._form_validated = True
                 self._rep_start_time = now
             else:
@@ -331,7 +331,7 @@ class PushUpDetector:
         """
         joint_feedback = {}
         issues = []
-        scores = []
+        scores = {}
 
         # ── Elbow assessment ──
         if elbow is not None:
@@ -341,84 +341,76 @@ class PushUpDetector:
                     issues.append("Go lower — bend elbows to 90\u00b0")
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
-                    scores.append(0.4)
+                    scores["elbow"] = 0.4
                 elif elbow <= ELBOW_DOWN:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 else:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(0.8)
+                    scores["elbow"] = 0.8
             else:
                 # At top — arms should be extended
                 if elbow >= ELBOW_UP:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores.append(1.0)
+                    scores["elbow"] = 1.0
                 else:
                     joint_feedback["left_elbow"] = "warning"
                     joint_feedback["right_elbow"] = "warning"
-                    scores.append(0.6)
+                    scores["elbow"] = 0.6
 
         # ── Hip/body alignment assessment (most important form check) ──
         if hip is not None:
             if hip >= HIP_GOOD:
                 joint_feedback["left_hip"] = "correct"
                 joint_feedback["right_hip"] = "correct"
-                scores.append(1.0)
+                scores["hip"] = 1.0
             elif hip >= HIP_WARNING:
                 joint_feedback["left_hip"] = "warning"
                 joint_feedback["right_hip"] = "warning"
                 issues.append("Keep your body straight — slight hip sag")
-                scores.append(0.5)
+                scores["hip"] = 0.5
             elif hip >= HIP_BAD:
                 joint_feedback["left_hip"] = "incorrect"
                 joint_feedback["right_hip"] = "incorrect"
                 issues.append("Hips sagging! Tighten your core")
-                scores.append(0.2)
+                scores["hip"] = 0.2
             else:
                 joint_feedback["left_hip"] = "incorrect"
                 joint_feedback["right_hip"] = "incorrect"
                 issues.append("Major hip sag — engage core and glutes")
-                scores.append(0.0)
+                scores["hip"] = 0.0
 
         # ── Shoulder/elbow flare assessment ──
         if shoulder is not None:
             if SHOULDER_IDEAL_MIN <= shoulder <= SHOULDER_IDEAL_MAX:
                 joint_feedback["left_shoulder"] = "correct"
                 joint_feedback["right_shoulder"] = "correct"
-                scores.append(1.0)
+                scores["shoulder"] = 1.0
             elif SHOULDER_MIN <= shoulder <= SHOULDER_MAX:
                 joint_feedback["left_shoulder"] = "correct"
                 joint_feedback["right_shoulder"] = "correct"
-                scores.append(0.7)
+                scores["shoulder"] = 0.7
             elif shoulder > SHOULDER_MAX:
                 joint_feedback["left_shoulder"] = "warning"
                 joint_feedback["right_shoulder"] = "warning"
                 issues.append("Elbows flaring out — tuck elbows closer to body")
-                scores.append(0.3)
+                scores["shoulder"] = 0.3
             else:
                 joint_feedback["left_shoulder"] = "warning"
                 joint_feedback["right_shoulder"] = "warning"
                 issues.append("Arms too tight to body — widen grip slightly")
-                scores.append(0.4)
+                scores["shoulder"] = 0.4
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        # Hip alignment is weighted more heavily (it's the #1 form issue)
-        # Scores list order: elbow, hip, shoulder
-        # Weight hip score 1.5x if present
-        if hip is not None and len(scores) >= 2:
-            hip_idx = 1  # hip is always second
-            weighted = []
-            for i, s in enumerate(scores):
-                w = 1.5 if i == hip_idx else 1.0
-                weighted.append(s * w)
-            total = sum(weighted) / sum(1.5 if i == hip_idx else 1.0 for i in range(len(scores)))
-        else:
-            total = sum(scores) / len(scores)
+        WEIGHTS = {"elbow": 1.0, "hip": 1.5, "shoulder": 1.0}
+        weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
+        weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
+        total = weighted_sum / weight_total
 
         return max(0.0, min(1.0, total)), joint_feedback, issues
 

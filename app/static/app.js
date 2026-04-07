@@ -166,6 +166,7 @@ let hudState = {
     setCount: 0,
     repsInSet: 0,
     formScore: 0,
+    displayScore: 0,        // smoothly interpolated score for display
     phase: "",
     progress: "",
     isActive: false,
@@ -174,6 +175,8 @@ let hudState = {
     setJustCompleted: false,  // show set-complete overlay
     completedSetReps: 0,      // reps in the set that just finished
     completedSetNum: 0,       // which set just finished
+    repPulse: 0,             // 1.0 on rep complete, decays to 0
+    prevRepCount: 0,         // to detect new reps
 };
 let skeletonCanvas = null;
 let skeletonCtx = null;
@@ -387,7 +390,54 @@ function drawSkeletonOverlay(landmarks, jointFeedback) {
     const h = skeletonCanvas.height;
     skeletonCtx.clearRect(0, 0, w, h);
 
-    // Draw connections with glow
+    // ── Mesh zones: colored gradient bands along bones ──
+    for (const [a, b] of SKELETON_CONNECTIONS) {
+        if (landmarks[a].visibility < 0.5 || landmarks[b].visibility < 0.5) continue;
+        const color = getConnectionColor(a, b, jointFeedback);
+        if (color === "#9CA3AF") continue; // skip neutral bones for cleaner look
+        const ax = landmarks[a].x * w, ay = landmarks[a].y * h;
+        const bx = landmarks[b].x * w, by = landmarks[b].y * h;
+        const dx = bx - ax, dy = by - ay;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        if (len < 5) continue;
+        // Perpendicular direction for mesh width
+        const nx = -dy / len, ny = dx / len;
+        const meshW = 12; // half-width of mesh zone
+
+        // Draw tapered mesh band with gradient
+        skeletonCtx.save();
+        skeletonCtx.globalAlpha = 0.15;
+        skeletonCtx.fillStyle = color;
+        skeletonCtx.beginPath();
+        // Tapered shape: wider at center, narrower at joints
+        const taper = 0.5;
+        const midX = (ax + bx) / 2, midY = (ay + by) / 2;
+        skeletonCtx.moveTo(ax + nx * meshW * taper, ay + ny * meshW * taper);
+        skeletonCtx.quadraticCurveTo(midX + nx * meshW, midY + ny * meshW, bx + nx * meshW * taper, by + ny * meshW * taper);
+        skeletonCtx.lineTo(bx - nx * meshW * taper, by - ny * meshW * taper);
+        skeletonCtx.quadraticCurveTo(midX - nx * meshW, midY - ny * meshW, ax - nx * meshW * taper, ay - ny * meshW * taper);
+        skeletonCtx.closePath();
+        skeletonCtx.fill();
+
+        // Cross-hatch grid lines for futuristic look
+        skeletonCtx.globalAlpha = 0.12;
+        skeletonCtx.strokeStyle = color;
+        skeletonCtx.lineWidth = 0.8;
+        const gridSteps = 4;
+        for (let i = 1; i < gridSteps; i++) {
+            const t = i / gridSteps;
+            const gx = ax + dx * t;
+            const gy = ay + dy * t;
+            const localW = meshW * (taper + (1 - taper) * Math.sin(t * Math.PI));
+            skeletonCtx.beginPath();
+            skeletonCtx.moveTo(gx + nx * localW, gy + ny * localW);
+            skeletonCtx.lineTo(gx - nx * localW, gy - ny * localW);
+            skeletonCtx.stroke();
+        }
+        skeletonCtx.restore();
+    }
+
+    // ── Bone connections with glow ──
     for (const [a, b] of SKELETON_CONNECTIONS) {
         if (landmarks[a].visibility < 0.5 || landmarks[b].visibility < 0.5) continue;
         const color = getConnectionColor(a, b, jointFeedback);
@@ -402,7 +452,7 @@ function drawSkeletonOverlay(landmarks, jointFeedback) {
     }
     skeletonCtx.shadowBlur = 0;
 
-    // Draw landmarks with halo (skip face: indices 0-10)
+    // ── Landmarks with halo (skip face: indices 0-10) ──
     for (let i = 11; i < 33; i++) {
         if (landmarks[i].visibility < 0.5) continue;
         const color = getJointColor(i, jointFeedback);
@@ -451,21 +501,42 @@ function drawSessionHUD() {
     const h = skeletonCanvas.height;
     const s = hudState;
 
-    // ── Rep counter (top-left) ──
-    skeletonCtx.font = "bold 42px 'Bebas Neue', 'Outfit', sans-serif";
+    // ── Smooth score lerp ──
+    s.displayScore += (s.formScore - s.displayScore) * 0.15;
+
+    // ── Rep pulse decay ──
+    if (s.repCount > s.prevRepCount) {
+        s.repPulse = 1.0;
+        s.prevRepCount = s.repCount;
+    }
+    s.repPulse *= 0.92; // decay
+
+    // ── Rep counter (top-left) with pulse effect ──
+    const pulseScale = 1.0 + s.repPulse * 0.15;
+    skeletonCtx.save();
+    const repBoxW = 120, repBoxH = s.setCount > 0 ? 80 : 52;
     skeletonCtx.fillStyle = "rgba(0,0,0,0.6)";
-    skeletonCtx.fillRect(8, 8, 120, s.setCount > 0 ? 80 : 52);
-    skeletonCtx.fillStyle = "#FFFFFF";
+    skeletonCtx.fillRect(8, 8, repBoxW, repBoxH);
+
+    // Pulse glow on rep complete
+    if (s.repPulse > 0.05) {
+        skeletonCtx.fillStyle = `rgba(52, 211, 153, ${s.repPulse * 0.3})`;
+        skeletonCtx.fillRect(8, 8, repBoxW, repBoxH);
+    }
+
+    skeletonCtx.font = `bold ${Math.round(42 * pulseScale)}px 'Bebas Neue', 'Outfit', sans-serif`;
+    skeletonCtx.fillStyle = s.repPulse > 0.2 ? "#34D399" : "#FFFFFF";
     skeletonCtx.fillText(`REP ${s.repsInSet || s.repCount}`, 16, 44);
     if (s.setCount > 0) {
         skeletonCtx.font = "bold 22px 'Outfit', sans-serif";
         skeletonCtx.fillStyle = "#D4A574";
         skeletonCtx.fillText(`SET ${s.setCount + 1}`, 16, 72);
     }
+    skeletonCtx.restore();
 
-    // ── Form score (top-right) ──
-    if (s.isActive && s.formScore > 0) {
-        const scorePct = Math.round(s.formScore * 100);
+    // ── Form score ring (top-right) with smooth animation ──
+    if (s.isActive && s.displayScore > 0) {
+        const scorePct = Math.round(s.displayScore * 100);
         const scoreColor = scorePct >= 70 ? "#34D399" : scorePct >= 40 ? "#F59E0B" : "#EF4444";
         const scoreX = w - 70;
         // Background circle
@@ -473,12 +544,22 @@ function drawSessionHUD() {
         skeletonCtx.arc(scoreX, 40, 30, 0, Math.PI * 2);
         skeletonCtx.fillStyle = "rgba(0,0,0,0.6)";
         skeletonCtx.fill();
-        // Score arc (partial ring showing score)
+        // Glow ring effect
         skeletonCtx.beginPath();
-        skeletonCtx.arc(scoreX, 40, 30, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * s.formScore));
+        skeletonCtx.arc(scoreX, 40, 33, 0, Math.PI * 2);
+        skeletonCtx.strokeStyle = scoreColor;
+        skeletonCtx.lineWidth = 1;
+        skeletonCtx.globalAlpha = 0.3;
+        skeletonCtx.stroke();
+        skeletonCtx.globalAlpha = 1.0;
+        // Score arc (smooth)
+        skeletonCtx.beginPath();
+        skeletonCtx.arc(scoreX, 40, 30, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * s.displayScore));
         skeletonCtx.strokeStyle = scoreColor;
         skeletonCtx.lineWidth = 4;
+        skeletonCtx.lineCap = "round";
         skeletonCtx.stroke();
+        skeletonCtx.lineCap = "butt";
         // Score number
         skeletonCtx.font = "bold 22px 'Outfit', sans-serif";
         skeletonCtx.fillStyle = scoreColor;
@@ -487,21 +568,44 @@ function drawSessionHUD() {
         skeletonCtx.textAlign = "start";
     }
 
-    // ── Phase indicator (bottom-center) ──
+    // ── Phase indicator (bottom-center) — works for all exercises ──
     if (s.isActive && s.phase) {
         const phaseText = {
-            "Top position": "GO DOWN",
+            "Top position": "BEGIN REP",
             "Lowering": "LOWERING...",
-            "Bottom position": "GOOD DEPTH! PUSH UP!",
-            "Pushing up": "PUSH!",
-        }[s.phase] || s.phase;
-        skeletonCtx.font = "bold 20px 'Outfit', sans-serif";
+            "Bottom position": "GOOD! COME UP",
+            "Coming up": "PUSH!",
+        }[s.phase] || s.phase.toUpperCase();
+        skeletonCtx.font = "bold 18px 'Outfit', sans-serif";
         const tm = skeletonCtx.measureText(phaseText);
         const px = (w - tm.width) / 2;
         const py = h - 30;
-        skeletonCtx.fillStyle = "rgba(0,0,0,0.6)";
-        skeletonCtx.fillRect(px - 12, py - 20, tm.width + 24, 30);
-        skeletonCtx.fillStyle = s.phase === "Bottom position" ? "#34D399" : "#FFFFFF";
+        // Rounded background pill
+        const pillW = tm.width + 28, pillH = 28, pillR = 14;
+        const pillX = px - 14, pillY = py - 20;
+        skeletonCtx.fillStyle = "rgba(0,0,0,0.7)";
+        skeletonCtx.beginPath();
+        if (skeletonCtx.roundRect) {
+            skeletonCtx.roundRect(pillX, pillY, pillW, pillH, pillR);
+        } else {
+            skeletonCtx.rect(pillX, pillY, pillW, pillH);
+        }
+        skeletonCtx.fill();
+        // Border glow
+        const phaseColor = s.phase === "Bottom position" ? "#34D399" : s.phase === "Coming up" ? "#FBBF24" : "#9CA3AF";
+        skeletonCtx.strokeStyle = phaseColor;
+        skeletonCtx.lineWidth = 1;
+        skeletonCtx.globalAlpha = 0.5;
+        skeletonCtx.beginPath();
+        if (skeletonCtx.roundRect) {
+            skeletonCtx.roundRect(pillX, pillY, pillW, pillH, pillR);
+        } else {
+            skeletonCtx.rect(pillX, pillY, pillW, pillH);
+        }
+        skeletonCtx.stroke();
+        skeletonCtx.globalAlpha = 1.0;
+        // Text
+        skeletonCtx.fillStyle = phaseColor === "#9CA3AF" ? "#FFFFFF" : phaseColor;
         skeletonCtx.fillText(phaseText, px, py);
     }
 
