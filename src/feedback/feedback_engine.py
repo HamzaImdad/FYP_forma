@@ -33,19 +33,41 @@ class FeedbackEngine:
                 colors[idx] = COLORS.get(status, COLORS["neutral"])
         return colors
 
+    @staticmethod
+    def score_to_color(form_score: float) -> Tuple[int, int, int]:
+        """Map a 0.0-1.0 form score to a BGR color (red -> orange -> green)."""
+        s = max(0.0, min(1.0, form_score))
+        if s < 0.5:
+            # Red (0,0,255) -> Orange (0,165,255)
+            t = s / 0.5
+            return (0, int(165 * t), 255)
+        else:
+            # Orange (0,165,255) -> Green (0,255,0)
+            t = (s - 0.5) / 0.5
+            return (0, int(165 + 90 * t), int(255 * (1 - t)))
+
     def get_skeleton_colors(
         self, result: ClassificationResult
     ) -> List[Tuple[int, int, Tuple[int, int, int]]]:
         """
         Get color for each skeleton connection.
+        Uses per-joint colors where available, falls back to score-based overall color.
         Returns list of (idx_a, idx_b, color) tuples.
         """
         joint_colors = self.get_joint_colors(result)
-        skeleton = []
 
+        # Default color based on form_score when no per-joint info
+        if not result.is_active:
+            default_color = COLORS["neutral"]
+        elif joint_colors:
+            default_color = COLORS["neutral"]
+        else:
+            default_color = self.score_to_color(result.form_score)
+
+        skeleton = []
         for idx_a, idx_b in SKELETON_CONNECTIONS:
-            color_a = joint_colors.get(idx_a, COLORS["neutral"])
-            color_b = joint_colors.get(idx_b, COLORS["neutral"])
+            color_a = joint_colors.get(idx_a)
+            color_b = joint_colors.get(idx_b)
 
             if color_a == COLORS["incorrect"] or color_b == COLORS["incorrect"]:
                 color = COLORS["incorrect"]
@@ -53,20 +75,33 @@ class FeedbackEngine:
                 color = COLORS["warning"]
             elif color_a == COLORS["correct"] and color_b == COLORS["correct"]:
                 color = COLORS["correct"]
+            elif color_a is not None or color_b is not None:
+                color = color_a or color_b
             else:
-                color = COLORS["neutral"]
+                color = default_color
 
             skeleton.append((idx_a, idx_b, color))
 
         return skeleton
 
     def get_text_feedback(self, result: ClassificationResult) -> str:
-        """Generate human-readable text feedback."""
-        conf = result.confidence if result.confidence is not None else 0.0
-        if result.is_correct:
-            return f"Good form! ({conf:.0%} confidence)"
+        """Generate human-readable text feedback based on form score."""
+        # Inactive — user is not exercising
+        if not result.is_active:
+            return "Begin exercise movement..."
 
+        score_pct = int(result.form_score * 100)
         issues = list(result.details.values()) if result.details else []
-        msg = f"Form issues detected ({conf:.0%}):\n"
-        msg += "\n".join(f"  - {issue}" for issue in issues[:3])
-        return msg
+
+        if result.form_score > 0.7:
+            return f"Good form! Score: {score_pct}/100"
+        elif result.form_score >= 0.4:
+            msg = f"Moderate form. Score: {score_pct}/100"
+            if issues:
+                msg += "\n" + "\n".join(f"  - {i}" for i in issues[:3])
+            return msg
+        else:
+            msg = f"Needs improvement. Score: {score_pct}/100"
+            if issues:
+                msg += "\n" + "\n".join(f"  - {i}" for i in issues[:3])
+            return msg

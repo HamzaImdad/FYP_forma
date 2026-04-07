@@ -1,0 +1,15 @@
+{
+  "exercise": "lunge",
+  "best_val_f1": 0.8138957816377171,
+  "best_params": {
+    "hidden_dim": 192,
+    "num_layers": 3,
+    "dropout": 0.30000000000000004,
+    "lr": 0.00098503066776042,
+    "batch_size": 32,
+    "n_heads": 2
+  },
+  "n_trials": 50,
+  "n_pruned": 28,
+  "n_complete": 22
+}

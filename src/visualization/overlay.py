@@ -16,6 +16,8 @@ from ..utils.constants import (
     LEFT_SHOULDER, RIGHT_SHOULDER, LEFT_HIP, RIGHT_HIP,
     JOINT_ANGLES,
 )
+from ..utils.geometry import calculate_angle
+from ..feature_extraction.exercise_features import EXERCISE_FEATURES
 
 
 # Default drawing settings
@@ -64,7 +66,8 @@ def draw_skeleton(
                     color = COLORS["correct"]
             cv2.line(frame, pt_a, pt_b, color, CONNECTION_THICKNESS)
 
-    for i in range(NUM_LANDMARKS):
+    # Skip face landmarks (0-10): nose, eyes, ears, mouth — not useful for exercise eval
+    for i in range(11, NUM_LANDMARKS):
         if not pose.is_visible(i, MIN_VISIBILITY):
             continue
         pt = _to_pixel(pose.landmarks[i], w, h)
@@ -230,6 +233,88 @@ def draw_exercise_label(frame: np.ndarray, exercise: str) -> np.ndarray:
     y = h - 15
     cv2.rectangle(frame, (x - 5, y - text_size[1] - 5), (x + text_size[0] + 5, y + 5), (0, 0, 0), -1)
     cv2.putText(frame, label, (x, y), FONT, 0.7, (255, 255, 255), 2)
+    return frame
+
+
+def draw_angle_labels(
+    frame: np.ndarray,
+    pose: PoseResult,
+    exercise: str,
+    joint_feedback: Dict[str, str] = None,
+) -> np.ndarray:
+    """Draw angle values (in degrees) at each relevant joint vertex on the frame.
+
+    Only shows angles relevant to the current exercise (primary + secondary).
+    Uses world coordinates for angle accuracy, image coordinates for label placement.
+    Colors match joint feedback status (green/red/orange) when available.
+    """
+    h, w = frame.shape[:2]
+
+    # Determine which angles to show for this exercise
+    ex_config = EXERCISE_FEATURES.get(exercise, {})
+    show_angles = set(ex_config.get("primary_angles", []))
+    show_angles.update(ex_config.get("secondary_angles", []))
+    if not show_angles:
+        # Fallback: show all defined angles
+        show_angles = set(JOINT_ANGLES.keys())
+
+    for angle_name in show_angles:
+        if angle_name not in JOINT_ANGLES:
+            continue
+
+        idx_a, idx_b, idx_c = JOINT_ANGLES[angle_name]
+        if not all(pose.is_visible(i, MIN_VISIBILITY) for i in (idx_a, idx_b, idx_c)):
+            continue
+
+        # Compute angle using world coordinates (more accurate)
+        a = pose.get_world_landmark(idx_a)
+        b = pose.get_world_landmark(idx_b)
+        c = pose.get_world_landmark(idx_c)
+        angle_deg = calculate_angle(a, b, c)
+        if angle_deg is None:
+            continue
+
+        # Label position: push outward from the bone midpoint
+        vertex_px = _to_pixel(pose.landmarks[idx_b], w, h)
+        pt_a_px = np.array(_to_pixel(pose.landmarks[idx_a], w, h), dtype=np.float64)
+        pt_c_px = np.array(_to_pixel(pose.landmarks[idx_c], w, h), dtype=np.float64)
+        vtx = np.array(vertex_px, dtype=np.float64)
+        # Outward direction = perpendicular to bone bisector, pointing away from body
+        bone_mid = (pt_a_px + pt_c_px) * 0.5
+        outward = vtx - bone_mid
+        out_len = np.linalg.norm(outward)
+        if out_len > 1.0:
+            outward = outward / out_len
+        else:
+            # Fallback: push left labels left, right labels right
+            outward = np.array([-1.0, 0.0] if angle_name.startswith("left_") else [1.0, 0.0])
+        label_pos = (int(vtx[0] + outward[0] * 35), int(vtx[1] + outward[1] * 25 - 6))
+
+        # Color based on joint feedback status
+        if joint_feedback and angle_name in joint_feedback:
+            status = joint_feedback[angle_name]
+            color = COLORS.get(status, COLORS["neutral"])
+        else:
+            color = (255, 255, 255)  # White when no feedback
+
+        label = f"{int(round(angle_deg))}"
+
+        # Draw background pill for readability
+        text_size = cv2.getTextSize(label, FONT, 0.5, 1)[0]
+        bg_x1 = label_pos[0] - 3
+        bg_y1 = label_pos[1] - text_size[1] - 4
+        bg_x2 = label_pos[0] + text_size[0] + 5
+        bg_y2 = label_pos[1] + 4
+        cv2.rectangle(frame, (bg_x1, bg_y1), (bg_x2, bg_y2), (0, 0, 0), -1)
+        cv2.rectangle(frame, (bg_x1, bg_y1), (bg_x2, bg_y2), color, 1)
+
+        # Draw angle text
+        cv2.putText(frame, label, label_pos, FONT, 0.5, color, 1, cv2.LINE_AA)
+
+        # Draw degree symbol
+        deg_pos = (label_pos[0] + text_size[0] + 1, label_pos[1] - text_size[1] + 2)
+        cv2.circle(frame, deg_pos, 2, color, 1, cv2.LINE_AA)
+
     return frame
 
 

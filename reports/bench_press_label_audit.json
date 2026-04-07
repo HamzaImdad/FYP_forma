@@ -1,0 +1,6180 @@
+{
+  "exercise": "bench_press",
+  "total_sequences": 11294,
+  "flagged_count": 750,
+  "flagged_percentage": 6.64,
+  "confidence_threshold": 0.7,
+  "model_threshold": 0.1,
+  "flagged_videos": [
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "flagged_count": 94,
+      "avg_confidence": 0.7483,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "flagged_count": 79,
+      "avg_confidence": 0.7414,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "flagged_count": 77,
+      "avg_confidence": 0.7412,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "flagged_count": 66,
+      "avg_confidence": 0.7411,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "flagged_count": 64,
+      "avg_confidence": 0.7641,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "flagged_count": 62,
+      "avg_confidence": 0.7713,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "flagged_count": 53,
+      "avg_confidence": 0.7351,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "flagged_count": 28,
+      "avg_confidence": 0.7308,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "flagged_count": 27,
+      "avg_confidence": 0.7436,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "flagged_count": 26,
+      "avg_confidence": 0.7366,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "flagged_count": 22,
+      "avg_confidence": 0.7348,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "flagged_count": 22,
+      "avg_confidence": 0.7177,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "flagged_count": 20,
+      "avg_confidence": 0.7514,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "flagged_count": 19,
+      "avg_confidence": 0.745,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "flagged_count": 19,
+      "avg_confidence": 0.7437,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "flagged_count": 18,
+      "avg_confidence": 0.7358,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "flagged_count": 16,
+      "avg_confidence": 0.7281,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "flagged_count": 10,
+      "avg_confidence": 0.7434,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "flagged_count": 8,
+      "avg_confidence": 0.9019,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_bench_press_correct_ptpmRrzRtWQ",
+      "flagged_count": 6,
+      "avg_confidence": 0.911,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_20 Common Lifting Mistakes To Avoid! (Are You Guil_q9Cux6Ed20g",
+      "flagged_count": 4,
+      "avg_confidence": 0.7529,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Barbell bench press - bouncing bar off the chest_mcwlMp67qs4",
+      "flagged_count": 3,
+      "avg_confidence": 0.7288,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_3 SIMPLE STEPS To Fix your Bent Wrists while Bench_vzmqFxNhO8w",
+      "flagged_count": 2,
+      "avg_confidence": 0.7503,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_bench_press_correct_lWFknlOTbyM",
+      "flagged_count": 1,
+      "avg_confidence": 0.905,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Biggest Chest Training Mistakes (that keep you sma_MlblwoOPHHM",
+      "flagged_count": 1,
+      "avg_confidence": 0.7,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Why you should never bounce a bench again_mVYpzII1SMo",
+      "flagged_count": 1,
+      "avg_confidence": 0.7053,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_bench_press_incorrect_Wrists Getting Bent Back On The Bench Press\uff1f 3 Pos_qM3IE6yF-3E",
+      "flagged_count": 1,
+      "avg_confidence": 0.7054,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_bench_press_incorrect_kpKDQ-6rc_E",
+      "flagged_count": 1,
+      "avg_confidence": 0.7302,
+      "ground_truth_label": 0
+    }
+  ],
+  "flagged_details": [
+    {
+      "index": 2860,
+      "video_id": "youtube_bench_press_correct_lWFknlOTbyM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.095,
+      "confidence": 0.905
+    },
+    {
+      "index": 3736,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7589,
+      "confidence": 0.7589
+    },
+    {
+      "index": 3738,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7136,
+      "confidence": 0.7136
+    },
+    {
+      "index": 3739,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7716,
+      "confidence": 0.7716
+    },
+    {
+      "index": 3740,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7608,
+      "confidence": 0.7608
+    },
+    {
+      "index": 3748,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.743,
+      "confidence": 0.743
+    },
+    {
+      "index": 3752,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7257,
+      "confidence": 0.7257
+    },
+    {
+      "index": 3753,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7646,
+      "confidence": 0.7646
+    },
+    {
+      "index": 3754,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.702,
+      "confidence": 0.702
+    },
+    {
+      "index": 3755,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7652,
+      "confidence": 0.7652
+    },
+    {
+      "index": 3756,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.772,
+      "confidence": 0.772
+    },
+    {
+      "index": 3757,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.741,
+      "confidence": 0.741
+    },
+    {
+      "index": 3778,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7685,
+      "confidence": 0.7685
+    },
+    {
+      "index": 3779,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7622,
+      "confidence": 0.7622
+    },
+    {
+      "index": 3780,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7605,
+      "confidence": 0.7605
+    },
+    {
+      "index": 3781,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7271,
+      "confidence": 0.7271
+    },
+    {
+      "index": 3783,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7637,
+      "confidence": 0.7637
+    },
+    {
+      "index": 3784,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7446,
+      "confidence": 0.7446
+    },
+    {
+      "index": 3785,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7349,
+      "confidence": 0.7349
+    },
+    {
+      "index": 3786,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7268,
+      "confidence": 0.7268
+    },
+    {
+      "index": 3803,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7263,
+      "confidence": 0.7263
+    },
+    {
+      "index": 3813,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7338,
+      "confidence": 0.7338
+    },
+    {
+      "index": 3814,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7211,
+      "confidence": 0.7211
+    },
+    {
+      "index": 3815,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7275,
+      "confidence": 0.7275
+    },
+    {
+      "index": 3816,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7544,
+      "confidence": 0.7544
+    },
+    {
+      "index": 3817,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7321,
+      "confidence": 0.7321
+    },
+    {
+      "index": 3818,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7183,
+      "confidence": 0.7183
+    },
+    {
+      "index": 3819,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7133,
+      "confidence": 0.7133
+    },
+    {
+      "index": 3820,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7165,
+      "confidence": 0.7165
+    },
+    {
+      "index": 3821,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7373,
+      "confidence": 0.7373
+    },
+    {
+      "index": 3822,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7481,
+      "confidence": 0.7481
+    },
+    {
+      "index": 3823,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7397,
+      "confidence": 0.7397
+    },
+    {
+      "index": 3824,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7512,
+      "confidence": 0.7512
+    },
+    {
+      "index": 3825,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7535,
+      "confidence": 0.7535
+    },
+    {
+      "index": 3832,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7649,
+      "confidence": 0.7649
+    },
+    {
+      "index": 3833,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7525,
+      "confidence": 0.7525
+    },
+    {
+      "index": 3834,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7157,
+      "confidence": 0.7157
+    },
+    {
+      "index": 3840,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7055,
+      "confidence": 0.7055
+    },
+    {
+      "index": 3877,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7108,
+      "confidence": 0.7108
+    },
+    {
+      "index": 3878,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7486,
+      "confidence": 0.7486
+    },
+    {
+      "index": 3890,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7438,
+      "confidence": 0.7438
+    },
+    {
+      "index": 3891,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7248,
+      "confidence": 0.7248
+    },
+    {
+      "index": 3907,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.733,
+      "confidence": 0.733
+    },
+    {
+      "index": 3908,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7685,
+      "confidence": 0.7685
+    },
+    {
+      "index": 3909,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7764,
+      "confidence": 0.7764
+    },
+    {
+      "index": 3931,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7272,
+      "confidence": 0.7272
+    },
+    {
+      "index": 3953,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7625,
+      "confidence": 0.7625
+    },
+    {
+      "index": 3954,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7573,
+      "confidence": 0.7573
+    },
+    {
+      "index": 3955,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7794,
+      "confidence": 0.7794
+    },
+    {
+      "index": 3956,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7938,
+      "confidence": 0.7938
+    },
+    {
+      "index": 3957,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7572,
+      "confidence": 0.7572
+    },
+    {
+      "index": 3958,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.745,
+      "confidence": 0.745
+    },
+    {
+      "index": 3959,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7296,
+      "confidence": 0.7296
+    },
+    {
+      "index": 3960,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7018,
+      "confidence": 0.7018
+    },
+    {
+      "index": 3961,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7344,
+      "confidence": 0.7344
+    },
+    {
+      "index": 3962,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7377,
+      "confidence": 0.7377
+    },
+    {
+      "index": 3963,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7412,
+      "confidence": 0.7412
+    },
+    {
+      "index": 3964,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7403,
+      "confidence": 0.7403
+    },
+    {
+      "index": 3965,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7192,
+      "confidence": 0.7192
+    },
+    {
+      "index": 3966,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7106,
+      "confidence": 0.7106
+    },
+    {
+      "index": 3967,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7101,
+      "confidence": 0.7101
+    },
+    {
+      "index": 3968,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7219,
+      "confidence": 0.7219
+    },
+    {
+      "index": 4022,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7532,
+      "confidence": 0.7532
+    },
+    {
+      "index": 4023,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7649,
+      "confidence": 0.7649
+    },
+    {
+      "index": 4024,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7683,
+      "confidence": 0.7683
+    },
+    {
+      "index": 4025,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7682,
+      "confidence": 0.7682
+    },
+    {
+      "index": 4026,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7669,
+      "confidence": 0.7669
+    },
+    {
+      "index": 4039,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7024,
+      "confidence": 0.7024
+    },
+    {
+      "index": 4052,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7366,
+      "confidence": 0.7366
+    },
+    {
+      "index": 4053,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7094,
+      "confidence": 0.7094
+    },
+    {
+      "index": 4054,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7131,
+      "confidence": 0.7131
+    },
+    {
+      "index": 4075,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7033,
+      "confidence": 0.7033
+    },
+    {
+      "index": 4084,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7132,
+      "confidence": 0.7132
+    },
+    {
+      "index": 4091,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7712,
+      "confidence": 0.7712
+    },
+    {
+      "index": 4092,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7769,
+      "confidence": 0.7769
+    },
+    {
+      "index": 4127,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7453,
+      "confidence": 0.7453
+    },
+    {
+      "index": 4128,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.759,
+      "confidence": 0.759
+    },
+    {
+      "index": 4129,
+      "video_id": "youtube_bench_press_incorrect_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7285,
+      "confidence": 0.7285
+    },
+    {
+      "index": 4218,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.766,
+      "confidence": 0.766
+    },
+    {
+      "index": 4219,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.783,
+      "confidence": 0.783
+    },
+    {
+      "index": 4220,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7986,
+      "confidence": 0.7986
+    },
+    {
+      "index": 4221,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7819,
+      "confidence": 0.7819
+    },
+    {
+      "index": 4222,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7282,
+      "confidence": 0.7282
+    },
+    {
+      "index": 4232,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7767,
+      "confidence": 0.7767
+    },
+    {
+      "index": 4233,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7767,
+      "confidence": 0.7767
+    },
+    {
+      "index": 4234,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7769,
+      "confidence": 0.7769
+    },
+    {
+      "index": 4235,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7677,
+      "confidence": 0.7677
+    },
+    {
+      "index": 4236,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7629,
+      "confidence": 0.7629
+    },
+    {
+      "index": 4272,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7573,
+      "confidence": 0.7573
+    },
+    {
+      "index": 4273,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7657,
+      "confidence": 0.7657
+    },
+    {
+      "index": 4274,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7296,
+      "confidence": 0.7296
+    },
+    {
+      "index": 4289,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7176,
+      "confidence": 0.7176
+    },
+    {
+      "index": 4290,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7291,
+      "confidence": 0.7291
+    },
+    {
+      "index": 4291,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7322,
+      "confidence": 0.7322
+    },
+    {
+      "index": 4315,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7159,
+      "confidence": 0.7159
+    },
+    {
+      "index": 4316,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7496,
+      "confidence": 0.7496
+    },
+    {
+      "index": 4331,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7043,
+      "confidence": 0.7043
+    },
+    {
+      "index": 4359,
+      "video_id": "ytincorrect_bench_press_incorrect_12 Common Bench Press Mistakes And How to Fix Them_JpGCO4wVmXc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7078,
+      "confidence": 0.7078
+    },
+    {
+      "index": 4410,
+      "video_id": "ytincorrect_bench_press_incorrect_20 Common Lifting Mistakes To Avoid! (Are You Guil_q9Cux6Ed20g",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7464,
+      "confidence": 0.7464
+    },
+    {
+      "index": 4411,
+      "video_id": "ytincorrect_bench_press_incorrect_20 Common Lifting Mistakes To Avoid! (Are You Guil_q9Cux6Ed20g",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7616,
+      "confidence": 0.7616
+    },
+    {
+      "index": 4412,
+      "video_id": "ytincorrect_bench_press_incorrect_20 Common Lifting Mistakes To Avoid! (Are You Guil_q9Cux6Ed20g",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7616,
+      "confidence": 0.7616
+    },
+    {
+      "index": 4413,
+      "video_id": "ytincorrect_bench_press_incorrect_20 Common Lifting Mistakes To Avoid! (Are You Guil_q9Cux6Ed20g",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7418,
+      "confidence": 0.7418
+    },
+    {
+      "index": 4659,
+      "video_id": "ytincorrect_bench_press_incorrect_3 SIMPLE STEPS To Fix your Bent Wrists while Bench_vzmqFxNhO8w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7592,
+      "confidence": 0.7592
+    },
+    {
+      "index": 4665,
+      "video_id": "ytincorrect_bench_press_incorrect_3 SIMPLE STEPS To Fix your Bent Wrists while Bench_vzmqFxNhO8w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7414,
+      "confidence": 0.7414
+    },
+    {
+      "index": 4702,
+      "video_id": "ytincorrect_bench_press_incorrect_Barbell bench press - bouncing bar off the chest_mcwlMp67qs4",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.742,
+      "confidence": 0.742
+    },
+    {
+      "index": 4703,
+      "video_id": "ytincorrect_bench_press_incorrect_Barbell bench press - bouncing bar off the chest_mcwlMp67qs4",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.725,
+      "confidence": 0.725
+    },
+    {
+      "index": 4704,
+      "video_id": "ytincorrect_bench_press_incorrect_Barbell bench press - bouncing bar off the chest_mcwlMp67qs4",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7195,
+      "confidence": 0.7195
+    },
+    {
+      "index": 4712,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7622,
+      "confidence": 0.7622
+    },
+    {
+      "index": 4713,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.711,
+      "confidence": 0.711
+    },
+    {
+      "index": 4714,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7387,
+      "confidence": 0.7387
+    },
+    {
+      "index": 4715,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7353,
+      "confidence": 0.7353
+    },
+    {
+      "index": 4720,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.731,
+      "confidence": 0.731
+    },
+    {
+      "index": 4721,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7646,
+      "confidence": 0.7646
+    },
+    {
+      "index": 4722,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.739,
+      "confidence": 0.739
+    },
+    {
+      "index": 4725,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7307,
+      "confidence": 0.7307
+    },
+    {
+      "index": 4726,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7192,
+      "confidence": 0.7192
+    },
+    {
+      "index": 4727,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7209,
+      "confidence": 0.7209
+    },
+    {
+      "index": 4729,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7275,
+      "confidence": 0.7275
+    },
+    {
+      "index": 4730,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7205,
+      "confidence": 0.7205
+    },
+    {
+      "index": 4731,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7083,
+      "confidence": 0.7083
+    },
+    {
+      "index": 4732,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7361,
+      "confidence": 0.7361
+    },
+    {
+      "index": 4733,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7489,
+      "confidence": 0.7489
+    },
+    {
+      "index": 4734,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7453,
+      "confidence": 0.7453
+    },
+    {
+      "index": 4735,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7539,
+      "confidence": 0.7539
+    },
+    {
+      "index": 4736,
+      "video_id": "ytincorrect_bench_press_incorrect_Bench Press Tip\uff1a Fix Your Wrist Angle_7J2mNlZBUac",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.751,
+      "confidence": 0.751
+    },
+    {
+      "index": 4817,
+      "video_id": "ytincorrect_bench_press_incorrect_Biggest Chest Training Mistakes (that keep you sma_MlblwoOPHHM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7,
+      "confidence": 0.7
+    },
+    {
+      "index": 4951,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7017,
+      "confidence": 0.7017
+    },
+    {
+      "index": 4955,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7054,
+      "confidence": 0.7054
+    },
+    {
+      "index": 4956,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7458,
+      "confidence": 0.7458
+    },
+    {
+      "index": 4957,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7483,
+      "confidence": 0.7483
+    },
+    {
+      "index": 4963,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7476,
+      "confidence": 0.7476
+    },
+    {
+      "index": 4966,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7125,
+      "confidence": 0.7125
+    },
+    {
+      "index": 4967,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7364,
+      "confidence": 0.7364
+    },
+    {
+      "index": 4968,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7397,
+      "confidence": 0.7397
+    },
+    {
+      "index": 4969,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7391,
+      "confidence": 0.7391
+    },
+    {
+      "index": 4970,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7633,
+      "confidence": 0.7633
+    },
+    {
+      "index": 4971,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7624,
+      "confidence": 0.7624
+    },
+    {
+      "index": 4972,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7631,
+      "confidence": 0.7631
+    },
+    {
+      "index": 4973,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7626,
+      "confidence": 0.7626
+    },
+    {
+      "index": 4974,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7626,
+      "confidence": 0.7626
+    },
+    {
+      "index": 4975,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7514,
+      "confidence": 0.7514
+    },
+    {
+      "index": 4976,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7416,
+      "confidence": 0.7416
+    },
+    {
+      "index": 4977,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7524,
+      "confidence": 0.7524
+    },
+    {
+      "index": 4978,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7563,
+      "confidence": 0.7563
+    },
+    {
+      "index": 4979,
+      "video_id": "ytincorrect_bench_press_incorrect_Fix Your Elbows & Bench MORE_JUYeVH-HJkQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7629,
+      "confidence": 0.7629
+    },
+    {
+      "index": 5002,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7573,
+      "confidence": 0.7573
+    },
+    {
+      "index": 5003,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7758,
+      "confidence": 0.7758
+    },
+    {
+      "index": 5011,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7621,
+      "confidence": 0.7621
+    },
+    {
+      "index": 5012,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7082,
+      "confidence": 0.7082
+    },
+    {
+      "index": 5017,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7708,
+      "confidence": 0.7708
+    },
+    {
+      "index": 5018,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7376,
+      "confidence": 0.7376
+    },
+    {
+      "index": 5022,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7508,
+      "confidence": 0.7508
+    },
+    {
+      "index": 5024,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7792,
+      "confidence": 0.7792
+    },
+    {
+      "index": 5028,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7804,
+      "confidence": 0.7804
+    },
+    {
+      "index": 5037,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7889,
+      "confidence": 0.7889
+    },
+    {
+      "index": 5038,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7442,
+      "confidence": 0.7442
+    },
+    {
+      "index": 5039,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7149,
+      "confidence": 0.7149
+    },
+    {
+      "index": 5046,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7314,
+      "confidence": 0.7314
+    },
+    {
+      "index": 5048,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7523,
+      "confidence": 0.7523
+    },
+    {
+      "index": 5049,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.749,
+      "confidence": 0.749
+    },
+    {
+      "index": 5050,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7712,
+      "confidence": 0.7712
+    },
+    {
+      "index": 5054,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7511,
+      "confidence": 0.7511
+    },
+    {
+      "index": 5055,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7327,
+      "confidence": 0.7327
+    },
+    {
+      "index": 5056,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7294,
+      "confidence": 0.7294
+    },
+    {
+      "index": 5057,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7799,
+      "confidence": 0.7799
+    },
+    {
+      "index": 5058,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7918,
+      "confidence": 0.7918
+    },
+    {
+      "index": 5059,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7657,
+      "confidence": 0.7657
+    },
+    {
+      "index": 5060,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7159,
+      "confidence": 0.7159
+    },
+    {
+      "index": 5062,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7002,
+      "confidence": 0.7002
+    },
+    {
+      "index": 5065,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7816,
+      "confidence": 0.7816
+    },
+    {
+      "index": 5069,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7142,
+      "confidence": 0.7142
+    },
+    {
+      "index": 5070,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7453,
+      "confidence": 0.7453
+    },
+    {
+      "index": 5073,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7885,
+      "confidence": 0.7885
+    },
+    {
+      "index": 5074,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8136,
+      "confidence": 0.8136
+    },
+    {
+      "index": 5076,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7241,
+      "confidence": 0.7241
+    },
+    {
+      "index": 5077,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7528,
+      "confidence": 0.7528
+    },
+    {
+      "index": 5084,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.741,
+      "confidence": 0.741
+    },
+    {
+      "index": 5085,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7546,
+      "confidence": 0.7546
+    },
+    {
+      "index": 5093,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7551,
+      "confidence": 0.7551
+    },
+    {
+      "index": 5094,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7283,
+      "confidence": 0.7283
+    },
+    {
+      "index": 5095,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7528,
+      "confidence": 0.7528
+    },
+    {
+      "index": 5096,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7297,
+      "confidence": 0.7297
+    },
+    {
+      "index": 5097,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7568,
+      "confidence": 0.7568
+    },
+    {
+      "index": 5101,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7255,
+      "confidence": 0.7255
+    },
+    {
+      "index": 5109,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7409,
+      "confidence": 0.7409
+    },
+    {
+      "index": 5110,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.741,
+      "confidence": 0.741
+    },
+    {
+      "index": 5111,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7359,
+      "confidence": 0.7359
+    },
+    {
+      "index": 5112,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7146,
+      "confidence": 0.7146
+    },
+    {
+      "index": 5113,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7173,
+      "confidence": 0.7173
+    },
+    {
+      "index": 5114,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7329,
+      "confidence": 0.7329
+    },
+    {
+      "index": 5115,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7251,
+      "confidence": 0.7251
+    },
+    {
+      "index": 5116,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7442,
+      "confidence": 0.7442
+    },
+    {
+      "index": 5117,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7094,
+      "confidence": 0.7094
+    },
+    {
+      "index": 5123,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7573,
+      "confidence": 0.7573
+    },
+    {
+      "index": 5129,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7197,
+      "confidence": 0.7197
+    },
+    {
+      "index": 5130,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7628,
+      "confidence": 0.7628
+    },
+    {
+      "index": 5132,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7357,
+      "confidence": 0.7357
+    },
+    {
+      "index": 5133,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7681,
+      "confidence": 0.7681
+    },
+    {
+      "index": 5134,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7617,
+      "confidence": 0.7617
+    },
+    {
+      "index": 5135,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7143,
+      "confidence": 0.7143
+    },
+    {
+      "index": 5136,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7522,
+      "confidence": 0.7522
+    },
+    {
+      "index": 5138,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7028,
+      "confidence": 0.7028
+    },
+    {
+      "index": 5139,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7386,
+      "confidence": 0.7386
+    },
+    {
+      "index": 5142,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7198,
+      "confidence": 0.7198
+    },
+    {
+      "index": 5155,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7124,
+      "confidence": 0.7124
+    },
+    {
+      "index": 5165,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7425,
+      "confidence": 0.7425
+    },
+    {
+      "index": 5166,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7659,
+      "confidence": 0.7659
+    },
+    {
+      "index": 5167,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7229,
+      "confidence": 0.7229
+    },
+    {
+      "index": 5168,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.781,
+      "confidence": 0.781
+    },
+    {
+      "index": 5169,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7861,
+      "confidence": 0.7861
+    },
+    {
+      "index": 5170,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7868,
+      "confidence": 0.7868
+    },
+    {
+      "index": 5171,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7357,
+      "confidence": 0.7357
+    },
+    {
+      "index": 5172,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7648,
+      "confidence": 0.7648
+    },
+    {
+      "index": 5173,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7702,
+      "confidence": 0.7702
+    },
+    {
+      "index": 5174,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7738,
+      "confidence": 0.7738
+    },
+    {
+      "index": 5175,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7763,
+      "confidence": 0.7763
+    },
+    {
+      "index": 5176,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7412,
+      "confidence": 0.7412
+    },
+    {
+      "index": 5177,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7363,
+      "confidence": 0.7363
+    },
+    {
+      "index": 5178,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7357,
+      "confidence": 0.7357
+    },
+    {
+      "index": 5179,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7692,
+      "confidence": 0.7692
+    },
+    {
+      "index": 5180,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7175,
+      "confidence": 0.7175
+    },
+    {
+      "index": 5182,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7614,
+      "confidence": 0.7614
+    },
+    {
+      "index": 5183,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.734,
+      "confidence": 0.734
+    },
+    {
+      "index": 5184,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7295,
+      "confidence": 0.7295
+    },
+    {
+      "index": 5185,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.74,
+      "confidence": 0.74
+    },
+    {
+      "index": 5186,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7152,
+      "confidence": 0.7152
+    },
+    {
+      "index": 5187,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7604,
+      "confidence": 0.7604
+    },
+    {
+      "index": 5188,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7653,
+      "confidence": 0.7653
+    },
+    {
+      "index": 5189,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7485,
+      "confidence": 0.7485
+    },
+    {
+      "index": 5190,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7654,
+      "confidence": 0.7654
+    },
+    {
+      "index": 5191,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7654,
+      "confidence": 0.7654
+    },
+    {
+      "index": 5192,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7403,
+      "confidence": 0.7403
+    },
+    {
+      "index": 5193,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7956,
+      "confidence": 0.7956
+    },
+    {
+      "index": 5194,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7725,
+      "confidence": 0.7725
+    },
+    {
+      "index": 5196,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7646,
+      "confidence": 0.7646
+    },
+    {
+      "index": 5204,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7186,
+      "confidence": 0.7186
+    },
+    {
+      "index": 5205,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7408,
+      "confidence": 0.7408
+    },
+    {
+      "index": 5207,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7502,
+      "confidence": 0.7502
+    },
+    {
+      "index": 5208,
+      "video_id": "ytincorrect_bench_press_incorrect_How to PROPERLY Bench Press for Growth (5 Easy Ste_4Y2ZdHCOXok",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7525,
+      "confidence": 0.7525
+    },
+    {
+      "index": 5221,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7326,
+      "confidence": 0.7326
+    },
+    {
+      "index": 5235,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7284,
+      "confidence": 0.7284
+    },
+    {
+      "index": 5236,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7084,
+      "confidence": 0.7084
+    },
+    {
+      "index": 5242,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7099,
+      "confidence": 0.7099
+    },
+    {
+      "index": 5270,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7141,
+      "confidence": 0.7141
+    },
+    {
+      "index": 5271,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7288,
+      "confidence": 0.7288
+    },
+    {
+      "index": 5272,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7543,
+      "confidence": 0.7543
+    },
+    {
+      "index": 5339,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7042,
+      "confidence": 0.7042
+    },
+    {
+      "index": 5346,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7009,
+      "confidence": 0.7009
+    },
+    {
+      "index": 5347,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7548,
+      "confidence": 0.7548
+    },
+    {
+      "index": 5348,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7621,
+      "confidence": 0.7621
+    },
+    {
+      "index": 5357,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.71,
+      "confidence": 0.71
+    },
+    {
+      "index": 5358,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7418,
+      "confidence": 0.7418
+    },
+    {
+      "index": 5359,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.765,
+      "confidence": 0.765
+    },
+    {
+      "index": 5364,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7413,
+      "confidence": 0.7413
+    },
+    {
+      "index": 5365,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.757,
+      "confidence": 0.757
+    },
+    {
+      "index": 5366,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7153,
+      "confidence": 0.7153
+    },
+    {
+      "index": 5385,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7048,
+      "confidence": 0.7048
+    },
+    {
+      "index": 5387,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7822,
+      "confidence": 0.7822
+    },
+    {
+      "index": 5388,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7666,
+      "confidence": 0.7666
+    },
+    {
+      "index": 5399,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7192,
+      "confidence": 0.7192
+    },
+    {
+      "index": 5404,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Losing Strength With These Bench Press Mistak_8d9kbkAuZGI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7628,
+      "confidence": 0.7628
+    },
+    {
+      "index": 5412,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7033,
+      "confidence": 0.7033
+    },
+    {
+      "index": 5417,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7195,
+      "confidence": 0.7195
+    },
+    {
+      "index": 5419,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.701,
+      "confidence": 0.701
+    },
+    {
+      "index": 5420,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7159,
+      "confidence": 0.7159
+    },
+    {
+      "index": 5423,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7288,
+      "confidence": 0.7288
+    },
+    {
+      "index": 5431,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7301,
+      "confidence": 0.7301
+    },
+    {
+      "index": 5433,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7115,
+      "confidence": 0.7115
+    },
+    {
+      "index": 5449,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7733,
+      "confidence": 0.7733
+    },
+    {
+      "index": 5450,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7927,
+      "confidence": 0.7927
+    },
+    {
+      "index": 5460,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7337,
+      "confidence": 0.7337
+    },
+    {
+      "index": 5461,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7409,
+      "confidence": 0.7409
+    },
+    {
+      "index": 5475,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7327,
+      "confidence": 0.7327
+    },
+    {
+      "index": 5486,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7096,
+      "confidence": 0.7096
+    },
+    {
+      "index": 5496,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7453,
+      "confidence": 0.7453
+    },
+    {
+      "index": 5499,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7266,
+      "confidence": 0.7266
+    },
+    {
+      "index": 5503,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7941,
+      "confidence": 0.7941
+    },
+    {
+      "index": 5533,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7177,
+      "confidence": 0.7177
+    },
+    {
+      "index": 5540,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7104,
+      "confidence": 0.7104
+    },
+    {
+      "index": 5541,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7668,
+      "confidence": 0.7668
+    },
+    {
+      "index": 5546,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7446,
+      "confidence": 0.7446
+    },
+    {
+      "index": 5547,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7358,
+      "confidence": 0.7358
+    },
+    {
+      "index": 5548,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7374,
+      "confidence": 0.7374
+    },
+    {
+      "index": 5549,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7459,
+      "confidence": 0.7459
+    },
+    {
+      "index": 5550,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7509,
+      "confidence": 0.7509
+    },
+    {
+      "index": 5551,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.744,
+      "confidence": 0.744
+    },
+    {
+      "index": 5552,
+      "video_id": "ytincorrect_bench_press_incorrect_The Fastest Way To Blow Up Your Bench Press (4 Sci_ptpmRrzRtWQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7381,
+      "confidence": 0.7381
+    },
+    {
+      "index": 5874,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7741,
+      "confidence": 0.7741
+    },
+    {
+      "index": 5875,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7546,
+      "confidence": 0.7546
+    },
+    {
+      "index": 5882,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7657,
+      "confidence": 0.7657
+    },
+    {
+      "index": 5883,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7635,
+      "confidence": 0.7635
+    },
+    {
+      "index": 5884,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.746,
+      "confidence": 0.746
+    },
+    {
+      "index": 5885,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7256,
+      "confidence": 0.7256
+    },
+    {
+      "index": 5887,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7053,
+      "confidence": 0.7053
+    },
+    {
+      "index": 5888,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7456,
+      "confidence": 0.7456
+    },
+    {
+      "index": 5889,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7078,
+      "confidence": 0.7078
+    },
+    {
+      "index": 5890,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Not Touching Your Chest On Presses Leads To In_MrmyZDumJow",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7458,
+      "confidence": 0.7458
+    },
+    {
+      "index": 5941,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7063,
+      "confidence": 0.7063
+    },
+    {
+      "index": 5971,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7351,
+      "confidence": 0.7351
+    },
+    {
+      "index": 5972,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7261,
+      "confidence": 0.7261
+    },
+    {
+      "index": 5973,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7425,
+      "confidence": 0.7425
+    },
+    {
+      "index": 5974,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7015,
+      "confidence": 0.7015
+    },
+    {
+      "index": 6003,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7022,
+      "confidence": 0.7022
+    },
+    {
+      "index": 6004,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7323,
+      "confidence": 0.7323
+    },
+    {
+      "index": 6005,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7471,
+      "confidence": 0.7471
+    },
+    {
+      "index": 6006,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7241,
+      "confidence": 0.7241
+    },
+    {
+      "index": 6007,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7294,
+      "confidence": 0.7294
+    },
+    {
+      "index": 6008,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7493,
+      "confidence": 0.7493
+    },
+    {
+      "index": 6022,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.726,
+      "confidence": 0.726
+    },
+    {
+      "index": 6032,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7373,
+      "confidence": 0.7373
+    },
+    {
+      "index": 6033,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7072,
+      "confidence": 0.7072
+    },
+    {
+      "index": 6034,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7436,
+      "confidence": 0.7436
+    },
+    {
+      "index": 6035,
+      "video_id": "ytincorrect_bench_press_incorrect_Why Powerlifters Use Feet Up Bench (and You Should_3SzCYffFC2s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7403,
+      "confidence": 0.7403
+    },
+    {
+      "index": 6077,
+      "video_id": "ytincorrect_bench_press_incorrect_Why you should never bounce a bench again_mVYpzII1SMo",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7053,
+      "confidence": 0.7053
+    },
+    {
+      "index": 6193,
+      "video_id": "ytincorrect_bench_press_incorrect_Wrists Getting Bent Back On The Bench Press\uff1f 3 Pos_qM3IE6yF-3E",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7054,
+      "confidence": 0.7054
+    },
+    {
+      "index": 6672,
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0972,
+      "confidence": 0.9028
+    },
+    {
+      "index": 6673,
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0926,
+      "confidence": 0.9074
+    },
+    {
+      "index": 7628,
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0996,
+      "confidence": 0.9004
+    },
+    {
+      "index": 7629,
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0973,
+      "confidence": 0.9027
+    },
+    {
+      "index": 7630,
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0997,
+      "confidence": 0.9003
+    },
+    {
+      "index": 7688,
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1,
+      "confidence": 0.9
+    },
+    {
+      "index": 7689,
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0993,
+      "confidence": 0.9007
+    },
+    {
+      "index": 7694,
+      "video_id": "youtube_bench_press_correct_vcBig73ojpE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0991,
+      "confidence": 0.9009
+    },
+    {
+      "index": 7854,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7383,
+      "confidence": 0.7383
+    },
+    {
+      "index": 7855,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7666,
+      "confidence": 0.7666
+    },
+    {
+      "index": 7856,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7927,
+      "confidence": 0.7927
+    },
+    {
+      "index": 7857,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7884,
+      "confidence": 0.7884
+    },
+    {
+      "index": 7858,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7892,
+      "confidence": 0.7892
+    },
+    {
+      "index": 7859,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7859,
+      "confidence": 0.7859
+    },
+    {
+      "index": 7860,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7865,
+      "confidence": 0.7865
+    },
+    {
+      "index": 7861,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7896,
+      "confidence": 0.7896
+    },
+    {
+      "index": 7862,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7888,
+      "confidence": 0.7888
+    },
+    {
+      "index": 7863,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7888,
+      "confidence": 0.7888
+    },
+    {
+      "index": 7864,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7879,
+      "confidence": 0.7879
+    },
+    {
+      "index": 7865,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7839,
+      "confidence": 0.7839
+    },
+    {
+      "index": 7866,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7838,
+      "confidence": 0.7838
+    },
+    {
+      "index": 7867,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7847,
+      "confidence": 0.7847
+    },
+    {
+      "index": 7868,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7846,
+      "confidence": 0.7846
+    },
+    {
+      "index": 7869,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7811,
+      "confidence": 0.7811
+    },
+    {
+      "index": 7870,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7603,
+      "confidence": 0.7603
+    },
+    {
+      "index": 7871,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7395,
+      "confidence": 0.7395
+    },
+    {
+      "index": 7872,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.736,
+      "confidence": 0.736
+    },
+    {
+      "index": 7873,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7466,
+      "confidence": 0.7466
+    },
+    {
+      "index": 7874,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7651,
+      "confidence": 0.7651
+    },
+    {
+      "index": 7875,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7851,
+      "confidence": 0.7851
+    },
+    {
+      "index": 7876,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7923,
+      "confidence": 0.7923
+    },
+    {
+      "index": 7877,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7949,
+      "confidence": 0.7949
+    },
+    {
+      "index": 7878,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7968,
+      "confidence": 0.7968
+    },
+    {
+      "index": 7879,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7967,
+      "confidence": 0.7967
+    },
+    {
+      "index": 7880,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7941,
+      "confidence": 0.7941
+    },
+    {
+      "index": 7881,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8001,
+      "confidence": 0.8001
+    },
+    {
+      "index": 7882,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.793,
+      "confidence": 0.793
+    },
+    {
+      "index": 7883,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7681,
+      "confidence": 0.7681
+    },
+    {
+      "index": 7884,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7794,
+      "confidence": 0.7794
+    },
+    {
+      "index": 7885,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8045,
+      "confidence": 0.8045
+    },
+    {
+      "index": 7886,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7971,
+      "confidence": 0.7971
+    },
+    {
+      "index": 7887,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7847,
+      "confidence": 0.7847
+    },
+    {
+      "index": 7888,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7878,
+      "confidence": 0.7878
+    },
+    {
+      "index": 7889,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8035,
+      "confidence": 0.8035
+    },
+    {
+      "index": 7890,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7929,
+      "confidence": 0.7929
+    },
+    {
+      "index": 7891,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7848,
+      "confidence": 0.7848
+    },
+    {
+      "index": 7892,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7705,
+      "confidence": 0.7705
+    },
+    {
+      "index": 7893,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7742,
+      "confidence": 0.7742
+    },
+    {
+      "index": 7894,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7817,
+      "confidence": 0.7817
+    },
+    {
+      "index": 7895,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7645,
+      "confidence": 0.7645
+    },
+    {
+      "index": 7896,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7194,
+      "confidence": 0.7194
+    },
+    {
+      "index": 7897,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7113,
+      "confidence": 0.7113
+    },
+    {
+      "index": 7898,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7417,
+      "confidence": 0.7417
+    },
+    {
+      "index": 7899,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.744,
+      "confidence": 0.744
+    },
+    {
+      "index": 7900,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7373,
+      "confidence": 0.7373
+    },
+    {
+      "index": 7901,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7227,
+      "confidence": 0.7227
+    },
+    {
+      "index": 7902,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7049,
+      "confidence": 0.7049
+    },
+    {
+      "index": 7903,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7183,
+      "confidence": 0.7183
+    },
+    {
+      "index": 7904,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7306,
+      "confidence": 0.7306
+    },
+    {
+      "index": 7905,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7174,
+      "confidence": 0.7174
+    },
+    {
+      "index": 7906,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7063,
+      "confidence": 0.7063
+    },
+    {
+      "index": 7907,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7312,
+      "confidence": 0.7312
+    },
+    {
+      "index": 7908,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7306,
+      "confidence": 0.7306
+    },
+    {
+      "index": 7928,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7534,
+      "confidence": 0.7534
+    },
+    {
+      "index": 7929,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7604,
+      "confidence": 0.7604
+    },
+    {
+      "index": 7930,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7633,
+      "confidence": 0.7633
+    },
+    {
+      "index": 7931,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7633,
+      "confidence": 0.7633
+    },
+    {
+      "index": 7932,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7608,
+      "confidence": 0.7608
+    },
+    {
+      "index": 7933,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7298,
+      "confidence": 0.7298
+    },
+    {
+      "index": 7943,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7053,
+      "confidence": 0.7053
+    },
+    {
+      "index": 7951,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7009,
+      "confidence": 0.7009
+    },
+    {
+      "index": 7952,
+      "video_id": "ytincorrect_bench_press_incorrect_How Much Elbow Flare You Should Have In The Bench _ShQo_V4FZJs",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.735,
+      "confidence": 0.735
+    },
+    {
+      "index": 7968,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7304,
+      "confidence": 0.7304
+    },
+    {
+      "index": 7987,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7207,
+      "confidence": 0.7207
+    },
+    {
+      "index": 7988,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7143,
+      "confidence": 0.7143
+    },
+    {
+      "index": 8054,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.707,
+      "confidence": 0.707
+    },
+    {
+      "index": 8147,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7084,
+      "confidence": 0.7084
+    },
+    {
+      "index": 8148,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7065,
+      "confidence": 0.7065
+    },
+    {
+      "index": 8149,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7041,
+      "confidence": 0.7041
+    },
+    {
+      "index": 8150,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7068,
+      "confidence": 0.7068
+    },
+    {
+      "index": 8151,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7064,
+      "confidence": 0.7064
+    },
+    {
+      "index": 8152,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7058,
+      "confidence": 0.7058
+    },
+    {
+      "index": 8153,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7042,
+      "confidence": 0.7042
+    },
+    {
+      "index": 8162,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7078,
+      "confidence": 0.7078
+    },
+    {
+      "index": 8167,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.709,
+      "confidence": 0.709
+    },
+    {
+      "index": 8192,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7102,
+      "confidence": 0.7102
+    },
+    {
+      "index": 8193,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7145,
+      "confidence": 0.7145
+    },
+    {
+      "index": 8220,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7604,
+      "confidence": 0.7604
+    },
+    {
+      "index": 8221,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7763,
+      "confidence": 0.7763
+    },
+    {
+      "index": 8222,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7673,
+      "confidence": 0.7673
+    },
+    {
+      "index": 8226,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7291,
+      "confidence": 0.7291
+    },
+    {
+      "index": 8227,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7083,
+      "confidence": 0.7083
+    },
+    {
+      "index": 8228,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7377,
+      "confidence": 0.7377
+    },
+    {
+      "index": 8240,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7746,
+      "confidence": 0.7746
+    },
+    {
+      "index": 8241,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7675,
+      "confidence": 0.7675
+    },
+    {
+      "index": 8242,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.754,
+      "confidence": 0.754
+    },
+    {
+      "index": 8243,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7599,
+      "confidence": 0.7599
+    },
+    {
+      "index": 8244,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7667,
+      "confidence": 0.7667
+    },
+    {
+      "index": 8245,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7562,
+      "confidence": 0.7562
+    },
+    {
+      "index": 8246,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7616,
+      "confidence": 0.7616
+    },
+    {
+      "index": 8247,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7654,
+      "confidence": 0.7654
+    },
+    {
+      "index": 8273,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7087,
+      "confidence": 0.7087
+    },
+    {
+      "index": 8274,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7616,
+      "confidence": 0.7616
+    },
+    {
+      "index": 8275,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7663,
+      "confidence": 0.7663
+    },
+    {
+      "index": 8276,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.757,
+      "confidence": 0.757
+    },
+    {
+      "index": 8277,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7578,
+      "confidence": 0.7578
+    },
+    {
+      "index": 8278,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7656,
+      "confidence": 0.7656
+    },
+    {
+      "index": 8279,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7244,
+      "confidence": 0.7244
+    },
+    {
+      "index": 8282,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7026,
+      "confidence": 0.7026
+    },
+    {
+      "index": 8283,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7083,
+      "confidence": 0.7083
+    },
+    {
+      "index": 8284,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7094,
+      "confidence": 0.7094
+    },
+    {
+      "index": 8285,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7056,
+      "confidence": 0.7056
+    },
+    {
+      "index": 8300,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7142,
+      "confidence": 0.7142
+    },
+    {
+      "index": 8301,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7686,
+      "confidence": 0.7686
+    },
+    {
+      "index": 8302,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7597,
+      "confidence": 0.7597
+    },
+    {
+      "index": 8320,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7376,
+      "confidence": 0.7376
+    },
+    {
+      "index": 8321,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.752,
+      "confidence": 0.752
+    },
+    {
+      "index": 8322,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7791,
+      "confidence": 0.7791
+    },
+    {
+      "index": 8326,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7016,
+      "confidence": 0.7016
+    },
+    {
+      "index": 8330,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.703,
+      "confidence": 0.703
+    },
+    {
+      "index": 8331,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7439,
+      "confidence": 0.7439
+    },
+    {
+      "index": 8332,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7437,
+      "confidence": 0.7437
+    },
+    {
+      "index": 8333,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7484,
+      "confidence": 0.7484
+    },
+    {
+      "index": 8334,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7545,
+      "confidence": 0.7545
+    },
+    {
+      "index": 8335,
+      "video_id": "ytincorrect_bench_press_incorrect_Stop Doing Dumbbell Bench Press Like This (I'M BEG_SzcSrpVr0GA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7469,
+      "confidence": 0.7469
+    },
+    {
+      "index": 8390,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7503,
+      "confidence": 0.7503
+    },
+    {
+      "index": 8391,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7719,
+      "confidence": 0.7719
+    },
+    {
+      "index": 8392,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7673,
+      "confidence": 0.7673
+    },
+    {
+      "index": 8393,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7581,
+      "confidence": 0.7581
+    },
+    {
+      "index": 8405,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7201,
+      "confidence": 0.7201
+    },
+    {
+      "index": 8406,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7547,
+      "confidence": 0.7547
+    },
+    {
+      "index": 8407,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7566,
+      "confidence": 0.7566
+    },
+    {
+      "index": 8408,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7658,
+      "confidence": 0.7658
+    },
+    {
+      "index": 8409,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7281,
+      "confidence": 0.7281
+    },
+    {
+      "index": 8410,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7138,
+      "confidence": 0.7138
+    },
+    {
+      "index": 8431,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7522,
+      "confidence": 0.7522
+    },
+    {
+      "index": 8432,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7634,
+      "confidence": 0.7634
+    },
+    {
+      "index": 8433,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7568,
+      "confidence": 0.7568
+    },
+    {
+      "index": 8434,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7413,
+      "confidence": 0.7413
+    },
+    {
+      "index": 8435,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7424,
+      "confidence": 0.7424
+    },
+    {
+      "index": 8436,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7513,
+      "confidence": 0.7513
+    },
+    {
+      "index": 8437,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7473,
+      "confidence": 0.7473
+    },
+    {
+      "index": 8438,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7342,
+      "confidence": 0.7342
+    },
+    {
+      "index": 8439,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7113,
+      "confidence": 0.7113
+    },
+    {
+      "index": 8465,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7147,
+      "confidence": 0.7147
+    },
+    {
+      "index": 8466,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7298,
+      "confidence": 0.7298
+    },
+    {
+      "index": 8467,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7376,
+      "confidence": 0.7376
+    },
+    {
+      "index": 8468,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7429,
+      "confidence": 0.7429
+    },
+    {
+      "index": 8469,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7349,
+      "confidence": 0.7349
+    },
+    {
+      "index": 8470,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7226,
+      "confidence": 0.7226
+    },
+    {
+      "index": 8471,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.714,
+      "confidence": 0.714
+    },
+    {
+      "index": 8472,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7279,
+      "confidence": 0.7279
+    },
+    {
+      "index": 8473,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7451,
+      "confidence": 0.7451
+    },
+    {
+      "index": 8474,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.744,
+      "confidence": 0.744
+    },
+    {
+      "index": 8475,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7461,
+      "confidence": 0.7461
+    },
+    {
+      "index": 8476,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7486,
+      "confidence": 0.7486
+    },
+    {
+      "index": 8484,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7064,
+      "confidence": 0.7064
+    },
+    {
+      "index": 8485,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7509,
+      "confidence": 0.7509
+    },
+    {
+      "index": 8486,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7182,
+      "confidence": 0.7182
+    },
+    {
+      "index": 8492,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7034,
+      "confidence": 0.7034
+    },
+    {
+      "index": 8528,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.701,
+      "confidence": 0.701
+    },
+    {
+      "index": 8541,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7368,
+      "confidence": 0.7368
+    },
+    {
+      "index": 8559,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7709,
+      "confidence": 0.7709
+    },
+    {
+      "index": 8560,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7706,
+      "confidence": 0.7706
+    },
+    {
+      "index": 8561,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7444,
+      "confidence": 0.7444
+    },
+    {
+      "index": 8562,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7357,
+      "confidence": 0.7357
+    },
+    {
+      "index": 8604,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7112,
+      "confidence": 0.7112
+    },
+    {
+      "index": 8605,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7718,
+      "confidence": 0.7718
+    },
+    {
+      "index": 8606,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7906,
+      "confidence": 0.7906
+    },
+    {
+      "index": 8607,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7687,
+      "confidence": 0.7687
+    },
+    {
+      "index": 8608,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7461,
+      "confidence": 0.7461
+    },
+    {
+      "index": 8609,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7314,
+      "confidence": 0.7314
+    },
+    {
+      "index": 8610,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7157,
+      "confidence": 0.7157
+    },
+    {
+      "index": 8611,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7267,
+      "confidence": 0.7267
+    },
+    {
+      "index": 8612,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.739,
+      "confidence": 0.739
+    },
+    {
+      "index": 8613,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7382,
+      "confidence": 0.7382
+    },
+    {
+      "index": 8614,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7401,
+      "confidence": 0.7401
+    },
+    {
+      "index": 8615,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7288,
+      "confidence": 0.7288
+    },
+    {
+      "index": 8616,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7024,
+      "confidence": 0.7024
+    },
+    {
+      "index": 8617,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7042,
+      "confidence": 0.7042
+    },
+    {
+      "index": 8672,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7611,
+      "confidence": 0.7611
+    },
+    {
+      "index": 8673,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7631,
+      "confidence": 0.7631
+    },
+    {
+      "index": 8674,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7682,
+      "confidence": 0.7682
+    },
+    {
+      "index": 8675,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7676,
+      "confidence": 0.7676
+    },
+    {
+      "index": 8676,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7534,
+      "confidence": 0.7534
+    },
+    {
+      "index": 8702,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7301,
+      "confidence": 0.7301
+    },
+    {
+      "index": 8703,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7033,
+      "confidence": 0.7033
+    },
+    {
+      "index": 8740,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7591,
+      "confidence": 0.7591
+    },
+    {
+      "index": 8741,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7769,
+      "confidence": 0.7769
+    },
+    {
+      "index": 8777,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7491,
+      "confidence": 0.7491
+    },
+    {
+      "index": 8778,
+      "video_id": "ytincorrect_bench_press_incorrect_The Worst Bench Press Mistakes Everyone Makes (Avo_JizeVA3Ba3A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7343,
+      "confidence": 0.7343
+    },
+    {
+      "index": 8916,
+      "video_id": "youtube_bench_press_correct_ptpmRrzRtWQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0907,
+      "confidence": 0.9093
+    },
+    {
+      "index": 8917,
+      "video_id": "youtube_bench_press_correct_ptpmRrzRtWQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0892,
+      "confidence": 0.9108
+    },
+    {
+      "index": 8918,
+      "video_id": "youtube_bench_press_correct_ptpmRrzRtWQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0862,
+      "confidence": 0.9138
+    },
+    {
+      "index": 8919,
+      "video_id": "youtube_bench_press_correct_ptpmRrzRtWQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0816,
+      "confidence": 0.9184
+    },
+    {
+      "index": 8920,
+      "video_id": "youtube_bench_press_correct_ptpmRrzRtWQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0867,
+      "confidence": 0.9133
+    },
+    {
+      "index": 9539,
+      "video_id": "youtube_bench_press_correct_ptpmRrzRtWQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0997,
+      "confidence": 0.9003
+    },
+    {
+      "index": 9802,
+      "video_id": "youtube_bench_press_incorrect_kpKDQ-6rc_E",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7302,
+      "confidence": 0.7302
+    },
+    {
+      "index": 9870,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7384,
+      "confidence": 0.7384
+    },
+    {
+      "index": 9871,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7235,
+      "confidence": 0.7235
+    },
+    {
+      "index": 9872,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7334,
+      "confidence": 0.7334
+    },
+    {
+      "index": 9886,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7414,
+      "confidence": 0.7414
+    },
+    {
+      "index": 9887,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.71,
+      "confidence": 0.71
+    },
+    {
+      "index": 9888,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7094,
+      "confidence": 0.7094
+    },
+    {
+      "index": 9909,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7356,
+      "confidence": 0.7356
+    },
+    {
+      "index": 9910,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7158,
+      "confidence": 0.7158
+    },
+    {
+      "index": 9911,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7093,
+      "confidence": 0.7093
+    },
+    {
+      "index": 9912,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7005,
+      "confidence": 0.7005
+    },
+    {
+      "index": 9914,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7128,
+      "confidence": 0.7128
+    },
+    {
+      "index": 9915,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7143,
+      "confidence": 0.7143
+    },
+    {
+      "index": 9945,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7068,
+      "confidence": 0.7068
+    },
+    {
+      "index": 9946,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7165,
+      "confidence": 0.7165
+    },
+    {
+      "index": 9947,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7264,
+      "confidence": 0.7264
+    },
+    {
+      "index": 9948,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7078,
+      "confidence": 0.7078
+    },
+    {
+      "index": 10026,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7336,
+      "confidence": 0.7336
+    },
+    {
+      "index": 10027,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7173,
+      "confidence": 0.7173
+    },
+    {
+      "index": 10039,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7012,
+      "confidence": 0.7012
+    },
+    {
+      "index": 10040,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7147,
+      "confidence": 0.7147
+    },
+    {
+      "index": 10047,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7038,
+      "confidence": 0.7038
+    },
+    {
+      "index": 10065,
+      "video_id": "ytincorrect_bench_press_incorrect_5 BEGINNER Bench Press Mistakes (and how to fix th_b6INRtaLaio",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7168,
+      "confidence": 0.7168
+    },
+    {
+      "index": 10136,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7185,
+      "confidence": 0.7185
+    },
+    {
+      "index": 10216,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7546,
+      "confidence": 0.7546
+    },
+    {
+      "index": 10217,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7161,
+      "confidence": 0.7161
+    },
+    {
+      "index": 10223,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.723,
+      "confidence": 0.723
+    },
+    {
+      "index": 10224,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7594,
+      "confidence": 0.7594
+    },
+    {
+      "index": 10225,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7733,
+      "confidence": 0.7733
+    },
+    {
+      "index": 10226,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7237,
+      "confidence": 0.7237
+    },
+    {
+      "index": 10263,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7408,
+      "confidence": 0.7408
+    },
+    {
+      "index": 10264,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7006,
+      "confidence": 0.7006
+    },
+    {
+      "index": 10266,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7062,
+      "confidence": 0.7062
+    },
+    {
+      "index": 10267,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7081,
+      "confidence": 0.7081
+    },
+    {
+      "index": 10268,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.721,
+      "confidence": 0.721
+    },
+    {
+      "index": 10276,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7617,
+      "confidence": 0.7617
+    },
+    {
+      "index": 10277,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.764,
+      "confidence": 0.764
+    },
+    {
+      "index": 10284,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7093,
+      "confidence": 0.7093
+    },
+    {
+      "index": 10285,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7571,
+      "confidence": 0.7571
+    },
+    {
+      "index": 10286,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7495,
+      "confidence": 0.7495
+    },
+    {
+      "index": 10287,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7654,
+      "confidence": 0.7654
+    },
+    {
+      "index": 10288,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7349,
+      "confidence": 0.7349
+    },
+    {
+      "index": 10291,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7886,
+      "confidence": 0.7886
+    },
+    {
+      "index": 10292,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7286,
+      "confidence": 0.7286
+    },
+    {
+      "index": 10306,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7693,
+      "confidence": 0.7693
+    },
+    {
+      "index": 10307,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7637,
+      "confidence": 0.7637
+    },
+    {
+      "index": 10308,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7637,
+      "confidence": 0.7637
+    },
+    {
+      "index": 10309,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7627,
+      "confidence": 0.7627
+    },
+    {
+      "index": 10310,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7579,
+      "confidence": 0.7579
+    },
+    {
+      "index": 10311,
+      "video_id": "ytincorrect_bench_press_incorrect_Benching With Feet Up = Faster Chest Growth\uff1f (NEW _Ltn_7qex5oI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7559,
+      "confidence": 0.7559
+    },
+    {
+      "index": 10368,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7464,
+      "confidence": 0.7464
+    },
+    {
+      "index": 10369,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7383,
+      "confidence": 0.7383
+    },
+    {
+      "index": 10372,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7029,
+      "confidence": 0.7029
+    },
+    {
+      "index": 10375,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7389,
+      "confidence": 0.7389
+    },
+    {
+      "index": 10376,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7646,
+      "confidence": 0.7646
+    },
+    {
+      "index": 10377,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.765,
+      "confidence": 0.765
+    },
+    {
+      "index": 10378,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7589,
+      "confidence": 0.7589
+    },
+    {
+      "index": 10379,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7518,
+      "confidence": 0.7518
+    },
+    {
+      "index": 10380,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7537,
+      "confidence": 0.7537
+    },
+    {
+      "index": 10381,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7183,
+      "confidence": 0.7183
+    },
+    {
+      "index": 10416,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7398,
+      "confidence": 0.7398
+    },
+    {
+      "index": 10417,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7059,
+      "confidence": 0.7059
+    },
+    {
+      "index": 10423,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7087,
+      "confidence": 0.7087
+    },
+    {
+      "index": 10424,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7068,
+      "confidence": 0.7068
+    },
+    {
+      "index": 10427,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7336,
+      "confidence": 0.7336
+    },
+    {
+      "index": 10430,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.714,
+      "confidence": 0.714
+    },
+    {
+      "index": 10431,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7679,
+      "confidence": 0.7679
+    },
+    {
+      "index": 10432,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7608,
+      "confidence": 0.7608
+    },
+    {
+      "index": 10456,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7181,
+      "confidence": 0.7181
+    },
+    {
+      "index": 10458,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7073,
+      "confidence": 0.7073
+    },
+    {
+      "index": 10461,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7327,
+      "confidence": 0.7327
+    },
+    {
+      "index": 10465,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7059,
+      "confidence": 0.7059
+    },
+    {
+      "index": 10466,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7234,
+      "confidence": 0.7234
+    },
+    {
+      "index": 10467,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7214,
+      "confidence": 0.7214
+    },
+    {
+      "index": 10468,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7177,
+      "confidence": 0.7177
+    },
+    {
+      "index": 10469,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.721,
+      "confidence": 0.721
+    },
+    {
+      "index": 10470,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7195,
+      "confidence": 0.7195
+    },
+    {
+      "index": 10471,
+      "video_id": "ytincorrect_bench_press_incorrect_Bouncing the Bar \uff5c Bench Press Mistake \uff5c RapidFitn_U_graU4hWo8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7187,
+      "confidence": 0.7187
+    },
+    {
+      "index": 10604,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.712,
+      "confidence": 0.712
+    },
+    {
+      "index": 10605,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7068,
+      "confidence": 0.7068
+    },
+    {
+      "index": 10606,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7103,
+      "confidence": 0.7103
+    },
+    {
+      "index": 10607,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7838,
+      "confidence": 0.7838
+    },
+    {
+      "index": 10608,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7768,
+      "confidence": 0.7768
+    },
+    {
+      "index": 10609,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7581,
+      "confidence": 0.7581
+    },
+    {
+      "index": 10610,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7447,
+      "confidence": 0.7447
+    },
+    {
+      "index": 10611,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7385,
+      "confidence": 0.7385
+    },
+    {
+      "index": 10612,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7282,
+      "confidence": 0.7282
+    },
+    {
+      "index": 10613,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7208,
+      "confidence": 0.7208
+    },
+    {
+      "index": 10614,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7174,
+      "confidence": 0.7174
+    },
+    {
+      "index": 10615,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7196,
+      "confidence": 0.7196
+    },
+    {
+      "index": 10616,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7427,
+      "confidence": 0.7427
+    },
+    {
+      "index": 10617,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7558,
+      "confidence": 0.7558
+    },
+    {
+      "index": 10618,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.734,
+      "confidence": 0.734
+    },
+    {
+      "index": 10619,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7186,
+      "confidence": 0.7186
+    },
+    {
+      "index": 10620,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7171,
+      "confidence": 0.7171
+    },
+    {
+      "index": 10621,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7425,
+      "confidence": 0.7425
+    },
+    {
+      "index": 10622,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7688,
+      "confidence": 0.7688
+    },
+    {
+      "index": 10623,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7443,
+      "confidence": 0.7443
+    },
+    {
+      "index": 10624,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7274,
+      "confidence": 0.7274
+    },
+    {
+      "index": 10625,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7241,
+      "confidence": 0.7241
+    },
+    {
+      "index": 10626,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7138,
+      "confidence": 0.7138
+    },
+    {
+      "index": 10627,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7371,
+      "confidence": 0.7371
+    },
+    {
+      "index": 10628,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7623,
+      "confidence": 0.7623
+    },
+    {
+      "index": 10629,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7618,
+      "confidence": 0.7618
+    },
+    {
+      "index": 10630,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7471,
+      "confidence": 0.7471
+    },
+    {
+      "index": 10631,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7389,
+      "confidence": 0.7389
+    },
+    {
+      "index": 10632,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7287,
+      "confidence": 0.7287
+    },
+    {
+      "index": 10633,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7216,
+      "confidence": 0.7216
+    },
+    {
+      "index": 10634,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7475,
+      "confidence": 0.7475
+    },
+    {
+      "index": 10635,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7497,
+      "confidence": 0.7497
+    },
+    {
+      "index": 10636,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7178,
+      "confidence": 0.7178
+    },
+    {
+      "index": 10637,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7054,
+      "confidence": 0.7054
+    },
+    {
+      "index": 10638,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7006,
+      "confidence": 0.7006
+    },
+    {
+      "index": 10639,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7078,
+      "confidence": 0.7078
+    },
+    {
+      "index": 10640,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7211,
+      "confidence": 0.7211
+    },
+    {
+      "index": 10641,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7416,
+      "confidence": 0.7416
+    },
+    {
+      "index": 10642,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7609,
+      "confidence": 0.7609
+    },
+    {
+      "index": 10643,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7526,
+      "confidence": 0.7526
+    },
+    {
+      "index": 10644,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7222,
+      "confidence": 0.7222
+    },
+    {
+      "index": 10645,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7125,
+      "confidence": 0.7125
+    },
+    {
+      "index": 10646,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7164,
+      "confidence": 0.7164
+    },
+    {
+      "index": 10647,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7157,
+      "confidence": 0.7157
+    },
+    {
+      "index": 10648,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7103,
+      "confidence": 0.7103
+    },
+    {
+      "index": 10649,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7411,
+      "confidence": 0.7411
+    },
+    {
+      "index": 10650,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7747,
+      "confidence": 0.7747
+    },
+    {
+      "index": 10651,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.755,
+      "confidence": 0.755
+    },
+    {
+      "index": 10652,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.737,
+      "confidence": 0.737
+    },
+    {
+      "index": 10653,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7544,
+      "confidence": 0.7544
+    },
+    {
+      "index": 10654,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7722,
+      "confidence": 0.7722
+    },
+    {
+      "index": 10655,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7721,
+      "confidence": 0.7721
+    },
+    {
+      "index": 10656,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7648,
+      "confidence": 0.7648
+    },
+    {
+      "index": 10657,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7582,
+      "confidence": 0.7582
+    },
+    {
+      "index": 10658,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7581,
+      "confidence": 0.7581
+    },
+    {
+      "index": 10659,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.749,
+      "confidence": 0.749
+    },
+    {
+      "index": 10660,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7414,
+      "confidence": 0.7414
+    },
+    {
+      "index": 10661,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7502,
+      "confidence": 0.7502
+    },
+    {
+      "index": 10662,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7527,
+      "confidence": 0.7527
+    },
+    {
+      "index": 10663,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7491,
+      "confidence": 0.7491
+    },
+    {
+      "index": 10664,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.756,
+      "confidence": 0.756
+    },
+    {
+      "index": 10665,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7566,
+      "confidence": 0.7566
+    },
+    {
+      "index": 10666,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7597,
+      "confidence": 0.7597
+    },
+    {
+      "index": 10667,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7596,
+      "confidence": 0.7596
+    },
+    {
+      "index": 10668,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7599,
+      "confidence": 0.7599
+    },
+    {
+      "index": 10669,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7571,
+      "confidence": 0.7571
+    },
+    {
+      "index": 10670,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.756,
+      "confidence": 0.756
+    },
+    {
+      "index": 10671,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7487,
+      "confidence": 0.7487
+    },
+    {
+      "index": 10672,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7427,
+      "confidence": 0.7427
+    },
+    {
+      "index": 10673,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7484,
+      "confidence": 0.7484
+    },
+    {
+      "index": 10674,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7557,
+      "confidence": 0.7557
+    },
+    {
+      "index": 10675,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.752,
+      "confidence": 0.752
+    },
+    {
+      "index": 10676,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7481,
+      "confidence": 0.7481
+    },
+    {
+      "index": 10677,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.751,
+      "confidence": 0.751
+    },
+    {
+      "index": 10678,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7467,
+      "confidence": 0.7467
+    },
+    {
+      "index": 10679,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7443,
+      "confidence": 0.7443
+    },
+    {
+      "index": 10680,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7566,
+      "confidence": 0.7566
+    },
+    {
+      "index": 10681,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7344,
+      "confidence": 0.7344
+    },
+    {
+      "index": 10682,
+      "video_id": "ytincorrect_bench_press_incorrect_Correct Over-Tucked Elbows & Uncontrolled Elbow Fl_FO_O_uPi118",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7181,
+      "confidence": 0.7181
+    },
+    {
+      "index": 10768,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7064,
+      "confidence": 0.7064
+    },
+    {
+      "index": 10788,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7322,
+      "confidence": 0.7322
+    },
+    {
+      "index": 10792,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7007,
+      "confidence": 0.7007
+    },
+    {
+      "index": 10793,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7478,
+      "confidence": 0.7478
+    },
+    {
+      "index": 10794,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7948,
+      "confidence": 0.7948
+    },
+    {
+      "index": 10795,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7889,
+      "confidence": 0.7889
+    },
+    {
+      "index": 10796,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7884,
+      "confidence": 0.7884
+    },
+    {
+      "index": 10797,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7574,
+      "confidence": 0.7574
+    },
+    {
+      "index": 10823,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7527,
+      "confidence": 0.7527
+    },
+    {
+      "index": 10824,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7777,
+      "confidence": 0.7777
+    },
+    {
+      "index": 10825,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7237,
+      "confidence": 0.7237
+    },
+    {
+      "index": 10840,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7177,
+      "confidence": 0.7177
+    },
+    {
+      "index": 10841,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.722,
+      "confidence": 0.722
+    },
+    {
+      "index": 10842,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7356,
+      "confidence": 0.7356
+    },
+    {
+      "index": 10843,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7622,
+      "confidence": 0.7622
+    },
+    {
+      "index": 10844,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7683,
+      "confidence": 0.7683
+    },
+    {
+      "index": 10845,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7405,
+      "confidence": 0.7405
+    },
+    {
+      "index": 10846,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.71,
+      "confidence": 0.71
+    },
+    {
+      "index": 10850,
+      "video_id": "ytincorrect_bench_press_incorrect_Main Benefits Of Feet Elevated Benching_lNiXCmbRQ1I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7026,
+      "confidence": 0.7026
+    },
+    {
+      "index": 10898,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7186,
+      "confidence": 0.7186
+    },
+    {
+      "index": 10899,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7079,
+      "confidence": 0.7079
+    },
+    {
+      "index": 10900,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7477,
+      "confidence": 0.7477
+    },
+    {
+      "index": 10901,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.73,
+      "confidence": 0.73
+    },
+    {
+      "index": 11019,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.751,
+      "confidence": 0.751
+    },
+    {
+      "index": 11078,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7282,
+      "confidence": 0.7282
+    },
+    {
+      "index": 11079,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7479,
+      "confidence": 0.7479
+    },
+    {
+      "index": 11080,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7645,
+      "confidence": 0.7645
+    },
+    {
+      "index": 11081,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7491,
+      "confidence": 0.7491
+    },
+    {
+      "index": 11082,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7529,
+      "confidence": 0.7529
+    },
+    {
+      "index": 11083,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7722,
+      "confidence": 0.7722
+    },
+    {
+      "index": 11084,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7648,
+      "confidence": 0.7648
+    },
+    {
+      "index": 11085,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7563,
+      "confidence": 0.7563
+    },
+    {
+      "index": 11086,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7181,
+      "confidence": 0.7181
+    },
+    {
+      "index": 11199,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.727,
+      "confidence": 0.727
+    },
+    {
+      "index": 11200,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7596,
+      "confidence": 0.7596
+    },
+    {
+      "index": 11201,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7629,
+      "confidence": 0.7629
+    },
+    {
+      "index": 11202,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7532,
+      "confidence": 0.7532
+    },
+    {
+      "index": 11203,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7227,
+      "confidence": 0.7227
+    },
+    {
+      "index": 11204,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7017,
+      "confidence": 0.7017
+    },
+    {
+      "index": 11210,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7317,
+      "confidence": 0.7317
+    },
+    {
+      "index": 11212,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7395,
+      "confidence": 0.7395
+    },
+    {
+      "index": 11213,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7926,
+      "confidence": 0.7926
+    },
+    {
+      "index": 11214,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7791,
+      "confidence": 0.7791
+    },
+    {
+      "index": 11215,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.756,
+      "confidence": 0.756
+    },
+    {
+      "index": 11216,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7425,
+      "confidence": 0.7425
+    },
+    {
+      "index": 11217,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7321,
+      "confidence": 0.7321
+    },
+    {
+      "index": 11218,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7428,
+      "confidence": 0.7428
+    },
+    {
+      "index": 11219,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.776,
+      "confidence": 0.776
+    },
+    {
+      "index": 11220,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8071,
+      "confidence": 0.8071
+    },
+    {
+      "index": 11221,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8083,
+      "confidence": 0.8083
+    },
+    {
+      "index": 11222,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8025,
+      "confidence": 0.8025
+    },
+    {
+      "index": 11223,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7727,
+      "confidence": 0.7727
+    },
+    {
+      "index": 11224,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7417,
+      "confidence": 0.7417
+    },
+    {
+      "index": 11225,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7526,
+      "confidence": 0.7526
+    },
+    {
+      "index": 11226,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7774,
+      "confidence": 0.7774
+    },
+    {
+      "index": 11227,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8122,
+      "confidence": 0.8122
+    },
+    {
+      "index": 11228,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8149,
+      "confidence": 0.8149
+    },
+    {
+      "index": 11229,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8146,
+      "confidence": 0.8146
+    },
+    {
+      "index": 11230,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8143,
+      "confidence": 0.8143
+    },
+    {
+      "index": 11231,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.814,
+      "confidence": 0.814
+    },
+    {
+      "index": 11232,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8148,
+      "confidence": 0.8148
+    },
+    {
+      "index": 11233,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8143,
+      "confidence": 0.8143
+    },
+    {
+      "index": 11234,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8138,
+      "confidence": 0.8138
+    },
+    {
+      "index": 11235,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8135,
+      "confidence": 0.8135
+    },
+    {
+      "index": 11236,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8118,
+      "confidence": 0.8118
+    },
+    {
+      "index": 11237,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8131,
+      "confidence": 0.8131
+    },
+    {
+      "index": 11238,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8126,
+      "confidence": 0.8126
+    },
+    {
+      "index": 11239,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8122,
+      "confidence": 0.8122
+    },
+    {
+      "index": 11240,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8134,
+      "confidence": 0.8134
+    },
+    {
+      "index": 11241,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8136,
+      "confidence": 0.8136
+    },
+    {
+      "index": 11242,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8042,
+      "confidence": 0.8042
+    },
+    {
+      "index": 11243,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7712,
+      "confidence": 0.7712
+    },
+    {
+      "index": 11244,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.709,
+      "confidence": 0.709
+    },
+    {
+      "index": 11245,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.739,
+      "confidence": 0.739
+    },
+    {
+      "index": 11246,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.798,
+      "confidence": 0.798
+    },
+    {
+      "index": 11247,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7609,
+      "confidence": 0.7609
+    },
+    {
+      "index": 11248,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8125,
+      "confidence": 0.8125
+    },
+    {
+      "index": 11249,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8157,
+      "confidence": 0.8157
+    },
+    {
+      "index": 11250,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7993,
+      "confidence": 0.7993
+    },
+    {
+      "index": 11251,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7708,
+      "confidence": 0.7708
+    },
+    {
+      "index": 11252,
+      "video_id": "ytincorrect_bench_press_incorrect_Workout 101 - Incorrect Bench Form_jgLgUEPgQgc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7449,
+      "confidence": 0.7449
+    }
+  ]
+}

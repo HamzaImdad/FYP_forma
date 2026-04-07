@@ -1,0 +1,15 @@
+{
+  "exercise": "bicep_curl",
+  "best_val_f1": 0.6549295774647887,
+  "best_params": {
+    "hidden_dim": 192,
+    "num_layers": 3,
+    "dropout": 0.5,
+    "lr": 0.00010305247742865236,
+    "batch_size": 128,
+    "n_heads": 2
+  },
+  "n_trials": 30,
+  "n_pruned": 0,
+  "n_complete": 30
+}

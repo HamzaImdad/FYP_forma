@@ -1,0 +1,15 @@
+{
+  "exercise": "plank",
+  "best_val_f1": 0.9732142857142857,
+  "best_params": {
+    "hidden_dim": 192,
+    "num_layers": 1,
+    "dropout": 0.4,
+    "lr": 0.0007172175820276328,
+    "batch_size": 32,
+    "n_heads": 1
+  },
+  "n_trials": 30,
+  "n_pruned": 0,
+  "n_complete": 30
+}

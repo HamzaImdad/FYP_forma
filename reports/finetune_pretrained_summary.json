@@ -1,0 +1,122 @@
+{
+  "squat": {
+    "f1": 0.5282828282828282,
+    "accuracy": 0.6218623481781377,
+    "precision": 0.5272177419354839,
+    "recall": 0.5293522267206477,
+    "best_epoch": 22,
+    "best_val_f1": 0.6573275862068966,
+    "val_best_thresh": 0.20000000000000004,
+    "n_train": 4799,
+    "n_test": 2470,
+    "pretrained": true
+  },
+  "lunge": {
+    "f1": 0.7028360049321825,
+    "accuracy": 0.7400215749730313,
+    "precision": 0.6477272727272727,
+    "recall": 0.7681940700808625,
+    "best_epoch": 32,
+    "best_val_f1": 0.7707317073170732,
+    "val_best_thresh": 0.1,
+    "n_train": 2500,
+    "n_test": 927,
+    "pretrained": true
+  },
+  "deadlift": {
+    "f1": 0.5739130434782609,
+    "accuracy": 0.5636458878994238,
+    "precision": 0.4774468085106383,
+    "recall": 0.7192307692307692,
+    "best_epoch": 20,
+    "best_val_f1": 0.7523961661341853,
+    "val_best_thresh": 0.1,
+    "n_train": 6205,
+    "n_test": 1909,
+    "pretrained": true
+  },
+  "bench_press": {
+    "f1": 0.6446421008047437,
+    "accuracy": 0.6626457579412948,
+    "precision": 0.5571010248901903,
+    "recall": 0.7648241206030151,
+    "best_epoch": 17,
+    "best_val_f1": 0.6845112781954887,
+    "val_best_thresh": 0.1,
+    "n_train": 6225,
+    "n_test": 2487,
+    "pretrained": true
+  },
+  "overhead_press": {
+    "f1": 0.7279102384291725,
+    "accuracy": 0.7609365372766482,
+    "precision": 0.7424892703862661,
+    "recall": 0.7138927097661623,
+    "best_epoch": 12,
+    "best_val_f1": 0.7016129032258065,
+    "val_best_thresh": 0.1,
+    "n_train": 5132,
+    "n_test": 1623,
+    "pretrained": true
+  },
+  "pullup": {
+    "f1": 0.7513397642015005,
+    "accuracy": 0.746586564718733,
+    "precision": 0.7271784232365145,
+    "recall": 0.7771618625277162,
+    "best_epoch": 55,
+    "best_val_f1": 0.8165137614678899,
+    "val_best_thresh": 0.30000000000000004,
+    "n_train": 5075,
+    "n_test": 1831,
+    "pretrained": true
+  },
+  "pushup": {
+    "f1": 0.6608108108108108,
+    "accuracy": 0.6202723146747352,
+    "precision": 0.7117903930131004,
+    "recall": 0.6166456494325346,
+    "best_epoch": 112,
+    "best_val_f1": 0.6730268863833477,
+    "val_best_thresh": 0.15000000000000002,
+    "n_train": 6580,
+    "n_test": 1322,
+    "pretrained": true
+  },
+  "plank": {
+    "f1": 0.7016949152542373,
+    "accuracy": 0.7114754098360656,
+    "precision": 0.5982658959537572,
+    "recall": 0.8483606557377049,
+    "best_epoch": 0,
+    "best_val_f1": 0.9545454545454546,
+    "val_best_thresh": 0.1,
+    "n_train": 3211,
+    "n_test": 610,
+    "pretrained": true
+  },
+  "bicep_curl": {
+    "f1": 0.5091383812010444,
+    "accuracy": 0.4446085672082718,
+    "precision": 0.5416666666666666,
+    "recall": 0.4802955665024631,
+    "best_epoch": 1,
+    "best_val_f1": 0.6125461254612546,
+    "val_best_thresh": 0.8500000000000002,
+    "n_train": 3920,
+    "n_test": 677,
+    "pretrained": true
+  },
+  "tricep_dip": {
+    "f1": 0.567769477054429,
+    "accuracy": 0.5668449197860963,
+    "precision": 0.4724689165186501,
+    "recall": 0.7112299465240641,
+    "best_epoch": 124,
+    "best_val_f1": 0.6968325791855203,
+    "val_best_thresh": 0.6000000000000002,
+    "n_train": 1700,
+    "n_test": 935,
+    "pretrained": true
+  }
+}

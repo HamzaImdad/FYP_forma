@@ -1,0 +1,15 @@
+{
+  "exercise": "bench_press",
+  "best_val_f1": 0.7586933614330874,
+  "best_params": {
+    "hidden_dim": 64,
+    "num_layers": 2,
+    "dropout": 0.45,
+    "lr": 0.000901196822476236,
+    "batch_size": 32,
+    "n_heads": 2
+  },
+  "n_trials": 50,
+  "n_pruned": 6,
+  "n_complete": 44
+}

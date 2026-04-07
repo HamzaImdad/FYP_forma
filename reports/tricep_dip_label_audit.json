@@ -1,0 +1,3292 @@
+{
+  "exercise": "tricep_dip",
+  "total_sequences": 2867,
+  "flagged_count": 398,
+  "flagged_percentage": 13.88,
+  "confidence_threshold": 0.7,
+  "model_threshold": 0.5000000000000001,
+  "flagged_videos": [
+    {
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "flagged_count": 94,
+      "avg_confidence": 0.939,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "flagged_count": 87,
+      "avg_confidence": 0.9836,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "flagged_count": 67,
+      "avg_confidence": 0.9141,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "flagged_count": 25,
+      "avg_confidence": 0.9297,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "flagged_count": 23,
+      "avg_confidence": 0.9892,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "flagged_count": 16,
+      "avg_confidence": 0.9686,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "flagged_count": 16,
+      "avg_confidence": 0.9845,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "flagged_count": 15,
+      "avg_confidence": 0.9457,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "flagged_count": 13,
+      "avg_confidence": 0.9871,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "flagged_count": 12,
+      "avg_confidence": 0.9973,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "flagged_count": 11,
+      "avg_confidence": 0.9197,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "flagged_count": 8,
+      "avg_confidence": 0.7646,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_9",
+      "flagged_count": 7,
+      "avg_confidence": 0.966,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_tricep_dip_incorrect_COMMON MISTAKES \uff5c Dip Powder Nails \uff5c Beginner Basi_3fCSfeN-JE8",
+      "flagged_count": 2,
+      "avg_confidence": 0.9315,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_tricep_dip_correct_Tw0axi-Jlqc",
+      "flagged_count": 1,
+      "avg_confidence": 0.7587,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_14",
+      "flagged_count": 1,
+      "avg_confidence": 0.7906,
+      "ground_truth_label": 1
+    }
+  ],
+  "flagged_details": [
+    {
+      "index": 704,
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2229,
+      "confidence": 0.7771
+    },
+    {
+      "index": 707,
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2608,
+      "confidence": 0.7392
+    },
+    {
+      "index": 711,
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2717,
+      "confidence": 0.7283
+    },
+    {
+      "index": 717,
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0176,
+      "confidence": 0.9824
+    },
+    {
+      "index": 746,
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2721,
+      "confidence": 0.7279
+    },
+    {
+      "index": 751,
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2913,
+      "confidence": 0.7087
+    },
+    {
+      "index": 760,
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2543,
+      "confidence": 0.7457
+    },
+    {
+      "index": 767,
+      "video_id": "youtube_tricep_dip_correct_KoS_NMmuxMM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2926,
+      "confidence": 0.7074
+    },
+    {
+      "index": 869,
+      "video_id": "youtube_tricep_dip_correct_Tw0axi-Jlqc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2413,
+      "confidence": 0.7587
+    },
+    {
+      "index": 1740,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0038,
+      "confidence": 0.9962
+    },
+    {
+      "index": 1753,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0028,
+      "confidence": 0.9972
+    },
+    {
+      "index": 1754,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 1755,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 1756,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0498,
+      "confidence": 0.9502
+    },
+    {
+      "index": 1759,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0074,
+      "confidence": 0.9926
+    },
+    {
+      "index": 1765,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0144,
+      "confidence": 0.9856
+    },
+    {
+      "index": 1766,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0048,
+      "confidence": 0.9952
+    },
+    {
+      "index": 1768,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0449,
+      "confidence": 0.9551
+    },
+    {
+      "index": 1770,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.002,
+      "confidence": 0.998
+    },
+    {
+      "index": 1771,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0258,
+      "confidence": 0.9742
+    },
+    {
+      "index": 1772,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0146,
+      "confidence": 0.9854
+    },
+    {
+      "index": 1773,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0008,
+      "confidence": 0.9992
+    },
+    {
+      "index": 1774,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 1775,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 1776,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0006,
+      "confidence": 0.9994
+    },
+    {
+      "index": 1780,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0541,
+      "confidence": 0.9459
+    },
+    {
+      "index": 1781,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.006,
+      "confidence": 0.994
+    },
+    {
+      "index": 1782,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0012,
+      "confidence": 0.9988
+    },
+    {
+      "index": 1783,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0044,
+      "confidence": 0.9956
+    },
+    {
+      "index": 1788,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0039,
+      "confidence": 0.9961
+    },
+    {
+      "index": 1789,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0011,
+      "confidence": 0.9989
+    },
+    {
+      "index": 1790,
+      "video_id": "youtube_tricep_dip_correct_e5Gyc1D_BxM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0052,
+      "confidence": 0.9948
+    },
+    {
+      "index": 1793,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7386,
+      "confidence": 0.7386
+    },
+    {
+      "index": 1794,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9841,
+      "confidence": 0.9841
+    },
+    {
+      "index": 1795,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9853,
+      "confidence": 0.9853
+    },
+    {
+      "index": 1798,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9945,
+      "confidence": 0.9945
+    },
+    {
+      "index": 1800,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9867,
+      "confidence": 0.9867
+    },
+    {
+      "index": 1804,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9982,
+      "confidence": 0.9982
+    },
+    {
+      "index": 1805,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9962,
+      "confidence": 0.9962
+    },
+    {
+      "index": 1811,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9929,
+      "confidence": 0.9929
+    },
+    {
+      "index": 1827,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9733,
+      "confidence": 0.9733
+    },
+    {
+      "index": 1831,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9977,
+      "confidence": 0.9977
+    },
+    {
+      "index": 1836,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9832,
+      "confidence": 0.9832
+    },
+    {
+      "index": 1838,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9837,
+      "confidence": 0.9837
+    },
+    {
+      "index": 1839,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 1840,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.999,
+      "confidence": 0.999
+    },
+    {
+      "index": 1848,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9939,
+      "confidence": 0.9939
+    },
+    {
+      "index": 1852,
+      "video_id": "ytincorrect_tricep_dip_incorrect_11 Mistakes Beginners Must Avoid With Dip Powder N_nnQyuxvctmA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8908,
+      "confidence": 0.8908
+    },
+    {
+      "index": 1887,
+      "video_id": "ytincorrect_tricep_dip_incorrect_COMMON MISTAKES \uff5c Dip Powder Nails \uff5c Beginner Basi_3fCSfeN-JE8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9452,
+      "confidence": 0.9452
+    },
+    {
+      "index": 1903,
+      "video_id": "ytincorrect_tricep_dip_incorrect_COMMON MISTAKES \uff5c Dip Powder Nails \uff5c Beginner Basi_3fCSfeN-JE8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9178,
+      "confidence": 0.9178
+    },
+    {
+      "index": 1919,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.998,
+      "confidence": 0.998
+    },
+    {
+      "index": 1920,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9955,
+      "confidence": 0.9955
+    },
+    {
+      "index": 1921,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9917,
+      "confidence": 0.9917
+    },
+    {
+      "index": 1922,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9972,
+      "confidence": 0.9972
+    },
+    {
+      "index": 1923,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 1924,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9974,
+      "confidence": 0.9974
+    },
+    {
+      "index": 1925,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9975,
+      "confidence": 0.9975
+    },
+    {
+      "index": 1927,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 1928,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9936,
+      "confidence": 0.9936
+    },
+    {
+      "index": 1929,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 1930,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9983,
+      "confidence": 0.9983
+    },
+    {
+      "index": 1931,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How to Perform Dips WITHOUT Shoulder Pain_8qWcF_Vcb-o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.999,
+      "confidence": 0.999
+    },
+    {
+      "index": 1933,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_14",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2094,
+      "confidence": 0.7906
+    },
+    {
+      "index": 1946,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 1950,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0062,
+      "confidence": 0.9938
+    },
+    {
+      "index": 1951,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 1952,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0225,
+      "confidence": 0.9775
+    },
+    {
+      "index": 1954,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2794,
+      "confidence": 0.7206
+    },
+    {
+      "index": 1955,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 1956,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 1957,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1482,
+      "confidence": 0.8518
+    },
+    {
+      "index": 1959,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0266,
+      "confidence": 0.9734
+    },
+    {
+      "index": 1960,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 1961,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0043,
+      "confidence": 0.9957
+    },
+    {
+      "index": 1965,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0281,
+      "confidence": 0.9719
+    },
+    {
+      "index": 1968,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2245,
+      "confidence": 0.7755
+    },
+    {
+      "index": 1969,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0013,
+      "confidence": 0.9987
+    },
+    {
+      "index": 1970,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0708,
+      "confidence": 0.9292
+    },
+    {
+      "index": 2034,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_9",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2244,
+      "confidence": 0.7756
+    },
+    {
+      "index": 2035,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_9",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0092,
+      "confidence": 0.9908
+    },
+    {
+      "index": 2036,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_9",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0008,
+      "confidence": 0.9992
+    },
+    {
+      "index": 2037,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_9",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.002,
+      "confidence": 0.998
+    },
+    {
+      "index": 2053,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_9",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2054,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_9",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2055,
+      "video_id": "kaggle_tricep_dip_correct_tricep dips_9",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0011,
+      "confidence": 0.9989
+    },
+    {
+      "index": 2056,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0071,
+      "confidence": 0.9929
+    },
+    {
+      "index": 2057,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.059,
+      "confidence": 0.941
+    },
+    {
+      "index": 2075,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0108,
+      "confidence": 0.9892
+    },
+    {
+      "index": 2076,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0012,
+      "confidence": 0.9988
+    },
+    {
+      "index": 2077,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.044,
+      "confidence": 0.956
+    },
+    {
+      "index": 2078,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0184,
+      "confidence": 0.9816
+    },
+    {
+      "index": 2080,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0023,
+      "confidence": 0.9977
+    },
+    {
+      "index": 2081,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0158,
+      "confidence": 0.9842
+    },
+    {
+      "index": 2082,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0007,
+      "confidence": 0.9993
+    },
+    {
+      "index": 2083,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0021,
+      "confidence": 0.9979
+    },
+    {
+      "index": 2084,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2085,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2086,
+      "video_id": "youtube_tricep_dip_correct_iYbK_uiwCUg",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.006,
+      "confidence": 0.994
+    },
+    {
+      "index": 2095,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1319,
+      "confidence": 0.8681
+    },
+    {
+      "index": 2096,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0013,
+      "confidence": 0.9987
+    },
+    {
+      "index": 2097,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0011,
+      "confidence": 0.9989
+    },
+    {
+      "index": 2098,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0371,
+      "confidence": 0.9629
+    },
+    {
+      "index": 2099,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1839,
+      "confidence": 0.8161
+    },
+    {
+      "index": 2101,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2067,
+      "confidence": 0.7933
+    },
+    {
+      "index": 2102,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0024,
+      "confidence": 0.9976
+    },
+    {
+      "index": 2103,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0159,
+      "confidence": 0.9841
+    },
+    {
+      "index": 2146,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2147,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0271,
+      "confidence": 0.9729
+    },
+    {
+      "index": 2163,
+      "video_id": "youtube_tricep_dip_correct_j_WpuVY3wbo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2759,
+      "confidence": 0.7241
+    },
+    {
+      "index": 2165,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2027,
+      "confidence": 0.7973
+    },
+    {
+      "index": 2166,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2689,
+      "confidence": 0.7311
+    },
+    {
+      "index": 2167,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1587,
+      "confidence": 0.8413
+    },
+    {
+      "index": 2168,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0315,
+      "confidence": 0.9685
+    },
+    {
+      "index": 2172,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0019,
+      "confidence": 0.9981
+    },
+    {
+      "index": 2173,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0774,
+      "confidence": 0.9226
+    },
+    {
+      "index": 2174,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0259,
+      "confidence": 0.9741
+    },
+    {
+      "index": 2175,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0172,
+      "confidence": 0.9828
+    },
+    {
+      "index": 2180,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0455,
+      "confidence": 0.9545
+    },
+    {
+      "index": 2197,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1006,
+      "confidence": 0.8994
+    },
+    {
+      "index": 2203,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0031,
+      "confidence": 0.9969
+    },
+    {
+      "index": 2204,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2205,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0155,
+      "confidence": 0.9845
+    },
+    {
+      "index": 2206,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0019,
+      "confidence": 0.9981
+    },
+    {
+      "index": 2207,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1949,
+      "confidence": 0.8051
+    },
+    {
+      "index": 2208,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2209,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0004,
+      "confidence": 0.9996
+    },
+    {
+      "index": 2210,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2211,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1978,
+      "confidence": 0.8022
+    },
+    {
+      "index": 2217,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1368,
+      "confidence": 0.8632
+    },
+    {
+      "index": 2220,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2523,
+      "confidence": 0.7477
+    },
+    {
+      "index": 2232,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2233,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0008,
+      "confidence": 0.9992
+    },
+    {
+      "index": 2267,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0046,
+      "confidence": 0.9954
+    },
+    {
+      "index": 2291,
+      "video_id": "youtube_tricep_dip_correct_S787NKGhD88",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0186,
+      "confidence": 0.9814
+    },
+    {
+      "index": 2306,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2307,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2308,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2309,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2310,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2311,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2312,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2313,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9881,
+      "confidence": 0.9881
+    },
+    {
+      "index": 2314,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2315,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2316,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9973,
+      "confidence": 0.9973
+    },
+    {
+      "index": 2318,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2319,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2320,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9885,
+      "confidence": 0.9885
+    },
+    {
+      "index": 2321,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8442,
+      "confidence": 0.8442
+    },
+    {
+      "index": 2322,
+      "video_id": "youtube_tricep_dip_incorrect_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9367,
+      "confidence": 0.9367
+    },
+    {
+      "index": 2326,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9957,
+      "confidence": 0.9957
+    },
+    {
+      "index": 2327,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9215,
+      "confidence": 0.9215
+    },
+    {
+      "index": 2329,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9991,
+      "confidence": 0.9991
+    },
+    {
+      "index": 2334,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9927,
+      "confidence": 0.9927
+    },
+    {
+      "index": 2335,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7227,
+      "confidence": 0.7227
+    },
+    {
+      "index": 2337,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9757,
+      "confidence": 0.9757
+    },
+    {
+      "index": 2340,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9873,
+      "confidence": 0.9873
+    },
+    {
+      "index": 2341,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9917,
+      "confidence": 0.9917
+    },
+    {
+      "index": 2347,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7323,
+      "confidence": 0.7323
+    },
+    {
+      "index": 2348,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8259,
+      "confidence": 0.8259
+    },
+    {
+      "index": 2352,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8608,
+      "confidence": 0.8608
+    },
+    {
+      "index": 2357,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2358,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9972,
+      "confidence": 0.9972
+    },
+    {
+      "index": 2359,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9984,
+      "confidence": 0.9984
+    },
+    {
+      "index": 2360,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7827,
+      "confidence": 0.7827
+    },
+    {
+      "index": 2361,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9925,
+      "confidence": 0.9925
+    },
+    {
+      "index": 2362,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8121,
+      "confidence": 0.8121
+    },
+    {
+      "index": 2363,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8621,
+      "confidence": 0.8621
+    },
+    {
+      "index": 2364,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8103,
+      "confidence": 0.8103
+    },
+    {
+      "index": 2367,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9825,
+      "confidence": 0.9825
+    },
+    {
+      "index": 2368,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7185,
+      "confidence": 0.7185
+    },
+    {
+      "index": 2371,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8038,
+      "confidence": 0.8038
+    },
+    {
+      "index": 2372,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7999,
+      "confidence": 0.7999
+    },
+    {
+      "index": 2373,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7915,
+      "confidence": 0.7915
+    },
+    {
+      "index": 2375,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9691,
+      "confidence": 0.9691
+    },
+    {
+      "index": 2376,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8882,
+      "confidence": 0.8882
+    },
+    {
+      "index": 2379,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9465,
+      "confidence": 0.9465
+    },
+    {
+      "index": 2382,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9962,
+      "confidence": 0.9962
+    },
+    {
+      "index": 2383,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9535,
+      "confidence": 0.9535
+    },
+    {
+      "index": 2385,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8461,
+      "confidence": 0.8461
+    },
+    {
+      "index": 2386,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8404,
+      "confidence": 0.8404
+    },
+    {
+      "index": 2388,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8677,
+      "confidence": 0.8677
+    },
+    {
+      "index": 2389,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7173,
+      "confidence": 0.7173
+    },
+    {
+      "index": 2393,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9819,
+      "confidence": 0.9819
+    },
+    {
+      "index": 2409,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.997,
+      "confidence": 0.997
+    },
+    {
+      "index": 2411,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8028,
+      "confidence": 0.8028
+    },
+    {
+      "index": 2412,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 2414,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.715,
+      "confidence": 0.715
+    },
+    {
+      "index": 2418,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9719,
+      "confidence": 0.9719
+    },
+    {
+      "index": 2423,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9593,
+      "confidence": 0.9593
+    },
+    {
+      "index": 2426,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7272,
+      "confidence": 0.7272
+    },
+    {
+      "index": 2429,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9928,
+      "confidence": 0.9928
+    },
+    {
+      "index": 2433,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8551,
+      "confidence": 0.8551
+    },
+    {
+      "index": 2436,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9965,
+      "confidence": 0.9965
+    },
+    {
+      "index": 2441,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9982,
+      "confidence": 0.9982
+    },
+    {
+      "index": 2444,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8946,
+      "confidence": 0.8946
+    },
+    {
+      "index": 2445,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9777,
+      "confidence": 0.9777
+    },
+    {
+      "index": 2448,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9961,
+      "confidence": 0.9961
+    },
+    {
+      "index": 2449,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9991,
+      "confidence": 0.9991
+    },
+    {
+      "index": 2453,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2455,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9985,
+      "confidence": 0.9985
+    },
+    {
+      "index": 2456,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.935,
+      "confidence": 0.935
+    },
+    {
+      "index": 2457,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9983,
+      "confidence": 0.9983
+    },
+    {
+      "index": 2458,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7173,
+      "confidence": 0.7173
+    },
+    {
+      "index": 2459,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8013,
+      "confidence": 0.8013
+    },
+    {
+      "index": 2460,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9486,
+      "confidence": 0.9486
+    },
+    {
+      "index": 2462,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7764,
+      "confidence": 0.7764
+    },
+    {
+      "index": 2466,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9942,
+      "confidence": 0.9942
+    },
+    {
+      "index": 2467,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.997,
+      "confidence": 0.997
+    },
+    {
+      "index": 2469,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9912,
+      "confidence": 0.9912
+    },
+    {
+      "index": 2470,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8836,
+      "confidence": 0.8836
+    },
+    {
+      "index": 2472,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9747,
+      "confidence": 0.9747
+    },
+    {
+      "index": 2474,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9985,
+      "confidence": 0.9985
+    },
+    {
+      "index": 2476,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9991,
+      "confidence": 0.9991
+    },
+    {
+      "index": 2493,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9891,
+      "confidence": 0.9891
+    },
+    {
+      "index": 2495,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9974,
+      "confidence": 0.9974
+    },
+    {
+      "index": 2496,
+      "video_id": "ytincorrect_tricep_dip_incorrect_Are You Doing Dips Correctly\uff1f (AVOID MISTAKES)_KoS_NMmuxMM",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 2502,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9888,
+      "confidence": 0.9888
+    },
+    {
+      "index": 2505,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 2506,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2507,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2511,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7781,
+      "confidence": 0.7781
+    },
+    {
+      "index": 2513,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9859,
+      "confidence": 0.9859
+    },
+    {
+      "index": 2516,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2517,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 2518,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2519,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2520,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2523,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2524,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2525,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2526,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2527,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2528,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2529,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.998,
+      "confidence": 0.998
+    },
+    {
+      "index": 2530,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9991,
+      "confidence": 0.9991
+    },
+    {
+      "index": 2531,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2532,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2533,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2534,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2535,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2536,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2539,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9476,
+      "confidence": 0.9476
+    },
+    {
+      "index": 2540,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2541,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2542,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9754,
+      "confidence": 0.9754
+    },
+    {
+      "index": 2543,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9983,
+      "confidence": 0.9983
+    },
+    {
+      "index": 2544,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2545,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2546,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2547,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2548,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2551,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8954,
+      "confidence": 0.8954
+    },
+    {
+      "index": 2552,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9664,
+      "confidence": 0.9664
+    },
+    {
+      "index": 2553,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9241,
+      "confidence": 0.9241
+    },
+    {
+      "index": 2554,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9888,
+      "confidence": 0.9888
+    },
+    {
+      "index": 2555,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2556,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9978,
+      "confidence": 0.9978
+    },
+    {
+      "index": 2557,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7605,
+      "confidence": 0.7605
+    },
+    {
+      "index": 2559,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2560,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2561,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2562,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2564,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9718,
+      "confidence": 0.9718
+    },
+    {
+      "index": 2565,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9954,
+      "confidence": 0.9954
+    },
+    {
+      "index": 2566,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9914,
+      "confidence": 0.9914
+    },
+    {
+      "index": 2567,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2568,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2569,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2570,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2571,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2573,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9993,
+      "confidence": 0.9993
+    },
+    {
+      "index": 2574,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9985,
+      "confidence": 0.9985
+    },
+    {
+      "index": 2575,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9785,
+      "confidence": 0.9785
+    },
+    {
+      "index": 2576,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2577,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 2578,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9991,
+      "confidence": 0.9991
+    },
+    {
+      "index": 2579,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2580,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9962,
+      "confidence": 0.9962
+    },
+    {
+      "index": 2581,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2582,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2583,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9992,
+      "confidence": 0.9992
+    },
+    {
+      "index": 2584,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2585,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2591,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9964,
+      "confidence": 0.9964
+    },
+    {
+      "index": 2592,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2595,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9993,
+      "confidence": 0.9993
+    },
+    {
+      "index": 2596,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2597,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2602,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9938,
+      "confidence": 0.9938
+    },
+    {
+      "index": 2603,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7438,
+      "confidence": 0.7438
+    },
+    {
+      "index": 2605,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9965,
+      "confidence": 0.9965
+    },
+    {
+      "index": 2606,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9954,
+      "confidence": 0.9954
+    },
+    {
+      "index": 2607,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2608,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2609,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8487,
+      "confidence": 0.8487
+    },
+    {
+      "index": 2610,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9989,
+      "confidence": 0.9989
+    },
+    {
+      "index": 2611,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9563,
+      "confidence": 0.9563
+    },
+    {
+      "index": 2613,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9959,
+      "confidence": 0.9959
+    },
+    {
+      "index": 2614,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2615,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9643,
+      "confidence": 0.9643
+    },
+    {
+      "index": 2616,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9848,
+      "confidence": 0.9848
+    },
+    {
+      "index": 2617,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9861,
+      "confidence": 0.9861
+    },
+    {
+      "index": 2620,
+      "video_id": "ytincorrect_tricep_dip_incorrect_How To Do Dips For A Bigger Chest and Shoulders (F_yN6Q1UI_xkE",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9942,
+      "confidence": 0.9942
+    },
+    {
+      "index": 2627,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9265,
+      "confidence": 0.9265
+    },
+    {
+      "index": 2628,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.989,
+      "confidence": 0.989
+    },
+    {
+      "index": 2636,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2637,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8854,
+      "confidence": 0.8854
+    },
+    {
+      "index": 2638,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7576,
+      "confidence": 0.7576
+    },
+    {
+      "index": 2639,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7796,
+      "confidence": 0.7796
+    },
+    {
+      "index": 2643,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9783,
+      "confidence": 0.9783
+    },
+    {
+      "index": 2644,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9955,
+      "confidence": 0.9955
+    },
+    {
+      "index": 2648,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9913,
+      "confidence": 0.9913
+    },
+    {
+      "index": 2649,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2650,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9991,
+      "confidence": 0.9991
+    },
+    {
+      "index": 2651,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7333,
+      "confidence": 0.7333
+    },
+    {
+      "index": 2652,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8424,
+      "confidence": 0.8424
+    },
+    {
+      "index": 2653,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9926,
+      "confidence": 0.9926
+    },
+    {
+      "index": 2654,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7879,
+      "confidence": 0.7879
+    },
+    {
+      "index": 2655,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.882,
+      "confidence": 0.882
+    },
+    {
+      "index": 2656,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9256,
+      "confidence": 0.9256
+    },
+    {
+      "index": 2660,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8216,
+      "confidence": 0.8216
+    },
+    {
+      "index": 2661,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9275,
+      "confidence": 0.9275
+    },
+    {
+      "index": 2663,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2664,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2665,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 2666,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9937,
+      "confidence": 0.9937
+    },
+    {
+      "index": 2668,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9992,
+      "confidence": 0.9992
+    },
+    {
+      "index": 2669,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.984,
+      "confidence": 0.984
+    },
+    {
+      "index": 2672,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2673,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9978,
+      "confidence": 0.9978
+    },
+    {
+      "index": 2674,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9971,
+      "confidence": 0.9971
+    },
+    {
+      "index": 2675,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9985,
+      "confidence": 0.9985
+    },
+    {
+      "index": 2677,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9461,
+      "confidence": 0.9461
+    },
+    {
+      "index": 2679,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2680,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2681,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9243,
+      "confidence": 0.9243
+    },
+    {
+      "index": 2682,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7483,
+      "confidence": 0.7483
+    },
+    {
+      "index": 2684,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9595,
+      "confidence": 0.9595
+    },
+    {
+      "index": 2687,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2689,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8828,
+      "confidence": 0.8828
+    },
+    {
+      "index": 2696,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9865,
+      "confidence": 0.9865
+    },
+    {
+      "index": 2700,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9992,
+      "confidence": 0.9992
+    },
+    {
+      "index": 2701,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2702,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9595,
+      "confidence": 0.9595
+    },
+    {
+      "index": 2703,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9964,
+      "confidence": 0.9964
+    },
+    {
+      "index": 2704,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8424,
+      "confidence": 0.8424
+    },
+    {
+      "index": 2706,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9981,
+      "confidence": 0.9981
+    },
+    {
+      "index": 2715,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9971,
+      "confidence": 0.9971
+    },
+    {
+      "index": 2716,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8562,
+      "confidence": 0.8562
+    },
+    {
+      "index": 2723,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7774,
+      "confidence": 0.7774
+    },
+    {
+      "index": 2727,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9362,
+      "confidence": 0.9362
+    },
+    {
+      "index": 2728,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9467,
+      "confidence": 0.9467
+    },
+    {
+      "index": 2732,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9752,
+      "confidence": 0.9752
+    },
+    {
+      "index": 2733,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9973,
+      "confidence": 0.9973
+    },
+    {
+      "index": 2734,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9978,
+      "confidence": 0.9978
+    },
+    {
+      "index": 2735,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2736,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2739,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9738,
+      "confidence": 0.9738
+    },
+    {
+      "index": 2740,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8167,
+      "confidence": 0.8167
+    },
+    {
+      "index": 2744,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8856,
+      "confidence": 0.8856
+    },
+    {
+      "index": 2745,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9628,
+      "confidence": 0.9628
+    },
+    {
+      "index": 2750,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2751,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9969,
+      "confidence": 0.9969
+    },
+    {
+      "index": 2754,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8583,
+      "confidence": 0.8583
+    },
+    {
+      "index": 2755,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9434,
+      "confidence": 0.9434
+    },
+    {
+      "index": 2756,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9982,
+      "confidence": 0.9982
+    },
+    {
+      "index": 2762,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.827,
+      "confidence": 0.827
+    },
+    {
+      "index": 2771,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9983,
+      "confidence": 0.9983
+    },
+    {
+      "index": 2772,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9979,
+      "confidence": 0.9979
+    },
+    {
+      "index": 2773,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9917,
+      "confidence": 0.9917
+    },
+    {
+      "index": 2774,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9819,
+      "confidence": 0.9819
+    },
+    {
+      "index": 2777,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9007,
+      "confidence": 0.9007
+    },
+    {
+      "index": 2778,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9946,
+      "confidence": 0.9946
+    },
+    {
+      "index": 2782,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7691,
+      "confidence": 0.7691
+    },
+    {
+      "index": 2786,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.716,
+      "confidence": 0.716
+    },
+    {
+      "index": 2788,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7309,
+      "confidence": 0.7309
+    },
+    {
+      "index": 2792,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9869,
+      "confidence": 0.9869
+    },
+    {
+      "index": 2793,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9184,
+      "confidence": 0.9184
+    },
+    {
+      "index": 2794,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8659,
+      "confidence": 0.8659
+    },
+    {
+      "index": 2804,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.998,
+      "confidence": 0.998
+    },
+    {
+      "index": 2805,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.995,
+      "confidence": 0.995
+    },
+    {
+      "index": 2813,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9926,
+      "confidence": 0.9926
+    },
+    {
+      "index": 2830,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7598,
+      "confidence": 0.7598
+    },
+    {
+      "index": 2832,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9993,
+      "confidence": 0.9993
+    },
+    {
+      "index": 2833,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9724,
+      "confidence": 0.9724
+    },
+    {
+      "index": 2836,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8666,
+      "confidence": 0.8666
+    },
+    {
+      "index": 2838,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2842,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9144,
+      "confidence": 0.9144
+    },
+    {
+      "index": 2843,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.992,
+      "confidence": 0.992
+    },
+    {
+      "index": 2845,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2847,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9466,
+      "confidence": 0.9466
+    },
+    {
+      "index": 2848,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9692,
+      "confidence": 0.9692
+    },
+    {
+      "index": 2850,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8683,
+      "confidence": 0.8683
+    },
+    {
+      "index": 2852,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9762,
+      "confidence": 0.9762
+    },
+    {
+      "index": 2853,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2854,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2855,
+      "video_id": "ytincorrect_tricep_dip_incorrect_The 10 Worst Dip Mistakes (STOP THIS)_7fWXAyn-sn0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9954,
+      "confidence": 0.9954
+    }
+  ]
+}

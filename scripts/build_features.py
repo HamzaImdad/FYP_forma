@@ -8,6 +8,7 @@ Usage:
     python scripts/build_features.py
     python scripts/build_features.py --source images
     python scripts/build_features.py --source videos
+    python scripts/build_features.py --landmarks
 """
 
 import os
@@ -26,6 +27,11 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.pose_estimation.base import PoseResult
 from src.feature_extraction.features import FeatureExtractor
+from src.feature_extraction.landmark_features import (
+    LandmarkFeatureExtractor, LANDMARK_FEATURE_NAMES,
+    VELOCITY_FEATURE_NAMES, ACCELERATION_FEATURE_NAMES,
+    SYMMETRY_FEATURE_NAMES, ALL_TEMPORAL_FEATURE_NAMES,
+)
 from src.utils.constants import LANDMARK_NAMES, NUM_LANDMARKS, EXERCISES
 
 LANDMARKS_DIR = PROJECT_ROOT / "data" / "processed" / "landmarks"
@@ -213,10 +219,201 @@ def combine_all():
         print(f"  Labels: {combined['label'].value_counts().to_dict()}")
 
 
+def process_landmark_features():
+    """Extract raw normalized landmark features from ALL landmark CSVs (images + videos)."""
+    lfe = LandmarkFeatureExtractor()
+    col_names = LANDMARK_FEATURE_NAMES
+    all_rows = []
+
+    # --- Process image CSVs ---
+    image_csvs = sorted(LANDMARKS_DIR.glob("kaggle_images_*_correct.csv"))
+    for csv_path in tqdm(image_csvs, desc="Image CSVs (landmarks)"):
+        df = pd.read_csv(csv_path)
+        exercise = df["exercise"].iloc[0] if "exercise" in df.columns else csv_path.stem.split("_")[2]
+        label = df["label"].iloc[0] if "label" in df.columns else "correct"
+
+        if exercise not in EXERCISES:
+            continue
+
+        for idx, (_, row) in enumerate(df.iterrows()):
+            if row.get("nose_vis", 0) == 0:
+                continue
+
+            pose = row_to_pose_result(row, fmt="image")
+            lm_vec = lfe.extract_landmarks(pose)
+
+            feat_row = {
+                "exercise": exercise,
+                "label": label,
+                "source": row.get("source", "kaggle_images"),
+                "video_id": f"img_{csv_path.stem}_{idx}",
+            }
+            for i, cname in enumerate(col_names):
+                feat_row[cname] = float(lm_vec[i])
+
+            all_rows.append(feat_row)
+
+    # --- Process video CSVs ---
+    video_csvs = []
+    for f in sorted(LANDMARKS_DIR.glob("*.csv")):
+        if f.name.startswith("kaggle_images_"):
+            continue
+        video_csvs.append(f)
+
+    for csv_path in tqdm(video_csvs, desc="Video CSVs (landmarks)"):
+        parts = csv_path.stem.split("_")
+        if len(parts) < 3:
+            continue
+
+        source = parts[0]
+        exercise = parts[1]
+        label = parts[2]
+
+        if exercise not in EXERCISES:
+            if len(parts) >= 4:
+                exercise = f"{parts[1]}_{parts[2]}"
+                label = parts[3]
+            if exercise not in EXERCISES:
+                continue
+
+        df = pd.read_csv(csv_path)
+        if len(df) == 0:
+            continue
+
+        vid_id = csv_path.stem
+
+        for _, row in df.iterrows():
+            pose = row_to_pose_result(row, fmt="video")
+            if pose.detection_confidence < 0.1:
+                continue
+
+            lm_vec = lfe.extract_landmarks(pose)
+
+            feat_row = {
+                "exercise": exercise,
+                "label": label,
+                "source": source,
+                "video_id": vid_id,
+            }
+            for i, cname in enumerate(col_names):
+                feat_row[cname] = float(lm_vec[i])
+
+            all_rows.append(feat_row)
+
+    if all_rows:
+        out_df = pd.DataFrame(all_rows)
+        out_path = FEATURES_DIR / "landmark_features.csv"
+        out_df.to_csv(out_path, index=False)
+        print(f"\nSaved {len(out_df)} landmark feature rows to {out_path}")
+        print(f"  Columns: {len(out_df.columns)} (4 meta + {len(col_names)} features)")
+        print(f"  Exercises: {out_df['exercise'].value_counts().to_dict()}")
+        print(f"  Labels: {out_df['label'].value_counts().to_dict()}")
+
+        # Print sample stats to verify normalization
+        feat_cols = out_df[col_names]
+        print(f"\n  Feature stats (should be centered ~0, range roughly -2 to 2):")
+        print(f"    Mean: {feat_cols.mean().mean():.4f}")
+        print(f"    Std:  {feat_cols.std().mean():.4f}")
+        print(f"    Min:  {feat_cols.min().min():.4f}")
+        print(f"    Max:  {feat_cols.max().max():.4f}")
+    else:
+        print("No valid landmark features extracted.")
+
+
+def process_temporal_landmark_features():
+    """Extract landmark features with velocity, acceleration, and symmetry (330-dim).
+
+    Processes video CSVs only (images don't have temporal context).
+    Uses a sliding window of 3 frames for velocity/acceleration computation.
+    """
+    lfe = LandmarkFeatureExtractor()
+    col_names = ALL_TEMPORAL_FEATURE_NAMES  # 330 features
+    all_rows = []
+
+    # --- Process video CSVs ---
+    video_csvs = []
+    for f in sorted(LANDMARKS_DIR.glob("*.csv")):
+        if f.name.startswith("kaggle_images_"):
+            continue
+        video_csvs.append(f)
+
+    for csv_path in tqdm(video_csvs, desc="Video CSVs (temporal landmarks)"):
+        parts = csv_path.stem.split("_")
+        if len(parts) < 3:
+            continue
+
+        source = parts[0]
+        exercise = parts[1]
+        label = parts[2]
+
+        if exercise not in EXERCISES:
+            if len(parts) >= 4:
+                exercise = f"{parts[1]}_{parts[2]}"
+                label = parts[3]
+            if exercise not in EXERCISES:
+                continue
+
+        df = pd.read_csv(csv_path)
+        if len(df) == 0:
+            continue
+
+        vid_id = csv_path.stem
+        frame_history = []
+
+        for _, row in df.iterrows():
+            pose = row_to_pose_result(row, fmt="video")
+            if pose.detection_confidence < 0.1:
+                continue
+
+            frame_history.append(pose)
+
+            # Extract temporal features (needs 3+ frames for velocity/acceleration)
+            features = lfe.extract_full_temporal(pose, exercise, frame_history)
+
+            feat_row = {
+                "exercise": exercise,
+                "label": label,
+                "source": source,
+                "video_id": vid_id,
+            }
+            for cname in col_names:
+                feat_row[cname] = features.get(cname, 0.0)
+
+            all_rows.append(feat_row)
+
+    if all_rows:
+        out_df = pd.DataFrame(all_rows)
+        out_path = FEATURES_DIR / "temporal_landmark_features.csv"
+        out_df.to_csv(out_path, index=False)
+        print(f"\nSaved {len(out_df)} temporal landmark feature rows to {out_path}")
+        print(f"  Columns: {len(out_df.columns)} (4 meta + {len(col_names)} features)")
+        print(f"  Exercises: {out_df['exercise'].value_counts().to_dict()}")
+        print(f"  Labels: {out_df['label'].value_counts().to_dict()}")
+
+        feat_cols = out_df[col_names]
+        print(f"\n  Feature stats:")
+        print(f"    Mean: {feat_cols.mean().mean():.4f}")
+        print(f"    Std:  {feat_cols.std().mean():.4f}")
+    else:
+        print("No valid temporal landmark features extracted.")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Build feature CSVs from landmarks")
     parser.add_argument("--source", choices=["images", "videos", "all"], default="all")
+    parser.add_argument("--landmarks", action="store_true",
+                        help="Extract raw normalized landmarks (99 features) instead of hand-crafted features")
+    parser.add_argument("--temporal-landmarks", action="store_true",
+                        help="Extract temporal landmarks (330 features: position + velocity + acceleration + symmetry)")
     args = parser.parse_args()
+
+    if args.temporal_landmarks:
+        process_temporal_landmark_features()
+        return
+
+    if args.landmarks:
+        process_landmark_features()
+        return
 
     if args.source in ("images", "all"):
         process_image_landmarks()

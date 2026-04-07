@@ -1,0 +1,4836 @@
+{
+  "exercise": "squat",
+  "total_sequences": 8354,
+  "flagged_count": 576,
+  "flagged_percentage": 6.89,
+  "confidence_threshold": 0.7,
+  "model_threshold": 0.5000000000000001,
+  "flagged_videos": [
+    {
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "flagged_count": 95,
+      "avg_confidence": 0.8235,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "flagged_count": 71,
+      "avg_confidence": 0.8458,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "flagged_count": 66,
+      "avg_confidence": 0.809,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "flagged_count": 49,
+      "avg_confidence": 0.7967,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "flagged_count": 38,
+      "avg_confidence": 0.8406,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "flagged_count": 31,
+      "avg_confidence": 0.8045,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "flagged_count": 22,
+      "avg_confidence": 0.8237,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "flagged_count": 20,
+      "avg_confidence": 0.7634,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "flagged_count": 20,
+      "avg_confidence": 0.7909,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "flagged_count": 19,
+      "avg_confidence": 0.7622,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "flagged_count": 18,
+      "avg_confidence": 0.7875,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "flagged_count": 16,
+      "avg_confidence": 0.8106,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "flagged_count": 16,
+      "avg_confidence": 0.7818,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "kaggle_squat_correct_squat_1",
+      "flagged_count": 15,
+      "avg_confidence": 0.835,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "flagged_count": 14,
+      "avg_confidence": 0.8078,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "kaggle_squat_correct_squat_20",
+      "flagged_count": 10,
+      "avg_confidence": 0.8175,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "flagged_count": 8,
+      "avg_confidence": 0.8094,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_correct_irA7MTz96ho",
+      "flagged_count": 6,
+      "avg_confidence": 0.7861,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_How To Get A Huge Squat With Perfect Technique (Fi_bEv6CCg2BC8",
+      "flagged_count": 5,
+      "avg_confidence": 0.7162,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_correct_H5VYU6t_w9o",
+      "flagged_count": 5,
+      "avg_confidence": 0.8212,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_incorrect_UFs6E3Ti1jg.f298",
+      "flagged_count": 4,
+      "avg_confidence": 0.729,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_correct_MeIiIdhvXT4",
+      "flagged_count": 4,
+      "avg_confidence": 0.8083,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_correct_VWm_SY6pO_Y",
+      "flagged_count": 4,
+      "avg_confidence": 0.7474,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_correct_iIIqHDGH0B8",
+      "flagged_count": 4,
+      "avg_confidence": 0.8253,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_incorrect_my0tLDaWyDU",
+      "flagged_count": 3,
+      "avg_confidence": 0.7071,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_NEVER DO SQUATS LIKE THIS! \uff5c 10 Most Common Mistak_BZ1TUVr4LFk",
+      "flagged_count": 2,
+      "avg_confidence": 0.7258,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_Struggling with Squat Depth\uff1f You're Bracing Wrong!_-X4RMHlFG18",
+      "flagged_count": 2,
+      "avg_confidence": 0.7824,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_correct_bEv6CCg2BC8",
+      "flagged_count": 1,
+      "avg_confidence": 0.7917,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_correct_GQ5jj_zH2uA",
+      "flagged_count": 1,
+      "avg_confidence": 0.7202,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_correct_U11z1PmtohU",
+      "flagged_count": 1,
+      "avg_confidence": 0.7034,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_correct_W73Mc0Gil9A",
+      "flagged_count": 1,
+      "avg_confidence": 0.7393,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_How To Squat Properly - The Perfect Form & Techniq_2t3Ab7a2ZM4",
+      "flagged_count": 1,
+      "avg_confidence": 0.7524,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_How To Squat Without Knee Pain (4 Mistakes You\u2019re _W73Mc0Gil9A",
+      "flagged_count": 1,
+      "avg_confidence": 0.7391,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_squat_incorrect_The High Bar\u29f8Low Bar Squat Era is DEAD_757P7vZ3G4o",
+      "flagged_count": 1,
+      "avg_confidence": 0.7061,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_squat_correct_47hOJe2_AqI",
+      "flagged_count": 1,
+      "avg_confidence": 0.779,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_squat_correct_Mu7aVOjEBdA",
+      "flagged_count": 1,
+      "avg_confidence": 0.8026,
+      "ground_truth_label": 1
+    }
+  ],
+  "flagged_details": [
+    {
+      "index": 928,
+      "video_id": "youtube_squat_correct_bEv6CCg2BC8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2083,
+      "confidence": 0.7917
+    },
+    {
+      "index": 1268,
+      "video_id": "youtube_squat_correct_GQ5jj_zH2uA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2798,
+      "confidence": 0.7202
+    },
+    {
+      "index": 2406,
+      "video_id": "youtube_squat_correct_U11z1PmtohU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2966,
+      "confidence": 0.7034
+    },
+    {
+      "index": 2463,
+      "video_id": "youtube_squat_correct_W73Mc0Gil9A",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2607,
+      "confidence": 0.7393
+    },
+    {
+      "index": 2761,
+      "video_id": "youtube_squat_incorrect_my0tLDaWyDU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7018,
+      "confidence": 0.7018
+    },
+    {
+      "index": 2762,
+      "video_id": "youtube_squat_incorrect_my0tLDaWyDU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7082,
+      "confidence": 0.7082
+    },
+    {
+      "index": 2766,
+      "video_id": "youtube_squat_incorrect_my0tLDaWyDU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7114,
+      "confidence": 0.7114
+    },
+    {
+      "index": 2816,
+      "video_id": "youtube_squat_incorrect_UFs6E3Ti1jg.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7323,
+      "confidence": 0.7323
+    },
+    {
+      "index": 2818,
+      "video_id": "youtube_squat_incorrect_UFs6E3Ti1jg.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7074,
+      "confidence": 0.7074
+    },
+    {
+      "index": 2858,
+      "video_id": "youtube_squat_incorrect_UFs6E3Ti1jg.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7697,
+      "confidence": 0.7697
+    },
+    {
+      "index": 2863,
+      "video_id": "youtube_squat_incorrect_UFs6E3Ti1jg.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7067,
+      "confidence": 0.7067
+    },
+    {
+      "index": 3606,
+      "video_id": "ytincorrect_squat_incorrect_How To Get A Huge Squat With Perfect Technique (Fi_bEv6CCg2BC8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7167,
+      "confidence": 0.7167
+    },
+    {
+      "index": 3614,
+      "video_id": "ytincorrect_squat_incorrect_How To Get A Huge Squat With Perfect Technique (Fi_bEv6CCg2BC8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7058,
+      "confidence": 0.7058
+    },
+    {
+      "index": 3616,
+      "video_id": "ytincorrect_squat_incorrect_How To Get A Huge Squat With Perfect Technique (Fi_bEv6CCg2BC8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7088,
+      "confidence": 0.7088
+    },
+    {
+      "index": 3687,
+      "video_id": "ytincorrect_squat_incorrect_How To Get A Huge Squat With Perfect Technique (Fi_bEv6CCg2BC8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7149,
+      "confidence": 0.7149
+    },
+    {
+      "index": 3726,
+      "video_id": "ytincorrect_squat_incorrect_How To Get A Huge Squat With Perfect Technique (Fi_bEv6CCg2BC8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7349,
+      "confidence": 0.7349
+    },
+    {
+      "index": 3962,
+      "video_id": "ytincorrect_squat_incorrect_How To Squat Properly - The Perfect Form & Techniq_2t3Ab7a2ZM4",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7524,
+      "confidence": 0.7524
+    },
+    {
+      "index": 4130,
+      "video_id": "ytincorrect_squat_incorrect_How To Squat Without Knee Pain (4 Mistakes You\u2019re _W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7391,
+      "confidence": 0.7391
+    },
+    {
+      "index": 4244,
+      "video_id": "ytincorrect_squat_incorrect_NEVER DO SQUATS LIKE THIS! \uff5c 10 Most Common Mistak_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7304,
+      "confidence": 0.7304
+    },
+    {
+      "index": 4279,
+      "video_id": "ytincorrect_squat_incorrect_NEVER DO SQUATS LIKE THIS! \uff5c 10 Most Common Mistak_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7211,
+      "confidence": 0.7211
+    },
+    {
+      "index": 4358,
+      "video_id": "ytincorrect_squat_incorrect_Struggling with Squat Depth\uff1f You're Bracing Wrong!_-X4RMHlFG18",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.755,
+      "confidence": 0.755
+    },
+    {
+      "index": 4418,
+      "video_id": "ytincorrect_squat_incorrect_Struggling with Squat Depth\uff1f You're Bracing Wrong!_-X4RMHlFG18",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8099,
+      "confidence": 0.8099
+    },
+    {
+      "index": 4584,
+      "video_id": "ytincorrect_squat_incorrect_The High Bar\u29f8Low Bar Squat Era is DEAD_757P7vZ3G4o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7061,
+      "confidence": 0.7061
+    },
+    {
+      "index": 4834,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2288,
+      "confidence": 0.7712
+    },
+    {
+      "index": 4843,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.224,
+      "confidence": 0.776
+    },
+    {
+      "index": 4844,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1002,
+      "confidence": 0.8998
+    },
+    {
+      "index": 4845,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2392,
+      "confidence": 0.7608
+    },
+    {
+      "index": 4847,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2129,
+      "confidence": 0.7871
+    },
+    {
+      "index": 4848,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2572,
+      "confidence": 0.7428
+    },
+    {
+      "index": 4855,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2873,
+      "confidence": 0.7127
+    },
+    {
+      "index": 4856,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2832,
+      "confidence": 0.7168
+    },
+    {
+      "index": 4860,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.236,
+      "confidence": 0.764
+    },
+    {
+      "index": 4861,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1116,
+      "confidence": 0.8884
+    },
+    {
+      "index": 4862,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1004,
+      "confidence": 0.8996
+    },
+    {
+      "index": 4863,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1066,
+      "confidence": 0.8934
+    },
+    {
+      "index": 4864,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1113,
+      "confidence": 0.8887
+    },
+    {
+      "index": 4865,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2726,
+      "confidence": 0.7274
+    },
+    {
+      "index": 4867,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2881,
+      "confidence": 0.7119
+    },
+    {
+      "index": 4868,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.242,
+      "confidence": 0.758
+    },
+    {
+      "index": 4907,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2939,
+      "confidence": 0.7061
+    },
+    {
+      "index": 4908,
+      "video_id": "youtube_squat_correct_-sM5af2545M",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2294,
+      "confidence": 0.7706
+    },
+    {
+      "index": 4913,
+      "video_id": "youtube_squat_correct_47hOJe2_AqI",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.221,
+      "confidence": 0.779
+    },
+    {
+      "index": 4961,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2075,
+      "confidence": 0.7925
+    },
+    {
+      "index": 4963,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2215,
+      "confidence": 0.7785
+    },
+    {
+      "index": 4964,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0885,
+      "confidence": 0.9115
+    },
+    {
+      "index": 4965,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0389,
+      "confidence": 0.9611
+    },
+    {
+      "index": 4966,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0421,
+      "confidence": 0.9579
+    },
+    {
+      "index": 4967,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0651,
+      "confidence": 0.9349
+    },
+    {
+      "index": 4968,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0853,
+      "confidence": 0.9147
+    },
+    {
+      "index": 4969,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.267,
+      "confidence": 0.733
+    },
+    {
+      "index": 4973,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.251,
+      "confidence": 0.749
+    },
+    {
+      "index": 4974,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2679,
+      "confidence": 0.7321
+    },
+    {
+      "index": 4984,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2593,
+      "confidence": 0.7407
+    },
+    {
+      "index": 5007,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2801,
+      "confidence": 0.7199
+    },
+    {
+      "index": 5014,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1682,
+      "confidence": 0.8318
+    },
+    {
+      "index": 5015,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.227,
+      "confidence": 0.773
+    },
+    {
+      "index": 5024,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2533,
+      "confidence": 0.7467
+    },
+    {
+      "index": 5028,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.225,
+      "confidence": 0.775
+    },
+    {
+      "index": 5029,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2313,
+      "confidence": 0.7687
+    },
+    {
+      "index": 5034,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2956,
+      "confidence": 0.7044
+    },
+    {
+      "index": 5038,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.154,
+      "confidence": 0.846
+    },
+    {
+      "index": 5039,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0549,
+      "confidence": 0.9451
+    },
+    {
+      "index": 5040,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0725,
+      "confidence": 0.9275
+    },
+    {
+      "index": 5041,
+      "video_id": "youtube_squat_correct_gsNoPYwWXeM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1228,
+      "confidence": 0.8772
+    },
+    {
+      "index": 5048,
+      "video_id": "youtube_squat_correct_H5VYU6t_w9o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2851,
+      "confidence": 0.7149
+    },
+    {
+      "index": 5049,
+      "video_id": "youtube_squat_correct_H5VYU6t_w9o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1411,
+      "confidence": 0.8589
+    },
+    {
+      "index": 5050,
+      "video_id": "youtube_squat_correct_H5VYU6t_w9o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1339,
+      "confidence": 0.8661
+    },
+    {
+      "index": 5051,
+      "video_id": "youtube_squat_correct_H5VYU6t_w9o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1411,
+      "confidence": 0.8589
+    },
+    {
+      "index": 5052,
+      "video_id": "youtube_squat_correct_H5VYU6t_w9o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.193,
+      "confidence": 0.807
+    },
+    {
+      "index": 5068,
+      "video_id": "youtube_squat_correct_MeIiIdhvXT4",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2034,
+      "confidence": 0.7966
+    },
+    {
+      "index": 5069,
+      "video_id": "youtube_squat_correct_MeIiIdhvXT4",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.213,
+      "confidence": 0.787
+    },
+    {
+      "index": 5097,
+      "video_id": "youtube_squat_correct_MeIiIdhvXT4",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2604,
+      "confidence": 0.7396
+    },
+    {
+      "index": 5098,
+      "video_id": "youtube_squat_correct_MeIiIdhvXT4",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0901,
+      "confidence": 0.9099
+    },
+    {
+      "index": 5099,
+      "video_id": "youtube_squat_correct_Mu7aVOjEBdA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1974,
+      "confidence": 0.8026
+    },
+    {
+      "index": 5172,
+      "video_id": "youtube_squat_correct_VWm_SY6pO_Y",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2629,
+      "confidence": 0.7371
+    },
+    {
+      "index": 5173,
+      "video_id": "youtube_squat_correct_VWm_SY6pO_Y",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2007,
+      "confidence": 0.7993
+    },
+    {
+      "index": 5174,
+      "video_id": "youtube_squat_correct_VWm_SY6pO_Y",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2927,
+      "confidence": 0.7073
+    },
+    {
+      "index": 5201,
+      "video_id": "youtube_squat_correct_VWm_SY6pO_Y",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2541,
+      "confidence": 0.7459
+    },
+    {
+      "index": 5260,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7632,
+      "confidence": 0.7632
+    },
+    {
+      "index": 5270,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7578,
+      "confidence": 0.7578
+    },
+    {
+      "index": 5271,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7053,
+      "confidence": 0.7053
+    },
+    {
+      "index": 5286,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7834,
+      "confidence": 0.7834
+    },
+    {
+      "index": 5309,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7436,
+      "confidence": 0.7436
+    },
+    {
+      "index": 5310,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7204,
+      "confidence": 0.7204
+    },
+    {
+      "index": 5504,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7061,
+      "confidence": 0.7061
+    },
+    {
+      "index": 5505,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7127,
+      "confidence": 0.7127
+    },
+    {
+      "index": 5511,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7096,
+      "confidence": 0.7096
+    },
+    {
+      "index": 5526,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8968,
+      "confidence": 0.8968
+    },
+    {
+      "index": 5551,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.82,
+      "confidence": 0.82
+    },
+    {
+      "index": 5552,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7599,
+      "confidence": 0.7599
+    },
+    {
+      "index": 5555,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7649,
+      "confidence": 0.7649
+    },
+    {
+      "index": 5562,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7391,
+      "confidence": 0.7391
+    },
+    {
+      "index": 5567,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7437,
+      "confidence": 0.7437
+    },
+    {
+      "index": 5571,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8114,
+      "confidence": 0.8114
+    },
+    {
+      "index": 5572,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8618,
+      "confidence": 0.8618
+    },
+    {
+      "index": 5573,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7027,
+      "confidence": 0.7027
+    },
+    {
+      "index": 5574,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8081,
+      "confidence": 0.8081
+    },
+    {
+      "index": 5577,
+      "video_id": "youtube_squat_incorrect_W73Mc0Gil9A",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7572,
+      "confidence": 0.7572
+    },
+    {
+      "index": 5593,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7967,
+      "confidence": 0.7967
+    },
+    {
+      "index": 5604,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7945,
+      "confidence": 0.7945
+    },
+    {
+      "index": 5608,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7561,
+      "confidence": 0.7561
+    },
+    {
+      "index": 5609,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7742,
+      "confidence": 0.7742
+    },
+    {
+      "index": 5610,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8528,
+      "confidence": 0.8528
+    },
+    {
+      "index": 5611,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8109,
+      "confidence": 0.8109
+    },
+    {
+      "index": 5618,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8007,
+      "confidence": 0.8007
+    },
+    {
+      "index": 5619,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8625,
+      "confidence": 0.8625
+    },
+    {
+      "index": 5620,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8534,
+      "confidence": 0.8534
+    },
+    {
+      "index": 5624,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9368,
+      "confidence": 0.9368
+    },
+    {
+      "index": 5625,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9321,
+      "confidence": 0.9321
+    },
+    {
+      "index": 5634,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8095,
+      "confidence": 0.8095
+    },
+    {
+      "index": 5644,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7737,
+      "confidence": 0.7737
+    },
+    {
+      "index": 5655,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7396,
+      "confidence": 0.7396
+    },
+    {
+      "index": 5657,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7065,
+      "confidence": 0.7065
+    },
+    {
+      "index": 5658,
+      "video_id": "ytincorrect_squat_incorrect_Fixing Common Squat Mistakes (Are You Squatting Wr_ULz4PCu0o0I",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7697,
+      "confidence": 0.7697
+    },
+    {
+      "index": 5682,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9316,
+      "confidence": 0.9316
+    },
+    {
+      "index": 5683,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8695,
+      "confidence": 0.8695
+    },
+    {
+      "index": 5694,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.784,
+      "confidence": 0.784
+    },
+    {
+      "index": 5708,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7731,
+      "confidence": 0.7731
+    },
+    {
+      "index": 5712,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.783,
+      "confidence": 0.783
+    },
+    {
+      "index": 5726,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7653,
+      "confidence": 0.7653
+    },
+    {
+      "index": 5730,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7137,
+      "confidence": 0.7137
+    },
+    {
+      "index": 5731,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7422,
+      "confidence": 0.7422
+    },
+    {
+      "index": 5734,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9095,
+      "confidence": 0.9095
+    },
+    {
+      "index": 5735,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8714,
+      "confidence": 0.8714
+    },
+    {
+      "index": 5738,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7817,
+      "confidence": 0.7817
+    },
+    {
+      "index": 5743,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8929,
+      "confidence": 0.8929
+    },
+    {
+      "index": 5747,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7473,
+      "confidence": 0.7473
+    },
+    {
+      "index": 5749,
+      "video_id": "ytincorrect_squat_incorrect_STOP Squatting Like This! (5 Mistakes DESTROYING Y_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7436,
+      "confidence": 0.7436
+    },
+    {
+      "index": 5763,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7234,
+      "confidence": 0.7234
+    },
+    {
+      "index": 5776,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7845,
+      "confidence": 0.7845
+    },
+    {
+      "index": 5781,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7378,
+      "confidence": 0.7378
+    },
+    {
+      "index": 5782,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7031,
+      "confidence": 0.7031
+    },
+    {
+      "index": 5783,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7777,
+      "confidence": 0.7777
+    },
+    {
+      "index": 5792,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7851,
+      "confidence": 0.7851
+    },
+    {
+      "index": 5798,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8777,
+      "confidence": 0.8777
+    },
+    {
+      "index": 5799,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8056,
+      "confidence": 0.8056
+    },
+    {
+      "index": 5800,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7725,
+      "confidence": 0.7725
+    },
+    {
+      "index": 5802,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7116,
+      "confidence": 0.7116
+    },
+    {
+      "index": 5804,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7243,
+      "confidence": 0.7243
+    },
+    {
+      "index": 5819,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8475,
+      "confidence": 0.8475
+    },
+    {
+      "index": 5820,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7056,
+      "confidence": 0.7056
+    },
+    {
+      "index": 5825,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7326,
+      "confidence": 0.7326
+    },
+    {
+      "index": 5853,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8194,
+      "confidence": 0.8194
+    },
+    {
+      "index": 5855,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7647,
+      "confidence": 0.7647
+    },
+    {
+      "index": 5856,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7896,
+      "confidence": 0.7896
+    },
+    {
+      "index": 5857,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7022,
+      "confidence": 0.7022
+    },
+    {
+      "index": 5867,
+      "video_id": "ytincorrect_squat_incorrect_The Fastest Way To Blow Up Your Squat (4 Science-B_sdeQjm7avi8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7166,
+      "confidence": 0.7166
+    },
+    {
+      "index": 5887,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2017,
+      "confidence": 0.7983
+    },
+    {
+      "index": 5888,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0932,
+      "confidence": 0.9068
+    },
+    {
+      "index": 5889,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0827,
+      "confidence": 0.9173
+    },
+    {
+      "index": 5890,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1259,
+      "confidence": 0.8741
+    },
+    {
+      "index": 5891,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1768,
+      "confidence": 0.8232
+    },
+    {
+      "index": 5892,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1958,
+      "confidence": 0.8042
+    },
+    {
+      "index": 5893,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.102,
+      "confidence": 0.898
+    },
+    {
+      "index": 5894,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1533,
+      "confidence": 0.8467
+    },
+    {
+      "index": 5898,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.206,
+      "confidence": 0.794
+    },
+    {
+      "index": 5899,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.222,
+      "confidence": 0.778
+    },
+    {
+      "index": 5909,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1817,
+      "confidence": 0.8183
+    },
+    {
+      "index": 5910,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1497,
+      "confidence": 0.8503
+    },
+    {
+      "index": 5914,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1517,
+      "confidence": 0.8483
+    },
+    {
+      "index": 5915,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1656,
+      "confidence": 0.8344
+    },
+    {
+      "index": 5916,
+      "video_id": "kaggle_squat_correct_squat_1",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2665,
+      "confidence": 0.7335
+    },
+    {
+      "index": 5960,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2059,
+      "confidence": 0.7941
+    },
+    {
+      "index": 5963,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.248,
+      "confidence": 0.752
+    },
+    {
+      "index": 5964,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1232,
+      "confidence": 0.8768
+    },
+    {
+      "index": 5965,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0949,
+      "confidence": 0.9051
+    },
+    {
+      "index": 5966,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1812,
+      "confidence": 0.8188
+    },
+    {
+      "index": 5967,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1727,
+      "confidence": 0.8273
+    },
+    {
+      "index": 5968,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.174,
+      "confidence": 0.826
+    },
+    {
+      "index": 5969,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2484,
+      "confidence": 0.7516
+    },
+    {
+      "index": 5971,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2633,
+      "confidence": 0.7367
+    },
+    {
+      "index": 5972,
+      "video_id": "kaggle_squat_correct_squat_20",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1136,
+      "confidence": 0.8864
+    },
+    {
+      "index": 5999,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2291,
+      "confidence": 0.7709
+    },
+    {
+      "index": 6000,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0886,
+      "confidence": 0.9114
+    },
+    {
+      "index": 6001,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0785,
+      "confidence": 0.9215
+    },
+    {
+      "index": 6002,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0714,
+      "confidence": 0.9286
+    },
+    {
+      "index": 6003,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1394,
+      "confidence": 0.8606
+    },
+    {
+      "index": 6004,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2293,
+      "confidence": 0.7707
+    },
+    {
+      "index": 6008,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2892,
+      "confidence": 0.7108
+    },
+    {
+      "index": 6009,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.129,
+      "confidence": 0.871
+    },
+    {
+      "index": 6010,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2457,
+      "confidence": 0.7543
+    },
+    {
+      "index": 6015,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2802,
+      "confidence": 0.7198
+    },
+    {
+      "index": 6016,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2638,
+      "confidence": 0.7362
+    },
+    {
+      "index": 6017,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2592,
+      "confidence": 0.7408
+    },
+    {
+      "index": 6018,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2912,
+      "confidence": 0.7088
+    },
+    {
+      "index": 6020,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2569,
+      "confidence": 0.7431
+    },
+    {
+      "index": 6021,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2204,
+      "confidence": 0.7796
+    },
+    {
+      "index": 6022,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2047,
+      "confidence": 0.7953
+    },
+    {
+      "index": 6023,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2571,
+      "confidence": 0.7429
+    },
+    {
+      "index": 6024,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.219,
+      "confidence": 0.781
+    },
+    {
+      "index": 6025,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1406,
+      "confidence": 0.8594
+    },
+    {
+      "index": 6026,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1111,
+      "confidence": 0.8889
+    },
+    {
+      "index": 6027,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1085,
+      "confidence": 0.8915
+    },
+    {
+      "index": 6028,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1249,
+      "confidence": 0.8751
+    },
+    {
+      "index": 6029,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1193,
+      "confidence": 0.8807
+    },
+    {
+      "index": 6030,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1112,
+      "confidence": 0.8888
+    },
+    {
+      "index": 6031,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1148,
+      "confidence": 0.8852
+    },
+    {
+      "index": 6032,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1377,
+      "confidence": 0.8623
+    },
+    {
+      "index": 6033,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.206,
+      "confidence": 0.794
+    },
+    {
+      "index": 6035,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2805,
+      "confidence": 0.7195
+    },
+    {
+      "index": 6036,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2174,
+      "confidence": 0.7826
+    },
+    {
+      "index": 6037,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0944,
+      "confidence": 0.9056
+    },
+    {
+      "index": 6038,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1186,
+      "confidence": 0.8814
+    },
+    {
+      "index": 6039,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1274,
+      "confidence": 0.8726
+    },
+    {
+      "index": 6044,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2605,
+      "confidence": 0.7395
+    },
+    {
+      "index": 6045,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0803,
+      "confidence": 0.9197
+    },
+    {
+      "index": 6046,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0475,
+      "confidence": 0.9525
+    },
+    {
+      "index": 6047,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0484,
+      "confidence": 0.9516
+    },
+    {
+      "index": 6048,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0682,
+      "confidence": 0.9318
+    },
+    {
+      "index": 6049,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1519,
+      "confidence": 0.8481
+    },
+    {
+      "index": 6052,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2638,
+      "confidence": 0.7362
+    },
+    {
+      "index": 6053,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1128,
+      "confidence": 0.8872
+    },
+    {
+      "index": 6054,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2776,
+      "confidence": 0.7224
+    },
+    {
+      "index": 6059,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1106,
+      "confidence": 0.8894
+    },
+    {
+      "index": 6060,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0694,
+      "confidence": 0.9306
+    },
+    {
+      "index": 6061,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0897,
+      "confidence": 0.9103
+    },
+    {
+      "index": 6062,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1946,
+      "confidence": 0.8054
+    },
+    {
+      "index": 6063,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1948,
+      "confidence": 0.8052
+    },
+    {
+      "index": 6064,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2014,
+      "confidence": 0.7986
+    },
+    {
+      "index": 6065,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2132,
+      "confidence": 0.7868
+    },
+    {
+      "index": 6066,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2659,
+      "confidence": 0.7341
+    },
+    {
+      "index": 6069,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2934,
+      "confidence": 0.7066
+    },
+    {
+      "index": 6075,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2486,
+      "confidence": 0.7514
+    },
+    {
+      "index": 6076,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2127,
+      "confidence": 0.7873
+    },
+    {
+      "index": 6077,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2677,
+      "confidence": 0.7323
+    },
+    {
+      "index": 6078,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2445,
+      "confidence": 0.7555
+    },
+    {
+      "index": 6079,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2198,
+      "confidence": 0.7802
+    },
+    {
+      "index": 6080,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.208,
+      "confidence": 0.792
+    },
+    {
+      "index": 6084,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1045,
+      "confidence": 0.8955
+    },
+    {
+      "index": 6085,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0659,
+      "confidence": 0.9341
+    },
+    {
+      "index": 6086,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1574,
+      "confidence": 0.8426
+    },
+    {
+      "index": 6087,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2159,
+      "confidence": 0.7841
+    },
+    {
+      "index": 6116,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1114,
+      "confidence": 0.8886
+    },
+    {
+      "index": 6117,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0607,
+      "confidence": 0.9393
+    },
+    {
+      "index": 6118,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.088,
+      "confidence": 0.912
+    },
+    {
+      "index": 6119,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2525,
+      "confidence": 0.7475
+    },
+    {
+      "index": 6128,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2456,
+      "confidence": 0.7544
+    },
+    {
+      "index": 6129,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2321,
+      "confidence": 0.7679
+    },
+    {
+      "index": 6130,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2381,
+      "confidence": 0.7619
+    },
+    {
+      "index": 6131,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1776,
+      "confidence": 0.8224
+    },
+    {
+      "index": 6132,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0959,
+      "confidence": 0.9041
+    },
+    {
+      "index": 6133,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1145,
+      "confidence": 0.8855
+    },
+    {
+      "index": 6134,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1854,
+      "confidence": 0.8146
+    },
+    {
+      "index": 6135,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.21,
+      "confidence": 0.79
+    },
+    {
+      "index": 6136,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1471,
+      "confidence": 0.8529
+    },
+    {
+      "index": 6137,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1567,
+      "confidence": 0.8433
+    },
+    {
+      "index": 6138,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1692,
+      "confidence": 0.8308
+    },
+    {
+      "index": 6139,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2113,
+      "confidence": 0.7887
+    },
+    {
+      "index": 6140,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1273,
+      "confidence": 0.8727
+    },
+    {
+      "index": 6141,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1153,
+      "confidence": 0.8847
+    },
+    {
+      "index": 6142,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0726,
+      "confidence": 0.9274
+    },
+    {
+      "index": 6145,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2471,
+      "confidence": 0.7529
+    },
+    {
+      "index": 6146,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1291,
+      "confidence": 0.8709
+    },
+    {
+      "index": 6147,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1199,
+      "confidence": 0.8801
+    },
+    {
+      "index": 6148,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1483,
+      "confidence": 0.8517
+    },
+    {
+      "index": 6149,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1674,
+      "confidence": 0.8326
+    },
+    {
+      "index": 6150,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1893,
+      "confidence": 0.8107
+    },
+    {
+      "index": 6151,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2492,
+      "confidence": 0.7508
+    },
+    {
+      "index": 6152,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2926,
+      "confidence": 0.7074
+    },
+    {
+      "index": 6160,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1663,
+      "confidence": 0.8337
+    },
+    {
+      "index": 6169,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1522,
+      "confidence": 0.8478
+    },
+    {
+      "index": 6170,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1758,
+      "confidence": 0.8242
+    },
+    {
+      "index": 6212,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.218,
+      "confidence": 0.782
+    },
+    {
+      "index": 6213,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1595,
+      "confidence": 0.8405
+    },
+    {
+      "index": 6220,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.19,
+      "confidence": 0.81
+    },
+    {
+      "index": 6221,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2524,
+      "confidence": 0.7476
+    },
+    {
+      "index": 6222,
+      "video_id": "youtube_squat_correct_8Kls95w2jFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.241,
+      "confidence": 0.759
+    },
+    {
+      "index": 6226,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1507,
+      "confidence": 0.8493
+    },
+    {
+      "index": 6227,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1702,
+      "confidence": 0.8298
+    },
+    {
+      "index": 6228,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.111,
+      "confidence": 0.889
+    },
+    {
+      "index": 6229,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1366,
+      "confidence": 0.8634
+    },
+    {
+      "index": 6230,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2125,
+      "confidence": 0.7875
+    },
+    {
+      "index": 6231,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2018,
+      "confidence": 0.7982
+    },
+    {
+      "index": 6232,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2024,
+      "confidence": 0.7976
+    },
+    {
+      "index": 6233,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2567,
+      "confidence": 0.7433
+    },
+    {
+      "index": 6236,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.207,
+      "confidence": 0.793
+    },
+    {
+      "index": 6237,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1375,
+      "confidence": 0.8625
+    },
+    {
+      "index": 6238,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0967,
+      "confidence": 0.9033
+    },
+    {
+      "index": 6239,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0919,
+      "confidence": 0.9081
+    },
+    {
+      "index": 6240,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0725,
+      "confidence": 0.9275
+    },
+    {
+      "index": 6241,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0755,
+      "confidence": 0.9245
+    },
+    {
+      "index": 6242,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1047,
+      "confidence": 0.8953
+    },
+    {
+      "index": 6243,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2285,
+      "confidence": 0.7715
+    },
+    {
+      "index": 6245,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2147,
+      "confidence": 0.7853
+    },
+    {
+      "index": 6246,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1524,
+      "confidence": 0.8476
+    },
+    {
+      "index": 6247,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2512,
+      "confidence": 0.7488
+    },
+    {
+      "index": 6253,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1977,
+      "confidence": 0.8023
+    },
+    {
+      "index": 6254,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1306,
+      "confidence": 0.8694
+    },
+    {
+      "index": 6255,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1562,
+      "confidence": 0.8438
+    },
+    {
+      "index": 6262,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2634,
+      "confidence": 0.7366
+    },
+    {
+      "index": 6263,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2114,
+      "confidence": 0.7886
+    },
+    {
+      "index": 6264,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1625,
+      "confidence": 0.8375
+    },
+    {
+      "index": 6265,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1065,
+      "confidence": 0.8935
+    },
+    {
+      "index": 6266,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0951,
+      "confidence": 0.9049
+    },
+    {
+      "index": 6267,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0888,
+      "confidence": 0.9112
+    },
+    {
+      "index": 6268,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0822,
+      "confidence": 0.9178
+    },
+    {
+      "index": 6269,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0966,
+      "confidence": 0.9034
+    },
+    {
+      "index": 6270,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1229,
+      "confidence": 0.8771
+    },
+    {
+      "index": 6271,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2263,
+      "confidence": 0.7737
+    },
+    {
+      "index": 6291,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1407,
+      "confidence": 0.8593
+    },
+    {
+      "index": 6292,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0595,
+      "confidence": 0.9405
+    },
+    {
+      "index": 6293,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0808,
+      "confidence": 0.9192
+    },
+    {
+      "index": 6294,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0664,
+      "confidence": 0.9336
+    },
+    {
+      "index": 6295,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0673,
+      "confidence": 0.9327
+    },
+    {
+      "index": 6296,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0603,
+      "confidence": 0.9397
+    },
+    {
+      "index": 6297,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0768,
+      "confidence": 0.9232
+    },
+    {
+      "index": 6298,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1893,
+      "confidence": 0.8107
+    },
+    {
+      "index": 6334,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2475,
+      "confidence": 0.7525
+    },
+    {
+      "index": 6335,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2111,
+      "confidence": 0.7889
+    },
+    {
+      "index": 6336,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2277,
+      "confidence": 0.7723
+    },
+    {
+      "index": 6341,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.171,
+      "confidence": 0.829
+    },
+    {
+      "index": 6342,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1361,
+      "confidence": 0.8639
+    },
+    {
+      "index": 6343,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1335,
+      "confidence": 0.8665
+    },
+    {
+      "index": 6344,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2542,
+      "confidence": 0.7458
+    },
+    {
+      "index": 6345,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2694,
+      "confidence": 0.7306
+    },
+    {
+      "index": 6347,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2869,
+      "confidence": 0.7131
+    },
+    {
+      "index": 6351,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1434,
+      "confidence": 0.8566
+    },
+    {
+      "index": 6352,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2488,
+      "confidence": 0.7512
+    },
+    {
+      "index": 6395,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2921,
+      "confidence": 0.7079
+    },
+    {
+      "index": 6424,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.117,
+      "confidence": 0.883
+    },
+    {
+      "index": 6425,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0921,
+      "confidence": 0.9079
+    },
+    {
+      "index": 6426,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1046,
+      "confidence": 0.8954
+    },
+    {
+      "index": 6427,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1373,
+      "confidence": 0.8627
+    },
+    {
+      "index": 6428,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0749,
+      "confidence": 0.9251
+    },
+    {
+      "index": 6429,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0514,
+      "confidence": 0.9486
+    },
+    {
+      "index": 6430,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.116,
+      "confidence": 0.884
+    },
+    {
+      "index": 6431,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2552,
+      "confidence": 0.7448
+    },
+    {
+      "index": 6439,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2709,
+      "confidence": 0.7291
+    },
+    {
+      "index": 6444,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2311,
+      "confidence": 0.7689
+    },
+    {
+      "index": 6445,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1137,
+      "confidence": 0.8863
+    },
+    {
+      "index": 6446,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0925,
+      "confidence": 0.9075
+    },
+    {
+      "index": 6447,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2076,
+      "confidence": 0.7924
+    },
+    {
+      "index": 6454,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2147,
+      "confidence": 0.7853
+    },
+    {
+      "index": 6455,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0739,
+      "confidence": 0.9261
+    },
+    {
+      "index": 6456,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0613,
+      "confidence": 0.9387
+    },
+    {
+      "index": 6457,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0789,
+      "confidence": 0.9211
+    },
+    {
+      "index": 6458,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1198,
+      "confidence": 0.8802
+    },
+    {
+      "index": 6459,
+      "video_id": "youtube_squat_correct_dO-51htz_eA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1608,
+      "confidence": 0.8392
+    },
+    {
+      "index": 6569,
+      "video_id": "youtube_squat_correct_iIIqHDGH0B8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2681,
+      "confidence": 0.7319
+    },
+    {
+      "index": 6570,
+      "video_id": "youtube_squat_correct_iIIqHDGH0B8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1653,
+      "confidence": 0.8347
+    },
+    {
+      "index": 6571,
+      "video_id": "youtube_squat_correct_iIIqHDGH0B8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1145,
+      "confidence": 0.8855
+    },
+    {
+      "index": 6577,
+      "video_id": "youtube_squat_correct_iIIqHDGH0B8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1508,
+      "confidence": 0.8492
+    },
+    {
+      "index": 6663,
+      "video_id": "youtube_squat_correct_irA7MTz96ho",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2134,
+      "confidence": 0.7866
+    },
+    {
+      "index": 6664,
+      "video_id": "youtube_squat_correct_irA7MTz96ho",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2789,
+      "confidence": 0.7211
+    },
+    {
+      "index": 6675,
+      "video_id": "youtube_squat_correct_irA7MTz96ho",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2362,
+      "confidence": 0.7638
+    },
+    {
+      "index": 6676,
+      "video_id": "youtube_squat_correct_irA7MTz96ho",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1377,
+      "confidence": 0.8623
+    },
+    {
+      "index": 6677,
+      "video_id": "youtube_squat_correct_irA7MTz96ho",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1549,
+      "confidence": 0.8451
+    },
+    {
+      "index": 6689,
+      "video_id": "youtube_squat_correct_irA7MTz96ho",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2622,
+      "confidence": 0.7378
+    },
+    {
+      "index": 6733,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.158,
+      "confidence": 0.842
+    },
+    {
+      "index": 6735,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2058,
+      "confidence": 0.7942
+    },
+    {
+      "index": 6740,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2087,
+      "confidence": 0.7913
+    },
+    {
+      "index": 6741,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0833,
+      "confidence": 0.9167
+    },
+    {
+      "index": 6742,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1641,
+      "confidence": 0.8359
+    },
+    {
+      "index": 6743,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2703,
+      "confidence": 0.7297
+    },
+    {
+      "index": 6746,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2544,
+      "confidence": 0.7456
+    },
+    {
+      "index": 6747,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.083,
+      "confidence": 0.917
+    },
+    {
+      "index": 6748,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1102,
+      "confidence": 0.8898
+    },
+    {
+      "index": 6749,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1669,
+      "confidence": 0.8331
+    },
+    {
+      "index": 6750,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.123,
+      "confidence": 0.877
+    },
+    {
+      "index": 6751,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1407,
+      "confidence": 0.8593
+    },
+    {
+      "index": 6752,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2841,
+      "confidence": 0.7159
+    },
+    {
+      "index": 6754,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1806,
+      "confidence": 0.8194
+    },
+    {
+      "index": 6755,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0787,
+      "confidence": 0.9213
+    },
+    {
+      "index": 6756,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0937,
+      "confidence": 0.9063
+    },
+    {
+      "index": 6766,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2705,
+      "confidence": 0.7295
+    },
+    {
+      "index": 6774,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2189,
+      "confidence": 0.7811
+    },
+    {
+      "index": 6775,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2508,
+      "confidence": 0.7492
+    },
+    {
+      "index": 6777,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.285,
+      "confidence": 0.715
+    },
+    {
+      "index": 6778,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.198,
+      "confidence": 0.802
+    },
+    {
+      "index": 6779,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0971,
+      "confidence": 0.9029
+    },
+    {
+      "index": 6780,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.098,
+      "confidence": 0.902
+    },
+    {
+      "index": 6781,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0883,
+      "confidence": 0.9117
+    },
+    {
+      "index": 6782,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1008,
+      "confidence": 0.8992
+    },
+    {
+      "index": 6783,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1217,
+      "confidence": 0.8783
+    },
+    {
+      "index": 6797,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1839,
+      "confidence": 0.8161
+    },
+    {
+      "index": 6798,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0895,
+      "confidence": 0.9105
+    },
+    {
+      "index": 6799,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0945,
+      "confidence": 0.9055
+    },
+    {
+      "index": 6800,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1005,
+      "confidence": 0.8995
+    },
+    {
+      "index": 6801,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0929,
+      "confidence": 0.9071
+    },
+    {
+      "index": 6802,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1365,
+      "confidence": 0.8635
+    },
+    {
+      "index": 6803,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2418,
+      "confidence": 0.7582
+    },
+    {
+      "index": 6808,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1975,
+      "confidence": 0.8025
+    },
+    {
+      "index": 6809,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2122,
+      "confidence": 0.7878
+    },
+    {
+      "index": 6811,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1723,
+      "confidence": 0.8277
+    },
+    {
+      "index": 6812,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0735,
+      "confidence": 0.9265
+    },
+    {
+      "index": 6813,
+      "video_id": "youtube_squat_correct_my0tLDaWyDU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1273,
+      "confidence": 0.8727
+    },
+    {
+      "index": 6895,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.868,
+      "confidence": 0.868
+    },
+    {
+      "index": 6932,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7451,
+      "confidence": 0.7451
+    },
+    {
+      "index": 6935,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8154,
+      "confidence": 0.8154
+    },
+    {
+      "index": 7170,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8769,
+      "confidence": 0.8769
+    },
+    {
+      "index": 7296,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7905,
+      "confidence": 0.7905
+    },
+    {
+      "index": 7297,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7404,
+      "confidence": 0.7404
+    },
+    {
+      "index": 7298,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7435,
+      "confidence": 0.7435
+    },
+    {
+      "index": 7303,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7621,
+      "confidence": 0.7621
+    },
+    {
+      "index": 7308,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7613,
+      "confidence": 0.7613
+    },
+    {
+      "index": 7311,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7093,
+      "confidence": 0.7093
+    },
+    {
+      "index": 7314,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.811,
+      "confidence": 0.811
+    },
+    {
+      "index": 7322,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.787,
+      "confidence": 0.787
+    },
+    {
+      "index": 7323,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8617,
+      "confidence": 0.8617
+    },
+    {
+      "index": 7325,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7355,
+      "confidence": 0.7355
+    },
+    {
+      "index": 7326,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7992,
+      "confidence": 0.7992
+    },
+    {
+      "index": 7333,
+      "video_id": "youtube_squat_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7019,
+      "confidence": 0.7019
+    },
+    {
+      "index": 7335,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8591,
+      "confidence": 0.8591
+    },
+    {
+      "index": 7336,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7881,
+      "confidence": 0.7881
+    },
+    {
+      "index": 7339,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7489,
+      "confidence": 0.7489
+    },
+    {
+      "index": 7340,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9242,
+      "confidence": 0.9242
+    },
+    {
+      "index": 7341,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9358,
+      "confidence": 0.9358
+    },
+    {
+      "index": 7358,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.736,
+      "confidence": 0.736
+    },
+    {
+      "index": 7361,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7851,
+      "confidence": 0.7851
+    },
+    {
+      "index": 7362,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8321,
+      "confidence": 0.8321
+    },
+    {
+      "index": 7363,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7261,
+      "confidence": 0.7261
+    },
+    {
+      "index": 7367,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7354,
+      "confidence": 0.7354
+    },
+    {
+      "index": 7368,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7941,
+      "confidence": 0.7941
+    },
+    {
+      "index": 7374,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7178,
+      "confidence": 0.7178
+    },
+    {
+      "index": 7375,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.85,
+      "confidence": 0.85
+    },
+    {
+      "index": 7391,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.713,
+      "confidence": 0.713
+    },
+    {
+      "index": 7398,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7779,
+      "confidence": 0.7779
+    },
+    {
+      "index": 7410,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.741,
+      "confidence": 0.741
+    },
+    {
+      "index": 7411,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8224,
+      "confidence": 0.8224
+    },
+    {
+      "index": 7412,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7797,
+      "confidence": 0.7797
+    },
+    {
+      "index": 7413,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7695,
+      "confidence": 0.7695
+    },
+    {
+      "index": 7414,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8237,
+      "confidence": 0.8237
+    },
+    {
+      "index": 7415,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8039,
+      "confidence": 0.8039
+    },
+    {
+      "index": 7416,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8373,
+      "confidence": 0.8373
+    },
+    {
+      "index": 7417,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.773,
+      "confidence": 0.773
+    },
+    {
+      "index": 7418,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8235,
+      "confidence": 0.8235
+    },
+    {
+      "index": 7419,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8048,
+      "confidence": 0.8048
+    },
+    {
+      "index": 7420,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7771,
+      "confidence": 0.7771
+    },
+    {
+      "index": 7421,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9276,
+      "confidence": 0.9276
+    },
+    {
+      "index": 7422,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.767,
+      "confidence": 0.767
+    },
+    {
+      "index": 7424,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8418,
+      "confidence": 0.8418
+    },
+    {
+      "index": 7425,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9439,
+      "confidence": 0.9439
+    },
+    {
+      "index": 7429,
+      "video_id": "youtube_squat_incorrect_NtX8GGbDCuc.f298",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7808,
+      "confidence": 0.7808
+    },
+    {
+      "index": 7438,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8424,
+      "confidence": 0.8424
+    },
+    {
+      "index": 7439,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7438,
+      "confidence": 0.7438
+    },
+    {
+      "index": 7441,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7246,
+      "confidence": 0.7246
+    },
+    {
+      "index": 7448,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7613,
+      "confidence": 0.7613
+    },
+    {
+      "index": 7449,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8539,
+      "confidence": 0.8539
+    },
+    {
+      "index": 7450,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7637,
+      "confidence": 0.7637
+    },
+    {
+      "index": 7451,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8076,
+      "confidence": 0.8076
+    },
+    {
+      "index": 7452,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7677,
+      "confidence": 0.7677
+    },
+    {
+      "index": 7454,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7151,
+      "confidence": 0.7151
+    },
+    {
+      "index": 7455,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.702,
+      "confidence": 0.702
+    },
+    {
+      "index": 7458,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7472,
+      "confidence": 0.7472
+    },
+    {
+      "index": 7459,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7356,
+      "confidence": 0.7356
+    },
+    {
+      "index": 7460,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7531,
+      "confidence": 0.7531
+    },
+    {
+      "index": 7461,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7181,
+      "confidence": 0.7181
+    },
+    {
+      "index": 7462,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.739,
+      "confidence": 0.739
+    },
+    {
+      "index": 7463,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7557,
+      "confidence": 0.7557
+    },
+    {
+      "index": 7465,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7204,
+      "confidence": 0.7204
+    },
+    {
+      "index": 7466,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7741,
+      "confidence": 0.7741
+    },
+    {
+      "index": 7467,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7829,
+      "confidence": 0.7829
+    },
+    {
+      "index": 7470,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.903,
+      "confidence": 0.903
+    },
+    {
+      "index": 7471,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8872,
+      "confidence": 0.8872
+    },
+    {
+      "index": 7472,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7227,
+      "confidence": 0.7227
+    },
+    {
+      "index": 7530,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9121,
+      "confidence": 0.9121
+    },
+    {
+      "index": 7531,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9387,
+      "confidence": 0.9387
+    },
+    {
+      "index": 7532,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.927,
+      "confidence": 0.927
+    },
+    {
+      "index": 7533,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9241,
+      "confidence": 0.9241
+    },
+    {
+      "index": 7534,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8506,
+      "confidence": 0.8506
+    },
+    {
+      "index": 7548,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7319,
+      "confidence": 0.7319
+    },
+    {
+      "index": 7566,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.767,
+      "confidence": 0.767
+    },
+    {
+      "index": 7567,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7657,
+      "confidence": 0.7657
+    },
+    {
+      "index": 7572,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9364,
+      "confidence": 0.9364
+    },
+    {
+      "index": 7573,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9249,
+      "confidence": 0.9249
+    },
+    {
+      "index": 7574,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9123,
+      "confidence": 0.9123
+    },
+    {
+      "index": 7575,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7323,
+      "confidence": 0.7323
+    },
+    {
+      "index": 7631,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9004,
+      "confidence": 0.9004
+    },
+    {
+      "index": 7632,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8769,
+      "confidence": 0.8769
+    },
+    {
+      "index": 7633,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8574,
+      "confidence": 0.8574
+    },
+    {
+      "index": 7634,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8415,
+      "confidence": 0.8415
+    },
+    {
+      "index": 7644,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7605,
+      "confidence": 0.7605
+    },
+    {
+      "index": 7645,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7792,
+      "confidence": 0.7792
+    },
+    {
+      "index": 7649,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7284,
+      "confidence": 0.7284
+    },
+    {
+      "index": 7650,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.768,
+      "confidence": 0.768
+    },
+    {
+      "index": 7685,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7097,
+      "confidence": 0.7097
+    },
+    {
+      "index": 7688,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8008,
+      "confidence": 0.8008
+    },
+    {
+      "index": 7689,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8399,
+      "confidence": 0.8399
+    },
+    {
+      "index": 7690,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8427,
+      "confidence": 0.8427
+    },
+    {
+      "index": 7696,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8005,
+      "confidence": 0.8005
+    },
+    {
+      "index": 7697,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7494,
+      "confidence": 0.7494
+    },
+    {
+      "index": 7705,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8073,
+      "confidence": 0.8073
+    },
+    {
+      "index": 7706,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8813,
+      "confidence": 0.8813
+    },
+    {
+      "index": 7707,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.783,
+      "confidence": 0.783
+    },
+    {
+      "index": 7717,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8284,
+      "confidence": 0.8284
+    },
+    {
+      "index": 7718,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8977,
+      "confidence": 0.8977
+    },
+    {
+      "index": 7719,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9117,
+      "confidence": 0.9117
+    },
+    {
+      "index": 7720,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.901,
+      "confidence": 0.901
+    },
+    {
+      "index": 7721,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8826,
+      "confidence": 0.8826
+    },
+    {
+      "index": 7743,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7073,
+      "confidence": 0.7073
+    },
+    {
+      "index": 7744,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7462,
+      "confidence": 0.7462
+    },
+    {
+      "index": 7745,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7719,
+      "confidence": 0.7719
+    },
+    {
+      "index": 7761,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8369,
+      "confidence": 0.8369
+    },
+    {
+      "index": 7762,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.913,
+      "confidence": 0.913
+    },
+    {
+      "index": 7763,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9238,
+      "confidence": 0.9238
+    },
+    {
+      "index": 7764,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8879,
+      "confidence": 0.8879
+    },
+    {
+      "index": 7785,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7405,
+      "confidence": 0.7405
+    },
+    {
+      "index": 7786,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7729,
+      "confidence": 0.7729
+    },
+    {
+      "index": 7791,
+      "video_id": "youtube_squat_incorrect_QKKXd6celO0",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7017,
+      "confidence": 0.7017
+    },
+    {
+      "index": 7849,
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7449,
+      "confidence": 0.7449
+    },
+    {
+      "index": 7954,
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8866,
+      "confidence": 0.8866
+    },
+    {
+      "index": 7955,
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7791,
+      "confidence": 0.7791
+    },
+    {
+      "index": 7985,
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7737,
+      "confidence": 0.7737
+    },
+    {
+      "index": 7986,
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8471,
+      "confidence": 0.8471
+    },
+    {
+      "index": 7987,
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8795,
+      "confidence": 0.8795
+    },
+    {
+      "index": 7988,
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8391,
+      "confidence": 0.8391
+    },
+    {
+      "index": 8029,
+      "video_id": "ytincorrect_squat_incorrect_Heels elevated in a squat fix! Help your Squat For_-XKGlou2C4k",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7251,
+      "confidence": 0.7251
+    },
+    {
+      "index": 8035,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8515,
+      "confidence": 0.8515
+    },
+    {
+      "index": 8036,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7781,
+      "confidence": 0.7781
+    },
+    {
+      "index": 8037,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9025,
+      "confidence": 0.9025
+    },
+    {
+      "index": 8038,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8782,
+      "confidence": 0.8782
+    },
+    {
+      "index": 8039,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7608,
+      "confidence": 0.7608
+    },
+    {
+      "index": 8040,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7373,
+      "confidence": 0.7373
+    },
+    {
+      "index": 8046,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7649,
+      "confidence": 0.7649
+    },
+    {
+      "index": 8053,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7568,
+      "confidence": 0.7568
+    },
+    {
+      "index": 8057,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8579,
+      "confidence": 0.8579
+    },
+    {
+      "index": 8060,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7143,
+      "confidence": 0.7143
+    },
+    {
+      "index": 8077,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7127,
+      "confidence": 0.7127
+    },
+    {
+      "index": 8079,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7557,
+      "confidence": 0.7557
+    },
+    {
+      "index": 8092,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7059,
+      "confidence": 0.7059
+    },
+    {
+      "index": 8114,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.734,
+      "confidence": 0.734
+    },
+    {
+      "index": 8122,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7454,
+      "confidence": 0.7454
+    },
+    {
+      "index": 8123,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8505,
+      "confidence": 0.8505
+    },
+    {
+      "index": 8124,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8433,
+      "confidence": 0.8433
+    },
+    {
+      "index": 8125,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7832,
+      "confidence": 0.7832
+    },
+    {
+      "index": 8165,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7193,
+      "confidence": 0.7193
+    },
+    {
+      "index": 8166,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7197,
+      "confidence": 0.7197
+    },
+    {
+      "index": 8168,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7663,
+      "confidence": 0.7663
+    },
+    {
+      "index": 8169,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7325,
+      "confidence": 0.7325
+    },
+    {
+      "index": 8170,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7875,
+      "confidence": 0.7875
+    },
+    {
+      "index": 8171,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7896,
+      "confidence": 0.7896
+    },
+    {
+      "index": 8172,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7681,
+      "confidence": 0.7681
+    },
+    {
+      "index": 8177,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8459,
+      "confidence": 0.8459
+    },
+    {
+      "index": 8178,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.787,
+      "confidence": 0.787
+    },
+    {
+      "index": 8183,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9082,
+      "confidence": 0.9082
+    },
+    {
+      "index": 8184,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9141,
+      "confidence": 0.9141
+    },
+    {
+      "index": 8185,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8938,
+      "confidence": 0.8938
+    },
+    {
+      "index": 8190,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8163,
+      "confidence": 0.8163
+    },
+    {
+      "index": 8191,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8981,
+      "confidence": 0.8981
+    },
+    {
+      "index": 8192,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8852,
+      "confidence": 0.8852
+    },
+    {
+      "index": 8193,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8247,
+      "confidence": 0.8247
+    },
+    {
+      "index": 8194,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.753,
+      "confidence": 0.753
+    },
+    {
+      "index": 8195,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7625,
+      "confidence": 0.7625
+    },
+    {
+      "index": 8196,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8193,
+      "confidence": 0.8193
+    },
+    {
+      "index": 8208,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7534,
+      "confidence": 0.7534
+    },
+    {
+      "index": 8209,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7955,
+      "confidence": 0.7955
+    },
+    {
+      "index": 8222,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8628,
+      "confidence": 0.8628
+    },
+    {
+      "index": 8227,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7861,
+      "confidence": 0.7861
+    },
+    {
+      "index": 8242,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7452,
+      "confidence": 0.7452
+    },
+    {
+      "index": 8244,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7308,
+      "confidence": 0.7308
+    },
+    {
+      "index": 8245,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8452,
+      "confidence": 0.8452
+    },
+    {
+      "index": 8246,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8459,
+      "confidence": 0.8459
+    },
+    {
+      "index": 8247,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8731,
+      "confidence": 0.8731
+    },
+    {
+      "index": 8248,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8172,
+      "confidence": 0.8172
+    },
+    {
+      "index": 8249,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7406,
+      "confidence": 0.7406
+    },
+    {
+      "index": 8263,
+      "video_id": "ytincorrect_squat_incorrect_How to PROPERLY Squat for Growth (4 Easy Steps)_gcNh17Ckjgg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7161,
+      "confidence": 0.7161
+    },
+    {
+      "index": 8281,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9058,
+      "confidence": 0.9058
+    },
+    {
+      "index": 8282,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8543,
+      "confidence": 0.8543
+    },
+    {
+      "index": 8283,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7668,
+      "confidence": 0.7668
+    },
+    {
+      "index": 8290,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7329,
+      "confidence": 0.7329
+    },
+    {
+      "index": 8291,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9142,
+      "confidence": 0.9142
+    },
+    {
+      "index": 8292,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7706,
+      "confidence": 0.7706
+    },
+    {
+      "index": 8322,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7511,
+      "confidence": 0.7511
+    },
+    {
+      "index": 8323,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7815,
+      "confidence": 0.7815
+    },
+    {
+      "index": 8324,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7128,
+      "confidence": 0.7128
+    },
+    {
+      "index": 8325,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.724,
+      "confidence": 0.724
+    },
+    {
+      "index": 8326,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.833,
+      "confidence": 0.833
+    },
+    {
+      "index": 8331,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7895,
+      "confidence": 0.7895
+    },
+    {
+      "index": 8332,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7314,
+      "confidence": 0.7314
+    },
+    {
+      "index": 8334,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7066,
+      "confidence": 0.7066
+    },
+    {
+      "index": 8346,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.737,
+      "confidence": 0.737
+    },
+    {
+      "index": 8347,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8613,
+      "confidence": 0.8613
+    },
+    {
+      "index": 8348,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8089,
+      "confidence": 0.8089
+    },
+    {
+      "index": 8349,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.796,
+      "confidence": 0.796
+    },
+    {
+      "index": 8351,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7955,
+      "confidence": 0.7955
+    },
+    {
+      "index": 8352,
+      "video_id": "ytincorrect_squat_incorrect_Low Back Pain (Butt Wink) \uff5c How to Fix\uff1f_e2ecKOpaprI",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8447,
+      "confidence": 0.8447
+    }
+  ]
+}

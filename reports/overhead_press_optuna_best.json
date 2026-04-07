@@ -1,0 +1,15 @@
+{
+  "exercise": "overhead_press",
+  "best_val_f1": 0.6903914590747331,
+  "best_params": {
+    "hidden_dim": 64,
+    "num_layers": 2,
+    "dropout": 0.45,
+    "lr": 0.0007367494061207746,
+    "batch_size": 64,
+    "n_heads": 1
+  },
+  "n_trials": 50,
+  "n_pruned": 0,
+  "n_complete": 50
+}

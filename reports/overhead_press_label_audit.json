@@ -1,0 +1,10 @@
+{
+  "exercise": "overhead_press",
+  "total_sequences": 7593,
+  "flagged_count": 0,
+  "flagged_percentage": 0.0,
+  "confidence_threshold": 0.7,
+  "model_threshold": 0.1,
+  "flagged_videos": [],
+  "flagged_details": []
+}

@@ -35,3 +35,18 @@ extraction_parallel_log.txt
 # OS
 .DS_Store
 Thumbs.db
+
+# Temporary screenshots
+*.jpeg
+*.png
+!app/static/images/*.png
+!app/static/images/*.jpg
+!app/static/images/*.jpeg
+
+# Playwright MCP
+.playwright-mcp/
+
+# Session prompts (conversation-specific)
+SESSION_PROMPTS.md
+
+skills/

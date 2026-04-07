@@ -15,6 +15,8 @@ class ClassificationResult:
     confidence: float                                # 0.0 to 1.0
     joint_feedback: Dict[str, str] = field(default_factory=dict)  # joint -> "correct"|"incorrect"|"warning"
     details: Dict[str, str] = field(default_factory=dict)         # human-readable feedback per issue
+    is_active: bool = True                           # whether user is actively exercising
+    form_score: float = 0.0                          # continuous 0.0-1.0 form quality score
 
 
 class FormClassifier(ABC):

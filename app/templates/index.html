@@ -3,57 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ExerVision - Exercise Form Evaluator</title>
+    <title>ExerVision - AI-Powered Exercise Form Evaluator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="/static/style.css?v=12">
 </head>
 <body>
-    <!-- ── Header (always visible) ── -->
-    <header id="main-header">
-        <div class="header-inner">
-            <h1 id="header-title" class="clickable">Exer<span class="brand-accent">Vision</span></h1>
-            <p class="subtitle">Real-Time Exercise Form Evaluator</p>
-        </div>
-    </header>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- VIEW 1: Exercise Selection                                     -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="view-select" class="view active">
+    <!-- Navigation -->
+    <nav id="main-nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-brand" data-nav="home">
+                <svg class="nav-logo" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 1L30 16L16 31L2 16Z" opacity="0.2" fill="currentColor" stroke="none"/><path d="M16 1L30 16L16 31L2 16Z"/><circle cx="16" cy="9" r="2.5" fill="currentColor" stroke="none"/><path d="M16 12v6M13 18l-2 6M19 18l2 6M12 14l-3-1.5M20 14l3-1.5" stroke-width="2"/></svg>
+                ExerVision
+            </a>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#" data-nav="home" class="nav-link active">Home</a></li>
+                <li><a href="#" data-nav="exercises" class="nav-link">Exercises</a></li>
+                <li><a href="#" data-nav="about" class="nav-link">About</a></li>
+                <li><a href="#" data-nav="exercises" class="nav-link nav-cta">Start Workout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- PAGE: Home / Landing -->
+    <div id="page-home" class="page active">
+
+        <!-- Hero -->
+        <section class="hero" id="hero-section">
+            <div class="hero-bg">
+                <img src="/static/images/hero_wide.jpg" alt="" loading="eager">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="hero-content">
+                <span class="hero-badge" data-aos="fade-up">AI-Powered Form Analysis</span>
+                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">Perfect Your<br><em>Exercise Form</em></h1>
+                <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">Real-time computer vision analyses your body position through your webcam. Get instant colour-coded feedback on every rep across 10 exercises &mdash; like having a personal trainer watching your form.</p>
+                <div class="hero-actions" data-aos="fade-up" data-aos-delay="300">
+                    <button class="btn btn-primary btn-lg" data-nav="exercises">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21"/></svg>
+                        Start Training
+                    </button>
+                    <button class="btn btn-ghost btn-lg" data-nav="about">How It Works</button>
+                </div>
+            </div>
+            <div class="hero-bottom">
+                <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
+                    <div class="hero-stat">
+                        <span class="stat-number">10</span>
+                        <span class="stat-label">Exercises Supported</span>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat">
+                        <span class="stat-number">33</span>
+                        <span class="stat-label">Body Landmarks Tracked</span>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">AI Classification Models</span>
+                    </div>
+                </div>
+                <div class="scroll-indicator">
+                    <span class="scroll-text">Scroll</span>
+                    <div class="scroll-line"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="section-how">
+            <div class="container">
+                <span class="section-label" data-aos="fade-up">How It Works</span>
+                <h2 class="section-title" data-aos="fade-up">Smart Analysis for<br><em>Every Rep</em></h2>
+                <div class="how-grid">
+                    <div class="how-card how-card--mint" data-aos="fade-up" data-aos-delay="0">
+                        <span class="how-step">01</span>
+                        <div class="how-card-icon">
+                            <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                <circle cx="40" cy="14" r="6" fill="currentColor" opacity="0.2"/>
+                                <circle cx="40" cy="14" r="3" fill="currentColor"/>
+                                <line x1="40" y1="20" x2="40" y2="42"/>
+                                <line x1="40" y1="26" x2="28" y2="34"/><line x1="28" y1="34" x2="20" y2="28"/>
+                                <line x1="40" y1="26" x2="52" y2="34"/><line x1="52" y1="34" x2="60" y2="28"/>
+                                <line x1="40" y1="42" x2="30" y2="56"/><line x1="30" y1="56" x2="24" y2="68"/>
+                                <line x1="40" y1="42" x2="50" y2="56"/><line x1="50" y1="56" x2="56" y2="68"/>
+                                <circle cx="40" cy="26" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="28" cy="34" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="20" cy="28" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="52" cy="34" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="60" cy="28" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="40" cy="42" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="30" cy="56" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="50" cy="56" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="24" cy="68" r="2.5" fill="currentColor" opacity="0.5"/>
+                                <circle cx="56" cy="68" r="2.5" fill="currentColor" opacity="0.5"/>
+                            </svg>
+                        </div>
+                        <h3>Pose Detection</h3>
+                        <p>MediaPipe BlazePose tracks 33 body landmarks in real time from your webcam feed.</p>
+                    </div>
+                    <div class="how-card how-card--coral" data-aos="fade-up" data-aos-delay="100">
+                        <span class="how-step">02</span>
+                        <div class="how-card-icon">
+                            <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                <line x1="20" y1="24" x2="40" y2="44"/>
+                                <line x1="40" y1="44" x2="60" y2="60"/>
+                                <path d="M28 30 A 16 16 0 0 1 46 50" stroke-dasharray="4 3" opacity="0.6"/>
+                                <text x="36" y="42" font-size="10" font-weight="bold" fill="currentColor" stroke="none" font-family="sans-serif">92&deg;</text>
+                                <circle cx="20" cy="24" r="3" fill="currentColor" opacity="0.5"/>
+                                <circle cx="40" cy="44" r="3" fill="currentColor"/>
+                                <circle cx="60" cy="60" r="3" fill="currentColor" opacity="0.5"/>
+                                <line x1="40" y1="44" x2="22" y2="60"/>
+                                <circle cx="22" cy="60" r="3" fill="currentColor" opacity="0.5"/>
+                                <path d="M54 54 A 12 12 0 0 1 34 52" stroke-dasharray="4 3" opacity="0.4"/>
+                            </svg>
+                        </div>
+                        <h3>Form Analysis</h3>
+                        <p>Joint angles, body ratios and symmetry metrics are computed every frame for precise evaluation.</p>
+                    </div>
+                    <div class="how-card how-card--yellow" data-aos="fade-up" data-aos-delay="200">
+                        <span class="how-step">03</span>
+                        <div class="how-card-icon">
+                            <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                <circle cx="20" cy="20" r="5"/><circle cx="40" cy="16" r="5"/><circle cx="60" cy="20" r="5"/>
+                                <circle cx="26" cy="42" r="5"/><circle cx="54" cy="42" r="5"/>
+                                <circle cx="40" cy="62" r="6" fill="currentColor" opacity="0.15"/>
+                                <circle cx="40" cy="62" r="6"/>
+                                <line x1="20" y1="25" x2="26" y2="37"/><line x1="40" y1="21" x2="26" y2="37"/>
+                                <line x1="40" y1="21" x2="54" y2="37"/><line x1="60" y1="25" x2="54" y2="37"/>
+                                <line x1="26" y1="47" x2="40" y2="56"/><line x1="54" y1="47" x2="40" y2="56"/>
+                                <line x1="20" y1="25" x2="54" y2="37" opacity="0.3"/>
+                                <line x1="60" y1="25" x2="26" y2="37" opacity="0.3"/>
+                            </svg>
+                        </div>
+                        <h3>AI Classification</h3>
+                        <p>Three classifiers &mdash; rule-based, Random Forest and BiLSTM &mdash; evaluate your form in real time.</p>
+                    </div>
+                    <div class="how-card how-card--purple" data-aos="fade-up" data-aos-delay="300">
+                        <span class="how-step">04</span>
+                        <div class="how-card-icon">
+                            <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="10" y="12" width="60" height="44" rx="4"/>
+                                <line x1="30" y1="56" x2="50" y2="56"/>
+                                <line x1="40" y1="56" x2="40" y2="62"/>
+                                <line x1="32" y1="62" x2="48" y2="62"/>
+                                <circle cx="36" cy="24" r="3"/>
+                                <line x1="36" y1="27" x2="36" y2="36"/>
+                                <line x1="36" y1="30" x2="30" y2="33"/>
+                                <line x1="36" y1="30" x2="42" y2="33"/>
+                                <line x1="36" y1="36" x2="32" y2="44"/>
+                                <line x1="36" y1="36" x2="40" y2="44"/>
+                                <circle cx="56" cy="22" r="8" fill="#22C55E" stroke="#22C55E" opacity="0.2"/>
+                                <path d="M52 22l3 3 5-6" stroke="#22C55E" stroke-width="2.5"/>
+                            </svg>
+                        </div>
+                        <h3>Live Feedback</h3>
+                        <p>Colour-coded skeleton overlay and real-time text cues tell you exactly what to fix, rep by rep.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features dark section -->
+        <section class="section-features">
+            <div class="section-features-bg">
+                <img src="/static/images/gym_wide.jpg" alt="" loading="lazy">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="container">
+                <span class="section-label section-label--accent" data-aos="fade-up">Why ExerVision</span>
+                <h2 class="section-title" data-aos="fade-up">Your AI <em>Personal Trainer</em></h2>
+                <div class="features-grid">
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="0">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        </div>
+                        <h3>Real-Time Processing</h3>
+                        <p>Processes frames at high FPS with GPU acceleration. No perceptible lag between your movement and the on-screen feedback &mdash; evaluation happens within milliseconds of each frame capture.</p>
+                    </div>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                        </div>
+                        <h3>Joint-Level Accuracy</h3>
+                        <p>Evaluates individual joint positions with colour-coded feedback &mdash; green for correct alignment, orange for minor issues, and red for positions that need immediate correction.</p>
+                    </div>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 17V13M12 17V7M17 17V11"/></svg>
+                        </div>
+                        <h3>Session Reports</h3>
+                        <p>Detailed post-workout breakdown with per-rep form scores, bar charts of your performance over time, and a ranked list of your most common form mistakes to target in your next session.</p>
+                    </div>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 110 20 10 10 0 010-20z"/><path d="M2 12h20"/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10A15 15 0 0112 2z"/></svg>
+                        </div>
+                        <h3>No Equipment Needed</h3>
+                        <p>Works with just your webcam &mdash; no wearables, no sensors, no expensive hardware. Any laptop or desktop with a camera is all you need to get professional-grade form analysis.</p>
+                    </div>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="400">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                        </div>
+                        <h3>Guided Instructions</h3>
+                        <p>Each exercise includes step-by-step form guidance, targeted muscle groups, and a curated list of common mistakes to watch out for &mdash; so you know what good form looks like before you start.</p>
+                    </div>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="500">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                        </div>
+                        <h3>Rep Counting</h3>
+                        <p>Automatic repetition detection using peak-based motion analysis, with per-rep form scoring and a colour-coded history so you can track consistency across your entire set.</p>
+                    </div>
+                </div>
+                <div class="feature-images" data-aos="fade-up">
+                    <img src="/static/images/feature_ai.jpg" alt="AI Analysis">
+                    <img src="/static/images/feature_form.jpg" alt="Form Check">
+                    <img src="/static/images/training.jpg" alt="Training">
+                </div>
+            </div>
+        </section>
+
+        <!-- Exercises preview with images -->
+        <section class="section-exercises-preview">
+            <div class="container">
+                <div class="preview-layout">
+                    <div class="preview-text" data-aos="fade-up">
+                        <span class="section-label">Supported Exercises</span>
+                        <h2 class="section-title section-title--left">10 Exercises,<br><em>One Platform</em></h2>
+                        <p class="preview-desc">From compound lifts to bodyweight movements, ExerVision covers the exercises that matter most for strength training. Each exercise is individually tuned with its own classification model and form thresholds.</p>
+                        <div class="exercise-tag-grid" id="home-exercise-tags">
+                            <!-- Populated by JS -->
+                        </div>
+                        <button class="btn btn-primary" data-nav="exercises">View All Exercises</button>
+                    </div>
+                    <div class="preview-image-grid" data-aos="fade-up" data-aos-delay="150">
+                        <img src="/static/images/ex_squat.jpg" alt="Squat">
+                        <img src="/static/images/ex_deadlift.jpg" alt="Deadlift">
+                        <img src="/static/images/ex_pushup.jpg" alt="Push-up">
+                        <img src="/static/images/ex_pullup.jpg" alt="Pull-up">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Banner -->
+        <section class="section-cta">
+            <div class="cta-bg">
+                <img src="/static/images/cta_bg.jpg" alt="" loading="lazy">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="container">
+                <div class="cta-card" data-aos="fade-up">
+                    <h2>Ready to <em>Perfect</em> Your Form?</h2>
+                    <p>Start a free session with your webcam. No sign-up, no equipment beyond a camera. Just you and your workout.</p>
+                    <button class="btn btn-primary btn-lg" data-nav="exercises">Get Started Free</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PAGE: Exercises -->
+    <div id="page-exercises" class="page">
         <div class="container">
-            <h2 class="section-title">Choose Your Exercise</h2>
+            <div class="page-header">
+                <span class="section-label" data-aos="fade-up">Choose Your Exercise</span>
+                <h2 class="section-title" data-aos="fade-up">Start Your <em>Workout</em></h2>
+                <p class="page-desc" data-aos="fade-up" data-aos-delay="100">Select an exercise to view instructions and begin your session.</p>
+            </div>
             <div id="exercise-grid" class="exercise-grid">
                 <!-- Populated by JS -->
             </div>
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- VIEW 2: Exercise Guide                                         -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="view-guide" class="view">
+    <!-- PAGE: Exercise Guide -->
+    <div id="page-guide" class="page">
         <div class="container">
-            <button id="guide-back-btn" class="btn btn-back">&larr; Back</button>
+            <button id="guide-back-btn" class="btn btn-back">&larr; Back to Exercises</button>
 
-            <div class="guide-header">
+            <div class="guide-header" data-aos="fade-up">
                 <h2 id="guide-title">Exercise Name</h2>
                 <div id="guide-muscles" class="muscle-tags"></div>
             </div>
 
-            <div class="guide-section">
+            <div id="guide-camera-setup" class="camera-setup-notice" style="display:none;"></div>
+
+            <div class="guide-section" data-aos="fade-up" data-aos-delay="100">
                 <h3>Instructions</h3>
                 <ol id="guide-instructions" class="guide-list"></ol>
             </div>
 
-            <div class="guide-section">
+            <div class="guide-section" data-aos="fade-up" data-aos-delay="200">
                 <h3>Common Mistakes</h3>
                 <ul id="guide-mistakes" class="guide-list mistakes"></ul>
             </div>
 
-            <div class="guide-section">
+            <div class="guide-section" data-aos="fade-up" data-aos-delay="300">
                 <h3>Classifier</h3>
                 <div class="classifier-select">
                     <label class="radio-card">
@@ -74,141 +328,284 @@
                 </div>
             </div>
 
-            <button id="begin-session-btn" class="btn btn-begin">Begin Exercise</button>
+            <button id="begin-session-btn" class="btn btn-primary btn-lg btn-full" data-aos="fade-up" data-aos-delay="400">Begin Exercise</button>
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- VIEW 3: Active Session                                         -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="view-session" class="view">
+    <!-- PAGE: Active Session -->
+    <div id="page-session" class="page">
         <div class="session-layout">
-            <!-- Video area -->
             <div class="video-area">
                 <div class="video-wrapper">
                     <video id="local-video" autoplay playsinline muted></video>
                     <canvas id="output-canvas"></canvas>
-                    <div id="no-camera" class="overlay-msg">
-                        <p>Initialising camera...</p>
-                    </div>
+                    <canvas id="skeleton-canvas"></canvas>
+                    <div id="no-camera" class="overlay-msg"><p>Initialising camera...</p></div>
                     <div id="spinner-overlay" class="spinner-overlay hidden">
                         <div class="spinner"></div>
                         <span class="spinner-text">Connecting...</span>
                     </div>
-                    <div id="pause-overlay" class="pause-overlay hidden">
-                        <span class="pause-text">Paused</span>
-                    </div>
+                    <div id="pause-overlay" class="pause-overlay hidden"><span class="pause-text">Paused</span></div>
                     <div id="reconnect-banner" class="reconnect-banner hidden"></div>
-                </div>
-            </div>
-
-            <!-- Session HUD -->
-            <div class="session-hud">
-                <div class="hud-top">
-                    <div class="exercise-label" id="session-exercise-label">Squat</div>
-                    <div class="session-timer" id="session-timer">00:00</div>
-                </div>
-
-                <div class="hud-center">
-                    <div class="rep-circle" id="rep-circle">
-                        <span class="rep-number" id="rep-number">0</span>
-                        <span class="rep-label">REPS</span>
+                    <div id="session-state-overlay" class="session-state-overlay hidden">
+                        <div class="session-state-content">
+                            <div class="session-state-text" id="session-state-text"></div>
+                            <div class="session-state-subtext" id="session-state-subtext"></div>
+                        </div>
                     </div>
-
-                    <div class="confidence-gauge">
-                        <div class="gauge-bar" id="gauge-bar"></div>
-                        <span class="gauge-text" id="gauge-text">--</span>
+                    <div id="rec-indicator" class="rec-indicator hidden">
+                        <span class="rec-dot"></span> REC
                     </div>
-
-                    <div id="status-badge" class="status-badge neutral">Waiting</div>
+                    <div class="fullscreen-controls" id="fullscreen-controls">
+                        <button id="fs-exit-btn" class="fs-btn" title="Exit fullscreen">&#x2716;</button>
+                        <button id="fs-pause-btn" class="fs-btn" title="Pause">&#x23F8;</button>
+                        <button id="fs-end-btn" class="fs-btn fs-btn-end" title="End session">END</button>
+                    </div>
+                    <div class="floating-hud" id="floating-hud">
+                        <div class="floating-score" id="floating-score">-- <small>FORM</small></div>
+                        <div class="floating-reps" id="floating-reps">0 <small>REPS</small></div>
+                        <div class="floating-fps" id="floating-fps">FPS: --</div>
+                    </div>
                 </div>
 
-                <div class="rep-history" id="rep-history">
-                    <!-- Colored dots for each rep -->
+                <!-- ═══ TOP BAR: exercise info left, score ring center, exit right ═══ -->
+                <div class="hud-bar hud-bar-top">
+                    <div class="hud-bar-left">
+                        <div class="exercise-label" id="session-exercise-label">Squat</div>
+                        <div class="hud-meta-row">
+                            <span class="session-timer" id="session-timer">00:00</span>
+                            <span class="hud-divider"></span>
+                            <span class="classifier-label" id="classifier-label">BiLSTM</span>
+                        </div>
+                    </div>
+                    <div class="hud-bar-center">
+                        <div class="score-ring-container" id="score-ring-container">
+                            <svg class="score-ring" viewBox="0 0 120 120">
+                                <circle class="score-ring-bg" cx="60" cy="60" r="52" />
+                                <circle class="score-ring-fill" id="score-ring-fill" cx="60" cy="60" r="52" />
+                            </svg>
+                            <div class="score-ring-value" id="score-ring-value">--</div>
+                            <div class="score-ring-label">FORM</div>
+                        </div>
+                        <div id="status-badge" class="status-badge neutral">Waiting</div>
+                    </div>
+                    <div class="hud-bar-right">
+                        <button id="end-session-btn" class="hud-exit-btn" title="End Session">&times;</button>
+                    </div>
                 </div>
 
-                <div id="feedback-details" class="feedback-details">
-                    Perform the exercise to receive feedback.
+                <!-- ═══ LEFT: Big rep counter ═══ -->
+                <div class="hud-panel hud-panel-left" id="hud-left">
+                    <div class="rep-display">
+                        <span class="rep-big-number" id="rep-number">0</span>
+                        <span class="rep-big-label">REPS</span>
+                    </div>
+                    <div class="rep-history" id="rep-history"></div>
                 </div>
 
-                <div class="hud-bottom">
-                    <span class="fps-display" id="fps-display">FPS: --</span>
-                    <span class="classifier-label" id="classifier-label">Rule-Based</span>
-                    <button id="mirror-btn" class="btn-icon" title="Mirror camera">&#x21C4;</button>
-                    <button id="pause-btn" class="btn btn-pause">Pause</button>
-                    <button id="end-session-btn" class="btn btn-end">End Session</button>
+                <!-- ═══ BOTTOM BAR: feedback, controls, stats ═══ -->
+                <div class="hud-bar hud-bar-bottom">
+                    <div class="hud-bottom-stats">
+                        <span class="fps-display" id="fps-display">FPS: --</span>
+                        <div class="confidence-mini">
+                            <div class="confidence-mini-bar" id="gauge-bar"></div>
+                            <span class="confidence-mini-text" id="gauge-text">--</span>
+                        </div>
+                    </div>
+                    <div class="hud-bottom-feedback">
+                        <div id="feedback-details" class="feedback-text">Perform the exercise to receive feedback.</div>
+                        <canvas id="score-history-chart" width="360" height="40"></canvas>
+                    </div>
+                    <div class="hud-bottom-controls">
+                        <button id="mirror-btn" class="hud-ctrl-btn" title="Mirror camera">&#x21C4;</button>
+                        <button id="pause-btn" class="hud-ctrl-btn" title="Pause">&#x23F8;</button>
+                        <button id="fullscreen-btn" class="hud-ctrl-btn" title="Fullscreen">&#x26F6;</button>
+                    </div>
                 </div>
+
+                <!-- Inactive overlay -->
+                <div class="inactive-overlay hidden" id="inactive-overlay">
+                    <span>Begin exercise movement to receive feedback</span>
+                </div>
+
+                <!-- Hidden: joint health list (still updated by JS for data, not displayed as panel) -->
+                <div id="joint-health-list" style="display:none;"></div>
             </div>
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <!-- VIEW 4: Session Report                                         -->
-    <!-- ═══════════════════════════════════════════════════════════════ -->
-    <div id="view-report" class="view">
+    <!-- PAGE: Session Report -->
+    <div id="page-report" class="page">
         <div class="container">
-            <div class="report-hero">
+            <div class="report-hero" data-aos="fade-up">
                 <div class="report-hero-icon" id="report-hero-icon"></div>
-                <h2 class="section-title">Session Report</h2>
+                <h2 class="section-title">Session <em>Report</em></h2>
                 <p class="report-subtitle" id="report-subtitle"></p>
             </div>
-
             <div class="report-summary">
-                <div class="report-card score-card">
+                <div class="report-card score-card" data-aos="fade-up" data-aos-delay="0">
                     <span class="report-value" id="report-score">--%</span>
                     <span class="report-label">Form Score</span>
                 </div>
-                <div class="report-card">
+                <div class="report-card" data-aos="fade-up" data-aos-delay="100">
                     <span class="report-value" id="report-reps">0</span>
                     <span class="report-label">Total Reps</span>
                 </div>
-                <div class="report-card">
+                <div class="report-card" data-aos="fade-up" data-aos-delay="200">
                     <span class="report-value" id="report-good">0</span>
                     <span class="report-label">Good Reps</span>
                 </div>
-                <div class="report-card">
+                <div class="report-card" data-aos="fade-up" data-aos-delay="300">
                     <span class="report-value" id="report-duration">0s</span>
                     <span class="report-label">Duration</span>
                 </div>
             </div>
-
-            <div class="report-section">
+            <div class="report-section" data-aos="fade-up">
                 <h3>Rep-by-Rep Breakdown</h3>
+                <div class="rep-chart-wrap" id="rep-chart-wrap"></div>
                 <div class="rep-table-wrapper">
                     <table id="rep-table" class="rep-table">
-                        <thead>
-                            <tr>
-                                <th>Rep</th>
-                                <th>Score</th>
-                                <th>Issues</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rep-table-body">
-                        </tbody>
+                        <thead><tr><th>Rep</th><th>Score</th><th>Issues</th></tr></thead>
+                        <tbody id="rep-table-body"></tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="report-section" id="common-issues-section">
+            <!-- Set breakdown (push-ups only) -->
+            <div class="report-section hidden" id="set-breakdown-section" data-aos="fade-up">
+                <h3>Set Breakdown</h3>
+                <div id="set-breakdown-list" class="set-breakdown"></div>
+            </div>
+            <div class="report-section" id="common-issues-section" data-aos="fade-up">
                 <h3>Areas to Improve</h3>
                 <ul id="common-issues-list" class="issues-list"></ul>
             </div>
-
-            <div class="report-actions">
-                <button id="try-again-btn" class="btn btn-begin">Try Again</button>
-                <button id="choose-exercise-btn" class="btn btn-back">Choose Exercise</button>
+            <div class="report-actions" data-aos="fade-up">
+                <button id="download-recording-btn" class="btn btn-outline hidden">Download Recording</button>
+                <button id="delete-recording-btn" class="btn btn-outline hidden" style="color:var(--bad);border-color:var(--bad)">Delete Recording</button>
+                <button id="try-again-btn" class="btn btn-primary">Try Again</button>
+                <button id="choose-exercise-btn" class="btn btn-outline">Choose Exercise</button>
             </div>
         </div>
     </div>
 
-    <!-- Hidden canvas for capturing frames -->
+    <!-- PAGE: About -->
+    <div id="page-about" class="page">
+        <!-- About Hero -->
+        <section class="about-hero">
+            <div class="about-hero-bg">
+                <img src="/static/images/about_hero.jpg" alt="">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="container about-hero-content">
+                <span class="section-label section-label--accent" data-aos="fade-up">About the Project</span>
+                <h2 class="section-title section-title--left" data-aos="fade-up">Smarter Training,<br><em>Better Results</em></h2>
+                <p class="about-hero-desc" data-aos="fade-up" data-aos-delay="100">A real-time computer vision system for exercise form evaluation. Built as a BSc Computer Science final year project at the University of Greenwich.</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- Problem / Solution -->
+            <div class="about-split">
+                <div class="about-block" data-aos="fade-up" data-aos-delay="0">
+                    <div class="about-block-image">
+                        <img src="/static/images/stretch.jpg" alt="">
+                    </div>
+                    <div class="about-block-content">
+                        <span class="section-label">The Problem</span>
+                        <h3>Poor Form Leads to <em>Injuries</em></h3>
+                        <p>Incorrect exercise form is the leading cause of gym injuries. Personal trainers are expensive and not always available. Most people train alone without feedback on their technique, risking long-term damage to joints and muscles that could easily be prevented with real-time guidance.</p>
+                    </div>
+                </div>
+                <div class="about-block" data-aos="fade-up" data-aos-delay="150">
+                    <div class="about-block-image">
+                        <img src="/static/images/dumbbells.jpg" alt="">
+                    </div>
+                    <div class="about-block-content">
+                        <span class="section-label">The Solution</span>
+                        <h3>AI That Watches <em>Your Form</em></h3>
+                        <p>ExerVision uses computer vision and machine learning to analyse your body position in real time, providing the same feedback a personal trainer would &mdash; instantly and for free. Just open your webcam, select an exercise, and start training with confidence.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="about-tech">
+                <span class="section-label" data-aos="fade-up">Technology Stack</span>
+                <h3 class="section-title" data-aos="fade-up">Built With <em>Modern Tools</em></h3>
+                <div class="tech-grid">
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="0"><span class="tech-icon">&#x1F40D;</span><span>Python</span></div>
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="50"><span class="tech-icon">&#x1F4F7;</span><span>MediaPipe</span></div>
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="100"><span class="tech-icon">&#x1F441;</span><span>OpenCV</span></div>
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="150"><span class="tech-icon">&#x1F9EA;</span><span>scikit-learn</span></div>
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="200"><span class="tech-icon">&#x1F525;</span><span>PyTorch</span></div>
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="250"><span class="tech-icon">&#x1F310;</span><span>Flask</span></div>
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300"><span class="tech-icon">&#x26A1;</span><span>Socket.IO</span></div>
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="350"><span class="tech-icon">&#x2B50;</span><span>JavaScript</span></div>
+                </div>
+            </div>
+
+            <!-- Classifier comparison -->
+            <div class="about-classifiers">
+                <span class="section-label" data-aos="fade-up">Model Comparison</span>
+                <h3 class="section-title" data-aos="fade-up">Three Classifiers, <em>One Goal</em></h3>
+                <div class="classifier-cards">
+                    <div class="clf-card clf-card--green" data-aos="fade-up" data-aos-delay="0">
+                        <h4>Rule-Based</h4>
+                        <p class="clf-desc">Hand-crafted biomechanical thresholds for each exercise</p>
+                        <div class="clf-meta"><span>No training data</span><span>Interpretable</span></div>
+                    </div>
+                    <div class="clf-card clf-card--blue" data-aos="fade-up" data-aos-delay="100">
+                        <h4>Random Forest</h4>
+                        <p class="clf-desc">Ensemble ML model trained on extracted pose features</p>
+                        <div class="clf-meta"><span>F1: 0.70-0.98</span><span>Best accuracy</span></div>
+                    </div>
+                    <div class="clf-card clf-card--violet" data-aos="fade-up" data-aos-delay="200">
+                        <h4>BiLSTM</h4>
+                        <p class="clf-desc">Deep learning with temporal sequence awareness and attention</p>
+                        <div class="clf-meta"><span>GPU accelerated</span><span>Sequence-aware</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <canvas id="capture-canvas" style="display:none;"></canvas>
 
-    <footer>
-        <p>ExerVision &copy; 2026 | BSc Computer Science FYP</p>
+    <!-- Footer -->
+    <footer id="main-footer">
+        <div class="footer-bg">
+            <img src="/static/images/atmosphere.jpg" alt="" loading="lazy">
+        </div>
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <span class="nav-brand">ExerVision</span>
+                    <p>AI-powered exercise form evaluation using real-time pose estimation and machine learning.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navigate</h4>
+                    <a href="#" data-nav="home">Home</a>
+                    <a href="#" data-nav="exercises">Exercises</a>
+                    <a href="#" data-nav="about">About</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Technology</h4>
+                    <span>MediaPipe BlazePose</span>
+                    <span>Random Forest</span>
+                    <span>BiLSTM + Attention</span>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>ExerVision &copy; 2026 &middot; BSc Computer Science FYP &middot; University of Greenwich</p>
+            </div>
+        </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js"></script>
-    <script src="/static/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.js" crossorigin="anonymous"></script>
+    <script src="/static/app.js?v=12"></script>
 </body>
 </html>

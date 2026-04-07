@@ -27,6 +27,8 @@ EXERCISE_FEATURES = {
             "left_hip_velocity",
             "left_knee_velocity",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "lunge": {
         "primary_angles": ["left_knee", "right_knee", "left_hip", "right_hip"],
@@ -41,6 +43,8 @@ EXERCISE_FEATURES = {
             "right_knee_rom",
             "left_hip_velocity",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "deadlift": {
         "primary_angles": ["left_hip", "right_hip", "left_knee", "right_knee"],
@@ -56,6 +60,8 @@ EXERCISE_FEATURES = {
             "left_hip_velocity",
             "left_wrist_velocity",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "bench_press": {
         "primary_angles": ["left_elbow", "right_elbow", "left_shoulder", "right_shoulder"],
@@ -70,6 +76,8 @@ EXERCISE_FEATURES = {
             "right_elbow_rom",
             "left_wrist_velocity",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "overhead_press": {
         "primary_angles": ["left_elbow", "right_elbow", "left_shoulder", "right_shoulder"],
@@ -84,6 +92,8 @@ EXERCISE_FEATURES = {
             "right_elbow_rom",
             "left_wrist_velocity",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "pullup": {
         "primary_angles": ["left_elbow", "right_elbow", "left_shoulder", "right_shoulder"],
@@ -99,6 +109,8 @@ EXERCISE_FEATURES = {
             "left_wrist_velocity",
             "left_wrist_accel",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "pushup": {
         "primary_angles": ["left_elbow", "right_elbow", "left_shoulder", "right_shoulder"],
@@ -113,6 +125,8 @@ EXERCISE_FEATURES = {
             "right_elbow_rom",
             "left_shoulder_velocity",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "plank": {
         "primary_angles": ["left_hip", "right_hip", "left_shoulder", "right_shoulder"],
@@ -125,6 +139,8 @@ EXERCISE_FEATURES = {
             "left_hip_velocity",
             "left_shoulder_velocity",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "bicep_curl": {
         "primary_angles": ["left_elbow", "right_elbow"],
@@ -140,6 +156,8 @@ EXERCISE_FEATURES = {
             "left_wrist_velocity",
             "left_wrist_accel",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
     "tricep_dip": {
         "primary_angles": ["left_elbow", "right_elbow", "left_shoulder", "right_shoulder"],
@@ -153,5 +171,7 @@ EXERCISE_FEATURES = {
             "right_elbow_rom",
             "left_wrist_velocity",
         ],
+        "use_landmarks": True,
+        "landmark_feature_count": 99,
     },
 }

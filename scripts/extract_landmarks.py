@@ -233,12 +233,14 @@ def process_kaggle_videos(frame_skip: int = 1):
         return
 
     # Map Kaggle folder names to our exercise names
+    # Exact folder name → exercise mapping
     exercise_mapping = {
         "squat": "squat",
         "squats": "squat",
         "lunge": "lunge",
         "lunges": "lunge",
         "deadlift": "deadlift",
+        "romanian deadlift": "deadlift",
         "bench press": "bench_press",
         "bench_press": "bench_press",
         "overhead press": "overhead_press",
@@ -255,9 +257,19 @@ def process_kaggle_videos(frame_skip: int = 1):
         "bicep curl": "bicep_curl",
         "bicep_curl": "bicep_curl",
         "biceps curl": "bicep_curl",
+        "barbell biceps curl": "bicep_curl",
         "tricep dip": "tricep_dip",
         "tricep_dip": "tricep_dip",
+        "tricep dips": "tricep_dip",
         "dips": "tricep_dip",
+    }
+    # Folders that should NOT match via partial matching
+    exclude_folders = {
+        "decline bench press", "incline bench press",
+        "chest fly machine", "hammer curl", "hip thrust",
+        "lat pulldown", "lateral raise", "leg extension",
+        "leg raises", "russian twist", "t bar row",
+        "tricep pushdown",
     }
 
     video_extensions = {".mp4", ".webm", ".mkv", ".avi", ".mov"}
@@ -275,7 +287,7 @@ def process_kaggle_videos(frame_skip: int = 1):
             folder_name = rel_path.parts[0].lower() if len(rel_path.parts) > 1 else ""
 
             exercise = exercise_mapping.get(folder_name, None)
-            if exercise is None:
+            if exercise is None and folder_name not in exclude_folders:
                 # Try matching partial names
                 for key, val in exercise_mapping.items():
                     if key in folder_name:

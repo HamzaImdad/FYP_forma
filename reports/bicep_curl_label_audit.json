@@ -1,0 +1,10 @@
+{
+  "exercise": "bicep_curl",
+  "total_sequences": 4844,
+  "flagged_count": 0,
+  "flagged_percentage": 0.0,
+  "confidence_threshold": 0.7,
+  "model_threshold": 0.5000000000000001,
+  "flagged_videos": [],
+  "flagged_details": []
+}

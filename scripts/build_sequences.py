@@ -32,15 +32,37 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.pose_estimation.base import PoseResult
 from src.feature_extraction.features import FeatureExtractor
-from src.feature_extraction.landmark_features import LandmarkFeatureExtractor, LANDMARK_FEATURE_NAMES
-from src.utils.constants import LANDMARK_NAMES, NUM_LANDMARKS, EXERCISES
+from src.feature_extraction.landmark_features import (
+    LandmarkFeatureExtractor, LANDMARK_FEATURE_NAMES, ALL_TEMPORAL_FEATURE_NAMES,
+)
+from src.feature_extraction.angles import compute_joint_angles
+from src.utils.constants import LANDMARK_NAMES, NUM_LANDMARKS, EXERCISES, JOINT_ANGLES
 from src.utils.video_parsing import parse_video_csv_name, get_base_video_id
+
+# Joint angle feature names (10 angles, normalized to 0-1 range)
+ANGLE_FEATURE_NAMES = [f"angle_{name}" for name in JOINT_ANGLES.keys()]
+# Hybrid feature names: 99 landmarks + 10 angles = 109
+HYBRID_FEATURE_NAMES = LANDMARK_FEATURE_NAMES + ANGLE_FEATURE_NAMES
 
 LANDMARKS_DIR = PROJECT_ROOT / "data" / "processed" / "landmarks"
 FEATURES_DIR = PROJECT_ROOT / "data" / "processed" / "features"
 SEQUENCES_DIR = PROJECT_ROOT / "data" / "processed" / "sequences"
 SPLITS_DIR = PROJECT_ROOT / "data" / "processed" / "splits"
 SEQUENCES_DIR.mkdir(parents=True, exist_ok=True)
+
+# Per-exercise sequence length configs (matches bilstm_classifier.py EXERCISE_CONFIGS)
+EXERCISE_SEQ_LENS = {
+    "deadlift": 45,
+    "squat": 45,
+    "bench_press": 30,
+    "pushup": 30,
+    "pullup": 30,
+    "plank": 30,
+    "lunge": 30,
+    "bicep_curl": 30,
+    "overhead_press": 30,
+    "tricep_dip": 30,
+}
 
 
 def row_to_pose_result(row: pd.Series) -> PoseResult:
@@ -52,10 +74,12 @@ def row_to_pose_result(row: pd.Series) -> PoseResult:
         landmarks[i, 0] = float(row.get(f"{name}_x", 0.0) or 0.0)
         landmarks[i, 1] = float(row.get(f"{name}_y", 0.0) or 0.0)
         landmarks[i, 2] = float(row.get(f"{name}_z", 0.0) or 0.0)
-        landmarks[i, 3] = float(row.get(f"{name}_vis", 0.0) or 0.0)
-        world_landmarks[i, 0] = float(row.get(f"{name}_wx", 0.0) or 0.0)
-        world_landmarks[i, 1] = float(row.get(f"{name}_wy", 0.0) or 0.0)
-        world_landmarks[i, 2] = float(row.get(f"{name}_wz", 0.0) or 0.0)
+        # Handle both old (_vis) and new (_visibility) column naming
+        vis_val = row.get(f"{name}_visibility", row.get(f"{name}_vis", 0.0))
+        landmarks[i, 3] = float(vis_val or 0.0)
+        world_landmarks[i, 0] = float(row.get(f"world_{name}_x", row.get(f"{name}_wx", 0.0)) or 0.0)
+        world_landmarks[i, 1] = float(row.get(f"world_{name}_y", row.get(f"{name}_wy", 0.0)) or 0.0)
+        world_landmarks[i, 2] = float(row.get(f"world_{name}_z", row.get(f"{name}_wz", 0.0)) or 0.0)
 
     ts_val = row.get("timestamp_ms", 0)
     try:
@@ -142,6 +166,33 @@ def _check_manifest_staleness(
         )
 
 
+def _add_temporal_features(frame_features_arr: np.ndarray) -> np.ndarray:
+    """Add velocity, acceleration, and symmetry features to a sequence of landmark frames.
+
+    Input:  (n_frames, 99) — position features
+    Output: (n_frames, 330) — position(99) + velocity(99) + acceleration(99) + symmetry(33)
+    """
+    n_frames = frame_features_arr.shape[0]
+
+    # Velocity: frame-to-frame difference
+    velocity = np.zeros_like(frame_features_arr)
+    velocity[1:] = frame_features_arr[1:] - frame_features_arr[:-1]
+
+    # Acceleration: velocity difference
+    acceleration = np.zeros_like(frame_features_arr)
+    acceleration[1:] = velocity[1:] - velocity[:-1]
+
+    # Symmetry: left-right landmark differences (11 pairs x 3 coords = 33)
+    sym_pairs = [(11,12),(13,14),(15,16),(17,18),(19,20),(21,22),(23,24),(25,26),(27,28),(29,30),(31,32)]
+    symmetry = np.zeros((n_frames, 33), dtype=np.float32)
+    for i, (left, right) in enumerate(sym_pairs):
+        left_xyz = frame_features_arr[:, left*3:(left+1)*3]
+        right_xyz = frame_features_arr[:, right*3:(right+1)*3]
+        symmetry[:, i*3:(i+1)*3] = left_xyz - right_xyz
+
+    return np.concatenate([frame_features_arr, velocity, acceleration, symmetry], axis=1)
+
+
 def build_partition_sequences(
     exercise: str,
     partition: str,
@@ -150,6 +201,8 @@ def build_partition_sequences(
     sequences_dir: Path,
     seq_len: int = 30,
     lfe: "LandmarkFeatureExtractor | None" = None,
+    temporal: bool = False,
+    hybrid: bool = False,
 ) -> tuple:
     """Build landmark sequences for one exercise partition from its manifest file.
 
@@ -157,8 +210,9 @@ def build_partition_sequences(
     the CSVs listed there. Temporal row order is preserved (no sort_index).
 
     Stride policy:
-        - train:     stride = seq_len       (non-overlapping windows)
-        - val/test:  stride = seq_len // 2  (50% overlap for denser coverage)
+        - train correct:   stride = seq_len // 3  (67% overlap to upsample minority class)
+        - train incorrect: stride = seq_len        (non-overlapping windows)
+        - val/test:        stride = seq_len // 2   (50% overlap for denser coverage)
 
     Args:
         exercise:      Exercise name string.
@@ -194,7 +248,15 @@ def build_partition_sequences(
     if lfe is None:
         lfe = LandmarkFeatureExtractor()
 
-    stride = seq_len if partition == "train" else seq_len // 2
+    # Use different strides per class to balance the dataset across ALL partitions:
+    #   - correct (minority): higher overlap to generate more sequences
+    #   - incorrect (majority): lower overlap to avoid overwhelming correct class
+    # Train uses more aggressive oversampling; val/test use moderate oversampling
+    stride_train_correct = max(1, seq_len // 3)     # ~10 for seq_len=30 (67% overlap)
+    stride_train_incorrect = seq_len                 # 30 for seq_len=30 (non-overlapping)
+    stride_valtest_correct = max(1, seq_len // 3)    # ~10 for seq_len=30 (67% overlap)
+    stride_valtest_incorrect = seq_len // 2           # 15 for seq_len=30 (50% overlap)
+
     n_features = 99
 
     all_sequences = []
@@ -227,6 +289,16 @@ def build_partition_sequences(
                 continue
 
             lm_vec = lfe.extract_landmarks(pose)
+
+            if hybrid:
+                # Compute all 10 joint angles, normalize to 0-1 (divide by 180)
+                angles = compute_joint_angles(pose, use_world=True)
+                angle_vec = np.array([
+                    (angles.get(name, 0.0) or 0.0) / 180.0
+                    for name in JOINT_ANGLES.keys()
+                ], dtype=np.float32)
+                lm_vec = np.concatenate([lm_vec, angle_vec])
+
             frame_features.append(lm_vec)
 
         if len(frame_features) < seq_len:
@@ -237,7 +309,18 @@ def build_partition_sequences(
                 frame_features.append(frame_features[-1].copy())
 
         frame_features_arr = np.array(frame_features, dtype=np.float32)
+
+        # Add temporal features (velocity + acceleration + symmetry) if requested
+        if temporal and frame_features_arr.shape[1] == 99:
+            frame_features_arr = _add_temporal_features(frame_features_arr)
+
         label_encoded = 1 if label == "correct" else 0
+
+        # Select stride based on partition and label
+        if partition == "train":
+            stride = stride_train_correct if label == "correct" else stride_train_incorrect
+        else:
+            stride = stride_valtest_correct if label == "correct" else stride_valtest_incorrect
 
         for start in range(0, len(frame_features_arr) - seq_len + 1, stride):
             window = frame_features_arr[start: start + seq_len]
@@ -250,17 +333,57 @@ def build_partition_sequences(
 
     X = np.stack(all_sequences, axis=0).astype(np.float32)  # (n, seq_len, 99)
     y = np.array(all_labels, dtype=np.int64)
+    all_video_ids_arr = np.array(all_video_ids)
 
-    out_path = sequences_dir / f"{exercise}_{partition}_sequences.npz"
+    # --- Enforce class balance: downsample majority class to match minority ---
+    n_correct = int((y == 1).sum())
+    n_incorrect = int((y == 0).sum())
+    if n_correct > 0 and n_incorrect > 0:
+        max_ratio = 1.5  # Allow at most 1.5:1 ratio
+        min_count = min(n_correct, n_incorrect)
+        max_count = int(min_count * max_ratio)
+
+        if n_correct > max_count:
+            # Downsample correct class
+            correct_idx = np.where(y == 1)[0]
+            incorrect_idx = np.where(y == 0)[0]
+            rng = np.random.RandomState(42)
+            keep_correct = rng.choice(correct_idx, size=max_count, replace=False)
+            keep_idx = np.sort(np.concatenate([keep_correct, incorrect_idx]))
+            X = X[keep_idx]
+            y = y[keep_idx]
+            all_video_ids_arr = all_video_ids_arr[keep_idx]
+            print(f"    Balanced: {n_correct} correct -> {max_count} (capped at {max_ratio}:1)")
+
+        elif n_incorrect > max_count:
+            # Downsample incorrect class
+            correct_idx = np.where(y == 1)[0]
+            incorrect_idx = np.where(y == 0)[0]
+            rng = np.random.RandomState(42)
+            keep_incorrect = rng.choice(incorrect_idx, size=max_count, replace=False)
+            keep_idx = np.sort(np.concatenate([correct_idx, keep_incorrect]))
+            X = X[keep_idx]
+            y = y[keep_idx]
+            all_video_ids_arr = all_video_ids_arr[keep_idx]
+            print(f"    Balanced: {n_incorrect} incorrect -> {max_count} (capped at {max_ratio}:1)")
+
+    suffix = "_hybrid" if hybrid else ""
+    out_path = sequences_dir / f"{exercise}_{partition}{suffix}_sequences.npz"
+    if temporal:
+        feature_names_out = np.array(ALL_TEMPORAL_FEATURE_NAMES)
+    elif hybrid:
+        feature_names_out = np.array(HYBRID_FEATURE_NAMES)
+    else:
+        feature_names_out = np.array(LANDMARK_FEATURE_NAMES)
     np.savez_compressed(
         out_path,
         X=X,
         y=y,
-        video_ids=np.array(all_video_ids),
-        feature_names=np.array(LANDMARK_FEATURE_NAMES),
+        video_ids=all_video_ids_arr,
+        feature_names=feature_names_out,
     )
 
-    return X, y, all_video_ids
+    return X, y, list(all_video_ids_arr)
 
 
 def build_sequences_for_exercise(
@@ -430,6 +553,14 @@ def main():
                         help="Stride between windows (default: 15, only for legacy mode)")
     parser.add_argument("--use-landmarks", action="store_true",
                         help="Use raw normalized landmarks (99 features) instead of hand-crafted features")
+    parser.add_argument("--temporal", action="store_true",
+                        help="Include velocity + acceleration + symmetry features (330 features total)")
+    parser.add_argument("--hybrid", action="store_true",
+                        help="Include joint angle features (99 landmarks + 10 angles = 109 features)")
+    parser.add_argument("--per-exercise-seqlen", action="store_true", default=True,
+                        help="Use per-exercise sequence lengths from EXERCISE_SEQ_LENS (default: True)")
+    parser.add_argument("--no-per-exercise-seqlen", dest="per_exercise_seqlen", action="store_false",
+                        help="Use single seq-len for all exercises")
     parser.add_argument("--partition", type=str, default="all",
                         choices=["train", "val", "test", "all"],
                         help="Which partition(s) to build (default: all)")
@@ -455,7 +586,14 @@ def main():
     args.sequences_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Building sequence datasets:")
-    print(f"  Mode: {'raw landmarks (99 features)' if args.use_landmarks else 'hand-crafted features'}")
+    mode_str = 'raw landmarks (99 features)'
+    if args.hybrid:
+        mode_str = 'hybrid (99 landmarks + 10 angles = 109 features)'
+    elif args.temporal:
+        mode_str = 'temporal (330 features)'
+    elif not args.use_landmarks:
+        mode_str = 'hand-crafted features'
+    print(f"  Mode: {mode_str}")
     if args.use_landmarks and args.use_manifests:
         print(f"  Source: manifest-based (data/processed/splits/)")
         print(f"  Partition(s): {args.partition}")
@@ -485,7 +623,13 @@ def main():
                 print(f"  Run: python scripts/split_videos.py --exercise {exercise}")
                 continue
 
-            print(f"Processing {exercise}...")
+            # Per-exercise seq_len override
+            if args.per_exercise_seqlen and args.seq_len in (60, 30):
+                exercise_seq_len = EXERCISE_SEQ_LENS.get(exercise, args.seq_len)
+            else:
+                exercise_seq_len = args.seq_len
+
+            print(f"Processing {exercise} (seq_len={exercise_seq_len})...")
             ex_summary = {}
 
             for part in partitions:
@@ -495,8 +639,10 @@ def main():
                     splits_dir=args.splits_dir,
                     landmarks_dir=args.landmarks_dir,
                     sequences_dir=args.sequences_dir,
-                    seq_len=args.seq_len,
+                    seq_len=exercise_seq_len,
                     lfe=lfe,
+                    temporal=args.temporal,
+                    hybrid=args.hybrid,
                 )
 
                 if len(X) == 0:

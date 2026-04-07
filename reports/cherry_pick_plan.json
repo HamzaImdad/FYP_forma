@@ -1,0 +1,52 @@
+{
+  "squat": {
+    "f1": 0.55,
+    "source": "Run1 (99d, FocalLoss+SWA)",
+    "model": "squat_bilstm_v2_99d_run1.pt"
+  },
+  "lunge": {
+    "f1": 0.754,
+    "source": "Run3 (330d, BCE)",
+    "model": "lunge_bilstm_v2.pt"
+  },
+  "deadlift": {
+    "f1": 0.58,
+    "source": "Run1 (99d, degenerate)",
+    "model": null
+  },
+  "bench_press": {
+    "f1": 0.657,
+    "source": "Run2 (99d, BCE)",
+    "model": null
+  },
+  "overhead_press": {
+    "f1": 0.742,
+    "source": "Run1 (99d, FocalLoss+SWA)",
+    "model": "overhead_press_bilstm_v2_99d_run1.pt"
+  },
+  "pullup": {
+    "f1": 0.751,
+    "source": "Pretrained fine-tune",
+    "model": "pullup_bilstm_v2_pretrained.pt"
+  },
+  "pushup": {
+    "f1": 0.682,
+    "source": "Run2 (99d, BCE)",
+    "model": null
+  },
+  "plank": {
+    "f1": 0.702,
+    "source": "Pretrained fine-tune",
+    "model": "plank_bilstm_v2_pretrained.pt"
+  },
+  "bicep_curl": {
+    "f1": 0.725,
+    "source": "Run1 (99d, FocalLoss+SWA)",
+    "model": "bicep_curl_bilstm_v2_99d_run1.pt"
+  },
+  "tricep_dip": {
+    "f1": 0.601,
+    "source": "Run3 (330d, BCE)",
+    "model": "tricep_dip_bilstm_v2.pt"
+  }
+}

@@ -110,6 +110,7 @@
     "pushup": {
         "display_name": "Push-Up",
         "muscles": ["Chest", "Shoulders", "Triceps", "Core"],
+        "camera_setup": "Place your camera so it can see your FULL BODY from head to feet. Best position: to the side at floor level, 2-3 metres away. A front or diagonal angle also works — just make sure shoulders, elbows, hips and ankles are all visible. Prop your phone on the floor or use a laptop at ground level.",
         "instructions": [
             "Start in a plank position with hands slightly wider than shoulders",
             "Keep your body in a straight line from head to heels",

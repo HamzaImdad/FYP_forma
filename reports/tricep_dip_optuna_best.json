@@ -1,0 +1,15 @@
+{
+  "exercise": "tricep_dip",
+  "best_val_f1": 0.784688995215311,
+  "best_params": {
+    "hidden_dim": 256,
+    "num_layers": 1,
+    "dropout": 0.2,
+    "lr": 0.00016311883244896706,
+    "batch_size": 64,
+    "n_heads": 1
+  },
+  "n_trials": 30,
+  "n_pruned": 2,
+  "n_complete": 28
+}

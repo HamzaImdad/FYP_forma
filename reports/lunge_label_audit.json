@@ -1,0 +1,2098 @@
+{
+  "exercise": "lunge",
+  "total_sequences": 3864,
+  "flagged_count": 248,
+  "flagged_percentage": 6.42,
+  "confidence_threshold": 0.7,
+  "model_threshold": 0.6000000000000002,
+  "flagged_videos": [
+    {
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "flagged_count": 54,
+      "avg_confidence": 0.9624,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "flagged_count": 41,
+      "avg_confidence": 0.9751,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "flagged_count": 40,
+      "avg_confidence": 0.9716,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "flagged_count": 25,
+      "avg_confidence": 0.958,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "flagged_count": 17,
+      "avg_confidence": 0.994,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "flagged_count": 14,
+      "avg_confidence": 0.9403,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "flagged_count": 12,
+      "avg_confidence": 0.9517,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "flagged_count": 11,
+      "avg_confidence": 0.9749,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "flagged_count": 11,
+      "avg_confidence": 0.934,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_lunge_correct_g8x9ck225ZE",
+      "flagged_count": 5,
+      "avg_confidence": 0.9644,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_lunge_correct_C_P3Q-PssvY",
+      "flagged_count": 4,
+      "avg_confidence": 0.934,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_lunge_incorrect_21s1CisV3jU",
+      "flagged_count": 4,
+      "avg_confidence": 0.997,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_lunge_incorrect_6UTwwFBPhPY",
+      "flagged_count": 4,
+      "avg_confidence": 0.9739,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_lunge_incorrect_How To Do A Lunge Without Hurting Your Knees-Tutor_Jw-10_smN0s",
+      "flagged_count": 3,
+      "avg_confidence": 0.9976,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_lunge_correct_cHWPbW25py4",
+      "flagged_count": 1,
+      "avg_confidence": 0.7094,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_lunge_correct_G_cv0yXpNPU",
+      "flagged_count": 1,
+      "avg_confidence": 0.753,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_lunge_incorrect_Do you struggle for balance in Lunges\uff1f\uff1f Quick fix_m9f9pPqNjJ8",
+      "flagged_count": 1,
+      "avg_confidence": 0.8132,
+      "ground_truth_label": 0
+    }
+  ],
+  "flagged_details": [
+    {
+      "index": 298,
+      "video_id": "youtube_lunge_correct_cHWPbW25py4",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2906,
+      "confidence": 0.7094
+    },
+    {
+      "index": 584,
+      "video_id": "youtube_lunge_correct_G_cv0yXpNPU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.247,
+      "confidence": 0.753
+    },
+    {
+      "index": 2500,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2501,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2505,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.073,
+      "confidence": 0.927
+    },
+    {
+      "index": 2507,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0014,
+      "confidence": 0.9986
+    },
+    {
+      "index": 2508,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1673,
+      "confidence": 0.8327
+    },
+    {
+      "index": 2509,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1779,
+      "confidence": 0.8221
+    },
+    {
+      "index": 2511,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0004,
+      "confidence": 0.9996
+    },
+    {
+      "index": 2512,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2513,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0008,
+      "confidence": 0.9992
+    },
+    {
+      "index": 2523,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2363,
+      "confidence": 0.7637
+    },
+    {
+      "index": 2524,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2525,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2536,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1222,
+      "confidence": 0.8778
+    },
+    {
+      "index": 2537,
+      "video_id": "youtube_lunge_correct_D4cM8BdpOiY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0554,
+      "confidence": 0.9446
+    },
+    {
+      "index": 2550,
+      "video_id": "youtube_lunge_correct_g8x9ck225ZE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0119,
+      "confidence": 0.9881
+    },
+    {
+      "index": 2637,
+      "video_id": "youtube_lunge_correct_g8x9ck225ZE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1581,
+      "confidence": 0.8419
+    },
+    {
+      "index": 2652,
+      "video_id": "youtube_lunge_correct_g8x9ck225ZE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0048,
+      "confidence": 0.9952
+    },
+    {
+      "index": 2671,
+      "video_id": "youtube_lunge_correct_g8x9ck225ZE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0009,
+      "confidence": 0.9991
+    },
+    {
+      "index": 2672,
+      "video_id": "youtube_lunge_correct_g8x9ck225ZE",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0022,
+      "confidence": 0.9978
+    },
+    {
+      "index": 2692,
+      "video_id": "ytincorrect_lunge_incorrect_Do you struggle for balance in Lunges\uff1f\uff1f Quick fix_m9f9pPqNjJ8",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8132,
+      "confidence": 0.8132
+    },
+    {
+      "index": 2697,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.999,
+      "confidence": 0.999
+    },
+    {
+      "index": 2708,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9986,
+      "confidence": 0.9986
+    },
+    {
+      "index": 2718,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9786,
+      "confidence": 0.9786
+    },
+    {
+      "index": 2719,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9974,
+      "confidence": 0.9974
+    },
+    {
+      "index": 2723,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9963,
+      "confidence": 0.9963
+    },
+    {
+      "index": 2759,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9911,
+      "confidence": 0.9911
+    },
+    {
+      "index": 2767,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 2768,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2773,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9128,
+      "confidence": 0.9128
+    },
+    {
+      "index": 2775,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9506,
+      "confidence": 0.9506
+    },
+    {
+      "index": 2777,
+      "video_id": "ytincorrect_lunge_incorrect_How to Fix Knee Pain With SIMPLE Exercise (FOREVER_lEHqcWy_2_w",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9005,
+      "confidence": 0.9005
+    },
+    {
+      "index": 2813,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9131,
+      "confidence": 0.9131
+    },
+    {
+      "index": 2817,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7046,
+      "confidence": 0.7046
+    },
+    {
+      "index": 2818,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2821,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9925,
+      "confidence": 0.9925
+    },
+    {
+      "index": 2822,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9808,
+      "confidence": 0.9808
+    },
+    {
+      "index": 2825,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9663,
+      "confidence": 0.9663
+    },
+    {
+      "index": 2826,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9364,
+      "confidence": 0.9364
+    },
+    {
+      "index": 2830,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2834,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9877,
+      "confidence": 0.9877
+    },
+    {
+      "index": 2840,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9973,
+      "confidence": 0.9973
+    },
+    {
+      "index": 2844,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2845,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8745,
+      "confidence": 0.8745
+    },
+    {
+      "index": 2846,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 2849,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2850,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9583,
+      "confidence": 0.9583
+    },
+    {
+      "index": 2853,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8729,
+      "confidence": 0.8729
+    },
+    {
+      "index": 2854,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8281,
+      "confidence": 0.8281
+    },
+    {
+      "index": 2855,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9907,
+      "confidence": 0.9907
+    },
+    {
+      "index": 2856,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 2857,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2858,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 2859,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2860,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9974,
+      "confidence": 0.9974
+    },
+    {
+      "index": 2861,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2887,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.993,
+      "confidence": 0.993
+    },
+    {
+      "index": 2888,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2889,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2890,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9997,
+      "confidence": 0.9997
+    },
+    {
+      "index": 2891,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 2894,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9994,
+      "confidence": 0.9994
+    },
+    {
+      "index": 2895,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9989,
+      "confidence": 0.9989
+    },
+    {
+      "index": 2902,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "index": 2904,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 2905,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2906,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2908,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2928,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2929,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2933,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2934,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.996,
+      "confidence": 0.996
+    },
+    {
+      "index": 2936,
+      "video_id": "ytincorrect_lunge_incorrect_When You Do Lunges Every Day, This Is What Happens_DY3vNvpIKbk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9986,
+      "confidence": 0.9986
+    },
+    {
+      "index": 2937,
+      "video_id": "youtube_lunge_correct_C_P3Q-PssvY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0063,
+      "confidence": 0.9937
+    },
+    {
+      "index": 2938,
+      "video_id": "youtube_lunge_correct_C_P3Q-PssvY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2939,
+      "video_id": "youtube_lunge_correct_C_P3Q-PssvY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 2940,
+      "video_id": "youtube_lunge_correct_C_P3Q-PssvY",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2575,
+      "confidence": 0.7425
+    },
+    {
+      "index": 3005,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0107,
+      "confidence": 0.9893
+    },
+    {
+      "index": 3006,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 3023,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0032,
+      "confidence": 0.9968
+    },
+    {
+      "index": 3024,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3025,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.001,
+      "confidence": 0.999
+    },
+    {
+      "index": 3026,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0335,
+      "confidence": 0.9665
+    },
+    {
+      "index": 3027,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2587,
+      "confidence": 0.7413
+    },
+    {
+      "index": 3029,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0007,
+      "confidence": 0.9993
+    },
+    {
+      "index": 3030,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3031,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.004,
+      "confidence": 0.996
+    },
+    {
+      "index": 3034,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0106,
+      "confidence": 0.9894
+    },
+    {
+      "index": 3035,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0058,
+      "confidence": 0.9942
+    },
+    {
+      "index": 3058,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0029,
+      "confidence": 0.9971
+    },
+    {
+      "index": 3079,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0009,
+      "confidence": 0.9991
+    },
+    {
+      "index": 3080,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 3081,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 3082,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3083,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3084,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3085,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 3086,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0003,
+      "confidence": 0.9997
+    },
+    {
+      "index": 3095,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1846,
+      "confidence": 0.8154
+    },
+    {
+      "index": 3096,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1999,
+      "confidence": 0.8001
+    },
+    {
+      "index": 3097,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1725,
+      "confidence": 0.8275
+    },
+    {
+      "index": 3098,
+      "video_id": "youtube_lunge_correct_mBhqeQm8RdM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1591,
+      "confidence": 0.8409
+    },
+    {
+      "index": 3119,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0041,
+      "confidence": 0.9959
+    },
+    {
+      "index": 3120,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0016,
+      "confidence": 0.9984
+    },
+    {
+      "index": 3121,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1562,
+      "confidence": 0.8438
+    },
+    {
+      "index": 3130,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0484,
+      "confidence": 0.9516
+    },
+    {
+      "index": 3131,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0047,
+      "confidence": 0.9953
+    },
+    {
+      "index": 3132,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1644,
+      "confidence": 0.8356
+    },
+    {
+      "index": 3140,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1093,
+      "confidence": 0.8907
+    },
+    {
+      "index": 3141,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0127,
+      "confidence": 0.9873
+    },
+    {
+      "index": 3163,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0242,
+      "confidence": 0.9758
+    },
+    {
+      "index": 3187,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1264,
+      "confidence": 0.8736
+    },
+    {
+      "index": 3188,
+      "video_id": "youtube_lunge_correct_xvC10-eCuXs",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0741,
+      "confidence": 0.9259
+    },
+    {
+      "index": 3190,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3191,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0925,
+      "confidence": 0.9075
+    },
+    {
+      "index": 3195,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.002,
+      "confidence": 0.998
+    },
+    {
+      "index": 3196,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3197,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3198,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0096,
+      "confidence": 0.9904
+    },
+    {
+      "index": 3199,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0123,
+      "confidence": 0.9877
+    },
+    {
+      "index": 3201,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2636,
+      "confidence": 0.7364
+    },
+    {
+      "index": 3202,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0665,
+      "confidence": 0.9335
+    },
+    {
+      "index": 3203,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0014,
+      "confidence": 0.9986
+    },
+    {
+      "index": 3204,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0026,
+      "confidence": 0.9974
+    },
+    {
+      "index": 3212,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0041,
+      "confidence": 0.9959
+    },
+    {
+      "index": 3216,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0176,
+      "confidence": 0.9824
+    },
+    {
+      "index": 3217,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0043,
+      "confidence": 0.9957
+    },
+    {
+      "index": 3218,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 3219,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3220,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0039,
+      "confidence": 0.9961
+    },
+    {
+      "index": 3231,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.116,
+      "confidence": 0.884
+    },
+    {
+      "index": 3254,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0055,
+      "confidence": 0.9945
+    },
+    {
+      "index": 3255,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0037,
+      "confidence": 0.9963
+    },
+    {
+      "index": 3256,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0284,
+      "confidence": 0.9716
+    },
+    {
+      "index": 3257,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0013,
+      "confidence": 0.9987
+    },
+    {
+      "index": 3258,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0127,
+      "confidence": 0.9873
+    },
+    {
+      "index": 3259,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0055,
+      "confidence": 0.9945
+    },
+    {
+      "index": 3261,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 3262,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0017,
+      "confidence": 0.9983
+    },
+    {
+      "index": 3263,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0002,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3264,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0004,
+      "confidence": 0.9996
+    },
+    {
+      "index": 3265,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3266,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 3267,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0001,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3268,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0005,
+      "confidence": 0.9995
+    },
+    {
+      "index": 3269,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1757,
+      "confidence": 0.8243
+    },
+    {
+      "index": 3274,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0011,
+      "confidence": 0.9989
+    },
+    {
+      "index": 3275,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0007,
+      "confidence": 0.9993
+    },
+    {
+      "index": 3276,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0013,
+      "confidence": 0.9987
+    },
+    {
+      "index": 3281,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0054,
+      "confidence": 0.9946
+    },
+    {
+      "index": 3282,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0244,
+      "confidence": 0.9756
+    },
+    {
+      "index": 3283,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1365,
+      "confidence": 0.8635
+    },
+    {
+      "index": 3284,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1801,
+      "confidence": 0.8199
+    },
+    {
+      "index": 3285,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0094,
+      "confidence": 0.9906
+    },
+    {
+      "index": 3288,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2968,
+      "confidence": 0.7032
+    },
+    {
+      "index": 3289,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0326,
+      "confidence": 0.9674
+    },
+    {
+      "index": 3290,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0054,
+      "confidence": 0.9946
+    },
+    {
+      "index": 3291,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0068,
+      "confidence": 0.9932
+    },
+    {
+      "index": 3292,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0173,
+      "confidence": 0.9827
+    },
+    {
+      "index": 3296,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2294,
+      "confidence": 0.7706
+    },
+    {
+      "index": 3297,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.004,
+      "confidence": 0.996
+    },
+    {
+      "index": 3298,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0018,
+      "confidence": 0.9982
+    },
+    {
+      "index": 3299,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0258,
+      "confidence": 0.9742
+    },
+    {
+      "index": 3300,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0395,
+      "confidence": 0.9605
+    },
+    {
+      "index": 3301,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.0153,
+      "confidence": 0.9847
+    },
+    {
+      "index": 3302,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.002,
+      "confidence": 0.998
+    },
+    {
+      "index": 3306,
+      "video_id": "youtube_lunge_correct_Z6R8A5tcrTc",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1595,
+      "confidence": 0.8405
+    },
+    {
+      "index": 3308,
+      "video_id": "youtube_lunge_incorrect_21s1CisV3jU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 3309,
+      "video_id": "youtube_lunge_incorrect_21s1CisV3jU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9906,
+      "confidence": 0.9906
+    },
+    {
+      "index": 3311,
+      "video_id": "youtube_lunge_incorrect_21s1CisV3jU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9989,
+      "confidence": 0.9989
+    },
+    {
+      "index": 3314,
+      "video_id": "youtube_lunge_incorrect_21s1CisV3jU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 3317,
+      "video_id": "youtube_lunge_incorrect_6UTwwFBPhPY",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9985,
+      "confidence": 0.9985
+    },
+    {
+      "index": 3318,
+      "video_id": "youtube_lunge_incorrect_6UTwwFBPhPY",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9022,
+      "confidence": 0.9022
+    },
+    {
+      "index": 3319,
+      "video_id": "youtube_lunge_incorrect_6UTwwFBPhPY",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 3320,
+      "video_id": "youtube_lunge_incorrect_6UTwwFBPhPY",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9954,
+      "confidence": 0.9954
+    },
+    {
+      "index": 3347,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.999,
+      "confidence": 0.999
+    },
+    {
+      "index": 3358,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9889,
+      "confidence": 0.9889
+    },
+    {
+      "index": 3362,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9774,
+      "confidence": 0.9774
+    },
+    {
+      "index": 3384,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9953,
+      "confidence": 0.9953
+    },
+    {
+      "index": 3424,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9943,
+      "confidence": 0.9943
+    },
+    {
+      "index": 3425,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9992,
+      "confidence": 0.9992
+    },
+    {
+      "index": 3426,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.996,
+      "confidence": 0.996
+    },
+    {
+      "index": 3427,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 3428,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9974,
+      "confidence": 0.9974
+    },
+    {
+      "index": 3440,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9983,
+      "confidence": 0.9983
+    },
+    {
+      "index": 3450,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9533,
+      "confidence": 0.9533
+    },
+    {
+      "index": 3455,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.996,
+      "confidence": 0.996
+    },
+    {
+      "index": 3458,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9908,
+      "confidence": 0.9908
+    },
+    {
+      "index": 3459,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 3460,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9915,
+      "confidence": 0.9915
+    },
+    {
+      "index": 3464,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 3476,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 3477,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9996,
+      "confidence": 0.9996
+    },
+    {
+      "index": 3479,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9508,
+      "confidence": 0.9508
+    },
+    {
+      "index": 3481,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.995,
+      "confidence": 0.995
+    },
+    {
+      "index": 3485,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9773,
+      "confidence": 0.9773
+    },
+    {
+      "index": 3486,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9481,
+      "confidence": 0.9481
+    },
+    {
+      "index": 3500,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9848,
+      "confidence": 0.9848
+    },
+    {
+      "index": 3501,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9863,
+      "confidence": 0.9863
+    },
+    {
+      "index": 3505,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9057,
+      "confidence": 0.9057
+    },
+    {
+      "index": 3508,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9273,
+      "confidence": 0.9273
+    },
+    {
+      "index": 3514,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9991,
+      "confidence": 0.9991
+    },
+    {
+      "index": 3515,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3516,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 3520,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.981,
+      "confidence": 0.981
+    },
+    {
+      "index": 3524,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9952,
+      "confidence": 0.9952
+    },
+    {
+      "index": 3525,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9274,
+      "confidence": 0.9274
+    },
+    {
+      "index": 3526,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7995,
+      "confidence": 0.7995
+    },
+    {
+      "index": 3529,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7356,
+      "confidence": 0.7356
+    },
+    {
+      "index": 3535,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9706,
+      "confidence": 0.9706
+    },
+    {
+      "index": 3538,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3541,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9747,
+      "confidence": 0.9747
+    },
+    {
+      "index": 3561,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9325,
+      "confidence": 0.9325
+    },
+    {
+      "index": 3563,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3564,
+      "video_id": "youtube_lunge_incorrect_BZ1TUVr4LFk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3671,
+      "video_id": "ytincorrect_lunge_incorrect_How To Do A Lunge Without Hurting Your Knees-Tutor_Jw-10_smN0s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9953,
+      "confidence": 0.9953
+    },
+    {
+      "index": 3672,
+      "video_id": "ytincorrect_lunge_incorrect_How To Do A Lunge Without Hurting Your Knees-Tutor_Jw-10_smN0s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9988,
+      "confidence": 0.9988
+    },
+    {
+      "index": 3673,
+      "video_id": "ytincorrect_lunge_incorrect_How To Do A Lunge Without Hurting Your Knees-Tutor_Jw-10_smN0s",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9988,
+      "confidence": 0.9988
+    },
+    {
+      "index": 3690,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.988,
+      "confidence": 0.988
+    },
+    {
+      "index": 3701,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8492,
+      "confidence": 0.8492
+    },
+    {
+      "index": 3713,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3714,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9043,
+      "confidence": 0.9043
+    },
+    {
+      "index": 3747,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9836,
+      "confidence": 0.9836
+    },
+    {
+      "index": 3756,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3759,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.966,
+      "confidence": 0.966
+    },
+    {
+      "index": 3760,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9159,
+      "confidence": 0.9159
+    },
+    {
+      "index": 3762,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9746,
+      "confidence": 0.9746
+    },
+    {
+      "index": 3763,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9086,
+      "confidence": 0.9086
+    },
+    {
+      "index": 3773,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9989,
+      "confidence": 0.9989
+    },
+    {
+      "index": 3774,
+      "video_id": "ytincorrect_lunge_incorrect_How to do the perfect LUNGE\uff1a technique and common _tRalDvBwZqg",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9313,
+      "confidence": 0.9313
+    },
+    {
+      "index": 3778,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9987,
+      "confidence": 0.9987
+    },
+    {
+      "index": 3779,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9919,
+      "confidence": 0.9919
+    },
+    {
+      "index": 3812,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9951,
+      "confidence": 0.9951
+    },
+    {
+      "index": 3813,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9837,
+      "confidence": 0.9837
+    },
+    {
+      "index": 3822,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.997,
+      "confidence": 0.997
+    },
+    {
+      "index": 3824,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3826,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9995,
+      "confidence": 0.9995
+    },
+    {
+      "index": 3827,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9884,
+      "confidence": 0.9884
+    },
+    {
+      "index": 3833,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9991,
+      "confidence": 0.9991
+    },
+    {
+      "index": 3834,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9977,
+      "confidence": 0.9977
+    },
+    {
+      "index": 3847,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9675,
+      "confidence": 0.9675
+    },
+    {
+      "index": 3848,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9921,
+      "confidence": 0.9921
+    },
+    {
+      "index": 3850,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    },
+    {
+      "index": 3856,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9962,
+      "confidence": 0.9962
+    },
+    {
+      "index": 3857,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9922,
+      "confidence": 0.9922
+    },
+    {
+      "index": 3858,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9999,
+      "confidence": 0.9999
+    },
+    {
+      "index": 3859,
+      "video_id": "ytincorrect_lunge_incorrect_Lunge Tips To Overcome Common Compensatory Mistake_saT1r0_4LGA",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.9998,
+      "confidence": 0.9998
+    }
+  ]
+}

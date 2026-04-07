@@ -1,9 +1,16 @@
 """
-Data augmentation for pose landmarks.
-Operates on PoseResult objects (not images), applying geometric transforms.
+Data augmentation for pose landmarks and extracted features.
+
+Provides two levels of augmentation:
+  1. PoseResult-level: geometric transforms on raw landmarks (augment_pose)
+  2. Feature-level: noise/mirror on extracted angle features (augment_angle_features)
+
+The feature-level functions operate on dicts of {column_name: value} and are
+used by scripts/balance_data.py to augment the minority class directly in
+feature space without needing to go back to raw landmarks.
 """
 
-from typing import List
+from typing import Dict, List, Optional
 
 import numpy as np
 
@@ -138,3 +145,156 @@ def augment_pose(pose: PoseResult, n_augmented: int = 4) -> List[PoseResult]:
         augmented.append(horizontal_flip(pose))
 
     return augmented[:n_augmented]
+
+
+# ---------------------------------------------------------------------------
+# Feature-level augmentation (operates on extracted angle/feature dicts)
+# ---------------------------------------------------------------------------
+
+# Left/right feature name pairs for mirroring
+_LR_FEATURE_PAIRS = [
+    ("left_elbow", "right_elbow"),
+    ("left_shoulder", "right_shoulder"),
+    ("left_hip", "right_hip"),
+    ("left_knee", "right_knee"),
+    ("left_ankle", "right_ankle"),
+    ("left_wrist", "right_wrist"),
+]
+
+
+def mirror_angle_feature_names(name: str) -> str:
+    """Swap 'left' <-> 'right' in a feature column name."""
+    for left, right in _LR_FEATURE_PAIRS:
+        if left in name:
+            return name.replace(left, right)
+        if right in name:
+            return name.replace(right, left)
+    return name
+
+
+def _add_angle_noise(features: Dict[str, float], std: float = 0.02) -> Dict[str, float]:
+    """Add Gaussian noise to all numeric feature values."""
+    result = {}
+    for k, v in features.items():
+        if v is None or (isinstance(v, float) and np.isnan(v)):
+            result[k] = v
+        elif isinstance(v, (int, float)):
+            result[k] = float(v) + np.random.normal(0, std)
+        else:
+            result[k] = v
+    return result
+
+
+def _mirror_angle_features(features: Dict[str, float]) -> Dict[str, float]:
+    """Swap left/right feature columns (mirror augmentation)."""
+    result = {}
+    swapped = set()
+
+    for k, v in features.items():
+        if k in swapped:
+            continue
+        mirrored_k = mirror_angle_feature_names(k)
+        if mirrored_k != k and mirrored_k in features:
+            result[k] = features[mirrored_k]
+            result[mirrored_k] = features[k]
+            swapped.add(k)
+            swapped.add(mirrored_k)
+        else:
+            result[k] = v
+
+    return result
+
+
+def _rotation_perturbation(features: Dict[str, float], max_deg: float = 3.0) -> Dict[str, float]:
+    """Add uniform ±max_deg noise to all angle columns."""
+    result = {}
+    for k, v in features.items():
+        if v is None or (isinstance(v, float) and np.isnan(v)):
+            result[k] = v
+        elif isinstance(v, (int, float)) and k.startswith("angle_"):
+            result[k] = float(v) + np.random.uniform(-max_deg, max_deg)
+        else:
+            result[k] = v
+    return result
+
+
+def augment_angle_features(
+    features: Dict[str, float],
+    n_augmented: int = 4,
+) -> List[Dict[str, float]]:
+    """
+    Generate augmented copies of an angle-feature dict.
+
+    Augmentation strategies:
+      1. Gaussian noise (std=0.02) on all numeric features
+      2. Mirror left/right
+      3. Rotation perturbation (±3 degrees on angle columns)
+      4. Gaussian noise (std=0.04) — stronger variant
+
+    Returns list of up to n_augmented new feature dicts.
+    """
+    augmented = []
+
+    # 1) Light Gaussian noise
+    augmented.append(_add_angle_noise(features, std=0.02))
+
+    # 2) Mirror left/right
+    if n_augmented >= 2:
+        augmented.append(_mirror_angle_features(features))
+
+    # 3) Rotation perturbation
+    if n_augmented >= 3:
+        augmented.append(_rotation_perturbation(features, max_deg=3.0))
+
+    # 4) Stronger Gaussian noise
+    if n_augmented >= 4:
+        augmented.append(_add_angle_noise(features, std=0.04))
+
+    return augmented[:n_augmented]
+
+
+def augment_landmark_features(row: np.ndarray) -> List[np.ndarray]:
+    """
+    Augment a raw landmark feature vector (99 values = 33 landmarks x 3 coords).
+
+    Returns list of augmented copies:
+      1. Gaussian noise N(0, 0.01)
+      2. Mirror left/right (swap landmark pairs + negate x)
+      3. Scale perturbation (uniform 0.95-1.05)
+      4. Combined noise + scale
+
+    Parameters
+    ----------
+    row : np.ndarray
+        Shape (99,) — flattened [x0, y0, z0, x1, y1, z1, ...] for 33 landmarks.
+
+    Returns
+    -------
+    List of np.ndarray, each shape (99,).
+    """
+    augmented = []
+
+    # 1) Gaussian noise
+    noisy = row.copy()
+    noisy += np.random.normal(0, 0.01, noisy.shape)
+    augmented.append(noisy)
+
+    # 2) Mirror left/right
+    mirrored = row.copy().reshape(33, 3)
+    mirrored[:, 0] = -mirrored[:, 0]  # negate x (world coords are hip-centered)
+    for l_idx, r_idx in _LR_PAIRS:
+        mirrored[[l_idx, r_idx]] = mirrored[[r_idx, l_idx]]
+    augmented.append(mirrored.flatten())
+
+    # 3) Scale perturbation
+    scale = np.random.uniform(0.95, 1.05)
+    scaled = row.copy() * scale
+    augmented.append(scaled)
+
+    # 4) Combined noise + scale
+    combined = row.copy()
+    combined *= np.random.uniform(0.95, 1.05)
+    combined += np.random.normal(0, 0.01, combined.shape)
+    augmented.append(combined)
+
+    return augmented

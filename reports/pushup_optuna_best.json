@@ -1,0 +1,15 @@
+{
+  "exercise": "pushup",
+  "best_val_f1": 0.6792777300085985,
+  "best_params": {
+    "hidden_dim": 192,
+    "num_layers": 1,
+    "dropout": 0.30000000000000004,
+    "lr": 0.0005985272749544829,
+    "batch_size": 128,
+    "n_heads": 1
+  },
+  "n_trials": 30,
+  "n_pruned": 11,
+  "n_complete": 19
+}

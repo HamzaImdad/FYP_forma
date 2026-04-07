@@ -1,13 +1,17 @@
 """
 Data augmentation script to balance correct/incorrect classes.
 
-Loads landmark CSVs for minority classes, applies pose augmentation
-(noise, scaling, flipping), re-extracts features, and appends to
-the feature CSV to balance class distribution.
+Supports two modes:
+  1. Landmark-based: Loads landmark CSVs, applies pose augmentation
+     (noise, scaling, flipping), re-extracts features, and appends to
+     the feature CSV to balance class distribution.
+  2. Feature-based: Directly augments extracted angle features using
+     noise, mirroring, and rotation perturbation (faster, no re-extraction).
 
 Usage:
     python scripts/augment_data.py
-    python scripts/augment_data.py --target-ratio 1.5
+    python scripts/augment_data.py --mode features --target-ratio 1.5
+    python scripts/augment_data.py --mode landmarks --target-ratio 2.0
 """
 
 import sys
@@ -24,11 +28,17 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.pose_estimation.base import PoseResult
 from src.feature_extraction.features import FeatureExtractor
-from src.utils.augmentation import augment_pose
+from src.utils.augmentation import (
+    augment_pose,
+    augment_angle_features,
+    augment_landmark_features,
+)
 from src.utils.constants import LANDMARK_NAMES, NUM_LANDMARKS, EXERCISES
 
 LANDMARKS_DIR = PROJECT_ROOT / "data" / "processed" / "landmarks"
 FEATURES_DIR = PROJECT_ROOT / "data" / "processed" / "features"
+
+META_COLS = ["exercise", "label", "source", "video_id"]
 
 
 def row_to_pose_result(row: pd.Series) -> PoseResult:
@@ -72,7 +82,6 @@ def load_minority_landmarks(exercise: str, minority_label: str) -> pd.DataFrame:
         # Image CSVs: kaggle_images_{exercise}_{label}
         if name.startswith("kaggle_images_"):
             parts = name.split("_")
-            # kaggle_images_{exercise}_{label}
             ex = "_".join(parts[2:-1])
             lbl = parts[-1]
             if ex == exercise and lbl == minority_label:
@@ -84,8 +93,6 @@ def load_minority_landmarks(exercise: str, minority_label: str) -> pd.DataFrame:
         if len(parts) < 3:
             continue
 
-        source = parts[0]
-        # Try single-word exercise
         ex = parts[1]
         lbl = parts[2]
 
@@ -101,16 +108,13 @@ def load_minority_landmarks(exercise: str, minority_label: str) -> pd.DataFrame:
     return pd.DataFrame()
 
 
-def augment_exercise(
+def augment_from_landmarks(
     exercise: str,
     minority_label: str,
     n_needed: int,
     fe: FeatureExtractor,
-    existing_video_ids: set = None,
 ) -> list:
-    """Generate augmented feature rows for a specific exercise/label.
-    Augmented rows inherit the source video_id (with _aug suffix) so they
-    stay in the same group during train/test splitting."""
+    """Generate augmented feature rows from raw landmarks (landmark mode)."""
     landmark_df = load_minority_landmarks(exercise, minority_label)
 
     if len(landmark_df) == 0:
@@ -125,7 +129,6 @@ def augment_exercise(
         if len(augmented_rows) >= n_needed:
             break
 
-        # Skip rows with no detection
         if row.get("nose_vis", 0) == 0:
             continue
 
@@ -133,7 +136,6 @@ def augment_exercise(
         if pose.detection_confidence < 0.1:
             continue
 
-        # Generate augmented copies
         aug_poses = augment_pose(pose, n_augmented=min(n_per_sample, 4))
 
         for aug_idx, aug_pose in enumerate(aug_poses):
@@ -155,12 +157,49 @@ def augment_exercise(
     return augmented_rows
 
 
+def augment_from_features(
+    df_minority: pd.DataFrame,
+    exercise: str,
+    minority_label: str,
+    n_needed: int,
+) -> list:
+    """Generate augmented feature rows directly from feature space (feature mode)."""
+    feature_cols = [c for c in df_minority.columns if c not in META_COLS]
+    augmented_rows = []
+    n_per_sample = min(4, max(1, n_needed // len(df_minority) + 1))
+
+    for row_idx, (_, row) in enumerate(df_minority.iterrows()):
+        if len(augmented_rows) >= n_needed:
+            break
+
+        row_features = row[feature_cols].to_dict()
+        aug_list = augment_angle_features(row_features, n_augmented=n_per_sample)
+
+        for aug_idx, aug_features in enumerate(aug_list):
+            if len(augmented_rows) >= n_needed:
+                break
+
+            aug_row = {
+                "exercise": exercise,
+                "label": minority_label,
+                "source": "augmented",
+                "video_id": f"aug_{row['video_id']}_{row_idx}_{aug_idx}",
+            }
+            aug_row.update(aug_features)
+            augmented_rows.append(aug_row)
+
+    return augmented_rows
+
+
 def main():
     parser = argparse.ArgumentParser(description="Augment data to balance classes")
     parser.add_argument("--target-ratio", type=float, default=1.5,
                         help="Max allowed majority:minority ratio (default 1.5)")
     parser.add_argument("--input", type=str, default=None,
                         help="Input feature CSV (default: all_features.csv)")
+    parser.add_argument("--mode", choices=["landmarks", "features"], default="features",
+                        help="Augmentation mode: 'landmarks' re-extracts from raw data, "
+                             "'features' augments in feature space (default: features)")
     args = parser.parse_args()
 
     # Load features
@@ -169,7 +208,6 @@ def main():
     else:
         input_path = FEATURES_DIR / "all_features.csv"
         if not input_path.exists():
-            # Try image features
             input_path = FEATURES_DIR / "image_features.csv"
 
     if not input_path.exists():
@@ -177,9 +215,10 @@ def main():
         sys.exit(1)
 
     df = pd.read_csv(input_path)
-    print(f"Loaded {len(df)} feature rows from {input_path.name}")
+    print(f"Loaded {len(df):,} feature rows from {input_path.name}")
+    print(f"Augmentation mode: {args.mode}")
 
-    fe = FeatureExtractor(use_world=True)
+    fe = FeatureExtractor(use_world=True) if args.mode == "landmarks" else None
     all_augmented = []
 
     print(f"\nClass distribution before augmentation:")
@@ -207,9 +246,8 @@ def main():
         else:
             ratio_str = f"{majority/minority:.1f}:1"
 
-        print(f"{exercise:<18} {n_correct:>10} {n_incorrect:>10} {ratio_str:>8}")
+        print(f"{exercise:<18} {n_correct:>10,} {n_incorrect:>10,} {ratio_str:>8}")
 
-        # Check if augmentation is needed
         if minority == 0:
             print(f"  [SKIP] Only one class present for {exercise}")
             continue
@@ -217,21 +255,21 @@ def main():
         if majority / minority <= args.target_ratio:
             continue
 
-        # Determine which class to augment
-        if n_correct < n_incorrect:
-            minority_label = "correct"
-        else:
-            minority_label = "incorrect"
-
+        minority_label = "correct" if n_correct < n_incorrect else "incorrect"
         target_minority = int(majority / args.target_ratio)
         n_needed = target_minority - minority
 
-        print(f"  Augmenting {minority_label}: {minority} -> {target_minority} (+{n_needed})")
+        print(f"  Augmenting {minority_label}: {minority:,} -> {target_minority:,} (+{n_needed:,})")
 
-        aug_rows = augment_exercise(exercise, minority_label, n_needed, fe)
+        if args.mode == "landmarks":
+            aug_rows = augment_from_landmarks(exercise, minority_label, n_needed, fe)
+        else:
+            minority_df = ex_df[ex_df["label"] == minority_label]
+            aug_rows = augment_from_features(minority_df, exercise, minority_label, n_needed)
+
         if aug_rows:
             all_augmented.extend(aug_rows)
-            print(f"  Generated {len(aug_rows)} augmented samples")
+            print(f"  Generated {len(aug_rows):,} augmented samples")
 
     # Combine and save
     if all_augmented:
@@ -240,8 +278,8 @@ def main():
 
         out_path = FEATURES_DIR / "augmented_features.csv"
         combined.to_csv(out_path, index=False)
-        print(f"\nSaved {len(combined)} total rows to {out_path.name}")
-        print(f"  Original: {len(df)}, Augmented: {len(aug_df)}")
+        print(f"\nSaved {len(combined):,} total rows to {out_path.name}")
+        print(f"  Original: {len(df):,}, Augmented: {len(aug_df):,}")
 
         print(f"\nClass distribution after augmentation:")
         print(f"{'Exercise':<18} {'Correct':>10} {'Incorrect':>10}")
@@ -251,10 +289,9 @@ def main():
             n_c = len(ex_df[ex_df["label"] == "correct"])
             n_i = len(ex_df[ex_df["label"] == "incorrect"])
             if n_c > 0 or n_i > 0:
-                print(f"{exercise:<18} {n_c:>10} {n_i:>10}")
+                print(f"{exercise:<18} {n_c:>10,} {n_i:>10,}")
     else:
         print("\nNo augmentation needed, classes are balanced enough.")
-        # Still save a copy as augmented for the training script
         out_path = FEATURES_DIR / "augmented_features.csv"
         df.to_csv(out_path, index=False)
         print(f"Copied original to {out_path.name}")

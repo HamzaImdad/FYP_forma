@@ -1,0 +1,15 @@
+{
+  "exercise": "deadlift",
+  "best_val_f1": 0.8211267605633803,
+  "best_params": {
+    "hidden_dim": 256,
+    "num_layers": 1,
+    "dropout": 0.25,
+    "lr": 0.000836586785169494,
+    "batch_size": 32,
+    "n_heads": 1
+  },
+  "n_trials": 50,
+  "n_pruned": 0,
+  "n_complete": 50
+}

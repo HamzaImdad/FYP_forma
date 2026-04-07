@@ -1,0 +1,1212 @@
+{
+  "exercise": "pullup",
+  "total_sequences": 7453,
+  "flagged_count": 126,
+  "flagged_percentage": 1.69,
+  "confidence_threshold": 0.7,
+  "model_threshold": 0.5000000000000001,
+  "flagged_videos": [
+    {
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "flagged_count": 13,
+      "avg_confidence": 0.7635,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "flagged_count": 12,
+      "avg_confidence": 0.7463,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "flagged_count": 9,
+      "avg_confidence": 0.7392,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "flagged_count": 9,
+      "avg_confidence": 0.7258,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "flagged_count": 8,
+      "avg_confidence": 0.8156,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_pullup_correct_5WHdim80e7o",
+      "flagged_count": 7,
+      "avg_confidence": 0.7331,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_x3NPAxiMRPw",
+      "flagged_count": 7,
+      "avg_confidence": 0.73,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_GOVt1rXy1QQ",
+      "flagged_count": 6,
+      "avg_confidence": 0.7391,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_6zyx46Vpato",
+      "flagged_count": 6,
+      "avg_confidence": 0.7224,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_sIvJTfGxdFo",
+      "flagged_count": 5,
+      "avg_confidence": 0.7266,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_incorrect_f0SNqcC8mUk",
+      "flagged_count": 5,
+      "avg_confidence": 0.7761,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_pullup_correct_RvT3beYzPrI",
+      "flagged_count": 4,
+      "avg_confidence": 0.7108,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_incorrect_oQy4xta0liY",
+      "flagged_count": 4,
+      "avg_confidence": 0.7842,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_pullup_correct_EihD_pt2AFA",
+      "flagged_count": 4,
+      "avg_confidence": 0.7644,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_bb8_5vZV5dU",
+      "flagged_count": 3,
+      "avg_confidence": 0.7424,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_Go from 0 to 10 Pull-Ups FAST_bb8_5vZV5dU",
+      "flagged_count": 3,
+      "avg_confidence": 0.7361,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_pullup_correct_s6acFNvGu5s",
+      "flagged_count": 2,
+      "avg_confidence": 0.7152,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_syS4M1G-rII",
+      "flagged_count": 2,
+      "avg_confidence": 0.713,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "kaggle_pullup_correct_pull up_5",
+      "flagged_count": 2,
+      "avg_confidence": 0.752,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_Pull-Ups\uff1a Why You\u2019re Stuck at 2\u20133 Reps (Fix This F_yry90tVmWLQ",
+      "flagged_count": 2,
+      "avg_confidence": 0.7408,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "youtube_pullup_correct_hkBcTOa21oQ",
+      "flagged_count": 2,
+      "avg_confidence": 0.755,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_jFmCrA6fo78",
+      "flagged_count": 1,
+      "avg_confidence": 0.7405,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_SUfu0HCjZzI",
+      "flagged_count": 1,
+      "avg_confidence": 0.7581,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_Fix your pull-up form before it fixes you_ScGObDq1DSo",
+      "flagged_count": 1,
+      "avg_confidence": 0.7203,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_HOW TO GET YOUR FIRST PULL-UP \uff5c Most Common Weakpo_x3NPAxiMRPw",
+      "flagged_count": 1,
+      "avg_confidence": 0.7235,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_NEVER DO PULL-UPS LIKE THIS! \uff5c 10 Most Common Mist_K81-SLUFo9c",
+      "flagged_count": 1,
+      "avg_confidence": 0.7015,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_Pull-Ups vs Chin-Ups\uff1a Most People Choose the Wrong_xv4y7490obQ",
+      "flagged_count": 1,
+      "avg_confidence": 0.7188,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_The BIGGEST Pull-Up Problem (No One Talks About!)_5WHdim80e7o",
+      "flagged_count": 1,
+      "avg_confidence": 0.7195,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "ytincorrect_pullup_incorrect_You are Doing Pull Ups WRONG And Here is WHY_JfxPtYX3Bzo",
+      "flagged_count": 1,
+      "avg_confidence": 0.7931,
+      "ground_truth_label": 0
+    },
+    {
+      "video_id": "kaggle_pullup_correct_pull up_13",
+      "flagged_count": 1,
+      "avg_confidence": 0.7009,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "kaggle_pullup_correct_pull up_26",
+      "flagged_count": 1,
+      "avg_confidence": 0.7348,
+      "ground_truth_label": 1
+    },
+    {
+      "video_id": "youtube_pullup_correct_e1YSApl-QcM",
+      "flagged_count": 1,
+      "avg_confidence": 0.7388,
+      "ground_truth_label": 1
+    }
+  ],
+  "flagged_details": [
+    {
+      "index": 295,
+      "video_id": "youtube_pullup_correct_5WHdim80e7o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2945,
+      "confidence": 0.7055
+    },
+    {
+      "index": 296,
+      "video_id": "youtube_pullup_correct_5WHdim80e7o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2899,
+      "confidence": 0.7101
+    },
+    {
+      "index": 327,
+      "video_id": "youtube_pullup_correct_5WHdim80e7o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2505,
+      "confidence": 0.7495
+    },
+    {
+      "index": 328,
+      "video_id": "youtube_pullup_correct_5WHdim80e7o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2729,
+      "confidence": 0.7271
+    },
+    {
+      "index": 348,
+      "video_id": "youtube_pullup_correct_5WHdim80e7o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2822,
+      "confidence": 0.7178
+    },
+    {
+      "index": 349,
+      "video_id": "youtube_pullup_correct_5WHdim80e7o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2585,
+      "confidence": 0.7415
+    },
+    {
+      "index": 350,
+      "video_id": "youtube_pullup_correct_5WHdim80e7o",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2195,
+      "confidence": 0.7805
+    },
+    {
+      "index": 468,
+      "video_id": "youtube_pullup_correct_bb8_5vZV5dU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2594,
+      "confidence": 0.7406
+    },
+    {
+      "index": 477,
+      "video_id": "youtube_pullup_correct_bb8_5vZV5dU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2476,
+      "confidence": 0.7524
+    },
+    {
+      "index": 478,
+      "video_id": "youtube_pullup_correct_bb8_5vZV5dU",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2659,
+      "confidence": 0.7341
+    },
+    {
+      "index": 909,
+      "video_id": "youtube_pullup_correct_GOVt1rXy1QQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2237,
+      "confidence": 0.7763
+    },
+    {
+      "index": 912,
+      "video_id": "youtube_pullup_correct_GOVt1rXy1QQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2353,
+      "confidence": 0.7647
+    },
+    {
+      "index": 913,
+      "video_id": "youtube_pullup_correct_GOVt1rXy1QQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2854,
+      "confidence": 0.7146
+    },
+    {
+      "index": 914,
+      "video_id": "youtube_pullup_correct_GOVt1rXy1QQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2922,
+      "confidence": 0.7078
+    },
+    {
+      "index": 915,
+      "video_id": "youtube_pullup_correct_GOVt1rXy1QQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2849,
+      "confidence": 0.7151
+    },
+    {
+      "index": 916,
+      "video_id": "youtube_pullup_correct_GOVt1rXy1QQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2441,
+      "confidence": 0.7559
+    },
+    {
+      "index": 1354,
+      "video_id": "youtube_pullup_correct_jFmCrA6fo78",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2595,
+      "confidence": 0.7405
+    },
+    {
+      "index": 1662,
+      "video_id": "youtube_pullup_correct_RvT3beYzPrI",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2787,
+      "confidence": 0.7213
+    },
+    {
+      "index": 1663,
+      "video_id": "youtube_pullup_correct_RvT3beYzPrI",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2946,
+      "confidence": 0.7054
+    },
+    {
+      "index": 1664,
+      "video_id": "youtube_pullup_correct_RvT3beYzPrI",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2905,
+      "confidence": 0.7095
+    },
+    {
+      "index": 1665,
+      "video_id": "youtube_pullup_correct_RvT3beYzPrI",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2931,
+      "confidence": 0.7069
+    },
+    {
+      "index": 2062,
+      "video_id": "youtube_pullup_correct_s6acFNvGu5s",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2833,
+      "confidence": 0.7167
+    },
+    {
+      "index": 2089,
+      "video_id": "youtube_pullup_correct_s6acFNvGu5s",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2863,
+      "confidence": 0.7137
+    },
+    {
+      "index": 2224,
+      "video_id": "youtube_pullup_correct_sIvJTfGxdFo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2737,
+      "confidence": 0.7263
+    },
+    {
+      "index": 2225,
+      "video_id": "youtube_pullup_correct_sIvJTfGxdFo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2855,
+      "confidence": 0.7145
+    },
+    {
+      "index": 2226,
+      "video_id": "youtube_pullup_correct_sIvJTfGxdFo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2879,
+      "confidence": 0.7121
+    },
+    {
+      "index": 2229,
+      "video_id": "youtube_pullup_correct_sIvJTfGxdFo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.227,
+      "confidence": 0.773
+    },
+    {
+      "index": 2230,
+      "video_id": "youtube_pullup_correct_sIvJTfGxdFo",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2931,
+      "confidence": 0.7069
+    },
+    {
+      "index": 2330,
+      "video_id": "youtube_pullup_correct_SUfu0HCjZzI",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2419,
+      "confidence": 0.7581
+    },
+    {
+      "index": 2430,
+      "video_id": "youtube_pullup_correct_syS4M1G-rII",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2789,
+      "confidence": 0.7211
+    },
+    {
+      "index": 2431,
+      "video_id": "youtube_pullup_correct_syS4M1G-rII",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2951,
+      "confidence": 0.7049
+    },
+    {
+      "index": 2562,
+      "video_id": "youtube_pullup_correct_x3NPAxiMRPw",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2511,
+      "confidence": 0.7489
+    },
+    {
+      "index": 2563,
+      "video_id": "youtube_pullup_correct_x3NPAxiMRPw",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2979,
+      "confidence": 0.7021
+    },
+    {
+      "index": 2569,
+      "video_id": "youtube_pullup_correct_x3NPAxiMRPw",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2406,
+      "confidence": 0.7594
+    },
+    {
+      "index": 2570,
+      "video_id": "youtube_pullup_correct_x3NPAxiMRPw",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2709,
+      "confidence": 0.7291
+    },
+    {
+      "index": 2571,
+      "video_id": "youtube_pullup_correct_x3NPAxiMRPw",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2368,
+      "confidence": 0.7632
+    },
+    {
+      "index": 2598,
+      "video_id": "youtube_pullup_correct_x3NPAxiMRPw",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2996,
+      "confidence": 0.7004
+    },
+    {
+      "index": 2674,
+      "video_id": "youtube_pullup_correct_x3NPAxiMRPw",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2933,
+      "confidence": 0.7067
+    },
+    {
+      "index": 3045,
+      "video_id": "youtube_pullup_incorrect_f0SNqcC8mUk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7137,
+      "confidence": 0.7137
+    },
+    {
+      "index": 3047,
+      "video_id": "youtube_pullup_incorrect_f0SNqcC8mUk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8221,
+      "confidence": 0.8221
+    },
+    {
+      "index": 3048,
+      "video_id": "youtube_pullup_incorrect_f0SNqcC8mUk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.773,
+      "confidence": 0.773
+    },
+    {
+      "index": 3052,
+      "video_id": "youtube_pullup_incorrect_f0SNqcC8mUk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7719,
+      "confidence": 0.7719
+    },
+    {
+      "index": 3060,
+      "video_id": "youtube_pullup_incorrect_f0SNqcC8mUk",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7996,
+      "confidence": 0.7996
+    },
+    {
+      "index": 3384,
+      "video_id": "youtube_pullup_incorrect_oQy4xta0liY",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8404,
+      "confidence": 0.8404
+    },
+    {
+      "index": 3414,
+      "video_id": "youtube_pullup_incorrect_oQy4xta0liY",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7555,
+      "confidence": 0.7555
+    },
+    {
+      "index": 3416,
+      "video_id": "youtube_pullup_incorrect_oQy4xta0liY",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7555,
+      "confidence": 0.7555
+    },
+    {
+      "index": 3422,
+      "video_id": "youtube_pullup_incorrect_oQy4xta0liY",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7855,
+      "confidence": 0.7855
+    },
+    {
+      "index": 3610,
+      "video_id": "ytincorrect_pullup_incorrect_Fix your pull-up form before it fixes you_ScGObDq1DSo",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7203,
+      "confidence": 0.7203
+    },
+    {
+      "index": 3821,
+      "video_id": "ytincorrect_pullup_incorrect_Go from 0 to 10 Pull-Ups FAST_bb8_5vZV5dU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.716,
+      "confidence": 0.716
+    },
+    {
+      "index": 3886,
+      "video_id": "ytincorrect_pullup_incorrect_Go from 0 to 10 Pull-Ups FAST_bb8_5vZV5dU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7643,
+      "confidence": 0.7643
+    },
+    {
+      "index": 3887,
+      "video_id": "ytincorrect_pullup_incorrect_Go from 0 to 10 Pull-Ups FAST_bb8_5vZV5dU",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.728,
+      "confidence": 0.728
+    },
+    {
+      "index": 4303,
+      "video_id": "ytincorrect_pullup_incorrect_HOW TO GET YOUR FIRST PULL-UP \uff5c Most Common Weakpo_x3NPAxiMRPw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7235,
+      "confidence": 0.7235
+    },
+    {
+      "index": 4546,
+      "video_id": "ytincorrect_pullup_incorrect_NEVER DO PULL-UPS LIKE THIS! \uff5c 10 Most Common Mist_K81-SLUFo9c",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7015,
+      "confidence": 0.7015
+    },
+    {
+      "index": 4866,
+      "video_id": "ytincorrect_pullup_incorrect_Pull-Ups vs Chin-Ups\uff1a Most People Choose the Wrong_xv4y7490obQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7188,
+      "confidence": 0.7188
+    },
+    {
+      "index": 4945,
+      "video_id": "ytincorrect_pullup_incorrect_The BIGGEST Pull-Up Problem (No One Talks About!)_5WHdim80e7o",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7195,
+      "confidence": 0.7195
+    },
+    {
+      "index": 5111,
+      "video_id": "kaggle_pullup_correct_pull up_5",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2533,
+      "confidence": 0.7467
+    },
+    {
+      "index": 5112,
+      "video_id": "kaggle_pullup_correct_pull up_5",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2426,
+      "confidence": 0.7574
+    },
+    {
+      "index": 5243,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2852,
+      "confidence": 0.7148
+    },
+    {
+      "index": 5244,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2732,
+      "confidence": 0.7268
+    },
+    {
+      "index": 5245,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2828,
+      "confidence": 0.7172
+    },
+    {
+      "index": 5246,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2195,
+      "confidence": 0.7805
+    },
+    {
+      "index": 5247,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2642,
+      "confidence": 0.7358
+    },
+    {
+      "index": 5260,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2992,
+      "confidence": 0.7008
+    },
+    {
+      "index": 5261,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2393,
+      "confidence": 0.7607
+    },
+    {
+      "index": 5273,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2722,
+      "confidence": 0.7278
+    },
+    {
+      "index": 5274,
+      "video_id": "youtube_pullup_correct_Y3ntNsIS2Q8",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2118,
+      "confidence": 0.7882
+    },
+    {
+      "index": 5299,
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8224,
+      "confidence": 0.8224
+    },
+    {
+      "index": 5300,
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8345,
+      "confidence": 0.8345
+    },
+    {
+      "index": 5301,
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7898,
+      "confidence": 0.7898
+    },
+    {
+      "index": 5302,
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8308,
+      "confidence": 0.8308
+    },
+    {
+      "index": 5303,
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8728,
+      "confidence": 0.8728
+    },
+    {
+      "index": 5309,
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.8325,
+      "confidence": 0.8325
+    },
+    {
+      "index": 5344,
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7515,
+      "confidence": 0.7515
+    },
+    {
+      "index": 5355,
+      "video_id": "ytincorrect_pullup_incorrect_Are You Doing Pull-Ups Correctly\uff1f (AVOID MISTAKES)_UP_GGcVIJuc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7909,
+      "confidence": 0.7909
+    },
+    {
+      "index": 5496,
+      "video_id": "ytincorrect_pullup_incorrect_Pull-Ups\uff1a Why You\u2019re Stuck at 2\u20133 Reps (Fix This F_yry90tVmWLQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7621,
+      "confidence": 0.7621
+    },
+    {
+      "index": 5509,
+      "video_id": "ytincorrect_pullup_incorrect_Pull-Ups\uff1a Why You\u2019re Stuck at 2\u20133 Reps (Fix This F_yry90tVmWLQ",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7194,
+      "confidence": 0.7194
+    },
+    {
+      "index": 5590,
+      "video_id": "ytincorrect_pullup_incorrect_You are Doing Pull Ups WRONG And Here is WHY_JfxPtYX3Bzo",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7931,
+      "confidence": 0.7931
+    },
+    {
+      "index": 5680,
+      "video_id": "kaggle_pullup_correct_pull up_13",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2991,
+      "confidence": 0.7009
+    },
+    {
+      "index": 5734,
+      "video_id": "kaggle_pullup_correct_pull up_26",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2652,
+      "confidence": 0.7348
+    },
+    {
+      "index": 5743,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2706,
+      "confidence": 0.7294
+    },
+    {
+      "index": 5744,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2256,
+      "confidence": 0.7744
+    },
+    {
+      "index": 5745,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2371,
+      "confidence": 0.7629
+    },
+    {
+      "index": 5750,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2318,
+      "confidence": 0.7682
+    },
+    {
+      "index": 5751,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2096,
+      "confidence": 0.7904
+    },
+    {
+      "index": 5752,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2483,
+      "confidence": 0.7517
+    },
+    {
+      "index": 5757,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2384,
+      "confidence": 0.7616
+    },
+    {
+      "index": 5758,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2165,
+      "confidence": 0.7835
+    },
+    {
+      "index": 5759,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2413,
+      "confidence": 0.7587
+    },
+    {
+      "index": 5764,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2457,
+      "confidence": 0.7543
+    },
+    {
+      "index": 5765,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2147,
+      "confidence": 0.7853
+    },
+    {
+      "index": 5766,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2141,
+      "confidence": 0.7859
+    },
+    {
+      "index": 5767,
+      "video_id": "kaggle_pullup_correct_pull up_6",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2808,
+      "confidence": 0.7192
+    },
+    {
+      "index": 5775,
+      "video_id": "youtube_pullup_correct_6zyx46Vpato",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2774,
+      "confidence": 0.7226
+    },
+    {
+      "index": 5776,
+      "video_id": "youtube_pullup_correct_6zyx46Vpato",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2637,
+      "confidence": 0.7363
+    },
+    {
+      "index": 5777,
+      "video_id": "youtube_pullup_correct_6zyx46Vpato",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2614,
+      "confidence": 0.7386
+    },
+    {
+      "index": 5792,
+      "video_id": "youtube_pullup_correct_6zyx46Vpato",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2945,
+      "confidence": 0.7055
+    },
+    {
+      "index": 5793,
+      "video_id": "youtube_pullup_correct_6zyx46Vpato",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2954,
+      "confidence": 0.7046
+    },
+    {
+      "index": 5814,
+      "video_id": "youtube_pullup_correct_6zyx46Vpato",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2731,
+      "confidence": 0.7269
+    },
+    {
+      "index": 5912,
+      "video_id": "youtube_pullup_correct_e1YSApl-QcM",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2612,
+      "confidence": 0.7388
+    },
+    {
+      "index": 5932,
+      "video_id": "youtube_pullup_correct_EihD_pt2AFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2995,
+      "confidence": 0.7005
+    },
+    {
+      "index": 5957,
+      "video_id": "youtube_pullup_correct_EihD_pt2AFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.1929,
+      "confidence": 0.8071
+    },
+    {
+      "index": 5995,
+      "video_id": "youtube_pullup_correct_EihD_pt2AFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2151,
+      "confidence": 0.7849
+    },
+    {
+      "index": 5996,
+      "video_id": "youtube_pullup_correct_EihD_pt2AFA",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.235,
+      "confidence": 0.765
+    },
+    {
+      "index": 6396,
+      "video_id": "youtube_pullup_correct_hkBcTOa21oQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2424,
+      "confidence": 0.7576
+    },
+    {
+      "index": 6397,
+      "video_id": "youtube_pullup_correct_hkBcTOa21oQ",
+      "ground_truth": 1,
+      "predicted": 0,
+      "probability": 0.2475,
+      "confidence": 0.7525
+    },
+    {
+      "index": 6534,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7318,
+      "confidence": 0.7318
+    },
+    {
+      "index": 6535,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7545,
+      "confidence": 0.7545
+    },
+    {
+      "index": 6536,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7529,
+      "confidence": 0.7529
+    },
+    {
+      "index": 6579,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.754,
+      "confidence": 0.754
+    },
+    {
+      "index": 6580,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7548,
+      "confidence": 0.7548
+    },
+    {
+      "index": 6581,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7587,
+      "confidence": 0.7587
+    },
+    {
+      "index": 6582,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7555,
+      "confidence": 0.7555
+    },
+    {
+      "index": 6583,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7743,
+      "confidence": 0.7743
+    },
+    {
+      "index": 6611,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7215,
+      "confidence": 0.7215
+    },
+    {
+      "index": 6616,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7243,
+      "confidence": 0.7243
+    },
+    {
+      "index": 6694,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.721,
+      "confidence": 0.721
+    },
+    {
+      "index": 6700,
+      "video_id": "ytincorrect_pullup_incorrect_Can't Feel Pull Ups In Your Lats\uff1f \uff5c JUST DO THIS_Et8LuxZFtaw",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7522,
+      "confidence": 0.7522
+    },
+    {
+      "index": 7162,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7084,
+      "confidence": 0.7084
+    },
+    {
+      "index": 7163,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7145,
+      "confidence": 0.7145
+    },
+    {
+      "index": 7263,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7363,
+      "confidence": 0.7363
+    },
+    {
+      "index": 7361,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7115,
+      "confidence": 0.7115
+    },
+    {
+      "index": 7362,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7052,
+      "confidence": 0.7052
+    },
+    {
+      "index": 7425,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.746,
+      "confidence": 0.746
+    },
+    {
+      "index": 7426,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7572,
+      "confidence": 0.7572
+    },
+    {
+      "index": 7427,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7527,
+      "confidence": 0.7527
+    },
+    {
+      "index": 7441,
+      "video_id": "ytincorrect_pullup_incorrect_If You\u2019re Struggling With Pull-Ups, THIS Is Why_QOCvfFpKNZc",
+      "ground_truth": 0,
+      "predicted": 1,
+      "probability": 0.7007,
+      "confidence": 0.7007
+    }
+  ]
+}
