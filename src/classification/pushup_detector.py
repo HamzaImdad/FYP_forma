@@ -22,6 +22,7 @@ import numpy as np
 from ..pose_estimation.base import PoseResult
 from ..classification.base import ClassificationResult
 from ..utils.constants import (
+    NOSE,
     LEFT_SHOULDER, RIGHT_SHOULDER, LEFT_ELBOW, RIGHT_ELBOW,
     LEFT_WRIST, RIGHT_WRIST, LEFT_HIP, RIGHT_HIP,
     LEFT_KNEE, RIGHT_KNEE, LEFT_ANKLE, RIGHT_ANKLE,
@@ -38,13 +39,13 @@ ELBOW_DOWN = 90         # Full depth (bottom of push-up)
 ELBOW_HALF_DOWN = 110   # Partial depth (warning)
 
 # Hip angle (shoulder->hip->ankle)
-HIP_GOOD = 160          # Straight body line
-HIP_WARNING = 145       # Slight sag/pike
-HIP_BAD = 130           # Major form breakdown
+HIP_GOOD = 170          # Straight body line — research says within 10 deg of straight
+HIP_WARNING = 155       # Slight sag/pike
+HIP_BAD = 140           # Major form breakdown
 
 # Shoulder angle (elbow->shoulder->hip) — arm position relative to torso
 SHOULDER_MIN = 30       # Arms too tight to body
-SHOULDER_MAX = 75       # Arms too flared (impingement risk)
+SHOULDER_MAX = 70       # Arms too flared — >60 deg starts compromising shoulder
 SHOULDER_IDEAL_MIN = 35
 SHOULDER_IDEAL_MAX = 60
 
@@ -261,7 +262,7 @@ class PushUpDetector:
 
         # ── Per-frame form assessment ──
         frame_score, joint_feedback, issues = self._assess_form(
-            smooth_elbow, smooth_hip, smooth_shoulder
+            smooth_elbow, smooth_hip, smooth_shoulder, pose
         )
         self._current_rep_scores.append(frame_score)
         for issue in issues:
@@ -319,11 +320,56 @@ class PushUpDetector:
             feedback_text=feedback_text,
         )
 
+    def _check_pike(self, pose: PoseResult) -> Optional[float]:
+        """Detect hip pike (hips above shoulder-ankle line).
+        Returns vertical offset: negative = pike (hips above midline)."""
+        shoulder_ys = []
+        ankle_ys = []
+        hip_ys = []
+        for s_idx, h_idx, a_idx in [(LEFT_SHOULDER, LEFT_HIP, LEFT_ANKLE),
+                                     (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_ANKLE)]:
+            if pose.is_visible(s_idx) and pose.is_visible(h_idx) and pose.is_visible(a_idx):
+                shoulder_ys.append(pose.get_world_landmark(s_idx)[1])
+                hip_ys.append(pose.get_world_landmark(h_idx)[1])
+                ankle_ys.append(pose.get_world_landmark(a_idx)[1])
+        if not shoulder_ys:
+            return None
+        midline_y = (sum(shoulder_ys) / len(shoulder_ys) + sum(ankle_ys) / len(ankle_ys)) / 2
+        avg_hip_y = sum(hip_ys) / len(hip_ys)
+        return avg_hip_y - midline_y  # negative = pike (hip above midline in MediaPipe where Y increases downward)
+
+    def _check_head_alignment(self, pose: PoseResult) -> Optional[str]:
+        """Check if head is drooping or craning during pushup.
+        Returns issue string or None."""
+        if not pose.is_visible(NOSE):
+            return None
+
+        nose_y = pose.get_world_landmark(NOSE)[1]
+        shoulder_ys = []
+        for s_idx in [LEFT_SHOULDER, RIGHT_SHOULDER]:
+            if pose.is_visible(s_idx):
+                shoulder_ys.append(pose.get_world_landmark(s_idx)[1])
+        if not shoulder_ys:
+            return None
+
+        avg_shoulder_y = sum(shoulder_ys) / len(shoulder_ys)
+        diff = nose_y - avg_shoulder_y
+
+        # In MediaPipe world coords, Y increases downward
+        # Head drooping: nose is significantly BELOW shoulders (nose_y much > shoulder_y)
+        if diff > 0.08:
+            return "Head dropping -- keep neck neutral"
+        # Head craning up: nose is significantly ABOVE shoulders
+        if diff < -0.12:
+            return "Don't crane neck up -- look at floor ahead of hands"
+        return None
+
     def _assess_form(
         self,
         elbow: Optional[float],
         hip: Optional[float],
         shoulder: Optional[float],
+        pose: Optional[PoseResult] = None,
     ) -> Tuple[float, Dict[str, str], List[str]]:
         """Assess push-up form quality for a single frame.
 
@@ -404,10 +450,26 @@ class PushUpDetector:
                 issues.append("Arms too tight to body — widen grip slightly")
                 scores["shoulder"] = 0.4
 
+        # ── Pike detection ──
+        if pose is not None:
+            pike = self._check_pike(pose)
+            if pike is not None and pike < -0.03:  # hip significantly above midline
+                issues.append("Hips piking up -- lower hips into straight line")
+                scores["pike"] = 0.3
+                joint_feedback["left_hip"] = "incorrect"
+                joint_feedback["right_hip"] = "incorrect"
+
+        # ── Head/neck alignment (low weight) ──
+        if pose is not None:
+            head_issue = self._check_head_alignment(pose)
+            if head_issue:
+                issues.append(head_issue)
+                scores["head"] = 0.5
+
         if not scores:
             return 0.0, joint_feedback, issues
 
-        WEIGHTS = {"elbow": 1.0, "hip": 1.5, "shoulder": 1.0}
+        WEIGHTS = {"elbow": 1.0, "hip": 1.5, "shoulder": 1.0, "pike": 1.2, "head": 0.3}
         weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
         weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
         total = weighted_sum / weight_total
