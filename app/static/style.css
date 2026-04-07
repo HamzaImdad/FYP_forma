@@ -2382,6 +2382,134 @@ h4 {
     padding: var(--space-md);
 }
 
+/* END button in controls */
+.hud-ctrl-end {
+    border-radius: 6px !important;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    padding: 8px 14px !important;
+    width: auto !important;
+    color: var(--bad);
+    border-color: rgba(248, 113, 113, 0.3);
+}
+.hud-ctrl-end:hover {
+    background: rgba(248, 113, 113, 0.2);
+    border-color: var(--bad);
+}
+
+/* ─── End Session Confirmation Modal ────────────────────────────── */
+.end-confirm-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+}
+
+.end-confirm-card {
+    text-align: center;
+    padding: var(--space-2xl) var(--space-3xl);
+    border-radius: var(--radius);
+    max-width: 360px;
+    width: 90%;
+}
+
+.end-confirm-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-lg);
+    color: var(--text);
+}
+
+.end-confirm-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+}
+
+.ec-dot {
+    color: var(--primary);
+    font-size: 1.4rem;
+}
+
+.end-confirm-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+}
+
+.end-confirm-actions .btn {
+    min-width: 120px;
+    padding: 12px 28px;
+}
+
+/* ─── Rest Period Overlay ───────────────────────────────────────── */
+.rest-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 14;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    animation: fadeIn 0.4s ease;
+}
+
+.rest-card {
+    text-align: center;
+    padding: var(--space-2xl) var(--space-3xl);
+    border-radius: var(--radius);
+    min-width: 260px;
+}
+
+.rest-label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: var(--space-sm);
+}
+
+.rest-timer {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: var(--space-lg);
+    font-variant-numeric: tabular-nums;
+}
+
+.rest-set-summary {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    color: var(--primary);
+    margin-bottom: var(--space-md);
+}
+
+.rest-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+}
+
 
 /* ─── 13. Report Page ─────────────────────────────────────────────── */
 

@@ -424,6 +424,7 @@
                         <button id="mirror-btn" class="hud-ctrl-btn" title="Mirror camera">&#x21C4;</button>
                         <button id="pause-btn" class="hud-ctrl-btn" title="Pause">&#x23F8;</button>
                         <button id="fullscreen-btn" class="hud-ctrl-btn" title="Fullscreen">&#x26F6;</button>
+                        <button id="end-btn" class="hud-ctrl-btn hud-ctrl-end" title="End Session">END</button>
                     </div>
                 </div>
 
@@ -434,6 +435,34 @@
 
                 <!-- Hidden: joint health list (still updated by JS for data, not displayed as panel) -->
                 <div id="joint-health-list" class="joint-health-panel"></div>
+
+                <!-- End Session Confirmation Modal -->
+                <div id="end-confirm-overlay" class="end-confirm-overlay hidden">
+                    <div class="end-confirm-card glass">
+                        <h3 class="end-confirm-title">End Session?</h3>
+                        <div class="end-confirm-stats">
+                            <span id="ec-reps">0 reps</span>
+                            <span class="ec-dot">&middot;</span>
+                            <span id="ec-score">0% avg</span>
+                            <span class="ec-dot">&middot;</span>
+                            <span id="ec-time">0:00</span>
+                        </div>
+                        <div class="end-confirm-actions">
+                            <button id="ec-cancel" class="btn btn-outline">Cancel</button>
+                            <button id="ec-confirm" class="btn btn-end">End Session</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rest Period Overlay -->
+                <div id="rest-overlay" class="rest-overlay hidden">
+                    <div class="rest-card glass">
+                        <span class="rest-label">RESTING</span>
+                        <span class="rest-timer" id="rest-timer">0:00</span>
+                        <div class="rest-set-summary" id="rest-set-summary"></div>
+                        <span class="rest-hint">Resume movement to continue</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

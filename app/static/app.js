@@ -121,8 +121,22 @@ let sessionTimerInterval = null;
 let sessionStartTime = null;
 let isPaused = false;
 let pausedElapsed = 0;
+let pauseStartTime = 0;
+let totalPausedMs = 0;
 let isMirrored = true;
 let sessionEnding = false;
+
+// Rest detection state
+let restState = {
+    isResting: false,
+    restStartTime: 0,
+    restTimerInterval: null,
+    repsAtRestStart: 0,
+    scoresInCurrentSet: [],
+    setsCompleted: [],
+    inactiveFrames: 0,
+    THRESHOLD_FRAMES: 120,  // ~4 sec at 30fps
+};
 
 // Session recording
 let mediaRecorder = null;
@@ -655,6 +669,74 @@ function updateHudState(data) {
     }
 
     s.wasActive = wasActive;
+
+    // ── Rest detection ──
+    updateRestDetection(s);
+}
+
+function updateRestDetection(s) {
+    const rs = restState;
+    const restOverlay = document.getElementById("rest-overlay");
+    const restTimer = document.getElementById("rest-timer");
+    const restSummary = document.getElementById("rest-set-summary");
+    if (!restOverlay) return;
+
+    if (!s.isActive && s.repCount > 0) {
+        rs.inactiveFrames++;
+
+        // Trigger rest after threshold
+        if (rs.inactiveFrames >= rs.THRESHOLD_FRAMES && !rs.isResting) {
+            rs.isResting = true;
+            rs.restStartTime = Date.now();
+            rs.repsAtRestStart = s.repCount;
+
+            // Calculate current set stats
+            const prevTotalReps = rs.setsCompleted.reduce((a, set) => a + set.reps, 0);
+            const setReps = s.repCount - prevTotalReps;
+            const avgScore = rs.scoresInCurrentSet.length > 0
+                ? Math.round((rs.scoresInCurrentSet.reduce((a, b) => a + b, 0) / rs.scoresInCurrentSet.length) * 100)
+                : 0;
+
+            if (setReps > 0) {
+                rs.setsCompleted.push({ reps: setReps, avgScore });
+            }
+
+            const setNum = rs.setsCompleted.length;
+            if (restSummary && setReps > 0) {
+                restSummary.textContent = `Set ${setNum}: ${setReps} reps · ${avgScore}% avg`;
+            }
+
+            // Reset set score tracking
+            rs.scoresInCurrentSet = [];
+
+            // Show rest overlay
+            restOverlay.classList.remove("hidden");
+
+            // Start rest timer
+            rs.restTimerInterval = setInterval(() => {
+                const elapsed = Math.round((Date.now() - rs.restStartTime) / 1000);
+                const m = Math.floor(elapsed / 60);
+                const sec = elapsed % 60;
+                if (restTimer) restTimer.textContent = `${m}:${String(sec).padStart(2, "0")}`;
+            }, 500);
+        }
+    } else {
+        // Active — clear rest state
+        if (rs.isResting) {
+            rs.isResting = false;
+            restOverlay.classList.add("hidden");
+            if (rs.restTimerInterval) {
+                clearInterval(rs.restTimerInterval);
+                rs.restTimerInterval = null;
+            }
+        }
+        rs.inactiveFrames = 0;
+
+        // Track per-frame scores for current set
+        if (s.isActive && s.formScore > 0) {
+            rs.scoresInCurrentSet.push(s.formScore);
+        }
+    }
 }
 
 function updateSessionOverlay(data) {
@@ -1020,7 +1102,7 @@ document.querySelector('input[name="classifier"]:checked')?.closest(".radio-card
 // ── Active Session ──────────────────────────────────────────────────────
 
 beginSessionBtn.addEventListener("click", startSession);
-endSessionBtn.addEventListener("click", endSession);
+endSessionBtn.addEventListener("click", showEndConfirmation);
 pauseBtn.addEventListener("click", togglePause);
 mirrorBtn.addEventListener("click", toggleMirror);
 if (fullscreenBtn) fullscreenBtn.addEventListener("click", toggleFullscreen);
@@ -1031,7 +1113,7 @@ const fsPauseBtn = document.getElementById("fs-pause-btn");
 const fsEndBtn = document.getElementById("fs-end-btn");
 if (fsExitBtn) fsExitBtn.addEventListener("click", toggleFullscreen);
 if (fsPauseBtn) fsPauseBtn.addEventListener("click", togglePause);
-if (fsEndBtn) fsEndBtn.addEventListener("click", endSession);
+if (fsEndBtn) fsEndBtn.addEventListener("click", showEndConfirmation);
 
 function toggleFullscreen() {
     const sessionLayout = document.querySelector(".session-layout");
@@ -1180,10 +1262,30 @@ async function startSession() {
     hudState.progress = "";
     hudState.isActive = false;
     hudState.setJustCompleted = false;
+    hudState.displayScore = 0;
+    hudState.repPulse = 0;
+    hudState.prevRepCount = 0;
 
-    // Hide session state overlay
+    // Reset rest detection state
+    restState.isResting = false;
+    restState.inactiveFrames = 0;
+    restState.repsAtRestStart = 0;
+    restState.scoresInCurrentSet = [];
+    restState.setsCompleted = [];
+    if (restState.restTimerInterval) clearInterval(restState.restTimerInterval);
+    restState.restTimerInterval = null;
+
+    // Reset pause tracking
+    totalPausedMs = 0;
+    pauseStartTime = 0;
+
+    // Hide overlays
     const stateOverlay = document.getElementById("session-state-overlay");
     if (stateOverlay) stateOverlay.classList.add("hidden");
+    const restOverlay = document.getElementById("rest-overlay");
+    if (restOverlay) restOverlay.classList.add("hidden");
+    const endConfirm = document.getElementById("end-confirm-overlay");
+    if (endConfirm) endConfirm.classList.add("hidden");
 
     // Start recording (low-res for space efficiency)
     startRecording();
@@ -1480,17 +1582,23 @@ function handleSessionReport(summary) {
 
 function togglePause() {
     if (isPaused) {
+        // Resume
         isPaused = false;
         pauseBtn.textContent = "Pause";
         pauseOverlay.classList.add("hidden");
-        sessionStartTime = Date.now() - pausedElapsed;
+        // Accumulate paused time
+        if (pauseStartTime > 0) {
+            totalPausedMs += Date.now() - pauseStartTime;
+            pauseStartTime = 0;
+        }
         sessionTimerInterval = setInterval(updateTimer, 1000);
         sendLoop();
     } else {
+        // Pause
         isPaused = true;
         pauseBtn.textContent = "Resume";
         pauseOverlay.classList.remove("hidden");
-        pausedElapsed = Date.now() - sessionStartTime;
+        pauseStartTime = Date.now();
         if (animFrameId) {
             cancelAnimationFrame(animFrameId);
             animFrameId = null;
@@ -1509,6 +1617,57 @@ function toggleMirror() {
 }
 
 // ── Session Controls ────────────────────────────────────────────────────
+
+// ── End Session Confirmation ──────────────────────────────────────────
+function showEndConfirmation() {
+    const overlay = document.getElementById("end-confirm-overlay");
+    if (!overlay) return;
+
+    // Populate stats
+    const repCount = parseInt(document.getElementById("rep-number").textContent) || 0;
+    const elapsed = sessionStartTime ? Math.round((Date.now() - sessionStartTime - totalPausedMs) / 1000) : 0;
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    const avgScore = hudState.formScore > 0 ? Math.round(hudState.displayScore * 100) : 0;
+
+    document.getElementById("ec-reps").textContent = `${repCount} reps`;
+    document.getElementById("ec-score").textContent = `${avgScore}% avg`;
+    document.getElementById("ec-time").textContent = `${m}:${String(s).padStart(2, "0")}`;
+
+    overlay.classList.remove("hidden");
+
+    // Pause frame sending while modal is shown
+    isPaused = true;
+}
+
+document.getElementById("ec-cancel").addEventListener("click", () => {
+    document.getElementById("end-confirm-overlay").classList.add("hidden");
+    isPaused = false;
+});
+
+document.getElementById("ec-confirm").addEventListener("click", () => {
+    document.getElementById("end-confirm-overlay").classList.add("hidden");
+    isPaused = false;
+    endSession();
+});
+
+// Wire the new END button in controls
+const endBtn = document.getElementById("end-btn");
+if (endBtn) endBtn.addEventListener("click", showEndConfirmation);
+
+// Escape key triggers end confirmation
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && currentPage === "session" && !sessionEnding) {
+        const overlay = document.getElementById("end-confirm-overlay");
+        if (overlay && !overlay.classList.contains("hidden")) {
+            // Already showing — treat as cancel
+            overlay.classList.add("hidden");
+            isPaused = false;
+        } else {
+            showEndConfirmation();
+        }
+    }
+});
 
 async function endSession() {
     sessionEnding = true;
@@ -1624,7 +1783,8 @@ function sendLoop() {
 
 function updateTimer() {
     if (!sessionStartTime) return;
-    const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+    const currentPause = isPaused && pauseStartTime > 0 ? Date.now() - pauseStartTime : 0;
+    const elapsed = Math.floor((Date.now() - sessionStartTime - totalPausedMs - currentPause) / 1000);
     const mins = Math.floor(elapsed / 60).toString().padStart(2, "0");
     const secs = (elapsed % 60).toString().padStart(2, "0");
     sessionTimer.textContent = `${mins}:${secs}`;
