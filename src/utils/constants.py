@@ -42,6 +42,8 @@ LEFT_ANKLE = 27
 RIGHT_ANKLE = 28
 LEFT_HEEL = 29
 RIGHT_HEEL = 30
+LEFT_FOOT_INDEX = 31
+RIGHT_FOOT_INDEX = 32
 
 # Joint angle definitions: (point_a, vertex, point_b)
 # Angle is measured at the vertex
