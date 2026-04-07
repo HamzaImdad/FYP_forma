@@ -71,7 +71,18 @@ root/
 │   │   ├── base.py               # ClassificationResult (now has is_active + form_score)
 │   │   ├── rule_based.py         # RuleBasedClassifier: motion-based activity gate (10-frame buffer)
 │   │   ├── ml_classifier.py      # MLClassifier: loads .pkl sklearn models per exercise
-│   │   └── bilstm_classifier.py  # CNN-BiLSTM: Conv1D front-end + BiLSTM + attention, hidden=128
+│   │   ├── bilstm_classifier.py  # CNN-BiLSTM: Conv1D front-end + BiLSTM + attention, hidden=128
+│   │   ├── base_detector.py      # BaseExerciseDetector: shared state machine, rep counting, scoring
+│   │   ├── squat_detector.py     # SquatDetector: knee angle + depth + torso lean + valgus
+│   │   ├── deadlift_detector.py  # DeadliftDetector: hip hinge + back straightness
+│   │   ├── lunge_detector.py     # LungeDetector: front/back knee depth + torso
+│   │   ├── bench_press_detector.py # BenchPressDetector: elbow depth + symmetry + flare
+│   │   ├── overhead_press_detector.py # OverheadPressDetector: lockout + torso lean
+│   │   ├── pullup_detector.py    # PullUpDetector: chin above bar + body swing
+│   │   ├── pushup_detector.py    # PushUpDetector: hip sag + depth + shoulder flare
+│   │   ├── plank_detector.py     # PlankDetector: body line + hip sag (static hold)
+│   │   ├── bicep_curl_detector.py # BicepCurlDetector: upper arm stability + torso swing
+│   │   └── tricep_dip_detector.py # TricepDipDetector: elbow depth + forward lean
 │   ├── feedback/
 │   │   └── feedback_engine.py    # Score-based text (Good/Moderate/Needs improvement) + gradient colors
 │   ├── visualization/
@@ -174,19 +185,49 @@ Raw videos → data/datasets/youtube/{exercise}/{correct|incorrect}/
 | 109 | hybrid (99 lm + 10 angles) | pullup, pushup, plank |
 | 330 | temporal (99 pos + 99 vel + 99 acc + 33 sym) | lunge, overhead_press, tricep_dip |
 
-## Current State (as of 2026-04-03)
+## Current State (as of 2026-04-07)
 
 ### What's DONE and working:
+- **Dedicated exercise detectors for ALL 10 exercises** — state machine + angle thresholds ✓
+  - BaseExerciseDetector base class with shared logic ✓
+  - 9 new detectors (squat, deadlift, lunge, bench_press, overhead_press, pullup, plank, bicep_curl, tricep_dip) ✓
+  - PushUpDetector (original, standalone) ✓
+  - PlankDetector (static hold, tracks duration instead of reps) ✓
 - All 10 exercises trained with CNN-BiLSTM v2 (cherry-picked best per exercise) ✓
 - Unified data pipeline script (`scripts/pipeline.py`) ✓
 - Video-level train/val/test splits (no data leakage) ✓
 - Web app tested — all 10 BiLSTM models load and serve correctly ✓
+- Session HUD with phase, progress, set tracking for ALL exercises ✓
 - Activity gate (10-frame motion detection) ✓
 - Continuous form scoring (0-100) with confidence gating ✓
 - Web UI with live score display + score history chart ✓
+- Session recording (480p WebM, 10fps, 500kbps) ✓
+- Camera setup instructions for all 10 exercises ✓
 - Model backup before overwriting ✓
+- **All work committed to git** ✓
 
-### Current Model F1 Scores (verified from deployed checkpoints):
+### Architecture: Dedicated Detectors (PRIMARY classification path)
+All 10 exercises now use dedicated detectors that bypass ML models entirely:
+- Each detector: angle computation → state machine → form scoring → joint feedback
+- State machine: TOP → GOING_DOWN → BOTTOM → GOING_UP → TOP (1 rep)
+- Per-frame form assessment with weighted scoring (exercise-specific)
+- Set tracking with 8-second rest timeout
+- Session summary with per-rep scores, common issues, set breakdown
+
+| Exercise | Detector | Primary Angle | Key Form Checks |
+|---|---|---|---|
+| squat | SquatDetector | knee (hip-knee-ankle) | depth, torso lean, knee valgus |
+| deadlift | DeadliftDetector | hip (shoulder-hip-knee) | back straightness, knee bend |
+| lunge | LungeDetector | front knee | front/back knee depth, torso upright |
+| bench_press | BenchPressDetector | elbow | depth, symmetry, shoulder flare |
+| overhead_press | OverheadPressDetector | elbow | lockout, torso lean/back arch |
+| pullup | PullUpDetector | elbow | chin above bar, body swing |
+| pushup | PushUpDetector | elbow | hip sag, depth, shoulder flare |
+| plank | PlankDetector (static) | body line | hip sag/pike, shoulder alignment |
+| bicep_curl | BicepCurlDetector | elbow | upper arm stability, torso swing |
+| tricep_dip | TricepDipDetector | elbow | depth, forward lean |
+
+### BiLSTM Model F1 Scores (secondary, for comparison):
 | Exercise | F1 | Dim | Precision | Recall | Threshold |
 |---|---|---|---|---|---|
 | lunge | 0.786 | 330 | 0.765 | 0.809 | 0.25 |
@@ -201,13 +242,7 @@ Raw videos → data/datasets/youtube/{exercise}/{correct|incorrect}/
 | tricep_dip | 0.597 | 330 | 0.486 | 0.775 | 0.50 |
 | **Average** | **0.695** | | | | |
 
-Note: `bilstm_v2_training_summary.json` is STALE — it reflects a later retraining, not the deployed cherry-picked models.
-
-### What STILL NEEDS DOING:
-- Nothing has been committed to git yet (massive uncommitted changes).
-- Weak exercises: squat (0.647), deadlift (0.605), tricep_dip (0.597) have low precision (predict "correct" too often).
-- Hybrid (109-dim) never tried for squat, deadlift, bicep_curl, bench_press — sequences already exist.
-- End-to-end webcam testing with a real user not yet done.
+Note: Dedicated detectors are now the primary path. BiLSTM/ML are secondary options selectable in the guide page.
 
 ## Commands
 
