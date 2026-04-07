@@ -1640,12 +1640,13 @@ function showEndConfirmation() {
     isPaused = true;
 }
 
-document.getElementById("ec-cancel").addEventListener("click", () => {
+const ecCancel = document.getElementById("ec-cancel");
+const ecConfirm = document.getElementById("ec-confirm");
+if (ecCancel) ecCancel.addEventListener("click", () => {
     document.getElementById("end-confirm-overlay").classList.add("hidden");
     isPaused = false;
 });
-
-document.getElementById("ec-confirm").addEventListener("click", () => {
+if (ecConfirm) ecConfirm.addEventListener("click", () => {
     document.getElementById("end-confirm-overlay").classList.add("hidden");
     isPaused = false;
     endSession();
