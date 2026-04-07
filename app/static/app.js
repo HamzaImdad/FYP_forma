@@ -428,10 +428,8 @@ function drawSkeletonOverlay(landmarks, jointFeedback) {
     // Draw angle labels on top of skeleton
     drawAngleLabels(landmarks, lastWorldLandmarks, jointFeedback, selectedExercise);
 
-    // Draw session HUD on top of everything (push-ups only)
-    if (selectedExercise === "pushup") {
-        drawSessionHUD();
-    }
+    // Draw session HUD on top of everything (all exercises with detectors)
+    drawSessionHUD();
 }
 
 function updateJointHealth(jointFeedback, exercise) {
@@ -612,11 +610,9 @@ function handleLandmarkResult(data) {
     // Update joint feedback for next skeleton draw
     lastJointFeedback = data.joint_feedback || {};
 
-    // Update push-up HUD state and overlays
-    if (selectedExercise === "pushup") {
-        updateHudState(data);
-        updateSessionOverlay(data);
-    }
+    // Update HUD state and overlays (all exercises have detectors now)
+    updateHudState(data);
+    updateSessionOverlay(data);
 
     totalFrameCount++;
 
@@ -1244,11 +1240,9 @@ function handleProcessedFrame(data) {
     };
     frameImg.src = data.image;
 
-    // Update push-up HUD state and overlays
-    if (selectedExercise === "pushup") {
-        updateHudState(data);
-        updateSessionOverlay(data);
-    }
+    // Update HUD state and overlays (all exercises have detectors now)
+    updateHudState(data);
+    updateSessionOverlay(data);
 
     totalFrameCount++;
 

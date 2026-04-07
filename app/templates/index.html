@@ -66,8 +66,8 @@
                     </div>
                     <div class="hero-stat-divider"></div>
                     <div class="hero-stat">
-                        <span class="stat-number">3</span>
-                        <span class="stat-label">AI Classification Models</span>
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Classification Modes</span>
                     </div>
                 </div>
                 <div class="scroll-indicator">
@@ -144,7 +144,7 @@
                             </svg>
                         </div>
                         <h3>AI Classification</h3>
-                        <p>Three classifiers &mdash; rule-based, Random Forest and BiLSTM &mdash; evaluate your form in real time.</p>
+                        <p>Dedicated exercise detectors with state machines, plus rule-based, Random Forest and BiLSTM classifiers evaluate your form in real time.</p>
                     </div>
                     <div class="how-card how-card--purple" data-aos="fade-up" data-aos-delay="300">
                         <span class="how-step">04</span>
@@ -547,19 +547,24 @@
             <!-- Classifier comparison -->
             <div class="about-classifiers">
                 <span class="section-label" data-aos="fade-up">Model Comparison</span>
-                <h3 class="section-title" data-aos="fade-up">Three Classifiers, <em>One Goal</em></h3>
+                <h3 class="section-title" data-aos="fade-up">Four Classification Modes, <em>One Goal</em></h3>
                 <div class="classifier-cards">
-                    <div class="clf-card clf-card--green" data-aos="fade-up" data-aos-delay="0">
+                    <div class="clf-card clf-card--gold" data-aos="fade-up" data-aos-delay="0">
+                        <h4>Dedicated Detectors</h4>
+                        <p class="clf-desc">State machine detectors with angle thresholds for each exercise &mdash; per-joint feedback with actionable cues</p>
+                        <div class="clf-meta"><span>Primary mode</span><span>Best feedback</span></div>
+                    </div>
+                    <div class="clf-card clf-card--green" data-aos="fade-up" data-aos-delay="100">
                         <h4>Rule-Based</h4>
                         <p class="clf-desc">Hand-crafted biomechanical thresholds for each exercise</p>
                         <div class="clf-meta"><span>No training data</span><span>Interpretable</span></div>
                     </div>
-                    <div class="clf-card clf-card--blue" data-aos="fade-up" data-aos-delay="100">
+                    <div class="clf-card clf-card--blue" data-aos="fade-up" data-aos-delay="200">
                         <h4>Random Forest</h4>
                         <p class="clf-desc">Ensemble ML model trained on extracted pose features</p>
                         <div class="clf-meta"><span>F1: 0.70-0.98</span><span>Best accuracy</span></div>
                     </div>
-                    <div class="clf-card clf-card--violet" data-aos="fade-up" data-aos-delay="200">
+                    <div class="clf-card clf-card--violet" data-aos="fade-up" data-aos-delay="300">
                         <h4>BiLSTM</h4>
                         <p class="clf-desc">Deep learning with temporal sequence awareness and attention</p>
                         <div class="clf-meta"><span>GPU accelerated</span><span>Sequence-aware</span></div>

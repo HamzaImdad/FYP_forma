@@ -2,6 +2,7 @@
     "squat": {
         "display_name": "Barbell Squat",
         "muscles": ["Quadriceps", "Glutes", "Hamstrings", "Core"],
+        "camera_setup": "Stand facing the camera or at a slight angle, 2-3 metres away. Full body from head to feet must be visible. A front or side angle both work well.",
         "instructions": [
             "Stand with feet shoulder-width apart, toes slightly turned out",
             "Keep your chest up and core braced throughout the movement",
@@ -20,6 +21,7 @@
     "lunge": {
         "display_name": "Forward Lunge",
         "muscles": ["Quadriceps", "Glutes", "Hamstrings", "Calves"],
+        "camera_setup": "Stand facing the camera or from the side. Ensure both legs are fully visible from hips to feet. Side angle gives the best depth assessment.",
         "instructions": [
             "Stand with feet hip-width apart",
             "Step forward with one leg, lowering your hips",
@@ -38,6 +40,7 @@
     "deadlift": {
         "display_name": "Conventional Deadlift",
         "muscles": ["Hamstrings", "Glutes", "Lower Back", "Traps", "Core"],
+        "camera_setup": "Side view is best for deadlifts — camera at hip height, 2-3 metres away. Full body including hands and feet must be visible to assess back angle.",
         "instructions": [
             "Stand with feet hip-width apart, bar over mid-foot",
             "Hinge at the hips and grip the bar just outside your knees",
@@ -56,6 +59,7 @@
     "bench_press": {
         "display_name": "Barbell Bench Press",
         "muscles": ["Chest", "Shoulders", "Triceps"],
+        "camera_setup": "Position camera to the side of the bench at chest height. Both arms, shoulders, and the bar path should be visible. Front angle also works.",
         "instructions": [
             "Lie on the bench with eyes under the bar",
             "Grip the bar slightly wider than shoulder-width",
@@ -74,6 +78,7 @@
     "overhead_press": {
         "display_name": "Overhead Press",
         "muscles": ["Shoulders", "Triceps", "Upper Chest", "Core"],
+        "camera_setup": "Stand facing the camera or from the side. Full body from feet to hands overhead must be visible. Step back if arms go out of frame at the top.",
         "instructions": [
             "Stand with feet shoulder-width apart, bar at shoulder height",
             "Grip the bar just outside shoulder-width",
@@ -92,6 +97,7 @@
     "pullup": {
         "display_name": "Pull-Up",
         "muscles": ["Lats", "Biceps", "Upper Back", "Core"],
+        "camera_setup": "Position camera facing you from the front or at a slight angle. Full body from hands on the bar to feet must be visible. Step the camera back far enough to capture full extension.",
         "instructions": [
             "Hang from the bar with an overhand grip, slightly wider than shoulders",
             "Engage your lats and pull your chest toward the bar",
@@ -129,6 +135,7 @@
     "plank": {
         "display_name": "Plank Hold",
         "muscles": ["Core", "Shoulders", "Glutes", "Lower Back"],
+        "camera_setup": "Side view is essential for planks — camera at floor level, 2-3 metres away. Your full body from head to feet must be in a straight line in the frame.",
         "instructions": [
             "Start on forearms and toes, elbows under shoulders",
             "Keep your body in a straight line from head to heels",
@@ -147,6 +154,7 @@
     "bicep_curl": {
         "display_name": "Bicep Curl",
         "muscles": ["Biceps", "Forearms"],
+        "camera_setup": "Stand facing the camera. Arms from shoulders to hands must be clearly visible. Front angle works best for detecting upper arm movement and torso swing.",
         "instructions": [
             "Stand with feet hip-width apart, arms at your sides",
             "Hold dumbbells with palms facing forward",
@@ -165,6 +173,7 @@
     "tricep_dip": {
         "display_name": "Tricep Dip",
         "muscles": ["Triceps", "Chest", "Shoulders"],
+        "camera_setup": "Side view or front angle. Arms, shoulders and torso must be visible. If using a bench, position camera so the full upper body and arms are in frame.",
         "instructions": [
             "Grip the dip bars or bench with arms straight",
             "Lower your body by bending your elbows to about 90 degrees",
