@@ -297,17 +297,6 @@ class ExerVisionPipeline:
         draw_angle_zones(frame, pose, result.joint_feedback)
         draw_skeleton(frame, pose, joint_colors, skeleton_colors)
         draw_angle_labels(frame, pose, self._exercise, result.joint_feedback)
-        # Skip the old feedback panel for push-ups — client-side overlays handle it
-        if self._exercise == "pushup":
-            draw_exercise_label(frame, self._exercise)
-            t_draw = time.perf_counter() - t0
-            return frame, result
-        draw_feedback_panel(
-            frame, feedback_text,
-            is_correct=result.is_active and result.form_score > 0.7,
-            rep_count=self.rep_count,
-            fps=self.fps,
-        )
         draw_exercise_label(frame, self._exercise)
         t_draw = time.perf_counter() - t0
 

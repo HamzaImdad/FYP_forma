@@ -80,6 +80,9 @@ class PushUpDetector:
     but with meaningful per-joint feedback and actionable text.
     """
 
+    EXERCISE_NAME = "pushup"
+    IS_STATIC = False
+
     def __init__(self):
         self.reset()
 
