@@ -262,7 +262,7 @@ async function initMediaPipe() {
         );
         poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
             baseOptions: {
-                modelAssetPath: "/static/models/pose_landmarker_full.task",
+                modelAssetPath: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/latest/pose_landmarker_full.task",
                 delegate: "GPU",
             },
             runningMode: "VIDEO",
@@ -1239,20 +1239,24 @@ async function startSession() {
         skeletonCtx = skeletonCanvas.getContext("2d");
     }
 
-    hybridMode = await initMediaPipe();
-    if (hybridMode) {
-        console.log("Hybrid mode enabled — browser-side MediaPipe + server classification");
-        document.querySelector(".video-wrapper").classList.add("hybrid-mode");
-        if (isMirrored) {
-            video.classList.add("mirrored");
-            if (skeletonCanvas) skeletonCanvas.classList.add("mirrored");
-        }
-    } else {
-        console.log("Legacy mode — server-side MediaPipe");
-        document.querySelector(".video-wrapper").classList.remove("hybrid-mode");
-    }
-
+    // Connect socket FIRST (don't block on MediaPipe model download)
     connectSocket();
+
+    // Init MediaPipe in parallel — doesn't block session start
+    initMediaPipe().then((ok) => {
+        hybridMode = ok;
+        if (hybridMode) {
+            console.log("Hybrid mode enabled — browser-side MediaPipe + server classification");
+            document.querySelector(".video-wrapper").classList.add("hybrid-mode");
+            if (isMirrored) {
+                video.classList.add("mirrored");
+                if (skeletonCanvas) skeletonCanvas.classList.add("mirrored");
+            }
+        } else {
+            console.log("Legacy mode — server-side MediaPipe");
+            document.querySelector(".video-wrapper").classList.remove("hybrid-mode");
+        }
+    });
 
     sessionStartTime = Date.now();
     sessionTimerInterval = setInterval(updateTimer, 1000);
@@ -1371,9 +1375,11 @@ function stopRecording() {
 
 function connectSocket() {
     socket = io({
+        transports: ["websocket", "polling"],
         reconnection: true,
-        reconnectionAttempts: 5,
+        reconnectionAttempts: 10,
         reconnectionDelay: 1000,
+        timeout: 20000,
     });
 
     socket.on("connect", () => {
