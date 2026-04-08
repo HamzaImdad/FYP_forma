@@ -503,7 +503,7 @@ def handle_landmarks(data):
 def main():
     parser = argparse.ArgumentParser(description="ExerVision web server")
     parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
-    parser.add_argument("--port", type=int, default=5000, help="Port to listen on")
+    parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", 5000)), help="Port to listen on")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     args = parser.parse_args()
 

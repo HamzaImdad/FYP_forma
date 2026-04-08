@@ -22,4 +22,4 @@ COPY . .
 ENV PORT=5000
 ENV HOST=0.0.0.0
 
-CMD ["/bin/sh", "-c", "python app/server.py --host 0.0.0.0 --port $PORT"]
+CMD ["python", "app/server.py"]
