@@ -1,0 +1,127 @@
+{
+  "generated_at": "2026-04-07 14:27:23",
+  "total_files": 968,
+  "total_time_sec": 2268.2,
+  "exercises": {
+    "squat": {
+      "exercise": "squat",
+      "n_files": 139,
+      "total_frames": 274706,
+      "elapsed_sec": 486.7,
+      "n_correct": 84,
+      "n_incorrect": 55,
+      "correct_avg_score": 0.4796,
+      "incorrect_avg_score": 0.4823,
+      "correct_std": 0.1903,
+      "incorrect_std": 0.1842
+    },
+    "deadlift": {
+      "exercise": "deadlift",
+      "n_files": 130,
+      "total_frames": 293244,
+      "elapsed_sec": 335.9,
+      "n_correct": 83,
+      "n_incorrect": 47,
+      "correct_avg_score": 0.3483,
+      "incorrect_avg_score": 0.3709,
+      "correct_std": 0.1419,
+      "incorrect_std": 0.0779
+    },
+    "lunge": {
+      "exercise": "lunge",
+      "n_files": 48,
+      "total_frames": 104965,
+      "elapsed_sec": 92.2,
+      "n_correct": 25,
+      "n_incorrect": 23,
+      "correct_avg_score": 0.4611,
+      "incorrect_avg_score": 0.4672,
+      "correct_std": 0.112,
+      "incorrect_std": 0.1127
+    },
+    "bench_press": {
+      "exercise": "bench_press",
+      "n_files": 109,
+      "total_frames": 256212,
+      "elapsed_sec": 228.1,
+      "n_correct": 73,
+      "n_incorrect": 36,
+      "correct_avg_score": 0.408,
+      "incorrect_avg_score": 0.5717,
+      "correct_std": 0.2895,
+      "incorrect_std": 0.1084
+    },
+    "overhead_press": {
+      "exercise": "overhead_press",
+      "n_files": 86,
+      "total_frames": 156957,
+      "elapsed_sec": 226.3,
+      "n_correct": 50,
+      "n_incorrect": 36,
+      "correct_avg_score": 0.4133,
+      "incorrect_avg_score": 0.3812,
+      "correct_std": 0.0737,
+      "incorrect_std": 0.1043
+    },
+    "pullup": {
+      "exercise": "pullup",
+      "n_files": 84,
+      "total_frames": 171589,
+      "elapsed_sec": 187.7,
+      "n_correct": 65,
+      "n_incorrect": 19,
+      "correct_avg_score": 0.5573,
+      "incorrect_avg_score": 0.5199,
+      "correct_std": 0.1492,
+      "incorrect_std": 0.1243
+    },
+    "pushup": {
+      "exercise": "pushup",
+      "n_files": 144,
+      "total_frames": 196835,
+      "elapsed_sec": 345.5,
+      "n_correct": 104,
+      "n_incorrect": 40,
+      "correct_avg_score": 0.3084,
+      "incorrect_avg_score": 0.4844,
+      "correct_std": 0.2831,
+      "incorrect_std": 0.1755
+    },
+    "plank": {
+      "exercise": "plank",
+      "n_files": 59,
+      "total_frames": 104687,
+      "elapsed_sec": 83.7,
+      "n_correct": 35,
+      "n_incorrect": 24,
+      "correct_avg_score": 0.4726,
+      "incorrect_avg_score": 0.5017,
+      "correct_std": 0.159,
+      "incorrect_std": 0.18
+    },
+    "bicep_curl": {
+      "exercise": "bicep_curl",
+      "n_files": 109,
+      "total_frames": 138667,
+      "elapsed_sec": 196.9,
+      "n_correct": 82,
+      "n_incorrect": 27,
+      "correct_avg_score": 0.4229,
+      "incorrect_avg_score": 0.467,
+      "correct_std": 0.2014,
+      "incorrect_std": 0.1398
+    },
+    "tricep_dip": {
+      "exercise": "tricep_dip",
+      "n_files": 60,
+      "total_frames": 100925,
+      "elapsed_sec": 85.1,
+      "n_correct": 41,
+      "n_incorrect": 19,
+      "correct_avg_score": 0.5806,
+      "incorrect_avg_score": 0.5594,
+      "correct_std": 0.1919,
+      "incorrect_std": 0.2305
+    }
+  }
+}
