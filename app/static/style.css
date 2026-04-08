@@ -3532,6 +3532,11 @@ h4 {
     .hud-bar-bottom {
         flex-wrap: wrap;
     }
+
+    /* Classifier cards 2-col on tablet */
+    .classifier-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* <=768px */
@@ -3565,6 +3570,10 @@ h4 {
         padding: 12px 16px;
         width: 100%;
         text-align: center;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .how-grid {
@@ -3586,10 +3595,19 @@ h4 {
     .footer-top {
         grid-template-columns: 1fr;
         gap: var(--space-2xl);
+        text-align: center;
+    }
+
+    .footer-brand p {
+        max-width: none;
     }
 
     .hero-stats {
         gap: var(--space-lg);
+    }
+
+    .hero-stat-divider {
+        display: none;
     }
 
     .stat-number {
@@ -3633,6 +3651,10 @@ h4 {
         height: 200px;
     }
 
+    .about-block-content {
+        padding: var(--space-xl) var(--space-md);
+    }
+
     .hero-bottom {
         flex-direction: column;
         gap: 24px;
@@ -3653,7 +3675,54 @@ h4 {
         padding: var(--space-3xl) 0 60px;
     }
 
-    /* section-label already centered by default */
+    /* Report page */
+    .report-actions {
+        flex-wrap: wrap;
+    }
+
+    .report-actions .btn {
+        flex: 1 1 auto;
+        min-width: 140px;
+    }
+
+    /* Set cards responsive */
+    .set-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+
+    .set-card-stats {
+        flex-wrap: wrap;
+    }
+
+    /* Dashboard header */
+    .dash-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dash-filters {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .dash-period-btn {
+        flex: 1;
+        text-align: center;
+        padding: 8px 12px;
+    }
+
+    /* End confirm modal */
+    .end-confirm-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Guide page camera specs */
+    .camera-card {
+        padding: var(--space-lg) var(--space-md);
+    }
 }
 
 /* <=640px */
@@ -3725,6 +3794,313 @@ h4 {
     .hero-badge {
         font-size: 0.65rem;
         padding: 8px 18px;
+    }
+
+    /* Session HUD tighter */
+    .hud-bar-top {
+        padding: 10px 14px;
+    }
+
+    .hud-bar-bottom {
+        padding: 30px 14px 10px;
+        gap: 10px;
+    }
+
+    .hud-bottom-controls {
+        gap: 6px;
+    }
+
+    .hud-ctrl-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
+
+    /* Report page tighter */
+    .report-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .report-actions .btn {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* Guide page */
+    #page-guide .container {
+        padding-top: calc(var(--nav-height) + var(--space-xl));
+        padding-bottom: var(--space-2xl);
+    }
+
+    .guide-section {
+        padding: var(--space-lg) var(--space-md);
+    }
+
+    /* About block image smaller */
+    .about-block-image {
+        height: 160px;
+    }
+
+    /* Dashboard tighter */
+    .dash-container {
+        padding-top: calc(var(--nav-height) + var(--space-xl));
+    }
+
+    .dash-chart-wrap {
+        height: 200px;
+    }
+
+    .dash-chart-wrap canvas {
+        max-height: 200px !important;
+    }
+
+    .dash-chart-card {
+        padding: var(--space-md);
+    }
+
+    /* CTA card tighter */
+    .cta-card h2 {
+        font-size: clamp(1.8rem, 5vw, var(--fs-h2));
+    }
+}
+
+/* <=480px — small phones */
+@media (max-width: 480px) {
+    :root {
+        --fs-hero: clamp(3.5rem, 14vw, 5rem);
+        --fs-h2: clamp(2rem, 6vw, 3rem);
+    }
+
+    .container {
+        padding: 0 var(--space-sm);
+    }
+
+    .nav-inner {
+        padding: 0 var(--space-sm);
+    }
+
+    /* Hero stats vertical on tiny screens */
+    .hero-stats {
+        flex-direction: column;
+        gap: var(--space-md);
+        padding-top: var(--space-lg);
+    }
+
+    .hero-stat {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 0.65rem;
+    }
+
+    /* Exercise grid single column on small phones */
+    .exercise-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+
+    .card-image {
+        height: 180px;
+    }
+
+    /* Report summary single column */
+    .report-summary {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+    }
+
+    .report-card {
+        padding: var(--space-md);
+    }
+
+    .report-value {
+        font-size: clamp(1.8rem, 5vw, var(--fs-h2));
+    }
+
+    /* Dashboard summary single column */
+    .dash-summary {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+    }
+
+    .dash-card {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        text-align: left;
+        padding: var(--space-md);
+    }
+
+    .dash-card-icon {
+        margin-bottom: 0;
+    }
+
+    .dash-card-value {
+        font-size: 1.6rem;
+    }
+
+    /* Tech grid single column */
+    .tech-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .tech-item {
+        padding: var(--space-md);
+    }
+
+    /* Camera specs stack */
+    .camera-specs {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+
+    .camera-spec {
+        flex-direction: row;
+        gap: var(--space-sm);
+    }
+
+    .camera-spec-icon {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+    }
+
+    /* Section padding tighter */
+    .section-how,
+    .section-features,
+    .section-exercises-preview,
+    .about-split,
+    .about-tech,
+    .about-classifiers {
+        padding: 40px 0;
+    }
+
+    .section-cta {
+        padding: var(--space-2xl) 0 40px;
+    }
+
+    /* Page header tighter */
+    .page-header {
+        padding-top: calc(var(--nav-height) + var(--space-2xl));
+        padding-bottom: var(--space-xl);
+    }
+
+    /* Footer tighter */
+    #main-footer {
+        padding: var(--space-2xl) 0 var(--space-md);
+    }
+
+    /* Preview section */
+    .preview-desc {
+        font-size: var(--fs-small);
+    }
+
+    .exercise-tag {
+        padding: 6px 12px;
+        font-size: 0.65rem;
+    }
+
+    /* How cards tighter */
+    .how-card {
+        padding: var(--space-xl) var(--space-md);
+    }
+
+    /* Feature items tighter */
+    .feature-item {
+        padding: var(--space-xl) var(--space-md);
+    }
+
+    /* Classifier cards tighter */
+    .clf-card {
+        padding: var(--space-xl) var(--space-md);
+    }
+
+    /* Score history chart smaller */
+    #score-history-chart {
+        max-width: 260px;
+    }
+
+    /* Session state overlay */
+    .session-state-content {
+        padding: var(--space-md);
+    }
+
+    /* Rest card */
+    .rest-card {
+        padding: var(--space-xl) var(--space-lg);
+        min-width: 200px;
+    }
+
+    .rest-timer {
+        font-size: 2.5rem;
+    }
+
+    /* End confirm */
+    .end-confirm-card {
+        padding: var(--space-xl) var(--space-lg);
+    }
+
+    .end-confirm-actions {
+        flex-direction: column;
+    }
+
+    .end-confirm-actions .btn {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* Rep table scrollable */
+    .rep-table {
+        font-size: var(--fs-xs);
+    }
+
+    .rep-table th,
+    .rep-table td {
+        padding: var(--space-xs) var(--space-sm);
+    }
+}
+
+/* <=360px — tiny phones */
+@media (max-width: 360px) {
+    .nav-brand {
+        font-size: 1.3rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .btn-lg {
+        padding: 14px 32px;
+        font-size: 0.85rem;
+    }
+
+    .exercise-label {
+        font-size: 1rem;
+    }
+
+    .session-timer {
+        font-size: 0.9rem;
+    }
+
+    .hud-exit-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 1.3rem;
+    }
+
+    .dash-period-btn {
+        font-size: 0.7rem;
+        padding: 7px 10px;
     }
 }
 
