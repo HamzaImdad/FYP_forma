@@ -19,6 +19,11 @@ import logging
 import argparse
 from pathlib import Path
 
+# Monkey-patch for eventlet (must be before other imports)
+if os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("USE_EVENTLET"):
+    import eventlet
+    eventlet.monkey_patch()
+
 import cv2
 import numpy as np
 from flask import Flask, render_template, request, jsonify
@@ -46,7 +51,8 @@ MAX_FRAME_DIM = 720
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("EXERVISION_SECRET_KEY", "exervision-dev-fallback")
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+_async_mode = "eventlet" if os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("USE_EVENTLET") else "threading"
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode=_async_mode)
 
 # One pipeline per connected session
 pipelines = {}
