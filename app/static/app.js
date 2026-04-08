@@ -31,6 +31,7 @@ const pages = {
     guide: document.getElementById("page-guide"),
     session: document.getElementById("page-session"),
     report: document.getElementById("page-report"),
+    dashboard: document.getElementById("page-dashboard"),
     about: document.getElementById("page-about"),
 };
 
@@ -69,6 +70,9 @@ function showPage(name) {
 
     // Close mobile menu
     document.getElementById("nav-links").classList.remove("open");
+
+    // Load dashboard data when navigating to it
+    if (name === "dashboard") loadDashboard();
 
     // --- Effect lifecycle management ---
     // Destroy Vanta when entering session (performance critical)
@@ -1060,16 +1064,17 @@ async function openGuide(exerciseId) {
             .map((m) => `<span class="muscle-tag">${m}</span>`)
             .join("");
 
-        // Camera setup notice (if provided for this exercise)
-        const cameraSetupEl = document.getElementById("guide-camera-setup");
-        if (cameraSetupEl) {
-            if (data.camera_setup) {
-                cameraSetupEl.textContent = data.camera_setup;
-                cameraSetupEl.style.display = "block";
-            } else {
-                cameraSetupEl.style.display = "none";
-            }
-        }
+        // Camera placement card
+        const angleMap = { front: "Front view", side: "Side view", "front-or-side": "Front or side" };
+        const heightMap = { floor: "Floor level", waist: "Waist level", chest: "Chest level" };
+        const angleText = document.getElementById("camera-angle-text");
+        const distText = document.getElementById("camera-distance-text");
+        const heightText = document.getElementById("camera-height-text");
+        const setupText = document.getElementById("camera-setup-text");
+        if (angleText) angleText.textContent = angleMap[data.camera_angle] || "Front view";
+        if (distText) distText.textContent = data.camera_distance || "2-3m";
+        if (heightText) heightText.textContent = heightMap[data.camera_height] || "Waist level";
+        if (setupText) setupText.textContent = data.camera_setup || "";
 
         guideInstructions.innerHTML = data.instructions
             .map((s) => `<li>${s}</li>`)
@@ -1141,7 +1146,7 @@ async function startSession() {
     isPaused = false;
     pausedElapsed = 0;
     sessionEnding = false;
-    pauseBtn.textContent = "Pause";
+    pauseBtn.innerHTML = "\u23F8"; // ⏸ pause icon
     pauseOverlay.classList.add("hidden");
     reconnectBanner.classList.add("hidden");
 
@@ -1584,7 +1589,7 @@ function togglePause() {
     if (isPaused) {
         // Resume
         isPaused = false;
-        pauseBtn.textContent = "Pause";
+        pauseBtn.innerHTML = "\u23F8"; // ⏸ pause icon
         pauseOverlay.classList.add("hidden");
         // Accumulate paused time
         if (pauseStartTime > 0) {
@@ -1596,7 +1601,7 @@ function togglePause() {
     } else {
         // Pause
         isPaused = true;
-        pauseBtn.textContent = "Resume";
+        pauseBtn.innerHTML = "\u25B6"; // ▶ play/resume icon
         pauseOverlay.classList.remove("hidden");
         pauseStartTime = Date.now();
         if (animFrameId) {
@@ -2142,6 +2147,345 @@ function destroyVanta() {
 window.addEventListener("scroll", () => {
     document.getElementById("main-nav").classList.toggle("scrolled", window.scrollY > 50);
 }, { passive: true });
+
+// ── Dashboard ──────────────────────────────────────────────────────────
+
+let dashCharts = { score: null, dist: null, reps: null, quality: null };
+let dashCurrentPeriod = "week";
+
+const EXERCISE_COLORS = {
+    squat: "#E8572A", lunge: "#D4A574", deadlift: "#F59E0B",
+    bench_press: "#34D399", overhead_press: "#60A5FA", pullup: "#A78BFA",
+    pushup: "#F472B6", plank: "#2DD4BF", bicep_curl: "#FB923C",
+    tricep_dip: "#818CF8",
+};
+
+// Chart.js global defaults for dark theme
+if (typeof Chart !== "undefined") {
+    Chart.defaults.color = "rgba(255,255,255,0.5)";
+    Chart.defaults.borderColor = "rgba(255,255,255,0.06)";
+    Chart.defaults.font.family = "'Outfit', sans-serif";
+    Chart.defaults.font.size = 11;
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    Chart.defaults.resizeDelay = 100;
+}
+
+async function loadDashboard(period) {
+    if (period) dashCurrentPeriod = period;
+    const p = dashCurrentPeriod;
+    const days = p === "week" ? 7 : p === "month" ? 30 : 365;
+
+    document.querySelectorAll(".dash-period-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.period === p);
+    });
+
+    try {
+        const [statsRes, scoresRes, distRes, sessionsRes] = await Promise.all([
+            fetch(`/api/dashboard/stats?period=${p}`),
+            fetch(`/api/dashboard/scores?days=${days}`),
+            fetch(`/api/dashboard/distribution?period=${p}`),
+            fetch(`/api/dashboard/sessions?period=${p}&limit=10`),
+        ]);
+
+        const stats = await statsRes.json();
+        const scores = await scoresRes.json();
+        const dist = await distRes.json();
+        const sessions = await sessionsRes.json();
+
+        // Summary cards
+        document.getElementById("dash-workouts").textContent = stats.total_workouts || 0;
+        document.getElementById("dash-reps").textContent = stats.total_reps || 0;
+        document.getElementById("dash-score").textContent =
+            stats.total_workouts > 0 ? Math.round(stats.avg_score * 100) + "%" : "--%";
+        const totalMin = Math.round((stats.total_time_sec || 0) / 60);
+        document.getElementById("dash-time").textContent =
+            totalMin >= 60 ? `${Math.floor(totalMin / 60)}h ${totalMin % 60}m` : `${totalMin}m`;
+
+        renderDashScoreChart(scores);
+        renderDashDistChart(dist);
+        renderDashRepsChart(sessions);
+        renderDashQualityChart(sessions);
+        renderDashSessionsList(sessions);
+    } catch (err) {
+        console.warn("Dashboard load error:", err);
+    }
+}
+
+function _destroyChart(key) {
+    if (dashCharts[key]) { dashCharts[key].destroy(); dashCharts[key] = null; }
+}
+
+function renderDashScoreChart(data) {
+    const ctx = document.getElementById("dash-score-chart");
+    if (!ctx) return;
+    _destroyChart("score");
+
+    if (!data.dates || !data.dates.length) {
+        dashCharts.score = new Chart(ctx, {
+            type: "line",
+            data: { labels: ["No data"], datasets: [{ data: [0], borderColor: "#555" }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } },
+        });
+        return;
+    }
+
+    dashCharts.score = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: data.dates.map((d) => {
+                const dt = new Date(d + "T00:00:00");
+                return dt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+            }),
+            datasets: [{
+                label: "Form Score",
+                data: data.scores.map((s) => Math.round(s * 100)),
+                borderColor: "#D4A574",
+                backgroundColor: "rgba(212,165,116,0.08)",
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: "#D4A574",
+                pointBorderColor: "#0D0D0D",
+                pointBorderWidth: 2,
+                borderWidth: 2.5,
+            }, {
+                label: "Reps",
+                data: data.reps || [],
+                borderColor: "#E8572A",
+                backgroundColor: "rgba(232,87,42,0.06)",
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: "#E8572A",
+                pointBorderColor: "#0D0D0D",
+                pointBorderWidth: 2,
+                borderWidth: 2,
+                yAxisID: "y1",
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            plugins: {
+                legend: { display: true, position: "top", labels: { padding: 12, usePointStyle: true, pointStyleWidth: 8 } },
+                tooltip: { backgroundColor: "rgba(13,13,13,0.95)", borderColor: "rgba(212,165,116,0.3)", borderWidth: 1, padding: 10 },
+            },
+            scales: {
+                y: { min: 0, max: 100, ticks: { callback: (v) => v + "%" }, grid: { color: "rgba(255,255,255,0.04)" } },
+                y1: { position: "right", min: 0, grid: { display: false }, ticks: { color: "rgba(232,87,42,0.5)" } },
+                x: { grid: { display: false } },
+            },
+        },
+    });
+}
+
+function renderDashDistChart(data) {
+    const ctx = document.getElementById("dash-dist-chart");
+    if (!ctx) return;
+    _destroyChart("dist");
+
+    if (!data || !data.length) {
+        dashCharts.dist = new Chart(ctx, {
+            type: "doughnut",
+            data: { labels: ["No data"], datasets: [{ data: [1], backgroundColor: ["#333"], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: "65%", plugins: { legend: { display: false } } },
+        });
+        return;
+    }
+
+    dashCharts.dist = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: data.map((d) => d.exercise.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())),
+            datasets: [{
+                data: data.map((d) => d.count),
+                backgroundColor: data.map((d) => EXERCISE_COLORS[d.exercise] || "#888"),
+                borderWidth: 2,
+                borderColor: "#0D0D0D",
+                hoverOffset: 6,
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "62%",
+            plugins: {
+                legend: { position: "bottom", labels: { padding: 12, usePointStyle: true, pointStyleWidth: 8, font: { size: 11 } } },
+                tooltip: { backgroundColor: "rgba(13,13,13,0.95)", borderColor: "rgba(212,165,116,0.3)", borderWidth: 1 },
+            },
+        },
+    });
+}
+
+function renderDashRepsChart(sessions) {
+    const ctx = document.getElementById("dash-reps-chart");
+    if (!ctx) return;
+    _destroyChart("reps");
+
+    if (!sessions || !sessions.length) {
+        dashCharts.reps = new Chart(ctx, {
+            type: "bar",
+            data: { labels: ["No data"], datasets: [{ data: [0], backgroundColor: "#333" }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } },
+        });
+        return;
+    }
+
+    const recent = sessions.slice(0, 10).reverse();
+
+    dashCharts.reps = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: recent.map((s) => {
+                const dt = new Date(s.date);
+                return dt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+            }),
+            datasets: [{
+                label: "Reps",
+                data: recent.map((s) => s.total_reps),
+                backgroundColor: recent.map((s) => {
+                    const c = EXERCISE_COLORS[s.exercise] || "#D4A574";
+                    return c + "CC"; // add alpha
+                }),
+                borderRadius: 6,
+                borderSkipped: false,
+                barPercentage: 0.6,
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: "rgba(13,13,13,0.95)",
+                    callbacks: {
+                        title: (items) => {
+                            const s = recent[items[0].dataIndex];
+                            return s.exercise.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+                        },
+                        label: (item) => `${item.parsed.y} reps`,
+                    },
+                },
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.04)" } },
+                x: { grid: { display: false } },
+            },
+        },
+    });
+}
+
+function renderDashQualityChart(sessions) {
+    const ctx = document.getElementById("dash-quality-chart");
+    if (!ctx) return;
+    _destroyChart("quality");
+
+    if (!sessions || !sessions.length) {
+        dashCharts.quality = new Chart(ctx, {
+            type: "bar",
+            data: { labels: ["No data"], datasets: [{ data: [0], backgroundColor: "#333" }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } },
+        });
+        return;
+    }
+
+    const recent = sessions.slice(0, 10).reverse();
+
+    dashCharts.quality = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: recent.map((s) => {
+                const dt = new Date(s.date);
+                return dt.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+            }),
+            datasets: [
+                {
+                    label: "Good Reps",
+                    data: recent.map((s) => s.good_reps),
+                    backgroundColor: "rgba(52,211,153,0.7)",
+                    borderRadius: 4,
+                    barPercentage: 0.5,
+                },
+                {
+                    label: "Needs Work",
+                    data: recent.map((s) => Math.max(0, s.total_reps - s.good_reps)),
+                    backgroundColor: "rgba(248,113,113,0.5)",
+                    borderRadius: 4,
+                    barPercentage: 0.5,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: "top", labels: { padding: 12, usePointStyle: true, pointStyleWidth: 8, font: { size: 11 } } },
+                tooltip: { backgroundColor: "rgba(13,13,13,0.95)" },
+            },
+            scales: {
+                x: { stacked: true, grid: { display: false } },
+                y: { stacked: true, beginAtZero: true, grid: { color: "rgba(255,255,255,0.04)" } },
+            },
+        },
+    });
+}
+
+function renderDashSessionsList(sessions) {
+    const container = document.getElementById("dash-sessions-list");
+    if (!container) return;
+
+    if (!sessions.length) {
+        container.innerHTML = '<p class="dash-empty">No sessions recorded yet. Complete a workout to see your history.</p>';
+        return;
+    }
+
+    container.innerHTML = sessions.map((s) => {
+        const score = Math.round(s.avg_form_score * 100);
+        const scoreClass = score >= 70 ? "good" : score >= 40 ? "mid" : "bad";
+        const date = new Date(s.date);
+        const dateStr = date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+        const timeStr = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+        const dur = Math.max(1, Math.round(s.duration_sec / 60));
+        const name = s.exercise.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+        return `<div class="dash-session-item" data-session-id="${s.id}">
+            <span class="dash-session-exercise">${name}</span>
+            <div class="dash-session-meta">
+                <span>${s.total_reps} reps</span>
+                <span>${dur}m</span>
+                <span>${dateStr} ${timeStr}</span>
+                <span class="dash-session-score ${scoreClass}">${score}%</span>
+            </div>
+        </div>`;
+    }).join("");
+
+    container.querySelectorAll(".dash-session-item").forEach((el) => {
+        el.addEventListener("click", async () => {
+            try {
+                const res = await fetch(`/api/dashboard/session/${el.dataset.sessionId}`);
+                const detail = await res.json();
+                if (detail && !detail.error) { showReport(detail); showPage("report"); }
+            } catch (err) { console.warn("Session detail error:", err); }
+        });
+    });
+}
+
+// Period button clicks
+document.querySelectorAll(".dash-period-btn").forEach((btn) => {
+    btn.addEventListener("click", () => loadDashboard(btn.dataset.period));
+});
+
+// View Dashboard button on report page
+const viewDashBtn = document.getElementById("view-dashboard-btn");
+if (viewDashBtn) {
+    viewDashBtn.addEventListener("click", () => {
+        showPage("dashboard");
+    });
+}
 
 // ── Init ────────────────────────────────────────────────────────────────
 

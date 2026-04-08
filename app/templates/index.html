@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <link rel="stylesheet" href="/static/style.css?v=20">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css?v=30">
 </head>
 <body>
     <!-- Background depth orbs -->
@@ -29,6 +30,7 @@
             <ul class="nav-links" id="nav-links">
                 <li><a href="#" data-nav="home" class="nav-link active">Home</a></li>
                 <li><a href="#" data-nav="exercises" class="nav-link">Exercises</a></li>
+                <li><a href="#" data-nav="dashboard" class="nav-link">Dashboard</a></li>
                 <li><a href="#" data-nav="about" class="nav-link">About</a></li>
                 <li><a href="#" data-nav="exercises" class="nav-link nav-cta">Start Workout</a></li>
             </ul>
@@ -302,7 +304,56 @@
                 <div id="guide-muscles" class="muscle-tags"></div>
             </div>
 
-            <div id="guide-camera-setup" class="camera-setup-notice" style="display:none;"></div>
+            <div id="guide-camera-card" class="camera-card glass" data-aos="fade-up" data-aos-delay="50">
+                <div class="camera-card-header">
+                    <svg class="camera-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    <span class="camera-card-title">Camera Placement</span>
+                </div>
+                <div class="camera-card-body">
+                    <div class="camera-specs">
+                        <div class="camera-spec">
+                            <div class="camera-spec-icon" id="camera-angle-icon">
+                                <svg viewBox="0 0 40 40" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="20" cy="8" r="4"/>
+                                    <line x1="20" y1="12" x2="20" y2="26"/>
+                                    <line x1="20" y1="16" x2="12" y2="22"/>
+                                    <line x1="20" y1="16" x2="28" y2="22"/>
+                                    <line x1="20" y1="26" x2="14" y2="36"/>
+                                    <line x1="20" y1="26" x2="26" y2="36"/>
+                                </svg>
+                            </div>
+                            <span class="camera-spec-label">Angle</span>
+                            <span class="camera-spec-value" id="camera-angle-text">Front view</span>
+                        </div>
+                        <div class="camera-spec">
+                            <div class="camera-spec-icon">
+                                <svg viewBox="0 0 40 40" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <line x1="8" y1="20" x2="32" y2="20" stroke-dasharray="3 2"/>
+                                    <polygon points="8,17 3,20 8,23"/>
+                                    <polygon points="32,17 37,20 32,23"/>
+                                    <line x1="20" y1="14" x2="20" y2="26"/>
+                                </svg>
+                            </div>
+                            <span class="camera-spec-label">Distance</span>
+                            <span class="camera-spec-value" id="camera-distance-text">2-3m</span>
+                        </div>
+                        <div class="camera-spec">
+                            <div class="camera-spec-icon">
+                                <svg viewBox="0 0 40 40" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <line x1="20" y1="4" x2="20" y2="36" stroke-dasharray="3 2"/>
+                                    <polygon points="17,4 20,0 23,4"/>
+                                    <polygon points="17,36 20,40 23,36"/>
+                                    <circle cx="20" cy="20" r="3" fill="currentColor" opacity="0.3"/>
+                                    <line x1="14" y1="20" x2="26" y2="20"/>
+                                </svg>
+                            </div>
+                            <span class="camera-spec-label">Height</span>
+                            <span class="camera-spec-value" id="camera-height-text">Waist level</span>
+                        </div>
+                    </div>
+                    <p class="camera-card-tip" id="camera-setup-text"></p>
+                </div>
+            </div>
 
             <div class="guide-section" data-aos="fade-up" data-aos-delay="100">
                 <h3>Instructions</h3>
@@ -520,6 +571,85 @@
                 <button id="delete-recording-btn" class="btn btn-outline hidden" style="color:var(--bad);border-color:var(--bad)">Delete Recording</button>
                 <button id="try-again-btn" class="btn btn-primary">Try Again</button>
                 <button id="choose-exercise-btn" class="btn btn-outline">Choose Exercise</button>
+                <button id="view-dashboard-btn" class="btn btn-outline" data-nav="dashboard">View Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE: Dashboard -->
+    <div id="page-dashboard" class="page">
+        <div class="container dash-container">
+            <div class="dash-header">
+                <h2 class="section-title">Performance <em>Dashboard</em></h2>
+                <div class="dash-filters">
+                    <button class="dash-period-btn active" data-period="week">This Week</button>
+                    <button class="dash-period-btn" data-period="month">This Month</button>
+                    <button class="dash-period-btn" data-period="all">All Time</button>
+                </div>
+            </div>
+
+            <!-- Summary cards -->
+            <div class="dash-summary">
+                <div class="dash-card glass">
+                    <span class="dash-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="dash-card-value" id="dash-workouts">0</span>
+                    <span class="dash-card-label">Workouts</span>
+                </div>
+                <div class="dash-card glass">
+                    <span class="dash-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                    </span>
+                    <span class="dash-card-value" id="dash-reps">0</span>
+                    <span class="dash-card-label">Total Reps</span>
+                </div>
+                <div class="dash-card glass">
+                    <span class="dash-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </span>
+                    <span class="dash-card-value" id="dash-score">--%</span>
+                    <span class="dash-card-label">Avg Form Score</span>
+                </div>
+                <div class="dash-card glass">
+                    <span class="dash-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </span>
+                    <span class="dash-card-value" id="dash-time">0m</span>
+                    <span class="dash-card-label">Total Time</span>
+                </div>
+            </div>
+
+            <!-- Charts row 1: Score trend + distribution -->
+            <div class="dash-charts">
+                <div class="dash-chart-card glass">
+                    <h3 class="dash-chart-title">Form Score Trend</h3>
+                    <div class="dash-chart-wrap"><canvas id="dash-score-chart" height="250"></canvas></div>
+                </div>
+                <div class="dash-chart-card glass">
+                    <h3 class="dash-chart-title">Exercise Distribution</h3>
+                    <div class="dash-chart-wrap"><canvas id="dash-dist-chart" height="250"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Charts row 2: Reps per session + quality -->
+            <div class="dash-charts">
+                <div class="dash-chart-card glass">
+                    <h3 class="dash-chart-title">Reps Per Session</h3>
+                    <div class="dash-chart-wrap"><canvas id="dash-reps-chart" height="250"></canvas></div>
+                </div>
+                <div class="dash-chart-card glass">
+                    <h3 class="dash-chart-title">Good vs Bad Reps</h3>
+                    <div class="dash-chart-wrap"><canvas id="dash-quality-chart" height="250"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Recent sessions -->
+            <div class="dash-recent">
+                <h3 class="dash-section-title">Recent Sessions</h3>
+                <div id="dash-sessions-list" class="dash-sessions-list">
+                    <p class="dash-empty">No sessions recorded yet. Complete a workout to see your history.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -534,7 +664,7 @@
             </div>
             <div class="container about-hero-content">
                 <span class="section-label section-label--accent" data-aos="fade-up">About the Project</span>
-                <h2 class="section-title section-title--left" data-aos="fade-up">Smarter Training,<br><em>Better Results</em></h2>
+                <h2 class="section-title" data-aos="fade-up">Smarter Training,<br><em>Better Results</em></h2>
                 <p class="about-hero-desc" data-aos="fade-up" data-aos-delay="100">A real-time computer vision system for exercise form evaluation. Built as a BSc Computer Science final year project at the University of Greenwich.</p>
             </div>
         </section>
