@@ -56,11 +56,15 @@ processing = {}
 last_frame_time = {}
 MIN_FRAME_INTERVAL = 1.0 / 20  # ~50ms
 
+# Initialize session history database
+from app.database import ExerVisionDB
+db = ExerVisionDB(str(PROJECT_ROOT / "exervision.db"))
+
 # Load exercise metadata
 EXERCISE_DATA_PATH = Path(__file__).parent / "exercise_data.json"
 EXERCISE_DATA = {}
 if EXERCISE_DATA_PATH.exists():
-    with open(EXERCISE_DATA_PATH, "r") as f:
+    with open(EXERCISE_DATA_PATH, "r", encoding="utf-8") as f:
         EXERCISE_DATA = json.load(f)
 
 # Pre-load ML models at import time so first connection is fast
@@ -137,6 +141,9 @@ def get_exercise_guide(exercise):
         "display_name": info.get("display_name", exercise.replace("_", " ").title()),
         "muscles": info.get("muscles", []),
         "camera_setup": info.get("camera_setup", ""),
+        "camera_angle": info.get("camera_angle", "front"),
+        "camera_distance": info.get("camera_distance", "2-3m"),
+        "camera_height": info.get("camera_height", "waist"),
         "instructions": info.get("instructions", []),
         "common_mistakes": info.get("common_mistakes", []),
     })
@@ -151,12 +158,58 @@ def _add_detector_fields(feedback, pipeline, result):
         if result and isinstance(result.details, dict):
             feedback["phase"] = result.details.get("phase", "")
             feedback["progress"] = result.details.get("progress", "")
+            feedback["rest_tier"] = result.details.get("rest_tier", "")
+            feedback["activity_state"] = result.details.get("activity", "")
             # Plank: include hold duration
             if hasattr(detector, '_hold_duration'):
                 feedback["hold_duration"] = round(detector._hold_duration, 1)
         else:
             feedback["phase"] = ""
             feedback["progress"] = ""
+
+
+# ── Dashboard API ──────────────────────────────────────────────────────
+
+@app.route("/api/dashboard/stats")
+def dashboard_stats():
+    """Aggregate stats for dashboard summary cards."""
+    period = request.args.get("period")
+    exercise = request.args.get("exercise")
+    return jsonify(db.get_stats(period, exercise))
+
+
+@app.route("/api/dashboard/sessions")
+def dashboard_sessions():
+    """List sessions with optional filters."""
+    exercise = request.args.get("exercise")
+    period = request.args.get("period")
+    limit = int(request.args.get("limit", 20))
+    offset = int(request.args.get("offset", 0))
+    return jsonify(db.get_sessions(exercise, period, limit, offset))
+
+
+@app.route("/api/dashboard/session/<int:session_id>")
+def dashboard_session_detail(session_id):
+    """Full session detail with per-rep breakdown."""
+    detail = db.get_session_detail(session_id)
+    if not detail:
+        return jsonify({"error": "Session not found"}), 404
+    return jsonify(detail)
+
+
+@app.route("/api/dashboard/scores")
+def dashboard_scores():
+    """Daily average form scores for line chart."""
+    days = int(request.args.get("days", 30))
+    exercise = request.args.get("exercise")
+    return jsonify(db.get_daily_scores(days, exercise))
+
+
+@app.route("/api/dashboard/distribution")
+def dashboard_distribution():
+    """Exercise breakdown for pie/doughnut chart."""
+    period = request.args.get("period")
+    return jsonify(db.get_exercise_distribution(period))
 
 
 # ── Socket.IO Events ────────────────────────────────────────────────────
@@ -238,12 +291,20 @@ def handle_start_session(data=None):
 
 @socketio.on("end_session")
 def handle_end_session():
-    """End session and return the summary report."""
+    """End session, save to database, and return the summary report."""
     sid = request.sid
     if sid not in pipelines:
         return
 
     summary = pipelines[sid].end_session()
+
+    # Auto-save session to database
+    try:
+        session_id = db.save_session(summary)
+        summary["session_id"] = session_id
+    except Exception as e:
+        logger.warning(f"Failed to save session: {e}")
+
     emit("session_report", summary)
 
 
