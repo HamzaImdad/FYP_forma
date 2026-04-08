@@ -47,6 +47,7 @@ class BenchPressDetector(BaseExerciseDetector):
             pose,
             (LEFT_SHOULDER, LEFT_ELBOW, LEFT_WRIST),
             (RIGHT_SHOULDER, RIGHT_ELBOW, RIGHT_WRIST),
+            name="elbow",
         )
 
         # Individual elbows for symmetry
@@ -58,6 +59,7 @@ class BenchPressDetector(BaseExerciseDetector):
             pose,
             (LEFT_ELBOW, LEFT_SHOULDER, LEFT_HIP),
             (RIGHT_ELBOW, RIGHT_SHOULDER, RIGHT_HIP),
+            name="shoulder",
         )
 
         return {

@@ -50,6 +50,7 @@ class BicepCurlDetector(BaseExerciseDetector):
             pose,
             (LEFT_SHOULDER, LEFT_ELBOW, LEFT_WRIST),
             (RIGHT_SHOULDER, RIGHT_ELBOW, RIGHT_WRIST),
+            name="elbow",
         )
 
         upper_arm = self._compute_upper_arm_stability(pose)

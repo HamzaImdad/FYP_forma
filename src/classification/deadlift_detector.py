@@ -42,8 +42,8 @@ class DeadliftDetector(BaseExerciseDetector):
     DESCENT_THRESHOLD = 15.0
     ASCENT_THRESHOLD = 10.0
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._prev_shoulder_y = None
         self._prev_hip_y = None
 

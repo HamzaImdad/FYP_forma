@@ -44,8 +44,8 @@ class LungeDetector(BaseExerciseDetector):
 
     FRONT_LEG_LOCK_FRAMES = 15  # keep front leg decision stable for this many frames
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._front_leg = None  # "left" or "right"
         self._front_leg_lock = 0  # frames remaining in current lock
 

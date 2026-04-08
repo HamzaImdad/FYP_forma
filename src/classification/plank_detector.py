@@ -46,6 +46,7 @@ class PlankDetector(BaseExerciseDetector):
             pose,
             (LEFT_SHOULDER, LEFT_HIP, LEFT_ANKLE),
             (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_ANKLE),
+            name="hip",
         )
 
         hip_deviation = self._compute_hip_deviation(pose)

@@ -55,8 +55,8 @@ class SquatDetector(BaseExerciseDetector):
     DESCENT_THRESHOLD = 15.0
     ASCENT_THRESHOLD = 10.0
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._mid_descent_hip_angle = None
 
     def reset(self):

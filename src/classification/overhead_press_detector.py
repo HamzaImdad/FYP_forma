@@ -45,6 +45,7 @@ class OverheadPressDetector(BaseExerciseDetector):
             pose,
             (LEFT_SHOULDER, LEFT_ELBOW, LEFT_WRIST),
             (RIGHT_SHOULDER, RIGHT_ELBOW, RIGHT_WRIST),
+            name="elbow",
         )
         torso = self._compute_torso_lean(pose)
 

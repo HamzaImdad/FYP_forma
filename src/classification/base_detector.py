@@ -20,6 +20,7 @@ from ..pose_estimation.base import PoseResult
 from ..classification.base import ClassificationResult
 from ..utils.constants import MIN_VISIBILITY
 from ..utils.geometry import calculate_angle
+from ..utils.activity_detector import ActivityDetector, ActivityState, RestTier
 
 
 # ── Shared constants ────────────────────────────────────────────────────
@@ -29,6 +30,9 @@ ANGLE_SMOOTH_WINDOW = 3     # frames for moving average
 SCORE_SMOOTH_WINDOW = 8     # frames for form score smoothing
 NO_POSE_RESET_FRAMES = 30   # re-validate if pose lost this many frames
 MAX_REP_HISTORY = 200       # cap rep history
+ASYMMETRY_WARN_DEG = 12.0   # degrees L/R diff to flag asymmetry
+ASYMMETRY_BAD_DEG = 20.0    # degrees L/R diff — significant imbalance
+LOW_VIS_THRESHOLD = 0.65    # below this, discount score confidence
 
 
 class RepPhase:
@@ -60,7 +64,8 @@ class BaseExerciseDetector(ABC):
     ASCENT_THRESHOLD: float = 10.0      # degrees rise to start ascent
     IS_STATIC: bool = False             # True for plank (no rep counting)
 
-    def __init__(self):
+    def __init__(self, coverage_penalty: bool = False):
+        self._coverage_penalty = coverage_penalty
         self.reset()
 
     def reset(self):
@@ -100,6 +105,18 @@ class BaseExerciseDetector(ABC):
         self._hold_start_time: Optional[float] = None
         self._hold_duration: float = 0.0
 
+        # Asymmetry tracking: stores L/R angles per named angle
+        self._lr_angles: Dict[str, Tuple[Optional[float], Optional[float]]] = {}
+        # Visibility confidence per frame
+        self._frame_visibility: float = 1.0
+        # Coverage tracking (for offline scoring)
+        self._last_coverage: float = 1.0
+
+        # Activity & rest detection
+        self._activity_detector = ActivityDetector()
+        self._current_activity = ActivityState.NO_POSE
+        self._current_rest_tier = RestTier.ACTIVE
+
     @property
     def rep_count(self) -> int:
         return self._rep_count
@@ -137,13 +154,59 @@ class BaseExerciseDetector(ABC):
 
     def _avg_angle(self, pose: PoseResult,
                    left_triple: Tuple[int, int, int],
-                   right_triple: Tuple[int, int, int]) -> Optional[float]:
-        """Average angle from left and right sides (or whichever visible)."""
+                   right_triple: Tuple[int, int, int],
+                   name: Optional[str] = None) -> Optional[float]:
+        """Average angle from left and right sides (or whichever visible).
+        Stores L/R values for asymmetry detection if name is provided.
+        """
         left = self._angle_at(pose, *left_triple)
         right = self._angle_at(pose, *right_triple)
+        if name:
+            self._lr_angles[name] = (left, right)
         if left is not None and right is not None:
             return (left + right) / 2
         return left if left is not None else right
+
+    def _compute_visibility(self, pose: PoseResult, indices: List[int]) -> float:
+        """Compute average visibility confidence for a set of landmark indices."""
+        vis_sum = 0.0
+        count = 0
+        for idx in indices:
+            if idx < len(pose.landmarks):
+                vis_sum += pose.landmarks[idx, 3]  # visibility is 4th column
+                count += 1
+        return vis_sum / max(count, 1)
+
+    def _check_asymmetry(self, joint_feedback: Dict[str, str],
+                         issues: List[str]) -> float:
+        """Check L/R asymmetry across all tracked angles.
+        Returns asymmetry penalty (0.0 = none, up to 0.15 deduction).
+        Updates joint_feedback to mark the weaker side.
+        """
+        penalty = 0.0
+        side_map = {
+            "knee": ("left_knee", "right_knee"),
+            "hip": ("left_hip", "right_hip"),
+            "elbow": ("left_elbow", "right_elbow"),
+            "shoulder": ("left_shoulder", "right_shoulder"),
+        }
+        for angle_name, (left, right) in self._lr_angles.items():
+            if left is None or right is None:
+                continue
+            diff = abs(left - right)
+            if diff >= ASYMMETRY_BAD_DEG:
+                # Significant imbalance
+                penalty = max(penalty, 0.15)
+                weaker_side = "left" if left < right else "right"
+                fb_key = side_map.get(angle_name)
+                if fb_key:
+                    weak_key = fb_key[0] if weaker_side == "left" else fb_key[1]
+                    if joint_feedback.get(weak_key) != "incorrect":
+                        joint_feedback[weak_key] = "warning"
+                issues.append(f"Uneven {angle_name.replace('_', ' ')} — {weaker_side} side weaker ({diff:.0f}° diff)")
+            elif diff >= ASYMMETRY_WARN_DEG:
+                penalty = max(penalty, 0.07)
+        return penalty
 
     # ── Abstract methods (subclass must implement) ──────────────────────
 
@@ -212,15 +275,24 @@ class BaseExerciseDetector(ABC):
 
     # ── Main classify method ────────────────────────────────────────────
 
-    def classify(self, pose: PoseResult) -> ClassificationResult:
-        """Process a pose and return classification result."""
-        now = time.time()
+    def classify(self, pose: PoseResult, timestamp: float = None) -> ClassificationResult:
+        """Process a pose and return classification result.
+
+        Args:
+            pose: PoseResult from frame
+            timestamp: Optional timestamp in seconds (for offline CSV processing).
+                       Defaults to time.time() for real-time use.
+        """
+        now = timestamp if timestamp is not None else time.time()
 
         # Compute and smooth angles
         raw_angles = self._compute_angles(pose)
         for name, val in raw_angles.items():
             self._push_angle(name, val)
             self.last_angles[name] = val
+
+        # Track overall landmark visibility for confidence weighting
+        self._frame_visibility = float(np.mean(pose.landmarks[:, 3]))
 
         angles = {name: self._get_smooth(name) for name in raw_angles}
 
@@ -266,6 +338,16 @@ class BaseExerciseDetector(ABC):
                 self._hold_duration = now - self._hold_start_time
 
             frame_score, joint_feedback, issues = self._assess_form(angles)
+
+            # Coverage penalty for static holds too
+            if self._coverage_penalty:
+                n_angles = sum(1 for k, v in angles.items() if k != "primary" and v is not None)
+                n_expected = max(1, len(angles) - 1)
+                coverage = n_angles / n_expected
+                if coverage < 0.6:
+                    frame_score *= coverage
+                self._last_coverage = coverage
+
             self._score_buf.append(frame_score)
             smooth_score = sum(self._score_buf) / len(self._score_buf)
 
@@ -285,13 +367,21 @@ class BaseExerciseDetector(ABC):
                 feedback_text=feedback_text,
             )
 
-        # ── Set detection ──
-        if now - self._last_active_time > SET_REST_TIMEOUT and self._reps_in_current_set > 0:
+        # ── Activity detection ──
+        activity, rest_tier = self._activity_detector.update(pose, now)
+        self._current_activity = activity
+        self._current_rest_tier = rest_tier
+        is_actively_exercising = activity in (ActivityState.EXERCISING, ActivityState.TRANSITION)
+
+        # Only update last_active_time when actually moving
+        if is_actively_exercising:
+            self._last_active_time = now
+
+        # ── Set detection (tiered) ──
+        if rest_tier == RestTier.EXTENDED_REST and self._reps_in_current_set > 0:
             self._set_reps.append(self._reps_in_current_set)
             self._set_count += 1
             self._reps_in_current_set = 0
-
-        self._last_active_time = now
 
         # ── State machine ──
         rep_completed = False
@@ -326,7 +416,30 @@ class BaseExerciseDetector(ABC):
                 self._state = RepPhase.BOTTOM
 
         # ── Per-frame form assessment ──
+        self._lr_angles.clear()
         frame_score, joint_feedback, issues = self._assess_form(angles)
+
+        # ── Coverage penalty (for offline scoring — penalise missing joints) ──
+        if self._coverage_penalty:
+            n_angles = sum(1 for k, v in angles.items() if k != "primary" and v is not None)
+            n_expected = max(1, len(angles) - 1)  # exclude "primary" (duplicate of another)
+            coverage = n_angles / n_expected
+            if coverage < 0.6:
+                frame_score *= coverage
+            self._last_coverage = coverage
+        else:
+            self._last_coverage = 1.0
+
+        # ── Asymmetry detection (auto for all exercises) ──
+        asym_penalty = self._check_asymmetry(joint_feedback, issues)
+        frame_score = max(0.0, frame_score - asym_penalty)
+
+        # ── Visibility-weighted confidence ──
+        if self._frame_visibility < LOW_VIS_THRESHOLD:
+            # Discount score when landmarks are poorly visible
+            vis_factor = 0.5 + 0.5 * (self._frame_visibility / LOW_VIS_THRESHOLD)
+            frame_score *= vis_factor
+
         self._current_rep_scores.append(frame_score)
         for issue in issues:
             if issue not in self._current_rep_issues:
@@ -374,8 +487,12 @@ class BaseExerciseDetector(ABC):
             )
             details["progress"] = f"{int(progress * 100)}%"
 
+        # Activity & rest state for frontend
+        details["activity"] = self._current_activity.value
+        details["rest_tier"] = self._current_rest_tier.value
+
         return self._build_result(
-            form_score=smooth_score, is_active=True,
+            form_score=smooth_score, is_active=is_actively_exercising,
             joint_feedback=joint_feedback, details=details,
             feedback_text=feedback_text,
         )

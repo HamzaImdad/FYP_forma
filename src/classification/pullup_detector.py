@@ -47,6 +47,7 @@ class PullUpDetector(BaseExerciseDetector):
             pose,
             (LEFT_SHOULDER, LEFT_ELBOW, LEFT_WRIST),
             (RIGHT_SHOULDER, RIGHT_ELBOW, RIGHT_WRIST),
+            name="elbow",
         )
 
         chin_above = self._check_chin_above_bar(pose)

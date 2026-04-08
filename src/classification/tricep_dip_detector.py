@@ -45,11 +45,13 @@ class TricepDipDetector(BaseExerciseDetector):
             pose,
             (LEFT_SHOULDER, LEFT_ELBOW, LEFT_WRIST),
             (RIGHT_SHOULDER, RIGHT_ELBOW, RIGHT_WRIST),
+            name="elbow",
         )
         shoulder = self._avg_angle(
             pose,
             (LEFT_ELBOW, LEFT_SHOULDER, LEFT_HIP),
             (RIGHT_ELBOW, RIGHT_SHOULDER, RIGHT_HIP),
+            name="shoulder",
         )
         hip_closeness = self._compute_hip_closeness(pose)
         return {"primary": elbow, "elbow": elbow, "shoulder": shoulder, "hip": hip_closeness}
