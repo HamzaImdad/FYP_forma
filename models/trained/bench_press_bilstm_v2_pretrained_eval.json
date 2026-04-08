@@ -1,0 +1,12 @@
+{
+  "f1": 0.6446421008047437,
+  "accuracy": 0.6626457579412948,
+  "precision": 0.5571010248901903,
+  "recall": 0.7648241206030151,
+  "best_epoch": 17,
+  "best_val_f1": 0.6845112781954887,
+  "val_best_thresh": 0.1,
+  "n_train": 6225,
+  "n_test": 2487,
+  "pretrained": true
+}

@@ -1,0 +1,31 @@
+{
+  "accuracy": 0.6340941512125535,
+  "precision": 0.5445086705202312,
+  "recall": 0.7983050847457627,
+  "f1": 0.6474226804123712,
+  "train_f1": 0.9510416666666667,
+  "best_epoch": 79,
+  "best_val_loss": 1.149916633963585,
+  "best_val_f1": 0.6595744680851063,
+  "threshold_used_for_eval": 0.5,
+  "val_best_thresh": 0.15000000000000002,
+  "n_train": 5294,
+  "n_val": 1385,
+  "n_test": 2804,
+  "n_params": 797801,
+  "input_dim": 99,
+  "hidden_dim": 128,
+  "num_layers": 2,
+  "seq_len": 45,
+  "use_landmarks": true,
+  "use_conv": true,
+  "swa_used": false,
+  "amp_used": true,
+  "compiled": false,
+  "confusion_matrix": {
+    "TP": 942,
+    "FP": 788,
+    "TN": 836,
+    "FN": 238
+  }
+}

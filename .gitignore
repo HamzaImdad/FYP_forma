@@ -2,14 +2,21 @@
 data/
 *.db
 
-# Models (too large for git)
-models/trained/
-models/mediapipe/
-*.pkl
-*.pt
+# Models (large files excluded, essentials force-added)
+models/trained/*_classifier.pkl
+models/trained/*_random_forest.pkl
+models/trained/*_pretrained.pt
+models/trained/*_backup.pt
+models/trained/*_run1.pt
+models/trained/*_bilstm.pt
 *.pth
-*.task
 *.onnx
+
+# Keep essential models (these are force-added):
+# models/mediapipe/pose_landmarker_lite.task (~5.6MB)
+# models/trained/*_bilstm_v2.pt (~3-8MB each)
+# models/trained/*_svm.pkl (~4KB each)
+# models/trained/*_logistic_regression.pkl (~2.4KB each)
 
 # Python
 __pycache__/

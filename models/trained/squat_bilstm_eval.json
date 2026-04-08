@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.7218456725755996,
+  "precision": 0.07941834451901567,
+  "recall": 0.2253968253968254,
+  "f1": 0.11745244003308519,
+  "best_epoch": 50,
+  "best_val_loss": 0.014627038369543027,
+  "best_threshold": 0.1,
+  "n_train": 9460,
+  "n_test": 3836,
+  "n_params": 153794,
+  "input_dim": 16,
+  "hidden_dim": 64,
+  "num_layers": 2
+}
