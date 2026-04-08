@@ -1,0 +1,11 @@
+mediapipe>=0.10.0
+opencv-python-headless>=4.8.0
+numpy>=1.23.0
+pandas>=1.5.0
+scikit-learn>=1.2.0
+tqdm>=4.64.0
+flask>=3.0.0
+flask-socketio>=5.3.0
+eventlet>=0.35.0
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.0.0
