@@ -2404,6 +2404,42 @@ h4 {
     color: var(--text-secondary);
 }
 
+.dtw-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: rgba(212, 165, 116, 0.08);
+    border: 1px solid rgba(212, 165, 116, 0.28);
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.dtw-pill.hidden { display: none; }
+
+.dtw-pill.dtw-good {
+    background: rgba(126, 211, 33, 0.1);
+    border-color: rgba(126, 211, 33, 0.35);
+    color: var(--good, #7ed321);
+}
+
+.dtw-pill.dtw-mid {
+    background: rgba(245, 166, 35, 0.12);
+    border-color: rgba(245, 166, 35, 0.4);
+    color: var(--warn, #f5a623);
+}
+
+.dtw-pill.dtw-bad {
+    background: rgba(232, 87, 42, 0.14);
+    border-color: rgba(232, 87, 42, 0.5);
+    color: var(--bad, #e8572a);
+}
+
 /* Control buttons */
 .hud-ctrl-btn {
     width: 40px;

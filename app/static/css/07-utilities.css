@@ -1,0 +1,144 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FORMA — Utilities, A11y, Final Overrides
+   Loaded last so these rules win the cascade against legacy.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Visibility helpers ──────────────────────────────────────────── */
+.hidden { display: none !important; }
+.invisible { visibility: hidden; }
+
+/* ─── A11y helpers ────────────────────────────────────────────────── */
+
+/* sr-only and skip-link already declared in 02-base.css; reinforce here */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Universal focus-visible rule — gold outline against any background */
+*:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* On dark sections (hero, contrast bands, footer), use lighter focus */
+.section--contrast *:focus-visible,
+.forma-hero *:focus-visible,
+.forma-cta *:focus-visible,
+.site-footer *:focus-visible,
+#page-session *:focus-visible {
+    outline-color: var(--gold-soft);
+    outline-offset: 3px;
+}
+
+/* ─── Selection on light theme ────────────────────────────────────── */
+::selection {
+    background-color: var(--gold);
+    color: var(--bg-page);
+}
+
+/* ─── Print styles (graceful) ─────────────────────────────────────── */
+@media print {
+    .forma-hero__bg,
+    .forma-cta__bg,
+    .forma-guide__hero img,
+    #main-nav,
+    .site-footer {
+        display: none !important;
+    }
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* ─── Force-light overrides for legacy elements that didn't get a wrapper class ─── */
+
+/* Body fallback in case any legacy rule re-darkens it */
+body {
+    background-color: var(--bg-page) !important;
+    color: var(--ink) !important;
+}
+
+/* Legacy section labels (when not under .section--contrast) */
+.section-label {
+    color: var(--ink-3);
+}
+.section--contrast .section-label,
+.forma-hero .section-label,
+.forma-cta .section-label {
+    color: var(--gold-soft);
+}
+
+/* Legacy h1/h2/h3 default to ink, em to gold */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--ink);
+}
+
+h1 em, h2 em, h3 em {
+    color: var(--gold);
+}
+
+/* Anywhere on dark contrast bg, headings flip to cream */
+.section--contrast h1, .section--contrast h2, .section--contrast h3, .section--contrast h4,
+#page-session h1, #page-session h2, #page-session h3, #page-session h4,
+.forma-hero h1, .forma-hero h2, .forma-hero h3,
+.forma-cta h1, .forma-cta h2, .forma-cta h3,
+.site-footer h1, .site-footer h2, .site-footer h3, .site-footer h4 {
+    color: var(--ink-on-dark);
+}
+
+.section--contrast h1 em, .section--contrast h2 em, .section--contrast h3 em,
+.forma-hero h1 em, .forma-hero h2 em, .forma-hero h3 em,
+.forma-cta h1 em, .forma-cta h2 em, .forma-cta h3 em {
+    color: var(--gold-soft);
+}
+
+/* Legacy paragraph defaults */
+p {
+    color: var(--ink-2);
+}
+.section--contrast p,
+.forma-hero p,
+.forma-cta p,
+#page-session p,
+.site-footer p {
+    color: var(--ink-on-dark-2);
+}
+
+/* Anywhere a legacy gradient-divider exists, hide it */
+.gradient-divider {
+    display: none !important;
+}
+
+/* ─── Container max-width override (legacy used 1200px) ───────────── */
+.container {
+    max-width: var(--max-width);
+}
+
+/* ─── Reduced motion final wins ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .forma-hero__rule {
+        width: min(62vw, 720px) !important;
+    }
+    .fh-char {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}

@@ -1,11 +1,13 @@
 /**
- * ExerVision SPA client — Industrial Luxury v5.
+ * FORMA SPA client.
  *
- * Pages: home, exercises, guide, session, report, about.
+ * Pages: home, exercises, guide, session, report, dashboard, about,
+ *        coaching (preview), chatbot (preview), plans (preview),
+ *        milestones (preview), admin (preview).
+ *
  * Communicates with Flask server via Socket.IO for real-time frame processing.
- *
- * Visual effects: AOS scroll reveals, subtle Vanta.js NET on hero.
- * No Vanilla-Tilt, no Zdog, no custom cursor.
+ * Animation stack: Anime.js (wordmark), GSAP ScrollTrigger (hero pin),
+ *                  AOS (section reveals), Vanilla-Tilt (card hover).
  */
 
 // ── Exercise Images Map ────────────────────────────────────────────────
@@ -33,6 +35,12 @@ const pages = {
     report: document.getElementById("page-report"),
     dashboard: document.getElementById("page-dashboard"),
     about: document.getElementById("page-about"),
+    // FORMA preview pages
+    coaching: document.getElementById("page-coaching"),
+    chatbot: document.getElementById("page-chatbot"),
+    plans: document.getElementById("page-plans"),
+    milestones: document.getElementById("page-milestones"),
+    admin: document.getElementById("page-admin"),
 };
 
 let currentPage = "home";
@@ -43,11 +51,24 @@ let vantaEffect = null;
 function showPage(name) {
     // Don't leave active session via nav
     if (currentPage === "session" && name !== "report") return;
+    if (!pages[name]) return;
 
     const leavingPage = currentPage;
+    const oldPage = pages[leavingPage];
+    const newPage = pages[name];
 
-    Object.values(pages).forEach((p) => p.classList.remove("active"));
-    pages[name].classList.add("active");
+    // FORMA page transition: fade-out old, fade-in new
+    if (oldPage && oldPage !== newPage && !prefersReducedMotion) {
+        oldPage.classList.add("page--exiting");
+        setTimeout(() => {
+            oldPage.classList.remove("active", "page--exiting");
+        }, 200);
+    } else if (oldPage) {
+        oldPage.classList.remove("active");
+    }
+
+    Object.values(pages).forEach((p) => { if (p !== newPage) p.classList.remove("active"); });
+    newPage.classList.add("active");
     currentPage = name;
     window.scrollTo(0, 0);
 
@@ -85,6 +106,10 @@ function showPage(name) {
         requestAnimationFrame(() => {
             initVanta();
         });
+        // Replay FORMA hero wordmark when navigating to home
+        if (leavingPage !== "home") {
+            setTimeout(playHeroWordmark, 50);
+        }
     } else {
         destroyVanta();
     }
@@ -110,6 +135,184 @@ document.addEventListener("click", (e) => {
 document.getElementById("nav-toggle").addEventListener("click", () => {
     document.getElementById("nav-links").classList.toggle("open");
 });
+
+// ── FORMA hero animation ───────────────────────────────────────────────
+// CSS already handles first-load stagger via @keyframes. This module:
+//  1. Uses Anime.js for a smoother enhanced version when available
+//  2. Re-triggers the animation when navigating back to home
+//  3. Pins the hero with GSAP ScrollTrigger (reduced-motion respected)
+
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function playHeroWordmark() {
+    if (prefersReducedMotion) return;
+    const chars = document.querySelectorAll("#hero-wordmark .fh-char");
+    const rule  = document.getElementById("hero-rule");
+    if (!chars.length) return;
+
+    // Reset state
+    chars.forEach((c) => {
+        c.style.animation = "none";
+        c.style.opacity = "0";
+        c.style.transform = "translateY(60px)";
+    });
+    if (rule) {
+        rule.style.animation = "none";
+        rule.style.width = "0";
+    }
+    // Force reflow
+    void document.getElementById("hero-wordmark").offsetWidth;
+
+    if (typeof anime !== "undefined") {
+        anime({
+            targets: chars,
+            opacity: [0, 1],
+            translateY: [60, 0],
+            duration: 900,
+            delay: anime.stagger(90, { start: 300 }),
+            easing: "cubicBezier(0.2, 0.7, 0.1, 1)",
+        });
+        if (rule) {
+            anime({
+                targets: rule,
+                width: ["0px", "min(62vw, 720px)"],
+                duration: 900,
+                delay: 1000,
+                easing: "cubicBezier(0.2, 0.7, 0.1, 1)",
+            });
+        }
+    } else {
+        // Fallback: restart CSS animation by removing/re-adding
+        chars.forEach((c) => {
+            c.style.animation = "";
+        });
+        if (rule) rule.style.animation = "";
+    }
+}
+
+function initHeroScrollPin() {
+    if (prefersReducedMotion) return;
+    if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const heroContent = document.querySelector(".forma-hero__content");
+    const heroBg      = document.querySelector(".forma-hero__bg");
+    const heroOverlay = document.querySelector(".forma-hero__overlay");
+    if (!heroContent) return;
+
+    // Parallax + scale-down on hero content as you scroll down
+    gsap.to(heroContent, {
+        y: -40,
+        scale: 0.88,
+        opacity: 0.3,
+        ease: "none",
+        scrollTrigger: {
+            trigger: ".forma-hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+        },
+    });
+
+    // Background drifts slightly for depth
+    if (heroBg) {
+        gsap.to(heroBg, {
+            y: 80,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".forma-hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: true,
+            },
+        });
+    }
+
+    // Overlay darkens as we leave
+    if (heroOverlay) {
+        gsap.to(heroOverlay, {
+            opacity: 1.2,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".forma-hero",
+                start: "top top",
+                end: "bottom 20%",
+                scrub: true,
+            },
+        });
+    }
+}
+
+// Kick off hero animations on first load
+document.addEventListener("DOMContentLoaded", () => {
+    // Hero scroll pin
+    initHeroScrollPin();
+    // Apply FORMA theme to Chart.js
+    applyFormaChartTheme();
+    // Initialize Vanilla-Tilt on exercise cards (when they exist)
+    initFormaTilt();
+});
+
+function applyFormaChartTheme() {
+    if (typeof Chart === "undefined") return;
+    const ink   = "#1A1A1A";
+    const ink2  = "#3C3A36";
+    const ink3  = "#6B6760";
+    const rule  = "rgba(26,26,26,0.08)";
+    const gold  = "#B8864A";
+
+    Chart.defaults.font.family = "Outfit, -apple-system, sans-serif";
+    Chart.defaults.font.size   = 12;
+    Chart.defaults.color       = ink2;
+    Chart.defaults.borderColor = rule;
+
+    if (Chart.defaults.scale && Chart.defaults.scale.grid) {
+        Chart.defaults.scale.grid.color = rule;
+    }
+    if (Chart.defaults.scales) {
+        ["linear", "category", "logarithmic"].forEach((s) => {
+            if (Chart.defaults.scales[s]) {
+                Chart.defaults.scales[s].grid = { color: rule };
+                Chart.defaults.scales[s].ticks = { color: ink3 };
+                Chart.defaults.scales[s].border = { color: rule };
+            }
+        });
+    }
+    Chart.defaults.plugins.legend.labels.color = ink2;
+    Chart.defaults.plugins.tooltip.backgroundColor = ink;
+    Chart.defaults.plugins.tooltip.titleColor = "#FAF7F2";
+    Chart.defaults.plugins.tooltip.bodyColor  = "#FAF7F2";
+    Chart.defaults.plugins.tooltip.borderColor = gold;
+    Chart.defaults.plugins.tooltip.borderWidth = 1;
+    Chart.defaults.elements.line = Chart.defaults.elements.line || {};
+    Chart.defaults.elements.line.borderColor = gold;
+    Chart.defaults.elements.line.tension = 0.32;
+    Chart.defaults.elements.point = Chart.defaults.elements.point || {};
+    Chart.defaults.elements.point.backgroundColor = gold;
+    Chart.defaults.elements.point.borderColor = ink;
+    Chart.defaults.elements.point.borderWidth = 1;
+    Chart.defaults.elements.point.radius = 3;
+    Chart.defaults.elements.point.hoverRadius = 5;
+}
+
+function initFormaTilt() {
+    if (typeof VanillaTilt === "undefined") return;
+    if (prefersReducedMotion) return;
+    // Run on next frame so JS-rendered cards are present
+    requestAnimationFrame(() => {
+        const tiltTargets = document.querySelectorAll(".forma-exercise-tile, .forma-exercises-index .exercise-card");
+        if (tiltTargets.length) {
+            VanillaTilt.init(tiltTargets, {
+                max: 4,
+                perspective: 1200,
+                scale: 1.01,
+                speed: 600,
+                glare: false,
+            });
+        }
+    });
+}
 
 // ── State ───────────────────────────────────────────────────────────────
 
@@ -195,6 +398,8 @@ let hudState = {
     completedSetNum: 0,       // which set just finished
     repPulse: 0,             // 1.0 on rep complete, decays to 0
     prevRepCount: 0,         // to detect new reps
+    dtwSimilarity: 1.0,      // rep-level template match in [0,1]; 1.0 = no template active
+    dtwWorstJoint: null,     // joint group flagged by mnmDTW
 };
 let skeletonCanvas = null;
 let skeletonCtx = null;
@@ -654,6 +859,8 @@ function updateHudState(data) {
     s.phase = data.phase || "";
     s.progress = data.progress || "";
     s.isActive = data.is_active === true;
+    s.dtwSimilarity = (data.dtw_similarity != null) ? data.dtw_similarity : 1.0;
+    s.dtwWorstJoint = data.dtw_worst_joint || null;
 
     if (s.isActive) {
         s.lastActiveTime = now;
@@ -885,6 +1092,8 @@ function handleLandmarkResult(data) {
     else if (conf >= 0.4) gaugeBar.className = "confidence-mini-bar mid";
     else gaugeBar.className = "confidence-mini-bar low";
 
+    updateDtwPill(data);
+
     // Feedback text
     if (!isUserActive) {
         feedbackDetails.textContent = "Begin exercise movement to receive feedback.";
@@ -1041,6 +1250,7 @@ function renderExerciseGrid() {
 }
 
 function renderHomeTags() {
+    if (!homeExerciseTags) return;  // FORMA: legacy home tag grid removed
     homeExerciseTags.innerHTML = "";
     exerciseList.forEach((ex) => {
         const tag = document.createElement("span");
@@ -1063,6 +1273,13 @@ async function openGuide(exerciseId) {
         guideMuscles.innerHTML = data.muscles
             .map((m) => `<span class="muscle-tag">${m}</span>`)
             .join("");
+
+        // FORMA: swap guide hero photograph
+        const heroImg = document.getElementById("guide-hero-img");
+        if (heroImg && EXERCISE_IMAGES[exerciseId]) {
+            heroImg.src = EXERCISE_IMAGES[exerciseId];
+            heroImg.alt = data.display_name;
+        }
 
         // Camera placement card
         const angleMap = { front: "Front view", side: "Side view", "front-or-side": "Front or side" };
@@ -1170,6 +1387,13 @@ async function startSession() {
     scoreRingFill.style.stroke = 'var(--primary)';
     scoreRingContainer.classList.remove('good-form', 'mid-form', 'bad-form');
     inactiveOverlay.classList.add("hidden");
+
+    // Reset DTW pill state
+    lastShownDtw = null;
+    if (dtwPill) {
+        dtwPill.classList.add("hidden");
+        dtwPill.classList.remove("dtw-good", "dtw-mid", "dtw-bad");
+    }
     if (jointHealthList) jointHealthList.innerHTML = '';
     if (scoreHistoryCtx) drawScoreHistory();
 
@@ -1544,6 +1768,8 @@ function handleProcessedFrame(data) {
     else if (conf >= 0.4) gaugeBar.className = "confidence-mini-bar mid";
     else gaugeBar.className = "confidence-mini-bar low";
 
+    updateDtwPill(data);
+
     if (!isUserActive) {
         feedbackDetails.textContent = "Begin exercise movement to receive feedback.";
         feedbackDetails.className = "feedback-text";
@@ -1560,6 +1786,47 @@ function handleProcessedFrame(data) {
 
     updateFloatingHud();
     sending = false;
+}
+
+// DTW pattern-match pill. Server sends `dtw_similarity` in [0,1] and
+// optionally `dtw_worst_joint`. We hide the pill when the value is 1.0 (no
+// template loaded or no rep completed yet) so it doesn't distract.
+const dtwPill = document.getElementById("dtw-pill");
+const dtwValueEl = document.getElementById("dtw-value");
+let lastShownDtw = null;
+
+function updateDtwPill(data) {
+    if (!dtwPill || !dtwValueEl) return;
+    const sim = data && data.dtw_similarity;
+    // Only show once we've actually received a non-default value for this
+    // session. `hudState.dtwSimilarity` is updated from the same payload.
+    if (sim == null || sim >= 0.999) {
+        // No template or no rep yet — keep the pill hidden.
+        if (lastShownDtw == null) {
+            dtwPill.classList.add("hidden");
+        }
+        return;
+    }
+
+    lastShownDtw = sim;
+    dtwPill.classList.remove("hidden");
+
+    const pct = Math.round(sim * 100);
+    dtwValueEl.textContent = `${pct}%`;
+
+    dtwPill.classList.remove("dtw-good", "dtw-mid", "dtw-bad");
+    if (sim >= 0.75) {
+        dtwPill.classList.add("dtw-good");
+    } else if (sim >= 0.5) {
+        dtwPill.classList.add("dtw-mid");
+    } else {
+        dtwPill.classList.add("dtw-bad");
+    }
+
+    const worst = data.dtw_worst_joint;
+    dtwPill.title = worst
+        ? `Pattern match vs ideal rep — weakest at ${worst.replace("_", " ")}`
+        : "How closely the last rep matches the ideal template";
 }
 
 function handleRepCompleted(repInfo) {
@@ -2100,10 +2367,12 @@ if (heroStatsEl) {
 function initAOS() {
     if (typeof AOS === "undefined") return;
     AOS.init({
-        duration: 700,
-        offset: 80,
+        duration: 800,
+        offset: 120,
         once: true,
-        easing: "ease-out-cubic",
+        easing: "ease-out-quart",
+        disable: prefersReducedMotion ? "phone" : false,
+        anchorPlacement: "top-bottom",
     });
 }
 

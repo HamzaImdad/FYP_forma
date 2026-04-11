@@ -1,0 +1,170 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FORMA — Design Tokens
+   Light editorial palette. Cream-on-ink. Warm accents.
+   Every value here is a brand decision — change with care.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ─── Color: surfaces ─────────────────────────────────────────── */
+    --bg-page:        #FAF7F2;              /* cream canvas — primary background */
+    --bg-raised:      #F2EDE3;              /* card surface, slightly warmer */
+    --bg-sunken:      #EDE7DA;              /* insets, guide blocks, sunken panels */
+    --bg-contrast:    #1A1A1A;              /* full-bleed dark breaks, footer, hero overlay */
+    --bg-contrast-2:  #262624;              /* dark raised surface inside contrast bands */
+
+    /* ─── Color: ink (text) ───────────────────────────────────────── */
+    --ink:            #1A1A1A;              /* primary text, headings */
+    --ink-2:          #3C3A36;              /* secondary text, body */
+    --ink-3:          #6B6760;               /* muted captions, metadata */
+    --ink-4:          #9A958C;              /* disabled, placeholder */
+    --ink-on-dark:    #FAF7F2;              /* text on bg-contrast bands */
+    --ink-on-dark-2:  #C7C3BB;              /* secondary text on dark */
+
+    /* ─── Color: hairlines ────────────────────────────────────────── */
+    --rule:           rgba(26, 26, 26, 0.08);   /* 8% ink — default hairline */
+    --rule-strong:    rgba(26, 26, 26, 0.16);   /* 16% ink — emphasized rule */
+    --rule-on-dark:   rgba(250, 247, 242, 0.12);
+
+    /* ─── Color: brand accents (darkened for AA on cream) ─────────── */
+    --gold:           #B8864A;              /* primary gold — 4.6:1 AA on cream */
+    --gold-hover:     #9C6F37;
+    --gold-soft:      #D4A574;              /* decorative only — fails body AA */
+    --gold-wash:      rgba(184, 134, 74, 0.10);
+    --orange:         #D44514;              /* burnt orange — 4.9:1 AA on cream */
+    --orange-hover:   #B3380D;
+    --orange-wash:    rgba(212, 69, 20, 0.10);
+
+    /* ─── Color: semantic states ──────────────────────────────────── */
+    --good:           #2F7D5B;
+    --good-wash:      rgba(47, 125, 91, 0.10);
+    --warn:           #A06A00;
+    --warn-wash:      rgba(160, 106, 0, 0.10);
+    --bad:            #B8341C;
+    --bad-wash:       rgba(184, 52, 28, 0.10);
+
+    /* ─── Color: decorative gradients ─────────────────────────────── */
+    --gradient-primary:   linear-gradient(135deg, #B8864A 0%, #D44514 100%);
+    --gradient-text:      linear-gradient(135deg, #9C6F37 0%, #D44514 100%);
+    --gradient-hero-overlay: linear-gradient(
+                                115deg,
+                                rgba(26, 26, 26, 0.78) 0%,
+                                rgba(26, 26, 26, 0.42) 50%,
+                                rgba(26, 26, 26, 0.15) 100%
+                             );
+    --gradient-scroll-fade: linear-gradient(
+                                180deg,
+                                transparent 0%,
+                                var(--bg-page) 100%
+                            );
+
+    /* ─── Grain texture (subtle on cream) ─────────────────────────── */
+    --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+
+    /* ─── Typography: families ────────────────────────────────────── */
+    --font-display: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+    --font-body:    'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-accent:  'Cormorant Garamond', 'Georgia', serif;
+    --font-mono:    ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+    /* ─── Typography: fluid scale ─────────────────────────────────── */
+    --fs-display:    clamp(5rem, 14vw, 12rem);       /* hero wordmark */
+    --fs-h1:         clamp(3rem, 6vw, 5rem);         /* section openers */
+    --fs-h2:         clamp(2rem, 4vw, 3.25rem);      /* section titles */
+    --fs-h3:         clamp(1.5rem, 2.4vw, 2rem);     /* card titles */
+    --fs-h4:         clamp(1.125rem, 1.6vw, 1.375rem);
+    --fs-body-lg:    clamp(1.125rem, 1.25vw, 1.25rem); /* hero subhead */
+    --fs-body:       clamp(1rem, 1.1vw, 1.125rem);   /* body copy */
+    --fs-small:      0.875rem;
+    --fs-caption:    0.75rem;                        /* uppercase tracked labels */
+    --fs-micro:      0.6875rem;
+
+    /* ─── Typography: leading ─────────────────────────────────────── */
+    --leading-tight:  0.92;   /* display, wordmark */
+    --leading-snug:   1.15;   /* h1, h2 */
+    --leading-normal: 1.35;   /* h3, h4 */
+    --leading-body:   1.6;    /* body, paragraphs */
+    --leading-loose:  1.8;    /* long-form, about, pull-quotes */
+
+    /* ─── Typography: letterspacing ───────────────────────────────── */
+    --tracking-tight:  -0.01em;
+    --tracking-normal: 0;
+    --tracking-wide:   0.06em;
+    --tracking-wider:  0.14em;   /* caption labels */
+    --tracking-widest: 0.24em;   /* wordmark F O R M A */
+
+    /* ─── Spacing scale ───────────────────────────────────────────── */
+    --space-3xs:  0.25rem;
+    --space-2xs:  0.375rem;
+    --space-xs:   0.5rem;
+    --space-sm:   0.75rem;
+    --space-md:   1rem;
+    --space-lg:   1.5rem;
+    --space-xl:   2rem;
+    --space-2xl:  3rem;
+    --space-3xl:  4rem;
+    --space-4xl:  6rem;
+    --space-5xl:  8rem;
+    --space-6xl:  12rem;
+    --space-section-y: clamp(6rem, 10vw, 10rem);  /* editorial section padding */
+    --space-section-x: clamp(1.5rem, 4vw, 4rem);
+
+    /* ─── Layout ──────────────────────────────────────────────────── */
+    --nav-height:     72px;
+    --max-width:      1440px;
+    --max-width-text: 72ch;           /* long-form comfortable reading */
+    --max-width-wide: 1680px;
+
+    /* ─── Radii (mostly sharp, architectural) ─────────────────────── */
+    --radius-xs:   0;
+    --radius-sm:   2px;
+    --radius-md:   6px;
+    --radius-lg:   14px;
+    --radius-xl:   24px;
+    --radius-pill: 999px;
+    --radius-full: 50%;
+
+    /* ─── Shadows on cream — tinted, subtle, never pure black ─────── */
+    --shadow-xs:   0 1px 0 rgba(26, 26, 26, 0.05);
+    --shadow-sm:   0 4px 12px rgba(26, 26, 26, 0.06);
+    --shadow-md:   0 12px 32px rgba(26, 26, 26, 0.08);
+    --shadow-lg:   0 24px 64px rgba(26, 26, 26, 0.11);
+    --shadow-xl:   0 40px 96px rgba(26, 26, 26, 0.14);
+    --shadow-ring: inset 0 0 0 1px rgba(26, 26, 26, 0.08);
+    --shadow-ring-strong: inset 0 0 0 1px rgba(26, 26, 26, 0.16);
+    --shadow-gold: 0 8px 24px rgba(184, 134, 74, 0.18);
+
+    /* ─── Motion: durations ───────────────────────────────────────── */
+    --dur-instant: 0ms;
+    --dur-fast:    180ms;
+    --dur-base:    320ms;
+    --dur-slow:    640ms;
+    --dur-hero:    1200ms;
+
+    /* ─── Motion: eases ───────────────────────────────────────────── */
+    --ease-out:       cubic-bezier(0.2, 0.7, 0.1, 1);     /* editorial out */
+    --ease-in-out:    cubic-bezier(0.65, 0, 0.35, 1);     /* smooth both */
+    --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);  /* playful overshoot */
+    --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);      /* AOS default */
+    --ease-sharp:     cubic-bezier(0.4, 0, 0.2, 1);       /* material-ish */
+
+    /* ─── Z-index scale ───────────────────────────────────────────── */
+    --z-behind:  -1;
+    --z-base:    0;
+    --z-raised:  10;
+    --z-overlay: 100;
+    --z-nav:     500;
+    --z-modal:   900;
+    --z-toast:   1000;
+}
+
+/* ─── Reduced motion: nuke all transitions + animations globally ──── */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

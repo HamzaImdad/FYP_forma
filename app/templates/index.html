@@ -3,26 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ExerVision - AI-Powered Exercise Form Evaluator</title>
+    <title>FORMA — Train With Form</title>
+    <meta name="description" content="FORMA — Train with form. Real-time AI feedback on your exercise technique across 10 exercises, powered by computer vision and biomechanics.">
+    <meta name="author" content="FORMA · University of Greenwich BSc CS FYP">
+    <meta name="theme-color" content="#FAF7F2">
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="FORMA — Train With Form">
+    <meta property="og:description" content="Real-time AI feedback on your exercise technique. Computer vision meets biomechanics.">
+    <meta property="og:image" content="/static/forma-logo.svg">
+
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="FORMA — Train With Form">
+    <meta name="twitter:description" content="Real-time AI feedback on your exercise technique.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=31">
+
+    <!-- Legacy stylesheet loaded FIRST; new FORMA layers override it. Deleted at Phase 7. -->
+    <link rel="stylesheet" href="/static/style.legacy.css?v=31">
+
+    <!-- FORMA design system (order matters — overrides legacy) -->
+    <link rel="stylesheet" href="/static/css/01-tokens.css?v=1">
+    <link rel="stylesheet" href="/static/css/02-base.css?v=1">
+    <link rel="stylesheet" href="/static/css/03-layout.css?v=1">
+    <link rel="stylesheet" href="/static/css/04-components.css?v=1">
+    <link rel="stylesheet" href="/static/css/05-pages.css?v=1">
+    <link rel="stylesheet" href="/static/css/06-pages-new.css?v=1">
+    <link rel="stylesheet" href="/static/css/07-utilities.css?v=1">
 </head>
 <body>
-    <!-- Background depth orbs -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+    <!-- Skip link for keyboard users -->
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <!-- Navigation -->
     <nav id="main-nav">
         <div class="nav-inner">
-            <a href="#" class="nav-brand" data-nav="home">
-                <svg class="nav-logo" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 1L30 16L16 31L2 16Z" opacity="0.2" fill="currentColor" stroke="none"/><path d="M16 1L30 16L16 31L2 16Z"/><circle cx="16" cy="9" r="2.5" fill="currentColor" stroke="none"/><path d="M16 12v6M13 18l-2 6M19 18l2 6M12 14l-3-1.5M20 14l3-1.5" stroke-width="2"/></svg>
-                ExerVision
+            <a href="#" class="nav-brand" data-nav="home" aria-label="FORMA — Train With Form">
+                <span class="nav-brand__wordmark" id="nav-wordmark">
+                    <span class="nav-wordmark__char">F</span><span class="nav-wordmark__char">O</span><span class="nav-wordmark__char">R</span><span class="nav-wordmark__char">M</span><span class="nav-wordmark__char">A</span>
+                </span>
+                <span class="nav-brand__tagline">Train With Form</span>
             </a>
             <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
@@ -31,6 +58,19 @@
                 <li><a href="#" data-nav="home" class="nav-link active">Home</a></li>
                 <li><a href="#" data-nav="exercises" class="nav-link">Exercises</a></li>
                 <li><a href="#" data-nav="dashboard" class="nav-link">Dashboard</a></li>
+                <li class="nav-group">
+                    <button type="button" class="nav-link nav-link--toggle" aria-haspopup="true" aria-expanded="false">
+                        Coming Soon
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4l3 3 3-3"/></svg>
+                    </button>
+                    <div class="nav-submenu">
+                        <a href="#" data-nav="coaching"   class="nav-sublink">Voice Coaching <span class="nav-link__preview">Preview</span></a>
+                        <a href="#" data-nav="chatbot"    class="nav-sublink">AI Chatbot     <span class="nav-link__preview">Preview</span></a>
+                        <a href="#" data-nav="plans"      class="nav-sublink">Plans &amp; Goals  <span class="nav-link__preview">Preview</span></a>
+                        <a href="#" data-nav="milestones" class="nav-sublink">Milestones     <span class="nav-link__preview">Preview</span></a>
+                        <a href="#" data-nav="admin"      class="nav-sublink">Developer Mode <span class="nav-link__preview">Preview</span></a>
+                    </div>
+                </li>
                 <li><a href="#" data-nav="about" class="nav-link">About</a></li>
                 <li><a href="#" data-nav="exercises" class="nav-link nav-cta">Start Workout</a></li>
             </ul>
@@ -40,269 +80,283 @@
     <!-- PAGE: Home / Landing -->
     <div id="page-home" class="page active">
 
-        <!-- Hero -->
-        <section class="hero" id="hero-section">
-            <div class="hero-bg">
-                <img src="/static/images/hero_wide.jpg" alt="" loading="eager">
-                <div class="hero-overlay"></div>
+        <!-- FORMA Hero -->
+        <section class="forma-hero" id="hero-section">
+            <div class="forma-hero__bg">
+                <img src="/static/images/hero_forma.jpg" alt="" loading="eager" onerror="this.src='/static/images/hero_wide.jpg'">
+                <div class="forma-hero__overlay"></div>
+                <div class="forma-hero__grain" aria-hidden="true"></div>
             </div>
-            <div class="hero-content">
-                <span class="hero-badge" data-aos="fade-up">AI-Powered Form Analysis</span>
-                <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">Perfect Your<br><em>Exercise Form</em></h1>
-                <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">Real-time computer vision analyses your body position through your webcam. Get instant colour-coded feedback on every rep across 10 exercises &mdash; like having a personal trainer watching your form.</p>
-                <div class="hero-actions" data-aos="fade-up" data-aos-delay="300">
-                    <button class="btn btn-primary btn-lg" data-nav="exercises">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21"/></svg>
-                        Start Training
-                    </button>
-                    <button class="btn btn-ghost btn-lg" data-nav="about">How It Works</button>
+            <div class="forma-hero__content">
+                <span class="forma-hero__kicker">BSc Computer Science · University of Greenwich</span>
+                <h1 class="forma-hero__wordmark" id="hero-wordmark" aria-label="FORMA">
+                    <span class="fh-char">F</span><span class="fh-char">O</span><span class="fh-char">R</span><span class="fh-char">M</span><span class="fh-char">A</span>
+                </h1>
+                <span class="forma-hero__rule" id="hero-rule" aria-hidden="true"></span>
+                <p class="forma-hero__tagline">Train with form.</p>
+                <p class="forma-hero__sub">Real-time AI feedback on your exercise technique. Ten exercises, thirty-three body landmarks, one trainer that never looks away.</p>
+                <div class="forma-hero__actions">
+                    <button class="btn btn-on-dark btn-lg" data-nav="exercises">Start Training</button>
+                    <button class="btn btn-on-dark btn-lg" data-nav="about">How It Works</button>
                 </div>
             </div>
-            <div class="hero-bottom">
-                <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
-                    <div class="hero-stat">
-                        <span class="stat-number">10</span>
-                        <span class="stat-label">Exercises Supported</span>
-                    </div>
-                    <div class="hero-stat-divider"></div>
-                    <div class="hero-stat">
-                        <span class="stat-number">33</span>
-                        <span class="stat-label">Body Landmarks Tracked</span>
-                    </div>
-                    <div class="hero-stat-divider"></div>
-                    <div class="hero-stat">
-                        <span class="stat-number">4</span>
-                        <span class="stat-label">Classification Modes</span>
-                    </div>
-                </div>
-                <div class="scroll-indicator">
-                    <span class="scroll-text">Scroll</span>
-                    <div class="scroll-line"></div>
-                </div>
+            <div class="forma-hero__scroll" aria-hidden="true">
+                <span class="forma-hero__scroll-label">Scroll</span>
+                <span class="forma-hero__scroll-line"></span>
             </div>
         </section>
 
-        <!-- How It Works -->
-        <section class="section-how">
+        <!-- Editorial stats band -->
+        <section class="forma-stats-band">
             <div class="container">
-                <span class="section-label" data-aos="fade-up">How It Works</span>
-                <h2 class="section-title" data-aos="fade-up">Smart Analysis for<br><em>Every Rep</em></h2>
-                <div class="how-grid">
-                    <div class="how-card how-card--mint" data-aos="fade-up" data-aos-delay="0">
-                        <span class="how-step">01</span>
-                        <div class="how-card-icon">
-                            <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                <circle cx="40" cy="14" r="6" fill="currentColor" opacity="0.2"/>
-                                <circle cx="40" cy="14" r="3" fill="currentColor"/>
-                                <line x1="40" y1="20" x2="40" y2="42"/>
-                                <line x1="40" y1="26" x2="28" y2="34"/><line x1="28" y1="34" x2="20" y2="28"/>
-                                <line x1="40" y1="26" x2="52" y2="34"/><line x1="52" y1="34" x2="60" y2="28"/>
-                                <line x1="40" y1="42" x2="30" y2="56"/><line x1="30" y1="56" x2="24" y2="68"/>
-                                <line x1="40" y1="42" x2="50" y2="56"/><line x1="50" y1="56" x2="56" y2="68"/>
-                                <circle cx="40" cy="26" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="28" cy="34" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="20" cy="28" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="52" cy="34" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="60" cy="28" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="40" cy="42" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="30" cy="56" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="50" cy="56" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="24" cy="68" r="2.5" fill="currentColor" opacity="0.5"/>
-                                <circle cx="56" cy="68" r="2.5" fill="currentColor" opacity="0.5"/>
-                            </svg>
-                        </div>
-                        <h3>Pose Detection</h3>
-                        <p>MediaPipe BlazePose tracks 33 body landmarks in real time from your webcam feed.</p>
+                <div class="forma-stats-band__grid">
+                    <div class="forma-stats-band__item" data-aos="fade-up">
+                        <span class="stat__number">10</span>
+                        <span class="stat__label">Exercises</span>
+                        <span class="stat__caption">Covered by dedicated detectors</span>
                     </div>
-                    <div class="how-card how-card--coral" data-aos="fade-up" data-aos-delay="100">
-                        <span class="how-step">02</span>
-                        <div class="how-card-icon">
-                            <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                <line x1="20" y1="24" x2="40" y2="44"/>
-                                <line x1="40" y1="44" x2="60" y2="60"/>
-                                <path d="M28 30 A 16 16 0 0 1 46 50" stroke-dasharray="4 3" opacity="0.6"/>
-                                <text x="36" y="42" font-size="10" font-weight="bold" fill="currentColor" stroke="none" font-family="sans-serif">92&deg;</text>
-                                <circle cx="20" cy="24" r="3" fill="currentColor" opacity="0.5"/>
-                                <circle cx="40" cy="44" r="3" fill="currentColor"/>
-                                <circle cx="60" cy="60" r="3" fill="currentColor" opacity="0.5"/>
-                                <line x1="40" y1="44" x2="22" y2="60"/>
-                                <circle cx="22" cy="60" r="3" fill="currentColor" opacity="0.5"/>
-                                <path d="M54 54 A 12 12 0 0 1 34 52" stroke-dasharray="4 3" opacity="0.4"/>
-                            </svg>
-                        </div>
-                        <h3>Form Analysis</h3>
-                        <p>Joint angles, body ratios and symmetry metrics are computed every frame for precise evaluation.</p>
+                    <div class="forma-stats-band__item" data-aos="fade-up" data-aos-delay="100">
+                        <span class="stat__number">33</span>
+                        <span class="stat__label">Landmarks</span>
+                        <span class="stat__caption">Tracked every frame, world-space</span>
                     </div>
-                    <div class="how-card how-card--yellow" data-aos="fade-up" data-aos-delay="200">
-                        <span class="how-step">03</span>
-                        <div class="how-card-icon">
-                            <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                <circle cx="20" cy="20" r="5"/><circle cx="40" cy="16" r="5"/><circle cx="60" cy="20" r="5"/>
-                                <circle cx="26" cy="42" r="5"/><circle cx="54" cy="42" r="5"/>
-                                <circle cx="40" cy="62" r="6" fill="currentColor" opacity="0.15"/>
-                                <circle cx="40" cy="62" r="6"/>
-                                <line x1="20" y1="25" x2="26" y2="37"/><line x1="40" y1="21" x2="26" y2="37"/>
-                                <line x1="40" y1="21" x2="54" y2="37"/><line x1="60" y1="25" x2="54" y2="37"/>
-                                <line x1="26" y1="47" x2="40" y2="56"/><line x1="54" y1="47" x2="40" y2="56"/>
-                                <line x1="20" y1="25" x2="54" y2="37" opacity="0.3"/>
-                                <line x1="60" y1="25" x2="26" y2="37" opacity="0.3"/>
-                            </svg>
-                        </div>
-                        <h3>AI Classification</h3>
-                        <p>Dedicated exercise detectors with state machines, plus rule-based, Random Forest and BiLSTM classifiers evaluate your form in real time.</p>
-                    </div>
-                    <div class="how-card how-card--purple" data-aos="fade-up" data-aos-delay="300">
-                        <span class="how-step">04</span>
-                        <div class="how-card-icon">
-                            <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="10" y="12" width="60" height="44" rx="4"/>
-                                <line x1="30" y1="56" x2="50" y2="56"/>
-                                <line x1="40" y1="56" x2="40" y2="62"/>
-                                <line x1="32" y1="62" x2="48" y2="62"/>
-                                <circle cx="36" cy="24" r="3"/>
-                                <line x1="36" y1="27" x2="36" y2="36"/>
-                                <line x1="36" y1="30" x2="30" y2="33"/>
-                                <line x1="36" y1="30" x2="42" y2="33"/>
-                                <line x1="36" y1="36" x2="32" y2="44"/>
-                                <line x1="36" y1="36" x2="40" y2="44"/>
-                                <circle cx="56" cy="22" r="8" fill="#22C55E" stroke="#22C55E" opacity="0.2"/>
-                                <path d="M52 22l3 3 5-6" stroke="#22C55E" stroke-width="2.5"/>
-                            </svg>
-                        </div>
-                        <h3>Live Feedback</h3>
-                        <p>Colour-coded skeleton overlay and real-time text cues tell you exactly what to fix, rep by rep.</p>
+                    <div class="forma-stats-band__item" data-aos="fade-up" data-aos-delay="200">
+                        <span class="stat__number">60<small>fps</small></span>
+                        <span class="stat__label">Real-time</span>
+                        <span class="stat__caption">Feedback while you move</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <hr class="gradient-divider">
-
-        <!-- Features dark section -->
-        <section class="section-features">
-            <div class="section-features-bg">
-                <img src="/static/images/gym_wide.jpg" alt="" loading="lazy">
-                <div class="hero-overlay"></div>
-            </div>
+        <!-- HOW IT WORKS — editorial hairline rows -->
+        <section class="forma-how section">
             <div class="container">
-                <span class="section-label section-label--accent" data-aos="fade-up">Why ExerVision</span>
-                <h2 class="section-title" data-aos="fade-up">Your AI <em>Personal Trainer</em></h2>
-                <div class="features-grid">
-                    <div class="feature-item" data-aos="fade-up" data-aos-delay="0">
-                        <div class="feature-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                        </div>
-                        <h3>Real-Time Processing</h3>
-                        <p>Processes frames at high FPS with GPU acceleration. No perceptible lag between your movement and the on-screen feedback &mdash; evaluation happens within milliseconds of each frame capture.</p>
-                    </div>
-                    <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
-                        <div class="feature-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
-                        </div>
-                        <h3>Joint-Level Accuracy</h3>
-                        <p>Evaluates individual joint positions with colour-coded feedback &mdash; green for correct alignment, orange for minor issues, and red for positions that need immediate correction.</p>
-                    </div>
-                    <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
-                        <div class="feature-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 17V13M12 17V7M17 17V11"/></svg>
-                        </div>
-                        <h3>Session Reports</h3>
-                        <p>Detailed post-workout breakdown with per-rep form scores, bar charts of your performance over time, and a ranked list of your most common form mistakes to target in your next session.</p>
-                    </div>
-                    <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
-                        <div class="feature-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 110 20 10 10 0 010-20z"/><path d="M2 12h20"/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10A15 15 0 0112 2z"/></svg>
-                        </div>
-                        <h3>No Equipment Needed</h3>
-                        <p>Works with just your webcam &mdash; no wearables, no sensors, no expensive hardware. Any laptop or desktop with a camera is all you need to get professional-grade form analysis.</p>
-                    </div>
-                    <div class="feature-item" data-aos="fade-up" data-aos-delay="400">
-                        <div class="feature-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-                        </div>
-                        <h3>Guided Instructions</h3>
-                        <p>Each exercise includes step-by-step form guidance, targeted muscle groups, and a curated list of common mistakes to watch out for &mdash; so you know what good form looks like before you start.</p>
-                    </div>
-                    <div class="feature-item" data-aos="fade-up" data-aos-delay="500">
-                        <div class="feature-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-                        </div>
-                        <h3>Rep Counting</h3>
-                        <p>Automatic repetition detection using peak-based motion analysis, with per-rep form scoring and a colour-coded history so you can track consistency across your entire set.</p>
-                    </div>
-                </div>
-                <div class="feature-images" data-aos="fade-up">
-                    <img src="/static/images/feature_ai.jpg" alt="AI Analysis">
-                    <img src="/static/images/feature_form.jpg" alt="Form Check">
-                    <img src="/static/images/training.jpg" alt="Training">
-                </div>
+                <header class="forma-how__header">
+                    <span class="section-label" data-aos="fade-up">How It Works</span>
+                    <h2 class="section-title" data-aos="fade-up">Smart analysis,<br><em>every rep.</em></h2>
+                </header>
+                <ol class="forma-how__list">
+                    <li class="forma-how__row" data-aos="fade-up">
+                        <span class="forma-how__num">01</span>
+                        <div class="forma-how__title">Pose Detection</div>
+                        <p class="forma-how__desc"><em>MediaPipe BlazePose</em> tracks 33 body landmarks in real time from your webcam feed — no wearables, no markers, no setup.</p>
+                    </li>
+                    <li class="forma-how__row" data-aos="fade-up">
+                        <span class="forma-how__num">02</span>
+                        <div class="forma-how__title">Form Analysis</div>
+                        <p class="forma-how__desc">Joint angles, body ratios and symmetry metrics are computed every frame, then compared against <em>biomechanical thresholds</em> from peer-reviewed literature.</p>
+                    </li>
+                    <li class="forma-how__row" data-aos="fade-up">
+                        <span class="forma-how__num">03</span>
+                        <div class="forma-how__title">Dedicated Detector</div>
+                        <p class="forma-how__desc">Each exercise has its own state machine and form thresholds. Squat doesn't share logic with deadlift. <em>Specialised, not general.</em></p>
+                    </li>
+                    <li class="forma-how__row" data-aos="fade-up">
+                        <span class="forma-how__num">04</span>
+                        <div class="forma-how__title">Live Feedback</div>
+                        <p class="forma-how__desc">Colour-coded skeleton overlay, on-screen cues and a continuous form score tell you <em>exactly what to fix</em>, rep by rep, set by set.</p>
+                    </li>
+                </ol>
             </div>
         </section>
 
-        <hr class="gradient-divider">
-
-        <!-- Exercises preview with images -->
-        <section class="section-exercises-preview">
+        <!-- WHY FORMA — alternating image-text rows -->
+        <section class="forma-features section">
             <div class="container">
-                <div class="preview-layout">
-                    <div class="preview-text" data-aos="fade-up">
-                        <span class="section-label">Supported Exercises</span>
-                        <h2 class="section-title section-title--left">10 Exercises,<br><em>One Platform</em></h2>
-                        <p class="preview-desc">From compound lifts to bodyweight movements, ExerVision covers the exercises that matter most for strength training. Each exercise is individually tuned with its own classification model and form thresholds.</p>
-                        <div class="exercise-tag-grid" id="home-exercise-tags">
-                            <!-- Populated by JS -->
-                        </div>
-                        <button class="btn btn-primary" data-nav="exercises">View All Exercises</button>
+                <header class="forma-features__header">
+                    <span class="section-label" data-aos="fade-up">Why FORMA</span>
+                    <h2 class="section-title" data-aos="fade-up">Built for the<br><em>way you train.</em></h2>
+                </header>
+
+                <div class="forma-feature-row" data-aos="fade-up">
+                    <div class="forma-feature-row__media">
+                        <img src="/static/images/feature_ai.jpg" alt="A skeleton overlay tracking pose landmarks during a workout" loading="lazy">
                     </div>
-                    <div class="preview-image-grid" data-aos="fade-up" data-aos-delay="150">
-                        <img src="/static/images/ex_squat.jpg" alt="Squat">
-                        <img src="/static/images/ex_deadlift.jpg" alt="Deadlift">
-                        <img src="/static/images/ex_pushup.jpg" alt="Push-up">
-                        <img src="/static/images/ex_pullup.jpg" alt="Pull-up">
+                    <div class="forma-feature-row__copy">
+                        <span class="section-number">01 / 04</span>
+                        <h3>Real-time, no lag.</h3>
+                        <p>Frames are processed at full speed with GPU acceleration. The feedback you see is the form you're holding <em>right now</em> — not three seconds ago.</p>
+                    </div>
+                </div>
+
+                <div class="forma-feature-row forma-feature-row--reverse" data-aos="fade-up">
+                    <div class="forma-feature-row__media">
+                        <img src="/static/images/feature_form.jpg" alt="Joint-level colour-coded form feedback" loading="lazy">
+                    </div>
+                    <div class="forma-feature-row__copy">
+                        <span class="section-number">02 / 04</span>
+                        <h3>Joint-level honesty.</h3>
+                        <p>Green when your alignment holds. Orange when it slips. Red when something needs <em>immediate correction</em>. No vague encouragement, no false positives.</p>
+                    </div>
+                </div>
+
+                <div class="forma-feature-row" data-aos="fade-up">
+                    <div class="forma-feature-row__media">
+                        <img src="/static/images/training.jpg" alt="Strength training session with form analysis" loading="lazy">
+                    </div>
+                    <div class="forma-feature-row__copy">
+                        <span class="section-number">03 / 04</span>
+                        <h3>No equipment, no excuses.</h3>
+                        <p>Works with just your webcam. No wearables, no sensors, no calibration ritual. Any laptop or desktop with a camera is <em>all you need</em>.</p>
+                    </div>
+                </div>
+
+                <div class="forma-feature-row forma-feature-row--reverse" data-aos="fade-up">
+                    <div class="forma-feature-row__media">
+                        <img src="/static/images/atmosphere.jpg" alt="Post-session report with form scores" loading="lazy">
+                    </div>
+                    <div class="forma-feature-row__copy">
+                        <span class="section-number">04 / 04</span>
+                        <h3>Sessions you can review.</h3>
+                        <p>Per-rep form scores, set breakdowns, common-mistake heatmaps. Every session is logged so you can <em>see yourself improve</em> over weeks, not days.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- CTA Banner -->
-        <section class="section-cta">
-            <div class="cta-bg">
+        <!-- EXERCISES PREVIEW — editorial 2x5 grid -->
+        <section class="forma-exercises-preview section">
+            <div class="container">
+                <header class="forma-exercises-preview__header">
+                    <span class="section-label" data-aos="fade-up">The Index</span>
+                    <h2 class="section-title" data-aos="fade-up">Ten exercises,<br><em>one platform.</em></h2>
+                    <p class="forma-exercises-preview__lead" data-aos="fade-up">From compound lifts to bodyweight movements. Each exercise has its own dedicated detector, its own biomechanical thresholds, and its own form cues. <em>Specialised, not general.</em></p>
+                </header>
+                <div class="forma-exercises-preview__grid">
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_squat.jpg" alt="Squat" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">01</span>
+                            <span class="forma-exercise-tile__name">Squat</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_deadlift.jpg" alt="Deadlift" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">02</span>
+                            <span class="forma-exercise-tile__name">Deadlift</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_bench_press.jpg" alt="Bench Press" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">03</span>
+                            <span class="forma-exercise-tile__name">Bench Press</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_overhead_press.jpg" alt="Overhead Press" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">04</span>
+                            <span class="forma-exercise-tile__name">Overhead Press</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_lunge.jpg" alt="Lunge" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">05</span>
+                            <span class="forma-exercise-tile__name">Lunge</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_pullup.jpg" alt="Pull-up" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">06</span>
+                            <span class="forma-exercise-tile__name">Pull-up</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_pushup.jpg" alt="Push-up" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">07</span>
+                            <span class="forma-exercise-tile__name">Push-up</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_plank.jpg" alt="Plank" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">08</span>
+                            <span class="forma-exercise-tile__name">Plank</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_bicep_curl.jpg" alt="Bicep Curl" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">09</span>
+                            <span class="forma-exercise-tile__name">Bicep Curl</span>
+                        </div>
+                    </a>
+                    <a href="#" data-nav="exercises" class="forma-exercise-tile" data-aos="fade-up">
+                        <div class="forma-exercise-tile__image"><img src="/static/images/ex_tricep_dip.jpg" alt="Tricep Dip" loading="lazy"></div>
+                        <div class="forma-exercise-tile__row">
+                            <span class="forma-exercise-tile__num">10</span>
+                            <span class="forma-exercise-tile__name">Tricep Dip</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="forma-exercises-preview__footer">
+                    <button class="btn btn-primary btn-lg" data-nav="exercises">Open the index</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA — full-bleed dark break with FORMA wordmark echo -->
+        <section class="forma-cta">
+            <div class="forma-cta__bg">
                 <img src="/static/images/cta_bg.jpg" alt="" loading="lazy">
-                <div class="hero-overlay"></div>
+                <div class="forma-cta__overlay"></div>
+                <div class="forma-cta__grain" aria-hidden="true"></div>
             </div>
-            <div class="container">
-                <div class="cta-card" data-aos="fade-up">
-                    <h2>Ready to <em>Perfect</em> Your Form?</h2>
-                    <p>Start a free session with your webcam. No sign-up, no equipment beyond a camera. Just you and your workout.</p>
-                    <button class="btn btn-primary btn-lg" data-nav="exercises">Get Started Free</button>
+            <div class="forma-cta__content">
+                <span class="forma-cta__kicker" data-aos="fade-up">No signup. No equipment beyond a camera.</span>
+                <div class="forma-cta__wordmark" data-aos="fade-up">F O R M A</div>
+                <p class="forma-cta__tagline" data-aos="fade-up">Train with form.</p>
+                <div class="forma-cta__actions" data-aos="fade-up">
+                    <button class="btn btn-on-dark btn-lg" data-nav="exercises">Start your first session</button>
                 </div>
             </div>
         </section>
     </div>
 
-    <!-- PAGE: Exercises -->
-    <div id="page-exercises" class="page">
-        <div class="container">
-            <div class="page-header">
-                <span class="section-label" data-aos="fade-up">Choose Your Exercise</span>
-                <h2 class="section-title" data-aos="fade-up">Start Your <em>Workout</em></h2>
-                <p class="page-desc" data-aos="fade-up" data-aos-delay="100">Select an exercise to view instructions and begin your session.</p>
+    <!-- PAGE: Exercises (editorial index) -->
+    <div id="page-exercises" class="page forma-page">
+        <header class="forma-page-header">
+            <div class="container">
+                <span class="section-label" data-aos="fade-up">Index 01 — The Exercises</span>
+                <h1 class="forma-page-header__title" data-aos="fade-up">Ten exercises,<br><em>each one studied.</em></h1>
+                <p class="forma-page-header__lead" data-aos="fade-up">Every exercise has its own dedicated detector. Tap one to read the form guide, set your camera, and begin a session.</p>
             </div>
-            <div id="exercise-grid" class="exercise-grid">
-                <!-- Populated by JS -->
+        </header>
+        <section class="forma-exercises-index">
+            <div class="container">
+                <div id="exercise-grid" class="exercise-grid forma-grid-10">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PAGE: Exercise Guide (editorial two-column) -->
+    <div id="page-guide" class="page forma-page">
+        <div class="forma-guide__hero">
+            <img id="guide-hero-img" src="/static/images/ex_squat.jpg" alt="" loading="lazy">
+            <div class="forma-guide__hero-overlay"></div>
+            <div class="forma-guide__hero-content">
+                <span class="forma-guide__hero-kicker">The Form Guide</span>
+                <h1 id="guide-title" class="forma-guide__hero-title">Exercise Name</h1>
             </div>
         </div>
-    </div>
 
-    <!-- PAGE: Exercise Guide -->
-    <div id="page-guide" class="page">
-        <div class="container">
-            <button id="guide-back-btn" class="btn btn-back">&larr; Back to Exercises</button>
-
-            <div class="guide-header" data-aos="fade-up">
-                <h2 id="guide-title">Exercise Name</h2>
-                <div id="guide-muscles" class="muscle-tags"></div>
-            </div>
+        <div class="forma-guide__layout container">
+            <aside class="forma-guide__rail">
+                <button id="guide-back-btn" class="btn btn-ghost btn-sm">&larr; All exercises</button>
+                <div class="forma-guide__rail-block">
+                    <span class="caption-label">Muscles worked</span>
+                    <div id="guide-muscles" class="muscle-tags"></div>
+                </div>
+            </aside>
+            <div class="forma-guide__main">
 
             <div id="guide-camera-card" class="camera-card glass" data-aos="fade-up" data-aos-delay="50">
                 <div class="camera-card-header">
@@ -387,7 +441,8 @@
             </div>
 
             <button id="begin-session-btn" class="btn btn-primary btn-lg btn-full" data-aos="fade-up" data-aos-delay="400">Begin Exercise</button>
-        </div>
+            </div><!-- /.forma-guide__main -->
+        </div><!-- /.forma-guide__layout -->
     </div>
 
     <!-- PAGE: Active Session -->
@@ -469,6 +524,9 @@
                             <div class="confidence-mini-bar" id="gauge-bar"></div>
                             <span class="confidence-mini-text" id="gauge-text">--</span>
                         </div>
+                        <span class="dtw-pill hidden" id="dtw-pill" title="How closely this rep matches the ideal template">
+                            Pattern: <span id="dtw-value">--</span>
+                        </span>
                     </div>
                     <div class="hud-bottom-feedback">
                         <div id="feedback-details" class="feedback-text">Perform the exercise to receive feedback.</div>
@@ -521,8 +579,8 @@
         </div>
     </div>
 
-    <!-- PAGE: Session Report -->
-    <div id="page-report" class="page">
+    <!-- PAGE: Session Report (editorial recap) -->
+    <div id="page-report" class="page forma-page forma-report">
         <div class="container">
             <div class="report-hero" data-aos="fade-up">
                 <div class="report-hero-icon" id="report-hero-icon"></div>
@@ -576,8 +634,8 @@
         </div>
     </div>
 
-    <!-- PAGE: Dashboard -->
-    <div id="page-dashboard" class="page">
+    <!-- PAGE: Dashboard (editorial analytics) -->
+    <div id="page-dashboard" class="page forma-page forma-dashboard">
         <div class="container dash-container">
             <div class="dash-header">
                 <h2 class="section-title">Performance <em>Dashboard</em></h2>
@@ -654,8 +712,8 @@
         </div>
     </div>
 
-    <!-- PAGE: About -->
-    <div id="page-about" class="page">
+    <!-- PAGE: About (long-form editorial) -->
+    <div id="page-about" class="page forma-page forma-about">
         <!-- About Hero -->
         <section class="about-hero">
             <div class="about-hero-bg">
@@ -664,8 +722,33 @@
             </div>
             <div class="container about-hero-content">
                 <span class="section-label section-label--accent" data-aos="fade-up">About the Project</span>
-                <h2 class="section-title" data-aos="fade-up">Smarter Training,<br><em>Better Results</em></h2>
+                <h2 class="section-title" data-aos="fade-up">Smarter training,<br><em>better results.</em></h2>
                 <p class="about-hero-desc" data-aos="fade-up" data-aos-delay="100">A real-time computer vision system for exercise form evaluation. Built as a BSc Computer Science final year project at the University of Greenwich.</p>
+            </div>
+        </section>
+
+        <!-- Pull quote band -->
+        <section class="forma-about__quote section">
+            <div class="container">
+                <blockquote class="pull-quote" data-aos="fade-up">
+                    Form is the line between progress and injury. FORMA puts that line on screen, in real time.
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- The Name -->
+        <section class="forma-about__name section">
+            <div class="container">
+                <div class="forma-about__name-grid">
+                    <div data-aos="fade-up">
+                        <span class="section-label">The Name</span>
+                        <h3 class="forma-about__name-title">FORMA.</h3>
+                    </div>
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <p>FORMA is Italian and Latin for <em>form</em>. The whole project hinges on one idea — that <em>how</em> you move matters more than how much you move. The wordmark is set in Bebas Neue, condensed and architectural, with a thin gold underline that runs the full width of the letters. The tagline is the rule the app trains you to follow.</p>
+                        <p class="italic-accent" style="font-size: var(--fs-h3); margin-top: var(--space-md);">Train with form.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -689,7 +772,7 @@
                     <div class="about-block-content">
                         <span class="section-label">The Solution</span>
                         <h3>AI That Watches <em>Your Form</em></h3>
-                        <p>ExerVision uses computer vision and machine learning to analyse your body position in real time, providing the same feedback a personal trainer would &mdash; instantly and for free. Just open your webcam, select an exercise, and start training with confidence.</p>
+                        <p>FORMA uses computer vision and biomechanics to read your body in real time, giving you the same feedback a personal trainer would &mdash; instantly and for free. Open your webcam, choose an exercise, and train with form.</p>
                     </div>
                 </div>
             </div>
@@ -740,6 +823,365 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════════════
+         NEW PREVIEW PAGES — coaching, chatbot, plans, milestones, admin
+         All marked PREVIEW. Sample data. Not wired to backend.
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- PAGE: Voice Coaching (preview) -->
+    <div id="page-coaching" class="page forma-page forma-preview-page forma-coaching">
+        <header class="forma-page-header">
+            <div class="container">
+                <span class="badge badge--preview">Preview</span>
+                <span class="section-label" data-aos="fade-up" style="margin-top: var(--space-md);">Feature 01 — Voice Coaching</span>
+                <h1 class="forma-page-header__title" data-aos="fade-up">Hear your form,<br><em>live.</em></h1>
+                <p class="forma-page-header__lead" data-aos="fade-up">Real-time spoken cues the moment your form slips. Multiple variants per error so it never sounds robotic. Built into the session screen.</p>
+            </div>
+        </header>
+
+        <section class="section">
+            <div class="container">
+                <div class="forma-coaching__player" data-aos="fade-up">
+                    <div class="forma-coaching__player-head">
+                        <span class="caption-label">Now Speaking</span>
+                        <span class="forma-coaching__waveform" aria-hidden="true">
+                            <svg viewBox="0 0 240 40" preserveAspectRatio="none">
+                                <g fill="currentColor">
+                                    <rect x="0"   y="14" width="3" height="12" rx="1"/>
+                                    <rect x="8"   y="8"  width="3" height="24" rx="1"/>
+                                    <rect x="16"  y="4"  width="3" height="32" rx="1"/>
+                                    <rect x="24"  y="10" width="3" height="20" rx="1"/>
+                                    <rect x="32"  y="14" width="3" height="12" rx="1"/>
+                                    <rect x="40"  y="6"  width="3" height="28" rx="1"/>
+                                    <rect x="48"  y="2"  width="3" height="36" rx="1"/>
+                                    <rect x="56"  y="10" width="3" height="20" rx="1"/>
+                                    <rect x="64"  y="14" width="3" height="12" rx="1"/>
+                                    <rect x="72"  y="8"  width="3" height="24" rx="1"/>
+                                    <rect x="80"  y="4"  width="3" height="32" rx="1"/>
+                                    <rect x="88"  y="12" width="3" height="16" rx="1"/>
+                                    <rect x="96"  y="6"  width="3" height="28" rx="1"/>
+                                    <rect x="104" y="14" width="3" height="12" rx="1"/>
+                                    <rect x="112" y="2"  width="3" height="36" rx="1"/>
+                                    <rect x="120" y="10" width="3" height="20" rx="1"/>
+                                    <rect x="128" y="14" width="3" height="12" rx="1"/>
+                                    <rect x="136" y="6"  width="3" height="28" rx="1"/>
+                                    <rect x="144" y="12" width="3" height="16" rx="1"/>
+                                    <rect x="152" y="14" width="3" height="12" rx="1"/>
+                                    <rect x="160" y="4"  width="3" height="32" rx="1"/>
+                                    <rect x="168" y="10" width="3" height="20" rx="1"/>
+                                    <rect x="176" y="14" width="3" height="12" rx="1"/>
+                                    <rect x="184" y="8"  width="3" height="24" rx="1"/>
+                                    <rect x="192" y="14" width="3" height="12" rx="1"/>
+                                    <rect x="200" y="12" width="3" height="16" rx="1"/>
+                                    <rect x="208" y="14" width="3" height="12" rx="1"/>
+                                    <rect x="216" y="16" width="3" height="8"  rx="1"/>
+                                    <rect x="224" y="17" width="3" height="6"  rx="1"/>
+                                    <rect x="232" y="18" width="3" height="4"  rx="1"/>
+                                </g>
+                            </svg>
+                        </span>
+                    </div>
+                    <p class="forma-coaching__current">"Drive through your heels."</p>
+                </div>
+
+                <div class="forma-coaching__transcript" data-aos="fade-up">
+                    <span class="caption-label">Sample Transcript — Squat Set 02</span>
+                    <ul class="forma-coaching__list">
+                        <li><span class="forma-coaching__time">00:04</span><span class="forma-coaching__cue">"Set, brace, eyes forward."</span></li>
+                        <li><span class="forma-coaching__time">00:07</span><span class="forma-coaching__cue forma-coaching__cue--gold">"Knees out, sit back."</span></li>
+                        <li><span class="forma-coaching__time">00:11</span><span class="forma-coaching__cue">"Good depth."</span></li>
+                        <li><span class="forma-coaching__time">00:18</span><span class="forma-coaching__cue forma-coaching__cue--orange">"Chest up — don't round."</span></li>
+                        <li><span class="forma-coaching__time">00:24</span><span class="forma-coaching__cue">"Drive through your heels."</span></li>
+                        <li><span class="forma-coaching__time">00:31</span><span class="forma-coaching__cue forma-coaching__cue--gold">"Three more, just like that."</span></li>
+                    </ul>
+                </div>
+
+                <div class="forma-coaching__settings" data-aos="fade-up">
+                    <span class="caption-label">Settings</span>
+                    <div class="forma-coaching__settings-grid">
+                        <div class="forma-coaching__setting">
+                            <span>Voice</span>
+                            <span class="italic-accent">Calm, clear, masculine</span>
+                        </div>
+                        <div class="forma-coaching__setting">
+                            <span>Frequency</span>
+                            <span class="italic-accent">Only on errors</span>
+                        </div>
+                        <div class="forma-coaching__setting">
+                            <span>Tone</span>
+                            <span class="italic-accent">Coach, not drill sergeant</span>
+                        </div>
+                        <div class="forma-coaching__setting">
+                            <span>Variants</span>
+                            <span class="italic-accent">3-5 per cue</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- PAGE: AI Chatbot (preview) -->
+    <div id="page-chatbot" class="page forma-page forma-preview-page forma-chatbot">
+        <header class="forma-page-header">
+            <div class="container">
+                <span class="badge badge--preview">Preview</span>
+                <span class="section-label" data-aos="fade-up" style="margin-top: var(--space-md);">Feature 02 — Coach Chatbot</span>
+                <h1 class="forma-page-header__title" data-aos="fade-up">Ask your coach,<br><em>any time.</em></h1>
+                <p class="forma-page-header__lead" data-aos="fade-up">A chatbot that knows every session you've logged. Ask about your trends, your weak lifts, or what to train tomorrow. Answers come from your real history.</p>
+            </div>
+        </header>
+
+        <section class="section">
+            <div class="container forma-chatbot__layout">
+                <div class="forma-chatbot__conversation" data-aos="fade-up">
+                    <div class="chat-bubble chat-bubble--user">How many push-ups have I done in the last 30 days?</div>
+                    <div class="chat-bubble chat-bubble--coach">
+                        You've completed <strong>847 push-ups</strong> across 12 sessions in the last 30 days. Your average form score climbed from 0.71 to 0.83 — a clear upward trend.
+                    </div>
+                    <div class="chat-bubble chat-bubble--user">What's my weakest exercise?</div>
+                    <div class="chat-bubble chat-bubble--coach">
+                        Your <strong>deadlift</strong> averages 0.62, well below your other lifts. The recurring issue is back rounding past hip-flexion of 80°. Want me to build a 2-week mobility plan focused on hamstrings and bracing?
+                    </div>
+                    <div class="chat-bubble chat-bubble--user">Yes please.</div>
+                    <div class="chat-bubble chat-bubble--coach">
+                        On it. Plan saved as <strong>Deadlift Reset · 14 days</strong>. I'll show progress on your dashboard each morning.
+                    </div>
+                    <div class="forma-chatbot__input">
+                        <input type="text" disabled placeholder="Preview only — chatbot launches with v1.0">
+                        <button class="btn btn-primary btn-sm" disabled>Send</button>
+                    </div>
+                </div>
+                <aside class="forma-chatbot__sidebar" data-aos="fade-up">
+                    <span class="caption-label">Try asking</span>
+                    <ul class="forma-chatbot__suggestions">
+                        <li class="italic-accent">"Am I improving week over week?"</li>
+                        <li class="italic-accent">"When did my squat form peak?"</li>
+                        <li class="italic-accent">"What should I train tomorrow?"</li>
+                        <li class="italic-accent">"Show me my longest streak."</li>
+                        <li class="italic-accent">"Build me a 1,000 push-up plan."</li>
+                    </ul>
+                    <span class="caption-label" style="margin-top: var(--space-2xl);">Powered by</span>
+                    <p class="forma-chatbot__powered">Anthropic Claude API with prompt caching. Reads only the slice of your history that's relevant to each question — never sends raw video or images.</p>
+                </aside>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- PAGE: Plans & Goals (preview) -->
+    <div id="page-plans" class="page forma-page forma-preview-page forma-plans">
+        <header class="forma-page-header">
+            <div class="container">
+                <span class="badge badge--preview">Preview</span>
+                <span class="section-label" data-aos="fade-up" style="margin-top: var(--space-md);">Feature 03 — Plans &amp; Goals</span>
+                <h1 class="forma-page-header__title" data-aos="fade-up">A plan that<br><em>knows you.</em></h1>
+                <p class="forma-page-header__lead" data-aos="fade-up">Tell your coach a goal — "1,000 push-ups in 10 days", "fix my deadlift form", "20-minute morning routine" — and it builds a day-by-day plan from your actual fitness baseline.</p>
+            </div>
+        </header>
+
+        <section class="section">
+            <div class="container">
+                <div class="forma-plans__grid">
+                    <article class="forma-plans__card" data-aos="fade-up">
+                        <span class="badge badge--preview">Strength</span>
+                        <h3>The Foundation</h3>
+                        <p class="italic-accent">Three sessions a week, six weeks. Squat. Press. Pull.</p>
+                        <ul>
+                            <li>Mon — Squat day, 5×5</li>
+                            <li>Wed — Press day, 5×5</li>
+                            <li>Fri — Deadlift day, 1×5</li>
+                            <li>Two days of mobility</li>
+                            <li>Tracked: form score, depth, lockout</li>
+                        </ul>
+                        <button class="btn btn-ghost btn-sm" disabled>Start Plan (preview)</button>
+                    </article>
+
+                    <article class="forma-plans__card forma-plans__card--featured" data-aos="fade-up" data-aos-delay="100">
+                        <span class="badge badge--preview">Hypertrophy</span>
+                        <h3>Volume Block</h3>
+                        <p class="italic-accent">Push-pull-legs, four sessions, eight weeks. Chase the pump.</p>
+                        <ul>
+                            <li>Higher rep ranges, 8-12</li>
+                            <li>Bench, overhead, curls, dips</li>
+                            <li>Form score gates rest periods</li>
+                            <li>Auto-deload week 4</li>
+                            <li>Tracked: total reps, fatigue curves</li>
+                        </ul>
+                        <button class="btn btn-gold btn-sm" disabled>Start Plan (preview)</button>
+                    </article>
+
+                    <article class="forma-plans__card" data-aos="fade-up" data-aos-delay="200">
+                        <span class="badge badge--preview">Mobility</span>
+                        <h3>The Reset</h3>
+                        <p class="italic-accent">Twenty minutes a morning. No equipment. Just movement quality.</p>
+                        <ul>
+                            <li>Daily, 14 days</li>
+                            <li>Plank, lunge, bodyweight squat</li>
+                            <li>Form score over rep count</li>
+                            <li>Coach prompts on hip sag</li>
+                            <li>Tracked: hold time, alignment</li>
+                        </ul>
+                        <button class="btn btn-ghost btn-sm" disabled>Start Plan (preview)</button>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- PAGE: Milestones & Progress (preview) -->
+    <div id="page-milestones" class="page forma-page forma-preview-page forma-milestones">
+        <header class="forma-page-header">
+            <div class="container">
+                <span class="badge badge--preview">Preview</span>
+                <span class="section-label" data-aos="fade-up" style="margin-top: var(--space-md);">Feature 04 — Milestones</span>
+                <h1 class="forma-page-header__title" data-aos="fade-up">Earn the streak,<br><em>own the form.</em></h1>
+                <p class="forma-page-header__lead" data-aos="fade-up">Your sessions auto-mark plan milestones. Soft nudges when you fall behind. Visible streaks. No guilt-trips.</p>
+            </div>
+        </header>
+
+        <section class="section">
+            <div class="container">
+                <div class="forma-milestones__streak" data-aos="fade-up">
+                    <div>
+                        <span class="caption-label">Current Streak</span>
+                        <div class="forma-milestones__streak-num">14<small>days</small></div>
+                    </div>
+                    <div>
+                        <span class="caption-label">Longest Streak</span>
+                        <div class="forma-milestones__streak-num forma-milestones__streak-num--muted">21<small>days</small></div>
+                    </div>
+                    <div>
+                        <span class="caption-label">Plan Progress</span>
+                        <div class="forma-milestones__progress-bar"><span style="width: 64%"></span></div>
+                        <span class="italic-accent">64% — Day 9 of 14</span>
+                    </div>
+                </div>
+
+                <div class="forma-milestones__grid" data-aos="fade-up">
+                    <div class="forma-milestone forma-milestone--unlocked">
+                        <div class="forma-milestone__icon">★</div>
+                        <span class="forma-milestone__name">First 100 Reps</span>
+                        <span class="caption-label">Unlocked Mar 28</span>
+                    </div>
+                    <div class="forma-milestone forma-milestone--unlocked">
+                        <div class="forma-milestone__icon">▲</div>
+                        <span class="forma-milestone__name">Form &gt; 0.80</span>
+                        <span class="caption-label">Unlocked Apr 02</span>
+                    </div>
+                    <div class="forma-milestone forma-milestone--unlocked">
+                        <div class="forma-milestone__icon">●</div>
+                        <span class="forma-milestone__name">Seven Day Streak</span>
+                        <span class="caption-label">Unlocked Apr 04</span>
+                    </div>
+                    <div class="forma-milestone forma-milestone--locked">
+                        <div class="forma-milestone__icon">◆</div>
+                        <span class="forma-milestone__name">1,000 Push-ups</span>
+                        <span class="caption-label">847 / 1000</span>
+                    </div>
+                    <div class="forma-milestone forma-milestone--locked">
+                        <div class="forma-milestone__icon">✦</div>
+                        <span class="forma-milestone__name">All 10 Exercises</span>
+                        <span class="caption-label">7 / 10</span>
+                    </div>
+                    <div class="forma-milestone forma-milestone--locked">
+                        <div class="forma-milestone__icon">◈</div>
+                        <span class="forma-milestone__name">Thirty Day Streak</span>
+                        <span class="caption-label">14 / 30</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- PAGE: Admin / Developer Mode (preview) -->
+    <div id="page-admin" class="page forma-page forma-preview-page forma-admin">
+        <header class="forma-page-header">
+            <div class="container">
+                <span class="badge badge--preview">Preview</span>
+                <span class="section-label" data-aos="fade-up" style="margin-top: var(--space-md);">Feature 05 — Developer Mode</span>
+                <h1 class="forma-page-header__title" data-aos="fade-up">See what the<br><em>detector saw.</em></h1>
+                <p class="forma-page-header__lead" data-aos="fade-up">Replay any session frame-by-frame. Skeleton overlay, joint angles, MediaPipe confidence, error flags. The tool we use to find where the detectors lie.</p>
+            </div>
+        </header>
+
+        <section class="section">
+            <div class="container">
+                <div class="forma-admin__layout">
+                    <div class="forma-admin__viewer" data-aos="fade-up">
+                        <div class="forma-admin__viewer-frame">
+                            <svg viewBox="0 0 320 200" class="forma-admin__skeleton" aria-label="Skeleton replay sample">
+                                <g stroke="#B8864A" stroke-width="1.5" fill="none">
+                                    <circle cx="160" cy="40" r="10"/>
+                                    <line x1="160" y1="50" x2="160" y2="120"/>
+                                    <line x1="160" y1="70" x2="120" y2="100"/>
+                                    <line x1="120" y1="100" x2="100" y2="140"/>
+                                    <line x1="160" y1="70" x2="200" y2="100"/>
+                                    <line x1="200" y1="100" x2="220" y2="140"/>
+                                    <line x1="160" y1="120" x2="130" y2="160"/>
+                                    <line x1="130" y1="160" x2="120" y2="190"/>
+                                    <line x1="160" y1="120" x2="190" y2="160"/>
+                                    <line x1="190" y1="160" x2="200" y2="190"/>
+                                </g>
+                                <g fill="#D44514">
+                                    <circle cx="160" cy="40" r="3"/>
+                                    <circle cx="160" cy="70" r="3"/>
+                                    <circle cx="120" cy="100" r="3"/>
+                                    <circle cx="100" cy="140" r="3"/>
+                                    <circle cx="200" cy="100" r="3"/>
+                                    <circle cx="220" cy="140" r="3"/>
+                                    <circle cx="160" cy="120" r="3"/>
+                                    <circle cx="130" cy="160" r="3"/>
+                                    <circle cx="120" cy="190" r="3"/>
+                                    <circle cx="190" cy="160" r="3"/>
+                                    <circle cx="200" cy="190" r="3"/>
+                                </g>
+                            </svg>
+                            <div class="forma-admin__viewer-corner forma-admin__viewer-corner--tl"></div>
+                            <div class="forma-admin__viewer-corner forma-admin__viewer-corner--tr"></div>
+                            <div class="forma-admin__viewer-corner forma-admin__viewer-corner--bl"></div>
+                            <div class="forma-admin__viewer-corner forma-admin__viewer-corner--br"></div>
+                        </div>
+                        <div class="forma-admin__playback">
+                            <div class="forma-admin__timeline"><span style="width: 42%"></span></div>
+                            <div class="forma-admin__playback-meta">
+                                <span class="caption-label">Frame 0184 / 0432</span>
+                                <span class="caption-label">06:08.4</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <aside class="forma-admin__data" data-aos="fade-up">
+                        <span class="caption-label">Detector State</span>
+                        <table class="forma-admin__table">
+                            <tbody>
+                                <tr><td>Exercise</td><td>squat</td></tr>
+                                <tr><td>Phase</td><td>BOTTOM</td></tr>
+                                <tr><td>Knee angle (L)</td><td>72.4°</td></tr>
+                                <tr><td>Knee angle (R)</td><td>74.1°</td></tr>
+                                <tr><td>Hip angle</td><td>68.2°</td></tr>
+                                <tr><td>Torso lean</td><td>14.8°</td></tr>
+                                <tr><td>Visibility (avg)</td><td>0.93</td></tr>
+                                <tr><td>Form score</td><td><span style="color: var(--gold)">0.81</span></td></tr>
+                            </tbody>
+                        </table>
+
+                        <span class="caption-label" style="margin-top: var(--space-xl);">Flags raised this rep</span>
+                        <ul class="forma-admin__flags">
+                            <li class="forma-admin__flag forma-admin__flag--warn">torso_lean_minor</li>
+                            <li class="forma-admin__flag forma-admin__flag--ok">depth_passed</li>
+                            <li class="forma-admin__flag forma-admin__flag--ok">symmetry_passed</li>
+                        </ul>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
     <canvas id="capture-canvas" style="display:none;"></canvas>
 
     <!-- Footer -->
@@ -750,8 +1192,8 @@
         <div class="container">
             <div class="footer-top">
                 <div class="footer-brand">
-                    <span class="nav-brand">ExerVision</span>
-                    <p>AI-powered exercise form evaluation using real-time pose estimation and machine learning.</p>
+                    <span class="site-footer__wordmark">FORMA</span>
+                    <p class="site-footer__tagline">Real-time AI feedback on your exercise technique. Computer vision meets biomechanics.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Navigate</h4>
@@ -767,16 +1209,25 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>ExerVision &copy; 2026 &middot; BSc Computer Science FYP &middot; University of Greenwich</p>
+                <p>FORMA &copy; 2026 &middot; BSc Computer Science FYP &middot; University of Greenwich</p>
+                <p class="italic-accent">Train with form.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Legacy / existing libs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/vision_bundle.js" crossorigin="anonymous"></script>
-    <script src="/static/app.js?v=12"></script>
+
+    <!-- FORMA animation libs -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+
+    <script src="/static/app.js?v=14"></script>
 </body>
 </html>

@@ -1,0 +1,590 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FORMA — New Preview Pages
+   Voice coaching, chatbot, plans, milestones, admin.
+   All five share .forma-preview-page wrapper.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.forma-preview-page {
+    background-color: var(--bg-page);
+    min-height: 100vh;
+    padding-bottom: var(--space-5xl);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   01 — VOICE COACHING (#page-coaching)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.forma-coaching__player {
+    background-color: var(--bg-contrast);
+    color: var(--ink-on-dark);
+    border-radius: var(--radius-md);
+    padding: var(--space-2xl) var(--space-xl);
+    margin-bottom: var(--space-3xl);
+    border: 1px solid var(--gold);
+    box-shadow: var(--shadow-md);
+}
+
+.forma-coaching__player-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.forma-coaching__player-head .caption-label {
+    color: var(--gold-soft);
+}
+
+.forma-coaching__waveform {
+    color: var(--gold);
+    width: 240px;
+    max-width: 60%;
+    display: block;
+}
+
+.forma-coaching__waveform svg {
+    width: 100%;
+    height: 40px;
+    display: block;
+}
+
+.forma-coaching__current {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: var(--ink-on-dark);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
+    margin: 0;
+}
+
+.forma-coaching__transcript {
+    margin-bottom: var(--space-3xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--rule);
+}
+
+.forma-coaching__list {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-md);
+}
+
+.forma-coaching__list li {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    align-items: baseline;
+    gap: var(--space-lg);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--rule);
+}
+
+.forma-coaching__time {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-3);
+    letter-spacing: var(--tracking-wide);
+}
+
+.forma-coaching__cue {
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-size: var(--fs-h4);
+    color: var(--ink);
+    line-height: var(--leading-normal);
+}
+
+.forma-coaching__cue--gold   { color: var(--gold); }
+.forma-coaching__cue--orange { color: var(--orange); }
+
+.forma-coaching__settings {
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--rule);
+}
+
+.forma-coaching__settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    margin-top: var(--space-md);
+}
+
+@media (max-width: 700px) {
+    .forma-coaching__settings-grid { grid-template-columns: 1fr; }
+}
+
+.forma-coaching__setting {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    color: var(--ink);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   02 — AI CHATBOT (#page-chatbot)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.forma-chatbot__layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-3xl);
+}
+
+@media (max-width: 900px) {
+    .forma-chatbot__layout { grid-template-columns: 1fr; }
+}
+
+.forma-chatbot__conversation {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    background-color: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    padding: var(--space-2xl);
+}
+
+.forma-chatbot__input {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--rule);
+}
+
+.forma-chatbot__input input {
+    flex: 1;
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--bg-page);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    color: var(--ink-3);
+}
+
+.forma-chatbot__input input:disabled {
+    cursor: not-allowed;
+    color: var(--ink-4);
+}
+
+.forma-chatbot__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-2xl);
+    background-color: var(--bg-page);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    height: max-content;
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-xl));
+}
+
+.forma-chatbot__suggestions {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.forma-chatbot__suggestions li {
+    font-size: var(--fs-body);
+    line-height: var(--leading-normal);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--rule);
+}
+
+.forma-chatbot__suggestions li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.forma-chatbot__powered {
+    font-size: var(--fs-small);
+    color: var(--ink-3);
+    line-height: var(--leading-body);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   03 — PLANS & GOALS (#page-plans)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.forma-plans__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+}
+
+@media (max-width: 1100px) {
+    .forma-plans__grid { grid-template-columns: 1fr; max-width: 600px; margin-inline: auto; }
+}
+
+.forma-plans__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-2xl);
+    background-color: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    transition: transform var(--dur-base) var(--ease-out),
+                box-shadow var(--dur-base) var(--ease-out),
+                border-color var(--dur-fast) var(--ease-out);
+}
+
+.forma-plans__card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+    box-shadow: var(--shadow-md);
+}
+
+.forma-plans__card--featured {
+    background-color: var(--bg-contrast);
+    color: var(--ink-on-dark);
+    border-color: var(--gold);
+}
+
+.forma-plans__card--featured h3 {
+    color: var(--ink-on-dark);
+}
+
+.forma-plans__card--featured .italic-accent {
+    color: var(--gold-soft);
+}
+
+.forma-plans__card--featured ul li {
+    color: var(--ink-on-dark-2);
+    border-bottom-color: var(--rule-on-dark);
+}
+
+.forma-plans__card h3 {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    color: var(--ink);
+    line-height: var(--leading-tight);
+    margin: var(--space-xs) 0;
+}
+
+.forma-plans__card .italic-accent {
+    font-size: var(--fs-body);
+    color: var(--gold);
+}
+
+.forma-plans__card ul {
+    list-style: none;
+    padding: 0;
+    margin-block: var(--space-sm);
+}
+
+.forma-plans__card ul li {
+    padding: var(--space-sm) 0 var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--rule);
+    font-size: var(--fs-small);
+    color: var(--ink-2);
+    position: relative;
+}
+
+.forma-plans__card ul li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+}
+
+.forma-plans__card .btn {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   04 — MILESTONES & PROGRESS (#page-milestones)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.forma-milestones__streak {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: var(--space-2xl);
+    padding: var(--space-2xl) var(--space-xl);
+    background-color: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3xl);
+}
+
+@media (max-width: 800px) {
+    .forma-milestones__streak { grid-template-columns: 1fr; }
+}
+
+.forma-milestones__streak > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+}
+
+.forma-milestones__streak-num {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 6vw, 5rem);
+    line-height: 1;
+    color: var(--gold);
+    letter-spacing: var(--tracking-tight);
+    text-shadow: 0 0 24px rgba(184, 134, 74, 0.2);
+}
+
+.forma-milestones__streak-num small {
+    font-family: var(--font-body);
+    font-size: 0.3em;
+    font-weight: 500;
+    color: var(--ink-3);
+    letter-spacing: var(--tracking-wide);
+    text-transform: lowercase;
+    margin-left: 6px;
+}
+
+.forma-milestones__streak-num--muted {
+    color: var(--ink-2);
+    text-shadow: none;
+}
+
+.forma-milestones__progress-bar {
+    display: block;
+    width: 100%;
+    height: 8px;
+    background-color: var(--rule-strong);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    margin-block: var(--space-sm) var(--space-xs);
+}
+
+.forma-milestones__progress-bar span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--orange) 100%);
+    border-radius: var(--radius-pill);
+}
+
+.forma-milestones__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+}
+
+@media (max-width: 800px) {
+    .forma-milestones__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+    .forma-milestones__grid { grid-template-columns: 1fr; }
+}
+
+.forma-milestone {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-xl);
+    background-color: var(--bg-page);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    transition: border-color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out);
+}
+
+.forma-milestone:hover {
+    transform: translateY(-2px);
+}
+
+.forma-milestone__icon {
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--gold);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--gold-wash);
+    border: 1px solid var(--gold);
+    border-radius: var(--radius-full);
+}
+
+.forma-milestone__name {
+    font-family: var(--font-display);
+    font-size: var(--fs-h4);
+    color: var(--ink);
+    letter-spacing: var(--tracking-wide);
+    line-height: 1.1;
+}
+
+.forma-milestone--locked {
+    opacity: 0.7;
+}
+
+.forma-milestone--locked .forma-milestone__icon {
+    color: var(--ink-3);
+    background-color: var(--bg-raised);
+    border-color: var(--rule-strong);
+}
+
+.forma-milestone--locked .forma-milestone__name {
+    color: var(--ink-3);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   05 — ADMIN / DEVELOPER MODE (#page-admin)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.forma-admin__layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-3xl);
+}
+
+@media (max-width: 1000px) {
+    .forma-admin__layout { grid-template-columns: 1fr; }
+}
+
+.forma-admin__viewer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.forma-admin__viewer-frame {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background-color: var(--bg-contrast);
+    border: 1px solid var(--rule-on-dark);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.forma-admin__skeleton {
+    width: 60%;
+    height: 90%;
+    color: var(--gold);
+}
+
+.forma-admin__viewer-corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid var(--gold);
+    pointer-events: none;
+}
+
+.forma-admin__viewer-corner--tl { top: 12px;    left: 12px;    border-right: none; border-bottom: none; }
+.forma-admin__viewer-corner--tr { top: 12px;    right: 12px;   border-left: none;  border-bottom: none; }
+.forma-admin__viewer-corner--bl { bottom: 12px; left: 12px;    border-right: none; border-top: none;    }
+.forma-admin__viewer-corner--br { bottom: 12px; right: 12px;   border-left: none;  border-top: none;    }
+
+.forma-admin__playback {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.forma-admin__timeline {
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: var(--rule-strong);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+}
+
+.forma-admin__timeline span {
+    display: block;
+    height: 100%;
+    background-color: var(--gold);
+    box-shadow: 0 0 8px rgba(184, 134, 74, 0.6);
+}
+
+.forma-admin__playback-meta {
+    display: flex;
+    justify-content: space-between;
+}
+
+.forma-admin__data {
+    background-color: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.forma-admin__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--space-sm);
+}
+
+.forma-admin__table td {
+    padding: var(--space-xs) 0;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+}
+
+.forma-admin__table td:first-child {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    font-size: var(--fs-caption);
+    letter-spacing: var(--tracking-wide);
+}
+
+.forma-admin__table td:last-child {
+    color: var(--ink);
+    text-align: right;
+}
+
+.forma-admin__flags {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-sm);
+}
+
+.forma-admin__flag {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid;
+    text-transform: lowercase;
+    letter-spacing: 0.04em;
+}
+
+.forma-admin__flag--ok {
+    color: var(--good);
+    border-color: var(--good);
+    background-color: var(--good-wash);
+}
+
+.forma-admin__flag--warn {
+    color: var(--warn);
+    border-color: var(--warn);
+    background-color: var(--warn-wash);
+}
+
+.forma-admin__flag--bad {
+    color: var(--bad);
+    border-color: var(--bad);
+    background-color: var(--bad-wash);
+}

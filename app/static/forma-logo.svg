@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 140" role="img" aria-label="FORMA — Train With Form">
+  <title>FORMA</title>
+  <desc>FORMA wordmark with gold underline and TRAIN WITH FORM tagline</desc>
+  <style>
+    .forma-word {
+      font-family: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+      font-size: 96px;
+      letter-spacing: 23px;
+      fill: #1A1A1A;
+    }
+    .forma-tag {
+      font-family: 'Outfit', -apple-system, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 5px;
+      fill: #6B6760;
+      text-transform: uppercase;
+    }
+    .forma-rule {
+      stroke: #B8864A;
+      stroke-width: 1.4;
+      fill: none;
+    }
+  </style>
+
+  <text class="forma-word" x="30" y="80">F O R M A</text>
+  <line class="forma-rule" x1="30" y1="96" x2="452" y2="96"/>
+  <text class="forma-tag" x="30" y="118">TRAIN WITH FORM</text>
+</svg>

@@ -1,5 +1,5 @@
 """
-Flask + Socket.IO server for ExerVision web app.
+Flask + Socket.IO server for FORMA web app.
 
 Receives video frames from the browser via WebSocket,
 processes them through the pipeline, and returns annotated frames + feedback.
@@ -60,6 +60,10 @@ MIN_FRAME_INTERVAL = 1.0 / 20  # ~50ms
 # Initialize session history database
 from app.database import ExerVisionDB
 db = ExerVisionDB(str(PROJECT_ROOT / "exervision.db"))
+
+# Session capture for offline analysis (always-on during tuning)
+from app.session_capture import SessionCapture, build_frame_trace
+captures: dict = {}  # sid -> SessionCapture instance
 
 # Load exercise metadata
 EXERCISE_DATA_PATH = Path(__file__).parent / "exercise_data.json"
@@ -231,6 +235,13 @@ def handle_connect():
 @socketio.on("disconnect")
 def handle_disconnect():
     sid = request.sid
+    # Finalize any in-flight capture so we don't leak the trace file
+    capture = captures.pop(sid, None)
+    if capture is not None:
+        try:
+            capture.end({"note": "session_aborted_on_disconnect"})
+        except Exception as e:
+            logger.debug("Capture end on disconnect failed: %s", e)
     if sid in pipelines:
         try:
             pipelines[sid].close()
@@ -284,9 +295,25 @@ def handle_start_session(data=None):
             pipeline.set_classifier(classifier)
 
     pipeline.start_session()
+
+    # Start offline session capture (trace.jsonl + thresholds snapshot)
+    try:
+        detector = pipeline._detectors.get(pipeline.exercise)
+        capture = SessionCapture(
+            project_root=PROJECT_ROOT,
+            exercise=pipeline.exercise,
+            classifier=pipeline.classifier_type,
+            detector=detector,
+        )
+        capture.start()
+        captures[sid] = capture
+    except Exception as e:
+        logger.warning("Failed to start session capture for %s: %s", sid, e)
+
     emit("session_started", {
         "exercise": pipeline.exercise,
         "classifier": pipeline.classifier_type,
+        "capture_id": captures[sid].session_id if sid in captures else None,
     })
 
 
@@ -305,6 +332,16 @@ def handle_end_session():
         summary["session_id"] = session_id
     except Exception as e:
         logger.warning(f"Failed to save session: {e}")
+
+    # Finalize offline capture (write summary.json + metadata.json + close trace)
+    capture = captures.pop(sid, None)
+    if capture is not None:
+        try:
+            capture.end(summary)
+            summary["capture_id"] = capture.session_id
+            summary["capture_dir"] = str(capture.session_dir.relative_to(PROJECT_ROOT))
+        except Exception as e:
+            logger.warning("Failed to finalize session capture: %s", e)
 
     emit("session_report", summary)
 
@@ -399,6 +436,8 @@ def handle_frame(data):
         feedback["form_score"] = round(result.form_score, 2)
         feedback["is_active"] = result.is_active
         feedback["joint_feedback"] = result.joint_feedback
+        feedback["dtw_similarity"] = round(result.dtw_similarity, 2)
+        feedback["dtw_worst_joint"] = result.dtw_worst_joint
     else:
         feedback["is_correct"] = None
         feedback["confidence"] = 0
@@ -406,9 +445,21 @@ def handle_frame(data):
         feedback["form_score"] = 0
         feedback["is_active"] = False
         feedback["joint_feedback"] = {}
+        feedback["dtw_similarity"] = 1.0
+        feedback["dtw_worst_joint"] = None
 
     # Push-up specific: send set/phase info for on-video HUD
     _add_detector_fields(feedback, pipeline, result)
+
+    # Write per-frame trace to disk if session capture is active
+    capture = captures.get(sid)
+    if capture is not None:
+        try:
+            detector = pipeline._detectors.get(pipeline.exercise)
+            trace = build_frame_trace(pipeline, result, detector)
+            capture.write_frame(trace)
+        except Exception as e:
+            logger.debug("Trace write failed: %s", e)
 
     processing[sid] = False
     emit("processed", feedback)
@@ -470,6 +521,8 @@ def handle_landmarks(data):
                 "form_score": round(result.form_score, 2),
                 "is_active": result.is_active,
                 "joint_feedback": result.joint_feedback,
+                "dtw_similarity": round(result.dtw_similarity, 2),
+                "dtw_worst_joint": result.dtw_worst_joint,
                 "rep_count": pipeline.rep_count,
                 "fps": round(pipeline.fps, 1),
                 "classifier": pipeline.classifier_type,
@@ -480,12 +533,23 @@ def handle_landmarks(data):
             feedback = {
                 "form_score": 0, "is_active": False, "rep_count": 0,
                 "joint_feedback": {}, "details": [],
+                "dtw_similarity": 1.0, "dtw_worst_joint": None,
                 "timing": {"total_ms": round(t_total * 1000, 1)},
                 "client_timestamp": data.get("timestamp", 0),
             }
 
         # Push-up specific: send set/phase info for on-video HUD
         _add_detector_fields(feedback, pipeline, result)
+
+        # Write per-frame trace to disk if session capture is active
+        capture = captures.get(sid)
+        if capture is not None:
+            try:
+                detector = pipeline._detectors.get(pipeline.exercise)
+                trace = build_frame_trace(pipeline, result, detector)
+                capture.write_frame(trace)
+            except Exception as te:
+                logger.debug("Trace write failed: %s", te)
 
         emit("result", feedback)
 
@@ -502,7 +566,7 @@ def handle_landmarks(data):
 # ── Main ─────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="ExerVision web server")
+    parser = argparse.ArgumentParser(description="FORMA web server")
     parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
     parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", 5000)), help="Port to listen on")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
@@ -512,7 +576,7 @@ def main():
         level=logging.INFO,
         format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     )
-    logger.info("Starting ExerVision server at http://%s:%s", args.host, args.port)
+    logger.info("Starting FORMA server at http://%s:%s", args.host, args.port)
     logger.info("Open in browser: http://localhost:%s", args.port)
     socketio.run(app, host=args.host, port=args.port, debug=args.debug, allow_unsafe_werkzeug=True)
 
