@@ -14,7 +14,11 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
-from .base_detector import BaseExerciseDetector
+from .base_detector import (
+    RobustExerciseDetector,
+    RepPhase,
+    REP_DIRECTION_DECREASING,
+)
 from ..pose_estimation.base import PoseResult
 from ..utils.constants import (
     LEFT_SHOULDER, RIGHT_SHOULDER, LEFT_HIP, RIGHT_HIP,
@@ -23,26 +27,60 @@ from ..utils.constants import (
 
 
 # ── Thresholds ──
-KNEE_STANDING = 160
-KNEE_LUNGED = 90        # Front knee at 90 degrees
-KNEE_HALF = 120         # Partial lunge
+# Kotiuk et al. 2023 measured 98° front-knee flexion at bodyweight lunge bottom.
+# Research: front knee 80-100° at bottom, rear knee 90-110° at bottom.
+KNEE_STANDING = 175     # Research: 170-180° standing lockout (was 160)
+KNEE_LUNGED = 90        # Front knee at 90° — mid-range of research
+KNEE_HALF = 115         # Upper bound of acceptable partial
 
+# Rear knee should hover just above the ground (~90-110° bent).
 BACK_KNEE_GOOD = 100    # Back knee approaching floor
-BACK_KNEE_WARNING = 130 # Not deep enough
+BACK_KNEE_WARNING = 115 # was 130 — research says rear knee should reach 90-110°
 
-TORSO_GOOD = 15         # degrees from vertical
+# Torso (research: standard lunge 0-20° forward lean, hip-focused 20-40°)
+TORSO_GOOD = 15
 TORSO_WARNING = 30
 TORSO_BAD = 45
 
+# Lateral pelvic tilt (Trendelenburg / gluteus medius weakness indicator).
+# Research: 0-5° acceptable, >8° warning, >10° error.
+PELVIC_TILT_WARN = 8
+PELVIC_TILT_BAD = 10
 
-class LungeDetector(BaseExerciseDetector):
+
+class LungeDetector(RobustExerciseDetector):
     EXERCISE_NAME = "lunge"
     PRIMARY_ANGLE_TOP = KNEE_STANDING
     PRIMARY_ANGLE_BOTTOM = KNEE_LUNGED
+    MIN_FORM_GATE = 0.3
     DESCENT_THRESHOLD = 15.0
     ASCENT_THRESHOLD = 10.0
 
-    FRONT_LEG_LOCK_FRAMES = 15  # keep front leg decision stable for this many frames
+    FRONT_LEG_LOCK_FRAMES = 22  # was 15 — ~0.75s at 30fps, prevents mid-rep flipping
+
+    # ── Robust FSM config ───────────────────────────────────────────────
+    # Visibility-only gate: legs must be visible. Front-leg hysteresis
+    # (below) runs INSIDE _compute_angles — primary angle is already the
+    # dynamically-locked front knee by the time the rep FSM sees it, so
+    # the robust FSM treats lunge like any other decreasing-angle
+    # exercise without conflicting with the lock.
+    SESSION_POSTURE_GATE = None
+    VISIBILITY_GATE_LANDMARKS = (
+        LEFT_HIP, RIGHT_HIP,
+        LEFT_KNEE, RIGHT_KNEE,
+        LEFT_ANKLE, RIGHT_ANKLE,
+    )
+    VISIBILITY_GATE_THRESHOLD = 0.6
+
+    REP_DIRECTION = REP_DIRECTION_DECREASING
+    # Front knee: 175° standing → 90° lunged. Tuned strict to reject
+    # mid-range hovering (common while setting up the stance).
+    REP_COMPLETE_TOP = 160.0
+    REP_START_THRESHOLD = 155.0
+    REP_DEPTH_THRESHOLD = 110.0
+    REP_BOTTOM_CLEAR = 120.0
+    MIN_REAL_PRIMARY_DEG = 30.0
+    MAX_PRIMARY_JUMP_DEG = 60.0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -96,13 +134,29 @@ class LungeDetector(BaseExerciseDetector):
             back_knee = None
 
         torso = self._compute_torso_lean(pose)
+        pelvic_tilt = self._compute_pelvic_tilt(pose)
 
         return {
             "primary": front_knee,
             "front_knee": front_knee,
             "back_knee": back_knee,
             "torso": torso,
+            "pelvic_tilt": pelvic_tilt,
         }
+
+    def _compute_pelvic_tilt(self, pose: PoseResult) -> Optional[float]:
+        """Lateral pelvic tilt — angle between hip line and horizontal.
+        Research: 0-5° acceptable, >8° warning (gluteus medius weakness),
+        >10° error (Trendelenburg pattern). Uses world coordinates."""
+        if not (pose.is_visible(LEFT_HIP) and pose.is_visible(RIGHT_HIP)):
+            return None
+        lh = np.array(pose.get_world_landmark(LEFT_HIP))
+        rh = np.array(pose.get_world_landmark(RIGHT_HIP))
+        dy = abs(lh[1] - rh[1])
+        horizontal_dist = float(np.sqrt((lh[0] - rh[0]) ** 2 + (lh[2] - rh[2]) ** 2))
+        if horizontal_dist < 0.05:  # hips too close together to estimate — bad pose
+            return None
+        return float(np.degrees(np.arctan2(dy, horizontal_dist)))
 
     def _compute_torso_lean(self, pose: PoseResult) -> Optional[float]:
         """Compute torso lean from vertical."""
@@ -143,15 +197,20 @@ class LungeDetector(BaseExerciseDetector):
         fl = self._front_leg or "left"
         bl = "right" if fl == "left" else "left"
 
+        # Pre-compute suppression flags
+        pelvic_tilt = angles.get("pelvic_tilt")
+        _pelvis_unstable = pelvic_tilt is not None and pelvic_tilt > PELVIC_TILT_BAD
+
         # ── Front knee depth ──
         if front_knee is not None:
-            if self._state in ("bottom", "going_up", "going_down"):
+            if self._state in (RepPhase.BOTTOM, RepPhase.GOING_UP, RepPhase.GOING_DOWN):
                 if front_knee <= KNEE_LUNGED + 10:
                     joint_feedback[f"{fl}_knee"] = "correct"
                     scores["front_knee"] = 1.0
                 elif front_knee <= KNEE_HALF:
                     joint_feedback[f"{fl}_knee"] = "warning"
-                    issues.append("Go deeper — front thigh should be parallel to floor")
+                    if not _pelvis_unstable:
+                        issues.append("Go deeper — front thigh should be parallel to floor")
                     scores["front_knee"] = 0.5
                 else:
                     joint_feedback[f"{fl}_knee"] = "correct"
@@ -161,7 +220,7 @@ class LungeDetector(BaseExerciseDetector):
                 scores["front_knee"] = 1.0
 
         # ── Back knee depth ──
-        if back_knee is not None and self._state in ("bottom", "going_up", "going_down"):
+        if back_knee is not None and self._state in (RepPhase.BOTTOM, RepPhase.GOING_UP, RepPhase.GOING_DOWN):
             if back_knee <= BACK_KNEE_GOOD:
                 joint_feedback[f"{bl}_knee"] = "correct"
                 scores["back_knee"] = 1.0
@@ -182,18 +241,30 @@ class LungeDetector(BaseExerciseDetector):
             elif torso <= TORSO_WARNING:
                 joint_feedback["left_shoulder"] = "warning"
                 joint_feedback["right_shoulder"] = "warning"
-                issues.append("Keep torso upright — don't lean forward")
+                issues.append("Keep torso upright — stay tall through your spine")
                 scores["torso"] = 0.5
             else:
                 joint_feedback["left_shoulder"] = "incorrect"
                 joint_feedback["right_shoulder"] = "incorrect"
-                issues.append("Excessive forward lean — chest up!")
+                issues.append("Too much forward lean — lift your chest")
                 scores["torso"] = 0.2
+
+        # ── Lateral pelvic tilt (T15 — Trendelenburg / glute med weakness) ──
+        pelvic_tilt = angles.get("pelvic_tilt")
+        if pelvic_tilt is not None:
+            if pelvic_tilt > PELVIC_TILT_BAD:
+                issues.append("Hips tilting to one side — engage glutes and core")
+                scores["pelvic_tilt"] = 0.3
+                joint_feedback["left_hip"] = "incorrect"
+                joint_feedback["right_hip"] = "incorrect"
+            elif pelvic_tilt > PELVIC_TILT_WARN:
+                issues.append("Slight hip drop — keep pelvis level")
+                scores["pelvic_tilt"] = 0.6
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        WEIGHTS = {"front_knee": 1.0, "back_knee": 1.0, "torso": 1.3}
+        WEIGHTS = {"front_knee": 1.0, "back_knee": 1.0, "torso": 1.3, "pelvic_tilt": 1.2}
         weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
         weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
         total = weighted_sum / weight_total
