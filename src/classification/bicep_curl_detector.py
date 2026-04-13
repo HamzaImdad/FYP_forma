@@ -14,36 +14,80 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
-from .base_detector import BaseExerciseDetector
+from .base_detector import (
+    RobustExerciseDetector,
+    RepPhase,
+    REP_DIRECTION_DECREASING,
+)
 from ..pose_estimation.base import PoseResult
 from ..utils.constants import (
     LEFT_SHOULDER, RIGHT_SHOULDER, LEFT_ELBOW, RIGHT_ELBOW,
     LEFT_WRIST, RIGHT_WRIST, LEFT_HIP, RIGHT_HIP,
+    LEFT_INDEX, RIGHT_INDEX,
 )
 
 
 # ── Thresholds ──
-ELBOW_EXTENDED = 155    # Arms fully extended
-ELBOW_CURLED = 45       # Fully curled
+# Research: Oliveira et al. 2009 — full contraction at elbow 30-50° (top of curl).
+# Bottom should be 165-175° (slight bend maintained — full 180° lockout stresses
+# biceps tendon under heavy eccentric load). Previous ELBOW_EXTENDED=155° was too
+# loose and left the state machine stranded when users didn't fully extend.
+ELBOW_EXTENDED = 165    # State-machine gate — research: slight bend maintained
+ELBOW_CURLED = 45       # Fully curled (research: 30-50° full contraction)
+ELBOW_TOP_INCOMPLETE = 60  # >60° at bottom state = incomplete contraction (form scoring)
 ELBOW_HALF = 90         # Partial curl
 
-# Upper arm should stay vertical (pinned to side)
-UPPER_ARM_GOOD = 20     # degrees from vertical
-UPPER_ARM_WARNING = 35  # swinging elbow forward/back
-UPPER_ARM_BAD = 50      # major upper arm movement
+# Upper arm should stay vertical (pinned to side).
+# Research: 0-10° forward drift = strict, 10-20° mild cheating, >20° excessive.
+UPPER_ARM_GOOD = 10     # was 20 — research strict
+UPPER_ARM_WARNING = 20  # was 35 — mild cheating threshold
+UPPER_ARM_BAD = 30      # was 50 — >30° transitions into front raise
 
-# Torso swing (using momentum instead of bicep)
-TORSO_GOOD = 10         # degrees of lean from vertical
-TORSO_WARNING = 20
-TORSO_BAD = 30
+# Torso swing (using momentum instead of bicep).
+# Research: <5° strict, 5-10° mild swing, >10-15° excessive momentum.
+TORSO_GOOD = 5          # was 10 — research strict
+TORSO_WARNING = 10      # was 20 — mild swing
+TORSO_BAD = 15          # was 30 — excessive momentum / low back strain risk
 
 
-class BicepCurlDetector(BaseExerciseDetector):
+class BicepCurlDetector(RobustExerciseDetector):
     EXERCISE_NAME = "bicep_curl"
     PRIMARY_ANGLE_TOP = ELBOW_EXTENDED
     PRIMARY_ANGLE_BOTTOM = ELBOW_CURLED
     DESCENT_THRESHOLD = 15.0
     ASCENT_THRESHOLD = 10.0
+    MIN_FORM_GATE = 0.3
+
+    # ── Robust FSM config ───────────────────────────────────────────────
+    # Visibility-only gate: arm chain + torso anchor must be in frame.
+    SESSION_POSTURE_GATE = None
+    VISIBILITY_GATE_LANDMARKS = (
+        LEFT_SHOULDER, RIGHT_SHOULDER,
+        LEFT_ELBOW, RIGHT_ELBOW,
+        LEFT_WRIST, RIGHT_WRIST,
+        LEFT_HIP, RIGHT_HIP,
+    )
+    VISIBILITY_GATE_THRESHOLD = 0.6
+
+    REP_DIRECTION = REP_DIRECTION_DECREASING
+    # Elbow: 165° extended → 45° curled → 165° extended. Tuned strict to
+    # avoid phantom reps from mid-range micro-bends (common when holding
+    # dumbbells at sides between sets).
+    REP_COMPLETE_TOP = 150.0      # back at extended-zone
+    REP_START_THRESHOLD = 145.0   # must pass this to commit to curl
+    REP_DEPTH_THRESHOLD = 55.0    # curl must reach this for full contraction
+    REP_BOTTOM_CLEAR = 65.0       # past this on uncurl = leaving bottom
+    MIN_REAL_PRIMARY_DEG = 20.0   # biceps can reach ~30-40° naturally
+    MAX_PRIMARY_JUMP_DEG = 80.0
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # T43: track previous torso angle for angular-velocity detection
+        self._prev_torso: Optional[float] = None
+
+    def reset(self):
+        super().reset()
+        self._prev_torso = None
 
     def _compute_angles(self, pose: PoseResult) -> Dict[str, Optional[float]]:
         elbow = self._avg_angle(
@@ -55,8 +99,35 @@ class BicepCurlDetector(BaseExerciseDetector):
 
         upper_arm = self._compute_upper_arm_stability(pose)
         torso = self._compute_torso_swing(pose)
+        wrist_neutral = self._compute_wrist_neutral(pose)
 
-        return {"primary": elbow, "elbow": elbow, "upper_arm": upper_arm, "torso": torso}
+        # T43: frame-to-frame torso angular velocity (degrees per frame).
+        # At ~30fps, >5°/frame = momentum use per research.
+        torso_velocity = None
+        if torso is not None and self._prev_torso is not None:
+            torso_velocity = abs(torso - self._prev_torso)
+        self._prev_torso = torso
+
+        return {
+            "primary": elbow, "elbow": elbow,
+            "upper_arm": upper_arm, "torso": torso,
+            "wrist_neutral": wrist_neutral,
+            "torso_velocity": torso_velocity,
+        }
+
+    def _compute_wrist_neutral(self, pose: PoseResult) -> Optional[float]:
+        """Wrist neutral angle (elbow→wrist→index). Research: 170-180° neutral.
+        MediaPipe index landmarks are noisy; visibility-gated. Flag <160° = wrist curl."""
+        min_angle = None
+        for e_idx, w_idx, i_idx in [
+            (LEFT_ELBOW, LEFT_WRIST, LEFT_INDEX),
+            (RIGHT_ELBOW, RIGHT_WRIST, RIGHT_INDEX),
+        ]:
+            angle = self._angle_at(pose, e_idx, w_idx, i_idx)
+            if angle is not None:
+                if min_angle is None or angle < min_angle:
+                    min_angle = angle
+        return min_angle
 
     def _compute_upper_arm_stability(self, pose: PoseResult) -> Optional[float]:
         """Compute how much upper arm deviates from vertical (shoulder-elbow line)."""
@@ -106,24 +177,38 @@ class BicepCurlDetector(BaseExerciseDetector):
         elbow = angles.get("elbow")
         upper_arm = angles.get("upper_arm")
         torso = angles.get("torso")
+        wrist_neutral = angles.get("wrist_neutral")
+        torso_velocity = angles.get("torso_velocity")
 
-        # ── Elbow ROM ──
+        in_curl = self._state in (RepPhase.BOTTOM, RepPhase.GOING_UP, RepPhase.GOING_DOWN)
+
+        # Pre-compute suppression: velocity catches momentum better than absolute angle
+        _momentum_active = torso_velocity is not None and torso_velocity > 5.0
+
+        # ── Elbow ROM (T44 — explicit top validation at BOTTOM state) ──
         if elbow is not None:
-            if self._state in ("bottom", "going_up", "going_down"):
-                if elbow <= ELBOW_CURLED + 15:
+            if self._state == RepPhase.BOTTOM:
+                # Fully curled — T44 incomplete contraction check
+                if elbow <= ELBOW_CURLED + 5:         # <= 50 — full contraction
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
                     scores["elbow"] = 1.0
-                elif elbow <= ELBOW_HALF:
-                    joint_feedback["left_elbow"] = "warning"
-                    joint_feedback["right_elbow"] = "warning"
-                    issues.append("Curl higher — squeeze at the top")
-                    scores["elbow"] = 0.5
-                else:
+                elif elbow <= ELBOW_TOP_INCOMPLETE:   # 50-60 — acceptable
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
-                    scores["elbow"] = 0.8
+                    scores["elbow"] = 0.85
+                else:                                  # >60 — incomplete
+                    joint_feedback["left_elbow"] = "warning"
+                    joint_feedback["right_elbow"] = "warning"
+                    issues.append("Curl higher — full contraction at the top")
+                    scores["elbow"] = 0.5
+            elif in_curl:
+                # In transit (going down/up between extended and curled)
+                joint_feedback["left_elbow"] = "correct"
+                joint_feedback["right_elbow"] = "correct"
+                scores["elbow"] = 0.9
             else:
+                # At top (extended) — research: 165-175° slight bend maintained
                 if elbow >= ELBOW_EXTENDED - 10:
                     joint_feedback["left_elbow"] = "correct"
                     joint_feedback["right_elbow"] = "correct"
@@ -148,7 +233,7 @@ class BicepCurlDetector(BaseExerciseDetector):
             else:
                 joint_feedback["left_shoulder"] = "incorrect"
                 joint_feedback["right_shoulder"] = "incorrect"
-                issues.append("Elbows swinging! Keep upper arms stationary")
+                issues.append("Elbows swinging — keep upper arms still")
                 scores["upper_arm"] = 0.2
 
         # ── Torso swing (cheating with momentum) ──
@@ -160,18 +245,34 @@ class BicepCurlDetector(BaseExerciseDetector):
             elif torso <= TORSO_WARNING:
                 joint_feedback["left_hip"] = "warning"
                 joint_feedback["right_hip"] = "warning"
-                issues.append("Slight body swing — stay more upright")
+                if not _momentum_active:
+                    issues.append("Slight body swing — stay more upright")
                 scores["torso"] = 0.5
             else:
                 joint_feedback["left_hip"] = "incorrect"
                 joint_feedback["right_hip"] = "incorrect"
-                issues.append("Too much body swing — reduce weight or slow down")
+                if not _momentum_active:
+                    issues.append("Too much body swing — reduce weight or slow down")
                 scores["torso"] = 0.2
+
+        # ── Torso angular velocity (T43 — catches momentum even at low absolute angle) ──
+        # Research: >5°/frame at ~30fps = momentum use regardless of absolute lean.
+        if torso_velocity is not None and torso_velocity > 5.0:
+            issues.append("Using momentum — try slowing down and controlling the weight")
+            scores["torso_velocity"] = 0.4
+
+        # ── Wrist neutral (T42) ──
+        if wrist_neutral is not None and wrist_neutral < 160:
+            issues.append("Keep wrists straight — avoid curling them")
+            scores["wrist"] = 0.5
 
         if not scores:
             return 0.0, joint_feedback, issues
 
-        WEIGHTS = {"elbow": 1.0, "upper_arm": 1.5, "torso": 1.2}
+        WEIGHTS = {
+            "elbow": 1.0, "upper_arm": 1.8, "torso": 1.2,
+            "torso_velocity": 1.0, "wrist": 0.6,
+        }
         weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
         weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
         total = weighted_sum / weight_total

@@ -41,68 +41,158 @@ from src.utils.constants import (  # noqa: E402
 )
 
 
-def make_standing_pose(elbow_deg: float, knee_deg: float = 175.0) -> PoseResult:
-    """Build a synthetic standing pose with specified elbow and knee angles.
-
-    Geometry approximates a user facing the camera in a standing position
-    with arms at sides. Angles are set at the specified vertex; other
-    landmarks are placed to satisfy visibility and PostureClassifier's
-    STANDING rule (torso vertical, knees above ankles, hip above knee).
-    """
+def _blank_pose() -> tuple[np.ndarray, np.ndarray]:
     lm = np.zeros((33, 4), dtype=np.float32)
-    lm[:, 3] = 1.0  # all landmarks visible
-
+    lm[:, 3] = 1.0
     wlm = np.zeros((33, 3), dtype=np.float32)
+    return lm, wlm
 
-    # Shoulder-elbow-wrist: angle = elbow_deg
-    elbow_rad = np.radians(elbow_deg)
+
+def _set_elbow(wlm: np.ndarray, elbow_deg: float, set_shoulder: bool = True) -> None:
+    """Place L/R shoulder-elbow-wrist so each elbow joint = elbow_deg exactly.
+
+    Math: with upper arm pointing straight down from shoulder to elbow
+    (length L), the forearm (E→W) is rotated from the upper arm direction
+    by elbow_deg in the xy plane. For angle elbow_deg at the vertex E:
+        (W - E).x = L * sin(elbow_deg)
+        (W - E).y = -L * cos(elbow_deg)
+
+    At 180°: (0, L, 0) — wrist below elbow, arm straight. ✓
+    At  90°: (L, 0, 0) — forearm horizontal. ✓
+    At   0°: (0, -L, 0) — forearm folded back to shoulder. ✓
+
+    If `set_shoulder=False`, uses the shoulder position already set in
+    wlm (for composing with _set_hip which owns shoulder placement).
+    """
+    L = 0.30  # arm segment length in meters
+    r = np.radians(elbow_deg)
+    forearm_dx = L * np.sin(r)
+    forearm_dy = -L * np.cos(r)
     for sh, el, wr in [
         (LEFT_SHOULDER, LEFT_ELBOW, LEFT_WRIST),
         (RIGHT_SHOULDER, RIGHT_ELBOW, RIGHT_WRIST),
     ]:
-        wlm[sh] = [0.0, -0.2, 0.0]   # shoulder above hip
-        wlm[el] = [0.25, -0.05, 0.0]  # elbow to the side
-        wlm[wr] = [
-            0.25 + 0.25 * np.cos(np.pi - elbow_rad),
-            -0.05 + 0.25 * np.sin(np.pi - elbow_rad),
-            0.0,
-        ]
+        if set_shoulder:
+            wlm[sh] = [0.0, -0.4, 0.0]
+        shoulder = wlm[sh]
+        elbow = np.array([shoulder[0], shoulder[1] + L, shoulder[2]])
+        wlm[el] = elbow
+        wlm[wr] = np.array([
+            elbow[0] + forearm_dx,
+            elbow[1] + forearm_dy,
+            elbow[2],
+        ])
 
-    # Hip (origin in world coords)
-    for hip in (LEFT_HIP, RIGHT_HIP):
-        wlm[hip] = [0.0, 0.0, 0.0]
 
-    # Hip-knee-ankle: angle = knee_deg
-    knee_rad = np.radians(knee_deg)
+def _set_knee(wlm: np.ndarray, knee_deg: float) -> None:
+    """Place L/R hip-knee-ankle so each knee joint = knee_deg exactly.
+
+    Approach: fix hip at origin and knee 40cm below. The shin vector
+    (knee→ankle) rotates from straight-down (knee_deg=180°) through
+    horizontal (knee_deg=90°) toward straight-up (knee_deg=0°), such
+    that the angle between thigh and shin at the knee = knee_deg.
+
+    Math: thigh = (0, -0.4, 0). For angle knee_deg between thigh and
+    shin:
+        shin.y = -shin_len * cos(knee_deg)       (vertical component)
+        shin.x =  shin_len * sin(knee_deg)       (horizontal component)
+    At 180°: shin=(0, +shin_len, 0) ankle directly below. ✓
+    At  90°: shin=(+shin_len, 0, 0) ankle horizontally back. ✓
+    At  80°: shin=(0.985*shin_len, -0.174*shin_len, 0) ankle slightly
+             above knee (physically = heel rising in a very deep squat).
+    """
+    r = np.radians(knee_deg)
+    shin_len = 0.40
+    dy = -shin_len * np.cos(r)
+    dx = shin_len * np.sin(r)
     for hp, kn, an in [
         (LEFT_HIP, LEFT_KNEE, LEFT_ANKLE),
         (RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE),
     ]:
-        # Knee below hip (world y points DOWN)
+        wlm[hp] = [0.0, 0.0, 0.0]
         wlm[kn] = [0.0, 0.4, 0.0]
-        # Ankle below knee; angle at knee = knee_deg means the knee is
-        # almost straight when knee_deg is near 180°.
-        back = 0.4 * np.cos(np.pi - knee_rad)
-        wlm[an] = [back, 0.4 + 0.4 * np.sin(np.pi - knee_rad), 0.0]
+        wlm[an] = [dx, 0.4 + dy, 0.0]
 
-    # Face + ears (for back-ratio + posture)
+
+def _set_hip(wlm: np.ndarray, hip_deg: float) -> None:
+    """Place L/R shoulder-hip-knee so each hip joint = hip_deg exactly.
+
+    Math: at the hip vertex, angle between (hip→knee) and (hip→shoulder)
+    must equal hip_deg. Knee is fixed 40cm below hip (thigh vector
+    (0, 0.4, 0) in y-down coords). Shoulder = thigh vector rotated by
+    hip_deg in the xy plane:
+        back.x = -0.4 * sin(hip_deg)
+        back.y =  0.4 * cos(hip_deg)
+
+    At 180°: back = (0, -0.4, 0), shoulder directly above hip. ✓
+    At  90°: back = (-0.4, 0, 0), torso horizontal forward. ✓
+    At  85°: back = (-0.398, 0.035, 0), torso slightly past horizontal.
+    """
+    r = np.radians(hip_deg)
+    for sh, hp, kn in [
+        (LEFT_SHOULDER, LEFT_HIP, LEFT_KNEE),
+        (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_KNEE),
+    ]:
+        wlm[hp] = [0.0, 0.0, 0.0]
+        wlm[kn] = [0.0, 0.4, 0.0]
+        wlm[sh] = [
+            -0.4 * np.sin(r),
+            0.4 * np.cos(r),
+            0.0,
+        ]
+    for an in (LEFT_ANKLE, RIGHT_ANKLE):
+        wlm[an] = [0.0, 0.6, 0.0]
+
+
+def _set_head_and_visibility(lm: np.ndarray, wlm: np.ndarray) -> None:
+    """Face/ears default positions (for back-ratio + posture features)."""
     wlm[NOSE] = [0.0, -0.35, 0.0]
     wlm[LEFT_EAR] = [-0.05, -0.35, 0.0]
     wlm[RIGHT_EAR] = [0.05, -0.35, 0.0]
-
-    # Copy world landmarks to image landmarks (2D) — x,y only matter for
-    # landmark visibility, not geometry
     for i in range(33):
         lm[i, 0] = wlm[i, 0]
         lm[i, 1] = wlm[i, 1]
         lm[i, 2] = wlm[i, 2]
 
+
+def _build_pose(lm: np.ndarray, wlm: np.ndarray) -> PoseResult:
     return PoseResult(
         landmarks=lm,
         world_landmarks=wlm,
         detection_confidence=0.95,
         timestamp_ms=0,
     )
+
+
+def pose_elbow_only(elbow_deg: float) -> PoseResult:
+    """Pose for exercises where primary=elbow (pushup, bench, ohp, pullup,
+    bicep curl, tricep dip). Legs held in extended standing position so
+    posture gates pass."""
+    lm, wlm = _blank_pose()
+    _set_knee(wlm, 175.0)       # standing legs
+    _set_elbow(wlm, elbow_deg)   # variable elbow
+    _set_head_and_visibility(lm, wlm)
+    return _build_pose(lm, wlm)
+
+
+def pose_knee_only(knee_deg: float) -> PoseResult:
+    """Pose for exercises where primary=knee (squat, lunge)."""
+    lm, wlm = _blank_pose()
+    _set_knee(wlm, knee_deg)
+    _set_elbow(wlm, 170.0)       # arms extended at sides
+    _set_head_and_visibility(lm, wlm)
+    return _build_pose(lm, wlm)
+
+
+def pose_hip_only(hip_deg: float) -> PoseResult:
+    """Pose for exercises where primary=hip (deadlift)."""
+    lm, wlm = _blank_pose()
+    _set_hip(wlm, hip_deg)
+    # Don't overwrite shoulder — _set_hip already placed it for the
+    # target hip angle. Elbow/wrist go relative to that shoulder.
+    _set_elbow(wlm, 170.0, set_shoulder=False)
+    _set_head_and_visibility(lm, wlm)
+    return _build_pose(lm, wlm)
 
 
 def build_primary_sequence(start: float, bottom: float, n_frames: int = 30) -> list[float]:
@@ -117,8 +207,9 @@ def build_primary_sequence(start: float, bottom: float, n_frames: int = 30) -> l
     return top_hold + descending + bottom_hold + ascending  # 28 frames
 
 
-def run_detector_test(detector_cls, exercise_name: str, pose_builder, primary_start: float,
-                      primary_bottom: float, bypass_posture: bool = True) -> dict:
+def run_detector_test(detector_cls, exercise_name: str, pose_builder,
+                      primary_start: float, primary_bottom: float,
+                      bypass_posture: bool = True) -> dict:
     """Instantiate a detector, feed synthetic poses, return a test report.
 
     bypass_posture=True monkey-patches the session FSM to ACTIVE so we
@@ -188,16 +279,25 @@ def load_detector(name: str):
         return None
 
 
-# Per-exercise synthetic test config: (primary_start, primary_bottom, bypass_posture)
+# Per-exercise synthetic test config:
+#   (pose_builder_name, primary_start, primary_bottom, bypass_posture)
+# pose_builder chooses which joint gets the variable angle; the rest are
+# held in a standing/ready position so posture gates pass.
 EXERCISE_CONFIG = {
-    "squat":          (175.0,  80.0, True),
-    "deadlift":       (165.0,  80.0, True),
-    "bicep_curl":     (170.0,  40.0, True),
-    "lunge":          (175.0,  85.0, True),
-    "overhead_press": ( 85.0, 170.0, True),  # INCREASING
-    "bench_press":    (170.0,  85.0, True),
-    "pullup":         (175.0,  75.0, True),
-    "tricep_dip":     (165.0,  85.0, True),
+    "squat":          ("knee",  175.0,  80.0, True),
+    "deadlift":       ("hip",   165.0,  80.0, True),
+    "bicep_curl":     ("elbow", 170.0,  40.0, True),
+    "lunge":          ("knee",  175.0,  85.0, True),
+    "overhead_press": ("elbow",  85.0, 170.0, True),  # INCREASING
+    "bench_press":    ("elbow", 170.0,  85.0, True),
+    "pullup":         ("elbow", 175.0,  75.0, True),
+    "tricep_dip":     ("elbow", 165.0,  85.0, True),
+}
+
+POSE_BUILDERS = {
+    "elbow": pose_elbow_only,
+    "knee": pose_knee_only,
+    "hip": pose_hip_only,
 }
 
 
@@ -226,9 +326,10 @@ def main():
             print(f"[SKIP] {ex}: no synthetic config")
             continue
 
-        primary_start, primary_bottom, bypass = cfg
+        builder_key, primary_start, primary_bottom, bypass = cfg
+        pose_builder = POSE_BUILDERS[builder_key]
         result = run_detector_test(
-            cls, ex, make_standing_pose,
+            cls, ex, pose_builder,
             primary_start, primary_bottom, bypass_posture=bypass,
         )
         results.append(result)
