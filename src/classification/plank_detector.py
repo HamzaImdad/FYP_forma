@@ -13,7 +13,8 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
-from .base_detector import BaseExerciseDetector
+from .base_detector import RobustExerciseDetector
+from .posture_classifier import PostureLabel
 from ..pose_estimation.base import PoseResult
 from ..utils.constants import (
     LEFT_SHOULDER, RIGHT_SHOULDER, LEFT_ELBOW, RIGHT_ELBOW,
@@ -23,9 +24,12 @@ from ..utils.constants import (
 
 
 # ── Thresholds ──
-BODY_LINE_GOOD = 170    # Nearly straight
-BODY_LINE_WARNING = 160 # Slight sag/pike
-BODY_LINE_BAD = 150     # Significant form breakdown
+# Research (Strand et al. 2014, ACFT): straight line shoulders→hips→knees→ankles
+# is 175-185°. Acceptable 170-190°. Mild sag/pike 165-170 / 190-195.
+# Excessive: <160° / >200° — should stop the exercise.
+BODY_LINE_GOOD = 175    # was 170 — research perfect
+BODY_LINE_WARNING = 165 # Mild sag/pike
+BODY_LINE_BAD = 155     # Significant form breakdown
 
 # Hip position relative to shoulder-ankle line (world coords, meters)
 HIP_SAG_THRESHOLD = 0.04    # meters — hips sagging below line
@@ -34,12 +38,44 @@ HIP_PIKE_THRESHOLD = 0.04   # meters — hips piking above line
 # Shoulder over wrist alignment (world coords, meters)
 SHOULDER_WRIST_GOOD = 0.08   # meters x-offset tolerance
 
+# Knee angle — legs should be straight (~180°). Flag bent knees.
+KNEE_STRAIGHT = 170
 
-class PlankDetector(BaseExerciseDetector):
+# Fatigue drift tracking (T35/T36)
+BASELINE_FRAMES = 10     # average this many frames after form_validated to set baseline
+DRIFT_WARN_DEG = 5       # warn at this much drift from baseline
+DRIFT_STOP_DEG = 10      # recommend stopping at this much drift
+
+
+class PlankDetector(RobustExerciseDetector):
     EXERCISE_NAME = "plank"
     IS_STATIC = True
     PRIMARY_ANGLE_TOP = BODY_LINE_GOOD
     PRIMARY_ANGLE_BOTTOM = BODY_LINE_BAD
+
+    # ── Robust FSM config (static hold) ─────────────────────────────────
+    # Plank uses the PostureClassifier's PLANK label (empirically works
+    # well — real pushup sessions produce 200-500 PLANK frames). The
+    # robust FSM's static-hold path runs when IS_STATIC = True and skips
+    # the rep FSM entirely, while still using the outer session FSM
+    # (IDLE/SETUP/ACTIVE/RESTING) to pause/resume the hold timer on
+    # walk-aways.
+    SESSION_POSTURE_GATE = PostureLabel.PLANK
+    MIN_REAL_PRIMARY_DEG = 0.0  # body-line angle can legitimately be small
+    MAX_PRIMARY_JUMP_DEG = 90.0  # generous for a static hold
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Baseline body-line angle captured after form validation (T35)
+        self._baseline_body_line: Optional[float] = None
+        self._baseline_sample_buf: List[float] = []
+        self._drift_stop_warned: bool = False
+
+    def reset(self):
+        super().reset()
+        self._baseline_body_line = None
+        self._baseline_sample_buf = []
+        self._drift_stop_warned = False
 
     def _compute_angles(self, pose: PoseResult) -> Dict[str, Optional[float]]:
         body_line = self._avg_angle(
@@ -52,11 +88,34 @@ class PlankDetector(BaseExerciseDetector):
         hip_deviation = self._compute_hip_deviation(pose)
         shoulder_alignment = self._compute_shoulder_alignment(pose)
 
+        # T39: knee angle — straight legs expected
+        knee = self._avg_angle(
+            pose,
+            (LEFT_HIP, LEFT_KNEE, LEFT_ANKLE),
+            (RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE),
+            name="knee",
+        )
+
+        # T35: build baseline from first BASELINE_FRAMES valid frames after
+        # form validation. Once baseline is set, drift can be computed.
+        if (self._form_validated and body_line is not None
+                and self._baseline_body_line is None):
+            self._baseline_sample_buf.append(body_line)
+            if len(self._baseline_sample_buf) >= BASELINE_FRAMES:
+                self._baseline_body_line = sum(self._baseline_sample_buf) / len(self._baseline_sample_buf)
+                self._baseline_sample_buf = []
+
+        drift = None
+        if self._baseline_body_line is not None and body_line is not None:
+            drift = abs(body_line - self._baseline_body_line)
+
         return {
             "primary": body_line,
             "body_line": body_line,
             "hip_deviation": hip_deviation,
             "shoulder_alignment": shoulder_alignment,
+            "knee": knee,
+            "drift": drift,
         }
 
     def _compute_hip_deviation(self, pose: PoseResult) -> Optional[float]:
@@ -125,6 +184,10 @@ class PlankDetector(BaseExerciseDetector):
         hip_dev = angles.get("hip_deviation")
         shoulder_align = angles.get("shoulder_alignment")
 
+        # Pre-compute suppression: drift is the better fatigue signal than hip sag
+        drift = angles.get("drift")
+        _drift_active = drift is not None and drift >= DRIFT_WARN_DEG
+
         # ── Body line straightness (most important — weighted 1.5x) ──
         if body_line is not None:
             if body_line >= BODY_LINE_GOOD:
@@ -149,7 +212,8 @@ class PlankDetector(BaseExerciseDetector):
         # ── Hip sag/pike detection ──
         if hip_dev is not None:
             if hip_dev > HIP_SAG_THRESHOLD:
-                issues.append("Hips sagging — tighten core and glutes, lift hips")
+                if not _drift_active:
+                    issues.append("Hips sagging — tighten core and glutes, lift hips")
                 joint_feedback["left_hip"] = "incorrect"
                 joint_feedback["right_hip"] = "incorrect"
                 scores["hip_dev"] = 0.3
@@ -172,10 +236,33 @@ class PlankDetector(BaseExerciseDetector):
                 issues.append("Shoulders too far from wrists — reposition")
                 scores["shoulder"] = 0.3
 
+        # ── Knee straightness (T39) ──
+        knee = angles.get("knee")
+        if knee is not None and knee < KNEE_STRAIGHT:
+            issues.append("Straighten legs — keep knees locked")
+            scores["knee"] = 0.5
+            joint_feedback["left_knee"] = "warning"
+            joint_feedback["right_knee"] = "warning"
+
+        # ── Fatigue drift tracking (T36) ──
+        drift = angles.get("drift")
+        if drift is not None:
+            if drift >= DRIFT_STOP_DEG:
+                if not self._drift_stop_warned:
+                    self._drift_stop_warned = True
+                issues.append("Form breaking down — consider resting")
+                scores["drift"] = 0.3
+            elif drift >= DRIFT_WARN_DEG:
+                issues.append("Form starting to drift — stay tight")
+                scores["drift"] = 0.7
+
         if not scores:
             return 0.0, joint_feedback, issues
 
-        WEIGHTS = {"body_line": 1.5, "hip_dev": 1.2, "shoulder": 1.0}
+        WEIGHTS = {
+            "body_line": 1.5, "hip_dev": 1.2, "shoulder": 1.0,
+            "knee": 0.8, "drift": 1.1,
+        }
         weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
         weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)
         total = weighted_sum / weight_total
