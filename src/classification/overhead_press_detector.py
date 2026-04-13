@@ -188,10 +188,21 @@ class OverheadPressDetector(RobustExerciseDetector):
         head_through = angles.get("head_through")
         bar_drift = angles.get("bar_drift")
 
-        # Note: overhead press uses inverted state machine — TOP = bar at shoulders,
-        # BOTTOM = arms locked out overhead. So "at lockout" == self._state == BOTTOM.
-        at_lockout = self._state in (RepPhase.BOTTOM, RepPhase.GOING_DOWN)
-        at_shoulders = self._state in (RepPhase.TOP, RepPhase.GOING_UP)
+        # Under RobustExerciseDetector with REP_DIRECTION_INCREASING, state
+        # semantics for overhead press are:
+        #   TOP         = bar at shoulders (primary angle near REP_COMPLETE_TOP=100°)
+        #   GOING_DOWN  = pressing up toward lockout (primary rising, 100°→170°)
+        #   BOTTOM      = fully locked out overhead (primary ≥ REP_DEPTH_THRESHOLD=160°)
+        #   GOING_UP    = lowering back to shoulders (primary falling, 170°→100°)
+        #
+        # Form check: scoring should rely on the ACTUAL elbow value rather
+        # than the state label, because the press takes many frames during
+        # which the state is GOING_DOWN but elbow hasn't reached lockout
+        # yet. The state-only check (old code) would fire "lock out fully"
+        # warnings during the press-up phase before the user had a chance
+        # to reach lockout.
+        at_lockout = elbow is not None and elbow >= ELBOW_LOCKOUT_MIN
+        at_shoulders = elbow is not None and elbow <= ELBOW_SHOULDER + 10
 
         # ── Elbow / lockout ──
         if elbow is not None:

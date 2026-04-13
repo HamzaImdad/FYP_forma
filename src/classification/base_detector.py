@@ -818,6 +818,11 @@ class RobustExerciseDetector(BaseExerciseDetector):
         self._rep_peak: float = self._init_rep_peak()
         self._robust_first_rep_started: bool = False
 
+        # Pending rep commit — set by _update_rep_fsm_robust when commit
+        # conditions are met, consumed by _finalize_pending_rep after
+        # form assessment has scored the current frame.
+        self._pending_rep_elapsed: Optional[float] = None
+
         # Pre-active primary-angle trace (for first-rep seeding)
         # Elements are (timestamp, primary_angle, is_gate_posture_raw)
         self._pre_active_trace: deque = deque(maxlen=self.PRE_ACTIVE_TRACE_SIZE)
@@ -839,6 +844,8 @@ class RobustExerciseDetector(BaseExerciseDetector):
         self._state = RepPhase.TOP
         self._bottom_frame_count = 0
         self._rep_peak = self._init_rep_peak()
+        self._robust_first_rep_started = False
+        self._pending_rep_elapsed = None
         self._current_rep_issues = []
         self._current_rep_scores = []
         self._current_rep_landmarks = []
@@ -1040,17 +1047,18 @@ class RobustExerciseDetector(BaseExerciseDetector):
         if not self._pre_active_trace:
             return
 
-        if self.SESSION_POSTURE_GATE is None:
-            # Visibility-only mode — the whole buffer is "in gate" by
-            # construction (we only append when visibility_ok is True).
-            plank_suffix = list(self._pre_active_trace)
-        else:
-            plank_suffix: List[Tuple[float, float]] = []
-            for t, primary, is_gate in reversed(self._pre_active_trace):
-                if not is_gate:
-                    break
-                plank_suffix.append((t, primary))
-            plank_suffix.reverse()
+        # Walk the buffer backwards and collect the trailing run of
+        # "in gate" frames. For posture-gated exercises, "in gate" means
+        # the raw posture label matched SESSION_POSTURE_GATE. For
+        # visibility-only exercises, "in gate" means the key landmarks
+        # were visible that frame. Both flags are stored in
+        # `_pre_active_trace` as the third tuple element at append time.
+        plank_suffix: List[Tuple[float, float]] = []
+        for t, primary, is_gate in reversed(self._pre_active_trace):
+            if not is_gate:
+                break
+            plank_suffix.append((t, primary))
+        plank_suffix.reverse()
 
         if len(plank_suffix) < 3:
             return
@@ -1073,6 +1081,7 @@ class RobustExerciseDetector(BaseExerciseDetector):
         self._robust_first_rep_started = True
         self._first_rep_started = True  # base-class flag for issue suppression
         self._rep_start_time = descent_start_t
+        self._descent_start_time = descent_start_t
         self._rep_peak = descent_peak
         self._current_rep_issues = []
         self._current_rep_scores = []
@@ -1093,15 +1102,25 @@ class RobustExerciseDetector(BaseExerciseDetector):
     # ── Robust rep FSM ───────────────────────────────────────────────────
 
     def _update_rep_fsm_robust(self, primary: Optional[float], now: float) -> bool:
-        """Direction-aware, state-independent rep commit. Returns True if a
-        rep was committed on this frame.
+        """Direction-aware, state-independent rep commit.
+
+        Returns True if a rep is PENDING COMMIT this frame (state already
+        reset to TOP, but _rep_count NOT yet incremented). The caller is
+        expected to run form assessment next, then call
+        `_finalize_pending_rep(angles, now)` to actually commit the rep
+        through the base-class `_should_count_rep` gate (MIN_REP_DURATION,
+        MIN_DESCENT_DURATION, MIN_FORM_GATE, and any subclass override
+        like Deadlift's "random movement" rejection).
+
+        Deferring the commit to after form assessment is what lets
+        `_should_count_rep` see the full `_current_rep_scores` list
+        including this frame's score, and matches the base class's flow
+        where the state-machine commit fires then the check runs.
 
         Mirrors pushup_detector.py:643–750 generalized to any direction.
         """
         if primary is None:
             return False
-
-        rep_completed = False
 
         # Update rep peak (min or max depending on direction) whenever we've
         # left the TOP state. This is the single source of truth for "did
@@ -1119,19 +1138,19 @@ class RobustExerciseDetector(BaseExerciseDetector):
         #   (2) we're not already back at top (state != TOP)
         #   (3) raw primary has returned to the top zone
         #   (4) tracked peak reached depth
+        # On hit: store elapsed, reset state immediately (so the form
+        # assessment that runs right after sees the correct phase), but
+        # DO NOT increment _rep_count here. Let classify() call
+        # _finalize_pending_rep() after scoring the current frame.
         # ──────────────────────────────────────────────────────────────
         if (self._robust_first_rep_started
                 and self._state != RepPhase.TOP
                 and self._back_at_top(primary)
                 and self._reached_depth(self._rep_peak)):
-            elapsed = now - self._rep_start_time
-            rep_completed = True
-            self._rep_count += 1
-            self._reps_in_current_set += 1
-            self._recent_rep_durations.append(elapsed)
+            self._pending_rep_elapsed = now - self._rep_start_time
             self._state = RepPhase.TOP
             self._rep_peak = self._init_rep_peak()
-            return rep_completed
+            return True
 
         # ──────────────────────────────────────────────────────────────
         # State-machine fallback (drives phase labels for UI and catches
@@ -1141,6 +1160,7 @@ class RobustExerciseDetector(BaseExerciseDetector):
             if self._passed_start_threshold(primary):
                 self._state = RepPhase.GOING_DOWN
                 self._rep_start_time = now
+                self._descent_start_time = now  # for MIN_DESCENT_DURATION gate
                 self._bottom_frame_count = 0
                 self._rep_peak = primary
                 self._robust_first_rep_started = True
@@ -1172,7 +1192,32 @@ class RobustExerciseDetector(BaseExerciseDetector):
                 self._state = RepPhase.BOTTOM
                 self._bottom_frame_count = 0
 
-        return rep_completed
+        return False
+
+    def _finalize_pending_rep(self, angles: Dict[str, Optional[float]], now: float) -> bool:
+        """Called from classify() AFTER form assessment has appended the
+        current frame's score. Runs the base-class `_should_count_rep`
+        gate (MIN_REP_DURATION, MIN_DESCENT_DURATION, MIN_FORM_GATE, any
+        subclass override) and either commits the rep or silently drops
+        it. Either way clears `_pending_rep_elapsed`.
+
+        Returns True if the rep was committed, False if it was rejected
+        or there was nothing pending.
+        """
+        if self._pending_rep_elapsed is None:
+            return False
+        elapsed = self._pending_rep_elapsed
+        self._pending_rep_elapsed = None
+
+        if self._should_count_rep(elapsed, angles):
+            self._rep_count += 1
+            self._reps_in_current_set += 1
+            self._recent_rep_durations.append(elapsed)
+            return True
+
+        # Rep rejected by gate — drop it silently. State is already reset
+        # to TOP so the next descent will start cleanly.
+        return False
 
     # ── classify() override ──────────────────────────────────────────────
 
@@ -1273,10 +1318,13 @@ class RobustExerciseDetector(BaseExerciseDetector):
         if self.IS_STATIC:
             return self._classify_static_hold(angles, now)
 
-        # 11. Rep FSM — only runs when session_state == ACTIVE
-        rep_completed = False
+        # 11. Rep FSM — only runs when session_state == ACTIVE.
+        # Sets _pending_rep_elapsed if a rep is ready to commit; actual
+        # commit happens in step 13 after form assessment has scored the
+        # current frame (so _should_count_rep sees the full avg).
+        rep_pending = False
         if self._session_state == SessionState.ACTIVE:
-            rep_completed = self._update_rep_fsm_robust(fsm_primary, now)
+            rep_pending = self._update_rep_fsm_robust(fsm_primary, now)
             # Activity detection still runs (for compatibility with trace
             # consumers that read activity state), but does NOT drive set
             # detection anymore — posture does.
@@ -1339,9 +1387,15 @@ class RobustExerciseDetector(BaseExerciseDetector):
                 except Exception:
                     pass
 
-        # 13. Record completed rep
-        if rep_completed:
-            self._record_robust_rep(now)
+        # 13. Finalize pending rep — runs _should_count_rep (MIN_FORM_GATE,
+        # MIN_REP_DURATION, MIN_DESCENT_DURATION, subclass overrides) on
+        # the fully-scored current frame, and commits or silently drops
+        # the rep. State has already been reset inside _update_rep_fsm_robust.
+        rep_completed = False
+        if rep_pending:
+            rep_completed = self._finalize_pending_rep(angles, now)
+            if rep_completed:
+                self._record_robust_rep(now)
 
         # 14. Smooth form score
         self._score_buf.append(frame_score)
