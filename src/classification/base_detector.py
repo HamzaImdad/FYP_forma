@@ -12,6 +12,7 @@ Each exercise detector overrides:
 import time
 from abc import ABC, abstractmethod
 from collections import deque
+from enum import Enum
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
@@ -21,10 +22,25 @@ from ..classification.base import ClassificationResult
 from ..utils.constants import MIN_VISIBILITY
 from ..utils.geometry import calculate_angle
 from ..utils.activity_detector import ActivityDetector, ActivityState, RestTier
+from ..feature_extraction.landmark_features import LandmarkFeatureExtractor
+from .dtw_matcher import DTWMatcher, DTWScore
+from .posture_classifier import PostureClassifier, PostureLabel
 
 
 # ── Shared constants ────────────────────────────────────────────────────
-MIN_REP_DURATION = 0.4      # seconds — prevents counting jitter
+MIN_REP_DURATION = 1.0      # seconds — real reps take >1s (was 0.4, counted noise)
+
+# Issue priority: lower number = higher priority (shown first to user).
+# When multiple issues fire, only the highest-priority one is shown.
+ISSUE_PRIORITY_KEYWORDS = {
+    "hip": 1, "core": 1, "sag": 1, "pike": 1, "hips": 1,
+    "back": 2, "spine": 2, "round": 2, "chest": 2,
+    "knee": 3, "squat": 3, "leg": 3,
+    "elbow": 4, "shoulder": 4, "arm": 4, "flare": 4,
+    "head": 5, "neck": 5,
+}
+MIN_DESCENT_DURATION = 0.5  # seconds — descent must be controlled, not an angle spike
+MIN_BOTTOM_FRAMES = 3       # frames in BOTTOM before allowing GOING_UP transition
 SET_REST_TIMEOUT = 8.0      # seconds of inactivity to end a set
 ANGLE_SMOOTH_WINDOW = 3     # frames for moving average
 SCORE_SMOOTH_WINDOW = 8     # frames for form score smoothing
@@ -63,9 +79,15 @@ class BaseExerciseDetector(ABC):
     DESCENT_THRESHOLD: float = 10.0     # degrees drop to start descent
     ASCENT_THRESHOLD: float = 10.0      # degrees rise to start ascent
     IS_STATIC: bool = False             # True for plank (no rep counting)
+    MIN_FORM_GATE: float = 0.0          # avg score to count rep (0 = always count)
 
-    def __init__(self, coverage_penalty: bool = False):
+    # Shared landmark extractor for DTW rep capture (torso-normalized 99-dim)
+    _landmark_extractor = LandmarkFeatureExtractor()
+
+    def __init__(self, coverage_penalty: bool = False,
+                 dtw_matcher: Optional["DTWMatcher"] = None):
         self._coverage_penalty = coverage_penalty
+        self._dtw_matcher: Optional["DTWMatcher"] = dtw_matcher
         self.reset()
 
     def reset(self):
@@ -77,17 +99,34 @@ class BaseExerciseDetector(ABC):
         self._rep_count = 0
         self._last_rep_time = 0.0
         self._rep_start_time = 0.0
+        self._descent_start_time = 0.0  # when GOING_DOWN started
+        self._bottom_frame_count = 0     # frames spent in BOTTOM state
+        self._first_rep_started = False  # suppress issues before first descent
 
         # Set tracking
         self._set_count = 0
         self._reps_in_current_set = 0
         self._last_active_time = 0.0
         self._set_reps: List[int] = []
+        # Between-sets gate: True while user is resting *after* finishing a set
+        # and before starting the next one. Cleared only when a new rep's
+        # descent actually begins (not on idle/movement alone).
+        self._between_sets = False
+        # Latched flag consumed by the coaching layer to speak the next-set
+        # announce exactly once per set boundary.
+        self._pending_set_announce = False
+        # Rolling window of recent rep durations (seconds) for pace detection
+        self._recent_rep_durations: deque = deque(maxlen=3)
 
         # Per-rep form tracking
         self._current_rep_issues: List[str] = []
         self._current_rep_scores: List[float] = []
+        self._current_rep_landmarks: List[np.ndarray] = []
         self._rep_history: List[Dict] = []
+
+        # Last DTW score (set when a rep completes with a matcher attached)
+        self._last_dtw_similarity: float = 1.0
+        self._last_dtw_worst_joint: Optional[str] = None
 
         # Angle smoothing buffers (subclass adds more as needed)
         self._angle_buffers: Dict[str, deque] = {}
@@ -203,7 +242,7 @@ class BaseExerciseDetector(ABC):
                     weak_key = fb_key[0] if weaker_side == "left" else fb_key[1]
                     if joint_feedback.get(weak_key) != "incorrect":
                         joint_feedback[weak_key] = "warning"
-                issues.append(f"Uneven {angle_name.replace('_', ' ')} — {weaker_side} side weaker ({diff:.0f}° diff)")
+                issues.append(f"Uneven {angle_name.replace('_', ' ')} — {weaker_side} side weaker")
             elif diff >= ASYMMETRY_WARN_DEG:
                 penalty = max(penalty, 0.07)
         return penalty
@@ -231,6 +270,26 @@ class BaseExerciseDetector(ABC):
         Returns: (is_valid, list of setup instructions)
         """
         ...
+
+    def _should_count_rep(self, elapsed: float, angles: Dict[str, Optional[float]]) -> bool:
+        """Decide whether a completed state-machine cycle should count as a rep.
+
+        Override in subclass to add exercise-specific validation (e.g., form
+        score gating, movement pattern checks).  Called when the state machine
+        reaches TOP from GOING_UP.
+        """
+        if elapsed < MIN_REP_DURATION:
+            return False
+        # Require controlled descent (not an instantaneous angle spike)
+        descent_dur = (self._rep_start_time + elapsed) - self._descent_start_time
+        if descent_dur < MIN_DESCENT_DURATION:
+            return False
+        # Form gate: reject reps that averaged below threshold (random movements)
+        if self.MIN_FORM_GATE > 0 and self._current_rep_scores:
+            avg = sum(self._current_rep_scores) / len(self._current_rep_scores)
+            if avg < self.MIN_FORM_GATE:
+                return False
+        return True
 
     def _get_missing_parts(self, angles: Dict[str, Optional[float]]) -> List[str]:
         """Return list of body parts that aren't visible. Override for custom messages."""
@@ -301,9 +360,20 @@ class BaseExerciseDetector(ABC):
         # Check if essential angles are available
         if primary is None:
             self._frames_since_pose += 1
-            if self._frames_since_pose >= NO_POSE_RESET_FRAMES and self._form_validated:
-                self._form_validated = False
+            if self._frames_since_pose >= NO_POSE_RESET_FRAMES:
+                # User left frame — reset state machine, don't stay stuck mid-rep.
+                # The session itself is NOT ended; any reps in the current set
+                # are flushed so returning to frame starts a fresh set.
+                if self._reps_in_current_set > 0 and not self._between_sets:
+                    self._set_reps.append(self._reps_in_current_set)
+                    self._set_count += 1
+                    self._reps_in_current_set = 0
+                    self._between_sets = True
+                    self._pending_set_announce = True
+                if self._form_validated:
+                    self._form_validated = False
                 self._state = RepPhase.TOP
+                self._bottom_frame_count = 0
                 for buf in self._angle_buffers.values():
                     buf.clear()
 
@@ -348,6 +418,11 @@ class BaseExerciseDetector(ABC):
                     frame_score *= coverage
                 self._last_coverage = coverage
 
+            # T38: asymmetry check also for static holds — previously the
+            # early-return on line ~368 skipped this entirely for plank.
+            asym_penalty = self._check_asymmetry(joint_feedback, issues)
+            frame_score = max(0.0, frame_score - asym_penalty)
+
             self._score_buf.append(frame_score)
             smooth_score = sum(self._score_buf) / len(self._score_buf)
 
@@ -378,10 +453,16 @@ class BaseExerciseDetector(ABC):
             self._last_active_time = now
 
         # ── Set detection (tiered) ──
-        if rest_tier == RestTier.EXTENDED_REST and self._reps_in_current_set > 0:
+        # Flush the pending set as soon as the user has been idle long enough
+        # to clearly be resting (≥15s of stillness). LONG_REST is also included
+        # so multi-minute rests don't leave a pending set dangling.
+        long_idle = rest_tier in (RestTier.EXTENDED_REST, RestTier.LONG_REST)
+        if long_idle and self._reps_in_current_set > 0 and not self._between_sets:
             self._set_reps.append(self._reps_in_current_set)
             self._set_count += 1
             self._reps_in_current_set = 0
+            self._between_sets = True
+            self._pending_set_announce = True
 
         # ── State machine ──
         rep_completed = False
@@ -390,34 +471,63 @@ class BaseExerciseDetector(ABC):
             if primary < self.PRIMARY_ANGLE_TOP - self.DESCENT_THRESHOLD:
                 self._state = RepPhase.GOING_DOWN
                 self._rep_start_time = now
+                self._descent_start_time = now
+                self._bottom_frame_count = 0
+                self._first_rep_started = True
                 self._current_rep_issues = []
                 self._current_rep_scores = []
+                self._current_rep_landmarks = []
+                # A new rep's descent starting is the only signal that set N+1
+                # has truly begun. Clear the between-sets gate here.
+                if self._between_sets:
+                    self._between_sets = False
 
         elif self._state == RepPhase.GOING_DOWN:
             if primary <= self.PRIMARY_ANGLE_BOTTOM:
                 self._state = RepPhase.BOTTOM
+                self._bottom_frame_count = 0
             elif primary > self.PRIMARY_ANGLE_TOP:
                 self._state = RepPhase.TOP
                 self._current_rep_issues.append("Didn't reach full depth")
 
         elif self._state == RepPhase.BOTTOM:
-            if primary > self.PRIMARY_ANGLE_BOTTOM + self.ASCENT_THRESHOLD:
+            self._bottom_frame_count += 1
+            if (primary > self.PRIMARY_ANGLE_BOTTOM + self.ASCENT_THRESHOLD
+                    and self._bottom_frame_count >= MIN_BOTTOM_FRAMES):
                 self._state = RepPhase.GOING_UP
 
         elif self._state == RepPhase.GOING_UP:
             if primary >= self.PRIMARY_ANGLE_TOP:
                 elapsed = now - self._rep_start_time
-                if elapsed >= MIN_REP_DURATION:
+                if self._should_count_rep(elapsed, angles):
                     rep_completed = True
                     self._rep_count += 1
                     self._reps_in_current_set += 1
+                    self._recent_rep_durations.append(elapsed)
                 self._state = RepPhase.TOP
             elif primary < self.PRIMARY_ANGLE_BOTTOM:
                 self._state = RepPhase.BOTTOM
+                self._bottom_frame_count = 0
 
         # ── Per-frame form assessment ──
         self._lr_angles.clear()
         frame_score, joint_feedback, issues = self._assess_form(angles)
+
+        # Sort issues by priority (hips/core first, head/neck last)
+        issues.sort(key=lambda msg: min(
+            (pri for kw, pri in ISSUE_PRIORITY_KEYWORDS.items() if kw in msg.lower()),
+            default=9
+        ))
+
+        # Suppress issues while user is standing idle before first rep OR
+        # while they're resting between sets (green skeleton, no nagging).
+        idle_before_first = not self._first_rep_started and self._state == RepPhase.TOP
+        resting_between = self._between_sets and self._state == RepPhase.TOP
+        if idle_before_first or resting_between:
+            issues = []
+            for k in joint_feedback:
+                joint_feedback[k] = "correct"
+            frame_score = max(frame_score, 0.8)  # don't show bad score while idle
 
         # ── Coverage penalty (for offline scoring — penalise missing joints) ──
         if self._coverage_penalty:
@@ -445,20 +555,57 @@ class BaseExerciseDetector(ABC):
             if issue not in self._current_rep_issues:
                 self._current_rep_issues.append(issue)
 
+        # ── Capture landmark frame for DTW (only while mid-rep) ──
+        if self._dtw_matcher is not None and self._state != RepPhase.TOP:
+            try:
+                self._current_rep_landmarks.append(
+                    self._landmark_extractor.extract_landmarks(pose)
+                )
+            except Exception:
+                pass  # DTW capture is best-effort, never breaks classification
+
         # ── Record completed rep ──
         if rep_completed:
             avg_score = sum(self._current_rep_scores) / max(len(self._current_rep_scores), 1)
+
+            # Run DTW template matching against ideal templates for this rep
+            dtw_sim = 1.0
+            dtw_worst: Optional[str] = None
+            if self._dtw_matcher is not None and len(self._current_rep_landmarks) >= 3:
+                try:
+                    rep_seq = np.stack(self._current_rep_landmarks).astype(np.float32)
+                    dtw_score = self._dtw_matcher.compare(self.EXERCISE_NAME, rep_seq)
+                    if dtw_score is not None:
+                        dtw_sim = dtw_score.similarity
+                        dtw_worst = dtw_score.worst_joint
+                        # Pattern-match penalty: a rep that completes the state machine
+                        # but diverges significantly from the ideal template gets marked down.
+                        if dtw_sim < 0.5:
+                            avg_score *= (0.6 + 0.4 * dtw_sim)
+                            if dtw_worst and f"Pattern deviates at {dtw_worst}" not in self._current_rep_issues:
+                                self._current_rep_issues.insert(0, f"Pattern deviates at {dtw_worst}")
+                except Exception as e:
+                    pass  # never let DTW break a rep
+
+            self._last_dtw_similarity = dtw_sim
+            self._last_dtw_worst_joint = dtw_worst
+
             quality = (RepQuality.GOOD if avg_score >= 0.7
                        else RepQuality.MODERATE if avg_score >= 0.4
                        else RepQuality.BAD)
             if len(self._rep_history) < MAX_REP_HISTORY:
-                self._rep_history.append({
+                rep_entry = {
                     "rep": self._rep_count,
                     "score": round(avg_score, 2),
                     "quality": quality,
                     "issues": self._current_rep_issues[:3],
                     "duration": round(now - self._rep_start_time, 1),
-                })
+                }
+                if self._dtw_matcher is not None:
+                    rep_entry["dtw_similarity"] = round(dtw_sim, 2)
+                    if dtw_worst:
+                        rep_entry["dtw_worst_joint"] = dtw_worst
+                self._rep_history.append(rep_entry)
 
         # ── Smooth form score ──
         self._score_buf.append(frame_score)
@@ -490,6 +637,12 @@ class BaseExerciseDetector(ABC):
         # Activity & rest state for frontend
         details["activity"] = self._current_activity.value
         details["rest_tier"] = self._current_rest_tier.value
+        details["between_sets"] = "1" if self._between_sets else "0"
+        details["set_number"] = str(self._set_count + 1)
+        details["reps_in_current_set"] = str(self._reps_in_current_set)
+        if self._recent_rep_durations:
+            avg_dur = sum(self._recent_rep_durations) / len(self._recent_rep_durations)
+            details["avg_rep_duration"] = f"{avg_dur:.2f}"
 
         return self._build_result(
             form_score=smooth_score, is_active=is_actively_exercising,
@@ -509,6 +662,8 @@ class BaseExerciseDetector(ABC):
             details=details,
             is_active=is_active,
             form_score=max(0.0, min(1.0, form_score)),
+            dtw_similarity=float(self._last_dtw_similarity),
+            dtw_worst_joint=self._last_dtw_worst_joint,
         )
 
     def _inactive_result(self, message: str) -> ClassificationResult:
@@ -557,3 +712,780 @@ class BaseExerciseDetector(ABC):
             summary["total_reps"] = 0
 
         return summary
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# Robust rep-counting layer — ports the push-up detector's winning recipe
+# (state-independent commit, posture-driven session FSM, raw-angle sanity
+# guards, pre-active trace seeding) to any `BaseExerciseDetector` subclass.
+#
+# Subclasses set ~8 configuration constants + keep their existing
+# `_compute_angles`, `_assess_form`, `_check_start_position` implementations.
+# All form-check logic, DTW, and session summary code stays untouched.
+# ══════════════════════════════════════════════════════════════════════════
+
+
+# Rep direction — whether the primary angle DECREASES during the working
+# phase (pushup/squat/pullup/bicep curl/deadlift/bench/tricep/lunge) or
+# INCREASES (overhead press).
+REP_DIRECTION_DECREASING = "DECREASING"
+REP_DIRECTION_INCREASING = "INCREASING"
+
+
+class SessionState(str, Enum):
+    """Outer session FSM — when is the user actually exercising?"""
+    IDLE = "idle"
+    SETUP = "setup"
+    ACTIVE = "active"
+    RESTING = "resting"
+
+
+class RobustExerciseDetector(BaseExerciseDetector):
+    """Adds push-up-style robust rep counting on top of BaseExerciseDetector.
+
+    All five mechanisms ported from pushup_detector.py:
+      1. State-independent rep commit (tracks rep_peak, fires when signal
+         returns to top AND peak crossed depth threshold).
+      2. Raw-angle sanity guards on the primary angle
+         (MIN_REAL_PRIMARY_DEG floor, MAX_PRIMARY_JUMP_DEG outlier guard).
+      3. Single-frame None tolerance (reuses last value up to
+         MAX_NONE_TOLERANCE frames before giving up).
+      4. Outer session FSM (IDLE/SETUP/ACTIVE/RESTING) driven by
+         PostureClassifier — replaces timer-based set detection.
+      5. Pre-active primary-angle trace seeding — recovers the first rep
+         even if descent started during posture-classifier bootstrap.
+
+    The subclass contract (`_compute_angles`, `_assess_form`,
+    `_check_start_position`) is unchanged.
+    """
+
+    # ── Robust-FSM configuration (subclass overrides as needed) ─────────
+
+    # Which PostureClassifier label represents "ready to exercise".
+    # `None` = visibility-only gate (IDLE→ACTIVE when key landmarks visible).
+    SESSION_POSTURE_GATE: Optional[PostureLabel] = PostureLabel.STANDING
+
+    # Rep direction — DECREASING for most exercises, INCREASING for OHP.
+    REP_DIRECTION: str = REP_DIRECTION_DECREASING
+
+    # Rep FSM thresholds on the raw primary angle (distinct from the
+    # form-scoring PRIMARY_ANGLE_TOP / PRIMARY_ANGLE_BOTTOM).
+    #
+    # For DECREASING:
+    #   angle ≥ REP_COMPLETE_TOP    → "at top"       (commit zone, no descent yet)
+    #   angle <  REP_START_THRESHOLD → descent committed (UP → GOING_DOWN)
+    #   angle ≤ REP_DEPTH_THRESHOLD → valid depth reached (rep_peak ≤ this)
+    #   angle >  REP_BOTTOM_CLEAR   → ascent started (DOWN → GOING_UP)
+    #
+    # For INCREASING (overhead press), semantics flip:
+    #   angle ≤ REP_COMPLETE_TOP    → "at bottom" (at shoulders, commit zone)
+    #   angle >  REP_START_THRESHOLD → press committed (TOP → GOING_UP_TO_DEPTH)
+    #   angle ≥ REP_DEPTH_THRESHOLD → lockout reached
+    #   angle <  REP_BOTTOM_CLEAR   → descent from lockout started
+    REP_COMPLETE_TOP: float = 140.0
+    REP_START_THRESHOLD: float = 135.0
+    REP_DEPTH_THRESHOLD: float = 115.0
+    REP_BOTTOM_CLEAR: float = 120.0
+
+    # Sanity guards on the raw primary angle before it reaches the rep FSM.
+    MIN_REAL_PRIMARY_DEG: float = 20.0
+    MAX_PRIMARY_JUMP_DEG: float = 80.0
+    MAX_NONE_TOLERANCE: int = 5
+
+    # Session FSM tolerances.
+    UNKNOWN_GRACE_FRAMES: int = 20
+    PRE_ACTIVE_TRACE_SIZE: int = 15
+
+    # Visibility-gate config (used when SESSION_POSTURE_GATE is None).
+    # Subclass can override to require different landmarks.
+    VISIBILITY_GATE_LANDMARKS: Tuple[int, ...] = ()  # set in subclass if needed
+    VISIBILITY_GATE_THRESHOLD: float = 0.6
+
+    def reset(self):
+        super().reset()
+        # ── Robust additions ─────────────────────────────────────────────
+        self._posture_classifier = PostureClassifier()
+        self._session_state: SessionState = SessionState.IDLE
+        self._unknown_streak: int = 0
+
+        # Raw angle tracking for sanity guards + None tolerance
+        self._last_raw_primary: Optional[float] = None
+        self._consec_none_frames: int = 0
+
+        # Robust rep FSM state
+        # _rep_peak tracks the extremum of primary angle since the descent
+        # (or press) began. For DECREASING direction: min. For INCREASING: max.
+        self._rep_peak: float = self._init_rep_peak()
+        self._robust_first_rep_started: bool = False
+
+        # Pre-active primary-angle trace (for first-rep seeding)
+        # Elements are (timestamp, primary_angle, is_gate_posture_raw)
+        self._pre_active_trace: deque = deque(maxlen=self.PRE_ACTIVE_TRACE_SIZE)
+
+        # Current posture (exposed for trace)
+        self._current_posture: PostureLabel = PostureLabel.UNKNOWN
+
+    # ── Helpers ──────────────────────────────────────────────────────────
+
+    def _init_rep_peak(self) -> float:
+        """Initial value for _rep_peak — opposite end of the ROM.
+        Decreasing → peak starts high (180°); increasing → peak starts low (0°).
+        """
+        return 180.0 if self.REP_DIRECTION == REP_DIRECTION_DECREASING else 0.0
+
+    def _reset_robust_rep_fsm(self) -> None:
+        """Clear in-progress rep state. Called on session-state changes
+        and after every committed rep."""
+        self._state = RepPhase.TOP
+        self._bottom_frame_count = 0
+        self._rep_peak = self._init_rep_peak()
+        self._current_rep_issues = []
+        self._current_rep_scores = []
+        self._current_rep_landmarks = []
+
+    def _is_deeper(self, new_val: float, current_peak: float) -> bool:
+        """Is `new_val` more extreme than `current_peak` in the rep direction?"""
+        if self.REP_DIRECTION == REP_DIRECTION_DECREASING:
+            return new_val < current_peak
+        return new_val > current_peak
+
+    def _passed_start_threshold(self, primary: float) -> bool:
+        """Has the user committed to a descent/press past REP_START_THRESHOLD?"""
+        if self.REP_DIRECTION == REP_DIRECTION_DECREASING:
+            return primary < self.REP_START_THRESHOLD
+        return primary > self.REP_START_THRESHOLD
+
+    def _reached_depth(self, peak: float) -> bool:
+        """Has _rep_peak crossed REP_DEPTH_THRESHOLD in the rep direction?"""
+        if self.REP_DIRECTION == REP_DIRECTION_DECREASING:
+            return peak <= self.REP_DEPTH_THRESHOLD
+        return peak >= self.REP_DEPTH_THRESHOLD
+
+    def _back_at_top(self, primary: float) -> bool:
+        """Is the raw primary angle back at the top (commit zone)?"""
+        if self.REP_DIRECTION == REP_DIRECTION_DECREASING:
+            return primary >= self.REP_COMPLETE_TOP
+        return primary <= self.REP_COMPLETE_TOP
+
+    def _passed_bottom_clear(self, primary: float) -> bool:
+        """Has primary angle moved past REP_BOTTOM_CLEAR away from depth?"""
+        if self.REP_DIRECTION == REP_DIRECTION_DECREASING:
+            return primary > self.REP_BOTTOM_CLEAR
+        return primary < self.REP_BOTTOM_CLEAR
+
+    # ── Sanity guards on raw primary angle ──────────────────────────────
+
+    def _apply_raw_angle_guards(self, angle: Optional[float]) -> Optional[float]:
+        """Floor + jump guards. Returns None if angle looks hallucinated."""
+        if angle is None:
+            return None
+        if angle < self.MIN_REAL_PRIMARY_DEG:
+            return None
+        if (self._last_raw_primary is not None
+                and abs(angle - self._last_raw_primary) > self.MAX_PRIMARY_JUMP_DEG):
+            return None
+        return angle
+
+    def _update_none_tolerance(self, angle: Optional[float]) -> Optional[float]:
+        """Reuse last raw primary for up to MAX_NONE_TOLERANCE frames when
+        the current frame's angle is None. Returns the value to feed into
+        the rep FSM."""
+        if angle is None:
+            self._consec_none_frames += 1
+            if (self._consec_none_frames <= self.MAX_NONE_TOLERANCE
+                    and self._last_raw_primary is not None):
+                return self._last_raw_primary
+            return None
+        self._consec_none_frames = 0
+        self._last_raw_primary = angle
+        return angle
+
+    # ── Session FSM (posture-driven) ─────────────────────────────────────
+
+    def _is_gate_posture(self, posture: PostureLabel) -> bool:
+        """Does the current posture satisfy the session gate?
+        Handles the `SESSION_POSTURE_GATE = None` case (visibility-only)
+        by returning True when the visibility gate is active — this method
+        is only called for the posture-gated path.
+        """
+        if self.SESSION_POSTURE_GATE is None:
+            return True  # caller uses visibility gate instead
+        return posture == self.SESSION_POSTURE_GATE
+
+    def _check_visibility_gate(self, pose: PoseResult) -> bool:
+        """Fallback gate when SESSION_POSTURE_GATE is None.
+        Returns True if all VISIBILITY_GATE_LANDMARKS are visible at
+        VISIBILITY_GATE_THRESHOLD confidence or better."""
+        if not self.VISIBILITY_GATE_LANDMARKS:
+            return True  # no landmarks specified → always pass
+        return all(
+            pose.is_visible(idx, self.VISIBILITY_GATE_THRESHOLD)
+            for idx in self.VISIBILITY_GATE_LANDMARKS
+        )
+
+    def _update_session_state(self, now: float, visibility_ok: bool) -> None:
+        """Drive IDLE/SETUP/ACTIVE/RESTING transitions. Posture-label-driven
+        when SESSION_POSTURE_GATE is set; visibility-driven otherwise.
+
+        Mirrors pushup_detector.py:451–538.
+        """
+        s = self._session_state
+
+        # Visibility-only gate (pullup, optionally tricep_dip fallback).
+        if self.SESSION_POSTURE_GATE is None:
+            if s == SessionState.ACTIVE:
+                if visibility_ok:
+                    self._unknown_streak = 0
+                    return
+                self._unknown_streak += 1
+                if self._unknown_streak < self.UNKNOWN_GRACE_FRAMES:
+                    return
+                # Grace exhausted — close set or roll back
+                self._close_active_set_or_rollback(now)
+                return
+            if s in (SessionState.IDLE, SessionState.SETUP, SessionState.RESTING):
+                if visibility_ok:
+                    self._session_state = SessionState.ACTIVE
+                    self._reset_robust_rep_fsm()
+                    self._rep_start_time = now
+                    self._unknown_streak = 0
+                    if s in (SessionState.IDLE, SessionState.SETUP):
+                        self._seed_rep_fsm_from_pre_active(now)
+                else:
+                    # Remain in current non-active state; fall to SETUP
+                    # from IDLE on first "at least something visible" frame
+                    if s == SessionState.IDLE:
+                        # Stay IDLE until pose becomes visible enough
+                        return
+            return
+
+        # Posture-gated path (everyone else).
+        posture = self._current_posture
+        in_gate = self._is_gate_posture(posture)
+
+        if s == SessionState.ACTIVE:
+            if in_gate:
+                self._unknown_streak = 0
+                return
+            if posture == PostureLabel.UNKNOWN:
+                self._unknown_streak += 1
+                if self._unknown_streak < self.UNKNOWN_GRACE_FRAMES:
+                    return
+            else:
+                # Explicit non-gate label — close immediately
+                self._unknown_streak = 0
+            self._close_active_set_or_rollback(now)
+            return
+
+        # Non-ACTIVE states: UNKNOWN is held, other labels drive transitions.
+        if posture == PostureLabel.UNKNOWN:
+            return
+
+        if s == SessionState.IDLE:
+            if in_gate:
+                self._session_state = SessionState.ACTIVE
+                self._reset_robust_rep_fsm()
+                self._rep_start_time = now
+                self._unknown_streak = 0
+                self._seed_rep_fsm_from_pre_active(now)
+            else:
+                self._session_state = SessionState.SETUP
+        elif s == SessionState.SETUP:
+            if in_gate:
+                self._session_state = SessionState.ACTIVE
+                self._reset_robust_rep_fsm()
+                self._rep_start_time = now
+                self._unknown_streak = 0
+                self._seed_rep_fsm_from_pre_active(now)
+        elif s == SessionState.RESTING:
+            if in_gate:
+                self._session_state = SessionState.ACTIVE
+                self._reset_robust_rep_fsm()
+                self._rep_start_time = now
+                self._unknown_streak = 0
+                # No seed from pre-active trace on RESTING→ACTIVE — safer
+                # to start fresh after a rest.
+
+    def _close_active_set_or_rollback(self, now: float) -> None:
+        """Shared logic for ACTIVE→RESTING (set close) or ACTIVE→SETUP (false
+        start rollback). Called from both posture and visibility paths."""
+        if self._reps_in_current_set > 0:
+            self._set_reps.append(self._reps_in_current_set)
+            self._set_count += 1
+            self._reps_in_current_set = 0
+            self._between_sets = True
+            self._pending_set_announce = True
+            self._reset_robust_rep_fsm()
+            self._session_state = SessionState.RESTING
+        else:
+            # False start — entered gate, never committed a rep
+            self._reset_robust_rep_fsm()
+            self._session_state = SessionState.SETUP
+        self._unknown_streak = 0
+
+    # ── Pre-active trace seeding ─────────────────────────────────────────
+
+    def _seed_rep_fsm_from_pre_active(self, now: float) -> None:
+        """Retroactively initialise the rep FSM from the pre-ACTIVE primary-
+        angle trace so a first rep that started during the posture-classifier
+        bootstrap (≤5 UNKNOWN frames) isn't lost.
+
+        Safety rules:
+          1. Only the trailing suffix of frames whose RAW posture was the
+             gate label is considered.
+          2. At least 3 consecutive gate-posture frames required.
+          3. Only frames from that trailing run contribute to the descent-
+             start timestamp and peak value.
+        """
+        if not self._pre_active_trace:
+            return
+
+        if self.SESSION_POSTURE_GATE is None:
+            # Visibility-only mode — the whole buffer is "in gate" by
+            # construction (we only append when visibility_ok is True).
+            plank_suffix = list(self._pre_active_trace)
+        else:
+            plank_suffix: List[Tuple[float, float]] = []
+            for t, primary, is_gate in reversed(self._pre_active_trace):
+                if not is_gate:
+                    break
+                plank_suffix.append((t, primary))
+            plank_suffix.reverse()
+
+        if len(plank_suffix) < 3:
+            return
+
+        descent_start_t: Optional[float] = None
+        descent_peak: float = self._init_rep_peak()
+        last_primary: Optional[float] = None
+        for entry in plank_suffix:
+            t, primary = entry[0], entry[1]
+            last_primary = primary
+            if self._passed_start_threshold(primary):
+                if descent_start_t is None:
+                    descent_start_t = t
+                if self._is_deeper(primary, descent_peak):
+                    descent_peak = primary
+
+        if descent_start_t is None or last_primary is None:
+            return
+
+        self._robust_first_rep_started = True
+        self._first_rep_started = True  # base-class flag for issue suppression
+        self._rep_start_time = descent_start_t
+        self._rep_peak = descent_peak
+        self._current_rep_issues = []
+        self._current_rep_scores = []
+
+        # Decide landing state based on where last primary sits.
+        depth_reached = self._reached_depth(descent_peak)
+        if self._reached_depth(last_primary):
+            self._state = RepPhase.BOTTOM
+            self._bottom_frame_count = 1
+        elif depth_reached:
+            self._state = RepPhase.GOING_UP
+        else:
+            self._state = RepPhase.GOING_DOWN
+            self._bottom_frame_count = 0
+
+        self._pre_active_trace.clear()
+
+    # ── Robust rep FSM ───────────────────────────────────────────────────
+
+    def _update_rep_fsm_robust(self, primary: Optional[float], now: float) -> bool:
+        """Direction-aware, state-independent rep commit. Returns True if a
+        rep was committed on this frame.
+
+        Mirrors pushup_detector.py:643–750 generalized to any direction.
+        """
+        if primary is None:
+            return False
+
+        rep_completed = False
+
+        # Update rep peak (min or max depending on direction) whenever we've
+        # left the TOP state. This is the single source of truth for "did
+        # the user actually reach depth in this rep cycle?"
+        if self._state != RepPhase.TOP:
+            if self._is_deeper(primary, self._rep_peak):
+                self._rep_peak = primary
+
+        # ──────────────────────────────────────────────────────────────
+        # PRIMARY COMMIT CHECK — state-independent, signal-driven.
+        # Runs BEFORE state-machine branches so frame drops, posture
+        # hiccups, or angle jitter that left the state stuck can't drop
+        # a rep. Criteria:
+        #   (1) a descent was committed (_robust_first_rep_started)
+        #   (2) we're not already back at top (state != TOP)
+        #   (3) raw primary has returned to the top zone
+        #   (4) tracked peak reached depth
+        # ──────────────────────────────────────────────────────────────
+        if (self._robust_first_rep_started
+                and self._state != RepPhase.TOP
+                and self._back_at_top(primary)
+                and self._reached_depth(self._rep_peak)):
+            elapsed = now - self._rep_start_time
+            rep_completed = True
+            self._rep_count += 1
+            self._reps_in_current_set += 1
+            self._recent_rep_durations.append(elapsed)
+            self._state = RepPhase.TOP
+            self._rep_peak = self._init_rep_peak()
+            return rep_completed
+
+        # ──────────────────────────────────────────────────────────────
+        # State-machine fallback (drives phase labels for UI and catches
+        # "didn't reach depth" bailouts).
+        # ──────────────────────────────────────────────────────────────
+        if self._state == RepPhase.TOP:
+            if self._passed_start_threshold(primary):
+                self._state = RepPhase.GOING_DOWN
+                self._rep_start_time = now
+                self._bottom_frame_count = 0
+                self._rep_peak = primary
+                self._robust_first_rep_started = True
+                self._first_rep_started = True  # base-class flag
+                self._current_rep_issues = []
+                self._current_rep_scores = []
+                self._current_rep_landmarks = []
+                if self._between_sets:
+                    self._between_sets = False
+        elif self._state == RepPhase.GOING_DOWN:
+            if self._reached_depth(primary):
+                self._state = RepPhase.BOTTOM
+                self._bottom_frame_count = 0
+            elif self._back_at_top(primary):
+                # Elbow back to top without reaching depth AND primary
+                # commit check above didn't fire — genuine bailout.
+                if "Didn't reach full depth" not in self._current_rep_issues:
+                    self._current_rep_issues.append("Didn't reach full depth")
+                self._state = RepPhase.TOP
+                self._rep_peak = self._init_rep_peak()
+        elif self._state == RepPhase.BOTTOM:
+            self._bottom_frame_count += 1
+            if (self._passed_bottom_clear(primary)
+                    and self._bottom_frame_count >= 1):
+                self._state = RepPhase.GOING_UP
+        elif self._state == RepPhase.GOING_UP:
+            if self._reached_depth(primary):
+                # Dropped back into bottom — second dip
+                self._state = RepPhase.BOTTOM
+                self._bottom_frame_count = 0
+
+        return rep_completed
+
+    # ── classify() override ──────────────────────────────────────────────
+
+    def classify(self, pose: PoseResult, timestamp: float = None) -> ClassificationResult:
+        """Robust rep-counting classify() — replaces base class's
+        threshold-crossing FSM and timer-based set detection with the
+        push-up methodology."""
+        now = timestamp if timestamp is not None else time.time()
+
+        # 1. Compute and smooth angles (same as base)
+        raw_angles = self._compute_angles(pose)
+        for name, val in raw_angles.items():
+            self._push_angle(name, val)
+            self.last_angles[name] = val
+
+        self._frame_visibility = float(np.mean(pose.landmarks[:, 3]))
+
+        angles = {name: self._get_smooth(name) for name in raw_angles}
+        primary_smooth = angles.get("primary")
+        raw_primary = raw_angles.get("primary")
+
+        # 2. Apply raw-angle sanity guards to primary
+        guarded_raw = self._apply_raw_angle_guards(raw_primary)
+
+        # 3. None tolerance — reuse last value if guard tripped or angle missing
+        fsm_primary = self._update_none_tolerance(guarded_raw)
+
+        # 4. Posture classifier update
+        posture_result = self._posture_classifier.update(pose)
+        self._current_posture = posture_result.label
+
+        # 5. Visibility gate (only relevant if SESSION_POSTURE_GATE is None)
+        visibility_ok = self._check_visibility_gate(pose)
+
+        # 6. Record pre-active trace while waiting for ACTIVE
+        if (self._session_state in (SessionState.IDLE, SessionState.SETUP)
+                and fsm_primary is not None):
+            if self.SESSION_POSTURE_GATE is None:
+                is_gate_raw = visibility_ok
+            else:
+                raw_label = getattr(
+                    self._posture_classifier, "_last_raw_label", PostureLabel.UNKNOWN
+                )
+                is_gate_raw = (raw_label == self.SESSION_POSTURE_GATE)
+            self._pre_active_trace.append((now, fsm_primary, is_gate_raw))
+
+        # 7. Pose-presence tracking — if primary missing for too long, reset
+        if primary_smooth is None:
+            self._frames_since_pose += 1
+            if self._frames_since_pose >= NO_POSE_RESET_FRAMES:
+                if self._reps_in_current_set > 0 and not self._between_sets:
+                    self._set_reps.append(self._reps_in_current_set)
+                    self._set_count += 1
+                    self._reps_in_current_set = 0
+                    self._between_sets = True
+                    self._pending_set_announce = True
+                if self._form_validated:
+                    self._form_validated = False
+                self._reset_robust_rep_fsm()
+                self._session_state = SessionState.IDLE
+                self._last_raw_primary = None
+                self._consec_none_frames = 0
+                self._pre_active_trace.clear()
+                for buf in self._angle_buffers.values():
+                    buf.clear()
+            missing = self._get_missing_parts(angles)
+            return self._inactive_result(
+                f"Can't detect {', '.join(missing) if missing else 'body'}. "
+                "Position camera so full body is visible."
+            )
+        self._frames_since_pose = 0
+
+        # 8. Form validation gate (base-class hook)
+        if not self._form_validated:
+            valid, setup_issues = self._check_start_position(angles)
+            if valid:
+                self._form_validated = True
+                self._rep_start_time = now
+                if self.IS_STATIC:
+                    self._hold_start_time = now
+            else:
+                return self._build_result(
+                    form_score=0.0, is_active=False,
+                    joint_feedback={},
+                    details={
+                        "setup": " | ".join(setup_issues) if setup_issues
+                        else f"Get into {self.EXERCISE_NAME.replace('_', ' ')} position",
+                        "session_state": self._session_state.value,
+                        "posture": self._current_posture.value,
+                    },
+                    feedback_text=setup_issues[0] if setup_issues else "Get into position",
+                )
+
+        # 9. Session FSM — drives when rep counting runs
+        self._update_session_state(now, visibility_ok)
+
+        # 10. Static hold path (plank) — no rep counting
+        if self.IS_STATIC:
+            return self._classify_static_hold(angles, now)
+
+        # 11. Rep FSM — only runs when session_state == ACTIVE
+        rep_completed = False
+        if self._session_state == SessionState.ACTIVE:
+            rep_completed = self._update_rep_fsm_robust(fsm_primary, now)
+            # Activity detection still runs (for compatibility with trace
+            # consumers that read activity state), but does NOT drive set
+            # detection anymore — posture does.
+            self._last_active_time = now
+
+        # Activity for trace compatibility
+        activity, rest_tier = self._activity_detector.update(pose, now)
+        self._current_activity = activity
+        self._current_rest_tier = rest_tier
+        is_actively_exercising = (self._session_state == SessionState.ACTIVE)
+
+        # 12. Per-frame form assessment (same as base)
+        self._lr_angles.clear()
+        frame_score, joint_feedback, issues = self._assess_form(angles)
+
+        # Sort issues by priority
+        issues.sort(key=lambda msg: min(
+            (pri for kw, pri in ISSUE_PRIORITY_KEYWORDS.items() if kw in msg.lower()),
+            default=9
+        ))
+
+        # Suppress issues outside ACTIVE (mirrors pushup_detector.py:415–420)
+        if self._session_state != SessionState.ACTIVE:
+            issues = []
+            for k in joint_feedback:
+                joint_feedback[k] = "correct"
+            frame_score = max(frame_score, 0.8)
+        else:
+            # Coverage penalty (same as base)
+            if self._coverage_penalty:
+                n_angles = sum(1 for k, v in angles.items() if k != "primary" and v is not None)
+                n_expected = max(1, len(angles) - 1)
+                coverage = n_angles / n_expected
+                if coverage < 0.6:
+                    frame_score *= coverage
+                self._last_coverage = coverage
+            else:
+                self._last_coverage = 1.0
+
+            # Asymmetry detection (same as base)
+            asym_penalty = self._check_asymmetry(joint_feedback, issues)
+            frame_score = max(0.0, frame_score - asym_penalty)
+
+            # Visibility discount
+            if self._frame_visibility < LOW_VIS_THRESHOLD:
+                vis_factor = 0.5 + 0.5 * (self._frame_visibility / LOW_VIS_THRESHOLD)
+                frame_score *= vis_factor
+
+            self._current_rep_scores.append(frame_score)
+            for issue in issues:
+                if issue not in self._current_rep_issues:
+                    self._current_rep_issues.append(issue)
+
+            # DTW landmark capture
+            if self._dtw_matcher is not None and self._state != RepPhase.TOP:
+                try:
+                    self._current_rep_landmarks.append(
+                        self._landmark_extractor.extract_landmarks(pose)
+                    )
+                except Exception:
+                    pass
+
+        # 13. Record completed rep
+        if rep_completed:
+            self._record_robust_rep(now)
+
+        # 14. Smooth form score
+        self._score_buf.append(frame_score)
+        smooth_score = sum(self._score_buf) / len(self._score_buf)
+
+        # 15. Feedback + details
+        feedback_text = self._build_feedback_text(smooth_score, issues, angles, rep_completed)
+
+        details: Dict[str, str] = {}
+        for i, issue in enumerate(issues[:3]):
+            details[f"issue_{i}"] = issue
+
+        phase_names = {
+            RepPhase.TOP: "Top position",
+            RepPhase.GOING_DOWN: "Lowering",
+            RepPhase.BOTTOM: "Bottom position",
+            RepPhase.GOING_UP: "Coming up",
+        }
+        details["phase"] = phase_names.get(self._state, "")
+
+        if primary_smooth is not None:
+            progress = np.clip(
+                (self.PRIMARY_ANGLE_TOP - primary_smooth) /
+                max(self.PRIMARY_ANGLE_TOP - self.PRIMARY_ANGLE_BOTTOM, 1), 0, 1
+            )
+            details["progress"] = f"{int(progress * 100)}%"
+
+        details["session_state"] = self._session_state.value
+        details["posture"] = self._current_posture.value
+        details["activity"] = self._current_activity.value
+        details["rest_tier"] = self._current_rest_tier.value
+        details["between_sets"] = "1" if self._between_sets else "0"
+        details["set_number"] = str(self._set_count + 1)
+        details["reps_in_current_set"] = str(self._reps_in_current_set)
+        if self._recent_rep_durations:
+            avg_dur = sum(self._recent_rep_durations) / len(self._recent_rep_durations)
+            details["avg_rep_duration"] = f"{avg_dur:.2f}"
+
+        return self._build_result(
+            form_score=smooth_score,
+            is_active=is_actively_exercising,
+            joint_feedback=joint_feedback,
+            details=details,
+            feedback_text=feedback_text,
+        )
+
+    def _record_robust_rep(self, now: float) -> None:
+        """Record a committed rep into _rep_history. Mirrors the base-class
+        logic but uses _rep_count which was incremented in the FSM."""
+        avg_score = sum(self._current_rep_scores) / max(len(self._current_rep_scores), 1)
+
+        # DTW template matching on captured landmarks
+        dtw_sim = 1.0
+        dtw_worst: Optional[str] = None
+        if self._dtw_matcher is not None and len(self._current_rep_landmarks) >= 3:
+            try:
+                rep_seq = np.stack(self._current_rep_landmarks).astype(np.float32)
+                dtw_score = self._dtw_matcher.compare(self.EXERCISE_NAME, rep_seq)
+                if dtw_score is not None:
+                    dtw_sim = dtw_score.similarity
+                    dtw_worst = dtw_score.worst_joint
+                    if dtw_sim < 0.5:
+                        avg_score *= (0.6 + 0.4 * dtw_sim)
+                        if dtw_worst and f"Pattern deviates at {dtw_worst}" not in self._current_rep_issues:
+                            self._current_rep_issues.insert(0, f"Pattern deviates at {dtw_worst}")
+            except Exception:
+                pass
+
+        self._last_dtw_similarity = dtw_sim
+        self._last_dtw_worst_joint = dtw_worst
+
+        quality = (RepQuality.GOOD if avg_score >= 0.7
+                   else RepQuality.MODERATE if avg_score >= 0.4
+                   else RepQuality.BAD)
+        if len(self._rep_history) < MAX_REP_HISTORY:
+            rep_entry = {
+                "rep": self._rep_count,
+                "score": round(avg_score, 2),
+                "quality": quality,
+                "issues": self._current_rep_issues[:3],
+                "duration": round(now - self._rep_start_time, 1),
+            }
+            if self._dtw_matcher is not None:
+                rep_entry["dtw_similarity"] = round(dtw_sim, 2)
+                if dtw_worst:
+                    rep_entry["dtw_worst_joint"] = dtw_worst
+            self._rep_history.append(rep_entry)
+
+    def _classify_static_hold(self, angles: Dict[str, Optional[float]], now: float) -> ClassificationResult:
+        """Static hold path (plank) — no rep counting. Same logic as base-class
+        static path but wrapped in the posture-gated session FSM so walk-aways
+        are handled by the outer state machine."""
+        # Hold duration only runs during ACTIVE
+        if self._session_state == SessionState.ACTIVE:
+            if self._hold_start_time is None:
+                self._hold_start_time = now
+            self._hold_duration = now - self._hold_start_time
+            self._last_active_time = now
+        else:
+            # Paused/resting — freeze the hold_start_time so next ACTIVE
+            # frame continues from where we left off
+            if self._hold_start_time is not None:
+                # Shift start so duration stays the same
+                self._hold_start_time = now - self._hold_duration
+
+        frame_score, joint_feedback, issues = self._assess_form(angles)
+
+        if self._coverage_penalty:
+            n_angles = sum(1 for k, v in angles.items() if k != "primary" and v is not None)
+            n_expected = max(1, len(angles) - 1)
+            coverage = n_angles / n_expected
+            if coverage < 0.6:
+                frame_score *= coverage
+            self._last_coverage = coverage
+
+        asym_penalty = self._check_asymmetry(joint_feedback, issues)
+        frame_score = max(0.0, frame_score - asym_penalty)
+
+        # Suppress issues outside ACTIVE
+        if self._session_state != SessionState.ACTIVE:
+            issues = []
+            for k in joint_feedback:
+                joint_feedback[k] = "correct"
+            frame_score = max(frame_score, 0.8)
+
+        self._score_buf.append(frame_score)
+        smooth_score = sum(self._score_buf) / len(self._score_buf)
+
+        details: Dict[str, str] = {}
+        for i, issue in enumerate(issues[:3]):
+            details[f"issue_{i}"] = issue
+        details["hold_duration"] = f"{self._hold_duration:.0f}s"
+        details["session_state"] = self._session_state.value
+        details["posture"] = self._current_posture.value
+
+        feedback_text = issues[0] if issues else (
+            f"Great hold! {self._hold_duration:.0f}s" if smooth_score >= 0.7
+            else f"Hold position — {self._hold_duration:.0f}s"
+        )
+
+        return self._build_result(
+            form_score=smooth_score,
+            is_active=(self._session_state == SessionState.ACTIVE),
+            joint_feedback=joint_feedback,
+            details=details,
+            feedback_text=feedback_text,
+        )
