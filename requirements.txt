@@ -13,5 +13,7 @@ bcrypt==4.2.0
 PyJWT==2.10.1
 python-dotenv==1.0.1
 flask-limiter==3.8.0
+# Session-3 chatbots
+openai==1.54.0
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch>=2.0.0

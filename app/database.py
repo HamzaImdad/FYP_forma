@@ -112,6 +112,41 @@ class ExerVisionDB:
                 CREATE INDEX IF NOT EXISTS idx_sessions_exercise ON sessions(exercise);
                 CREATE INDEX IF NOT EXISTS idx_reps_session ON reps(session_id);
                 CREATE INDEX IF NOT EXISTS idx_sets_session ON sets(session_id);
+
+                -- Session-3 chatbot tables
+                CREATE TABLE IF NOT EXISTS chat_usage (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    date TEXT NOT NULL,
+                    input_tokens INTEGER DEFAULT 0,
+                    output_tokens INTEGER DEFAULT 0,
+                    UNIQUE(user_id, date),
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                );
+
+                CREATE TABLE IF NOT EXISTS chat_conversations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    mode TEXT NOT NULL,
+                    title TEXT,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                );
+
+                CREATE TABLE IF NOT EXISTS chat_messages (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    conversation_id INTEGER NOT NULL,
+                    role TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    tool_call_id TEXT,
+                    citations TEXT DEFAULT '[]',
+                    created_at TEXT NOT NULL,
+                    FOREIGN KEY (conversation_id) REFERENCES chat_conversations(id) ON DELETE CASCADE
+                );
+
+                CREATE INDEX IF NOT EXISTS idx_chat_conv_user ON chat_conversations(user_id, mode, updated_at DESC);
+                CREATE INDEX IF NOT EXISTS idx_chat_msg_conv ON chat_messages(conversation_id, id);
             """)
             # Idempotent column migrations (ALTER is no-op if column exists).
             self._ensure_columns(conn, "sessions", _SESSION_EXT_COLS)
@@ -729,6 +764,206 @@ class ExerVisionDB:
             this_week = agg(this_start, now.isoformat())
             last_week = agg(last_start, this_start)
             return {"this_week": this_week, "last_week": last_week}
+        finally:
+            conn.close()
+
+    # ── Session-3: chat usage + conversations ──────────────────────────
+
+    CHAT_DAILY_TOKEN_BUDGET = 50_000
+
+    def _today_str(self) -> str:
+        return datetime.now().strftime("%Y-%m-%d")
+
+    def record_token_usage(
+        self, user_id: int, input_tokens: int, output_tokens: int
+    ) -> None:
+        """Increment today's input/output token counters for a user."""
+        if input_tokens <= 0 and output_tokens <= 0:
+            return
+        conn = self._get_conn()
+        try:
+            day = self._today_str()
+            conn.execute(
+                """INSERT INTO chat_usage (user_id, date, input_tokens, output_tokens)
+                   VALUES (?, ?, ?, ?)
+                   ON CONFLICT(user_id, date) DO UPDATE SET
+                       input_tokens = input_tokens + excluded.input_tokens,
+                       output_tokens = output_tokens + excluded.output_tokens""",
+                (int(user_id), day, int(max(0, input_tokens)), int(max(0, output_tokens))),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_token_usage_today(self, user_id: int) -> Dict[str, int]:
+        """Return today's usage for the user (0/0 if no row yet)."""
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                """SELECT input_tokens, output_tokens FROM chat_usage
+                   WHERE user_id = ? AND date = ?""",
+                (int(user_id), self._today_str()),
+            ).fetchone()
+            if row is None:
+                return {"input_tokens": 0, "output_tokens": 0, "total": 0}
+            input_t = int(row["input_tokens"] or 0)
+            output_t = int(row["output_tokens"] or 0)
+            return {
+                "input_tokens": input_t,
+                "output_tokens": output_t,
+                "total": input_t + output_t,
+            }
+        finally:
+            conn.close()
+
+    def check_token_budget(self, user_id: int) -> Dict[str, Any]:
+        """Return {allowed, used, budget, fraction, degrade} for the user.
+
+        allowed=False once total (input+output) exceeds CHAT_DAILY_TOKEN_BUDGET.
+        degrade=True between 50% and 100% of the budget — Session-3 uses this
+        to auto-downgrade from gpt-4o → gpt-4o-mini.
+        """
+        usage = self.get_token_usage_today(user_id)
+        total = usage["total"]
+        budget = self.CHAT_DAILY_TOKEN_BUDGET
+        return {
+            "allowed": total < budget,
+            "used": total,
+            "budget": budget,
+            "fraction": total / budget if budget else 1.0,
+            "degrade": total >= budget // 2,
+        }
+
+    def create_conversation(
+        self, user_id: int, mode: str, title: Optional[str] = None
+    ) -> int:
+        """Create a new chat conversation; returns its id."""
+        conn = self._get_conn()
+        try:
+            now = datetime.now().isoformat()
+            cur = conn.execute(
+                """INSERT INTO chat_conversations (user_id, mode, title, created_at, updated_at)
+                   VALUES (?, ?, ?, ?, ?)""",
+                (int(user_id), str(mode), title, now, now),
+            )
+            conn.commit()
+            return int(cur.lastrowid)
+        finally:
+            conn.close()
+
+    def list_conversations(self, user_id: int, mode: Optional[str] = None) -> List[Dict]:
+        conn = self._get_conn()
+        try:
+            q = (
+                "SELECT c.id, c.mode, c.title, c.created_at, c.updated_at,"
+                " (SELECT COUNT(*) FROM chat_messages m WHERE m.conversation_id = c.id) AS message_count"
+                " FROM chat_conversations c WHERE c.user_id = ?"
+            )
+            params: list = [int(user_id)]
+            if mode:
+                q += " AND c.mode = ?"
+                params.append(mode)
+            q += " ORDER BY c.updated_at DESC"
+            rows = conn.execute(q, params).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def load_conversation(
+        self, conversation_id: int, user_id: int
+    ) -> Optional[Dict]:
+        """Return {conversation, messages} or None if not owned by the user."""
+        conn = self._get_conn()
+        try:
+            conv = conn.execute(
+                "SELECT * FROM chat_conversations WHERE id = ? AND user_id = ?",
+                (int(conversation_id), int(user_id)),
+            ).fetchone()
+            if not conv:
+                return None
+            msg_rows = conn.execute(
+                """SELECT id, role, content, tool_call_id, citations, created_at
+                   FROM chat_messages
+                   WHERE conversation_id = ?
+                   ORDER BY id ASC""",
+                (int(conversation_id),),
+            ).fetchall()
+            messages: List[Dict] = []
+            for m in msg_rows:
+                d = dict(m)
+                try:
+                    d["citations"] = json.loads(d["citations"] or "[]")
+                except (ValueError, TypeError):
+                    d["citations"] = []
+                messages.append(d)
+            return {"conversation": dict(conv), "messages": messages}
+        finally:
+            conn.close()
+
+    def append_message(
+        self,
+        conversation_id: int,
+        role: str,
+        content: str,
+        tool_call_id: Optional[str] = None,
+        citations: Optional[List[int]] = None,
+    ) -> int:
+        """Insert a chat message and bump the conversation's updated_at."""
+        conn = self._get_conn()
+        try:
+            now = datetime.now().isoformat()
+            cur = conn.execute(
+                """INSERT INTO chat_messages
+                   (conversation_id, role, content, tool_call_id, citations, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    int(conversation_id),
+                    str(role),
+                    str(content or ""),
+                    tool_call_id,
+                    json.dumps(list(citations or [])),
+                    now,
+                ),
+            )
+            conn.execute(
+                "UPDATE chat_conversations SET updated_at = ? WHERE id = ?",
+                (now, int(conversation_id)),
+            )
+            conn.commit()
+            return int(cur.lastrowid)
+        finally:
+            conn.close()
+
+    def delete_conversation(self, conversation_id: int, user_id: int) -> bool:
+        """Delete a conversation if owned by the user. Cascade deletes messages."""
+        conn = self._get_conn()
+        try:
+            cur = conn.execute(
+                "DELETE FROM chat_conversations WHERE id = ? AND user_id = ?",
+                (int(conversation_id), int(user_id)),
+            )
+            conn.commit()
+            return (cur.rowcount or 0) > 0
+        finally:
+            conn.close()
+
+    def update_conversation_title(
+        self, conversation_id: int, user_id: int, title: str
+    ) -> None:
+        """Set the title for a conversation if owned by the user."""
+        conn = self._get_conn()
+        try:
+            conn.execute(
+                """UPDATE chat_conversations SET title = ?, updated_at = ?
+                   WHERE id = ? AND user_id = ?""",
+                (
+                    (title or "")[:120],
+                    datetime.now().isoformat(),
+                    int(conversation_id),
+                    int(user_id),
+                ),
+            )
+            conn.commit()
         finally:
             conn.close()
 

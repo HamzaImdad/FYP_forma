@@ -18,6 +18,7 @@ import { DeepDivePanel } from "../components/dashboard/DeepDivePanel";
 import { ActivityHeatmap } from "../components/dashboard/ActivityHeatmap";
 import { MuscleBalanceRadar } from "../components/dashboard/MuscleBalanceRadar";
 import { SessionHistoryList } from "../components/dashboard/SessionHistoryList";
+import { PersonalCoachPanel } from "../components/dashboard/PersonalCoachPanel";
 import { useSessionCompleted } from "../hooks/useSessionCompleted";
 import { useAuth } from "../context/AuthContext";
 
@@ -230,6 +231,7 @@ export function DashboardPage() {
           <SessionHistoryList filterDate={filterDate} onOpen={openSession} />
         </>
       )}
+      <PersonalCoachPanel />
     </div>
   );
 }

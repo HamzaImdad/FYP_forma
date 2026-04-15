@@ -95,14 +95,7 @@ export function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/voice-coaching" element={<VoiceCoachingPage />} />
-            <Route
-              path="/chatbot"
-              element={
-                <ProtectedRoute>
-                  <ChatbotPage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/chatbot" element={<ChatbotPage />} />
             <Route
               path="/plans"
               element={
