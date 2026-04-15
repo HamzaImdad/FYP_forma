@@ -147,11 +147,81 @@ class ExerVisionDB:
 
                 CREATE INDEX IF NOT EXISTS idx_chat_conv_user ON chat_conversations(user_id, mode, updated_at DESC);
                 CREATE INDEX IF NOT EXISTS idx_chat_msg_conv ON chat_messages(conversation_id, id);
+
+                -- Session-4 goals + milestones + plans + badges
+                CREATE TABLE IF NOT EXISTS goals (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    title TEXT NOT NULL,
+                    description TEXT,
+                    goal_type TEXT NOT NULL,
+                    exercise TEXT,
+                    target_value REAL NOT NULL,
+                    current_value REAL DEFAULT 0,
+                    unit TEXT NOT NULL,
+                    period TEXT,
+                    deadline TEXT,
+                    status TEXT DEFAULT 'active',
+                    created_at TEXT NOT NULL,
+                    completed_at TEXT,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                );
+
+                CREATE TABLE IF NOT EXISTS milestones (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    goal_id INTEGER NOT NULL,
+                    label TEXT NOT NULL,
+                    threshold_value REAL NOT NULL,
+                    reached INTEGER DEFAULT 0,
+                    reached_at TEXT,
+                    FOREIGN KEY (goal_id) REFERENCES goals(id) ON DELETE CASCADE
+                );
+
+                CREATE TABLE IF NOT EXISTS plans (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    title TEXT NOT NULL,
+                    summary TEXT,
+                    start_date TEXT NOT NULL,
+                    end_date TEXT NOT NULL,
+                    status TEXT DEFAULT 'active',
+                    created_by_chat INTEGER DEFAULT 0,
+                    conversation_id INTEGER,
+                    created_at TEXT NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                );
+
+                CREATE TABLE IF NOT EXISTS plan_days (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    plan_id INTEGER NOT NULL,
+                    day_date TEXT NOT NULL,
+                    is_rest INTEGER DEFAULT 0,
+                    exercises TEXT NOT NULL,
+                    completed INTEGER DEFAULT 0,
+                    completed_at TEXT,
+                    FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE CASCADE
+                );
+
+                CREATE TABLE IF NOT EXISTS user_badges (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    badge_key TEXT NOT NULL,
+                    earned_at TEXT NOT NULL,
+                    metadata TEXT,
+                    UNIQUE (user_id, badge_key),
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                );
             """)
             # Idempotent column migrations (ALTER is no-op if column exists).
             self._ensure_columns(conn, "sessions", _SESSION_EXT_COLS)
             self._ensure_columns(conn, "reps", _REP_EXT_COLS)
             self._ensure_columns(conn, "sets", _SET_EXT_COLS)
+            # Session-4: plan_draft is a nullable JSON column on chat_conversations
+            # used by the plan-creator chatbot to persist the in-flight plan draft
+            # between propose_plan / revise_plan tool calls.
+            self._ensure_columns(
+                conn, "chat_conversations", (("plan_draft", "TEXT"),)
+            )
             # Legacy weight_kg migration — kept for DBs that predate Session-1
             try:
                 conn.execute("ALTER TABLE sessions ADD COLUMN weight_kg REAL")
@@ -164,6 +234,25 @@ class ExerVisionDB:
                 )
                 conn.execute(
                     "CREATE INDEX IF NOT EXISTS idx_sessions_user_exercise ON sessions(user_id, exercise)"
+                )
+            except sqlite3.OperationalError:
+                pass
+            # Session-4 indexes for goals / milestones / plans / badges
+            try:
+                conn.execute(
+                    "CREATE INDEX IF NOT EXISTS idx_goals_user_status ON goals(user_id, status)"
+                )
+                conn.execute(
+                    "CREATE INDEX IF NOT EXISTS idx_milestones_goal_reached ON milestones(goal_id, reached)"
+                )
+                conn.execute(
+                    "CREATE INDEX IF NOT EXISTS idx_plans_user_status ON plans(user_id, status)"
+                )
+                conn.execute(
+                    "CREATE INDEX IF NOT EXISTS idx_plan_days_plan_date ON plan_days(plan_id, day_date)"
+                )
+                conn.execute(
+                    "CREATE INDEX IF NOT EXISTS idx_user_badges_user ON user_badges(user_id)"
                 )
             except sqlite3.OperationalError:
                 pass
@@ -979,3 +1068,547 @@ class ExerVisionDB:
         elif period == "month":
             return (now - timedelta(days=30)).isoformat()
         return None
+
+    # ── Session-4: plan draft column on chat_conversations ─────────────
+
+    def set_conversation_plan_draft(
+        self, conversation_id: int, draft_json: Optional[str]
+    ) -> None:
+        conn = self._get_conn()
+        try:
+            conn.execute(
+                "UPDATE chat_conversations SET plan_draft = ? WHERE id = ?",
+                (draft_json, int(conversation_id)),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_conversation_plan_draft(
+        self, conversation_id: int
+    ) -> Optional[str]:
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                "SELECT plan_draft FROM chat_conversations WHERE id = ?",
+                (int(conversation_id),),
+            ).fetchone()
+            return row["plan_draft"] if row else None
+        finally:
+            conn.close()
+
+    # ── Session-4: goals ───────────────────────────────────────────────
+
+    def create_goal(
+        self,
+        user_id: int,
+        *,
+        title: str,
+        goal_type: str,
+        target_value: float,
+        unit: str,
+        exercise: Optional[str] = None,
+        deadline: Optional[str] = None,
+        period: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> int:
+        conn = self._get_conn()
+        try:
+            now = datetime.now().isoformat(timespec="seconds")
+            cur = conn.execute(
+                """INSERT INTO goals
+                       (user_id, title, description, goal_type, exercise,
+                        target_value, current_value, unit, period, deadline,
+                        status, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, 'active', ?)""",
+                (
+                    int(user_id),
+                    title.strip(),
+                    description,
+                    goal_type,
+                    exercise,
+                    float(target_value),
+                    unit,
+                    period,
+                    deadline,
+                    now,
+                ),
+            )
+            conn.commit()
+            return int(cur.lastrowid)
+        finally:
+            conn.close()
+
+    def count_active_goals(self, user_id: int) -> int:
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                "SELECT COUNT(*) AS n FROM goals WHERE user_id = ? AND status = 'active'",
+                (int(user_id),),
+            ).fetchone()
+            return int(row["n"] or 0)
+        finally:
+            conn.close()
+
+    def list_goals(
+        self, user_id: int, status: Optional[str] = None
+    ) -> List[Dict]:
+        conn = self._get_conn()
+        try:
+            q = "SELECT * FROM goals WHERE user_id = ?"
+            params: list = [int(user_id)]
+            if status:
+                q += " AND status = ?"
+                params.append(status)
+            q += " ORDER BY (status = 'active') DESC, created_at DESC"
+            rows = conn.execute(q, params).fetchall()
+            goals = [dict(r) for r in rows]
+            if not goals:
+                return []
+            ids = [g["id"] for g in goals]
+            placeholders = ",".join("?" * len(ids))
+            ms = conn.execute(
+                f"""SELECT * FROM milestones
+                    WHERE goal_id IN ({placeholders})
+                    ORDER BY goal_id ASC, threshold_value ASC""",
+                ids,
+            ).fetchall()
+            ms_by_goal: Dict[int, List[Dict]] = {}
+            for m in ms:
+                md = dict(m)
+                md["reached"] = bool(md.get("reached", 0))
+                ms_by_goal.setdefault(md["goal_id"], []).append(md)
+            for g in goals:
+                g["milestones"] = ms_by_goal.get(g["id"], [])
+            return goals
+        finally:
+            conn.close()
+
+    def get_goal(self, goal_id: int, user_id: int) -> Optional[Dict]:
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                "SELECT * FROM goals WHERE id = ? AND user_id = ?",
+                (int(goal_id), int(user_id)),
+            ).fetchone()
+            if not row:
+                return None
+            goal = dict(row)
+            ms = conn.execute(
+                "SELECT * FROM milestones WHERE goal_id = ? ORDER BY threshold_value ASC",
+                (int(goal_id),),
+            ).fetchall()
+            goal["milestones"] = [
+                {**dict(m), "reached": bool(dict(m).get("reached", 0))} for m in ms
+            ]
+            return goal
+        finally:
+            conn.close()
+
+    def update_goal(self, goal_id: int, user_id: int, **fields) -> bool:
+        allowed = {"title", "description", "target_value", "status"}
+        updates = {k: v for k, v in fields.items() if k in allowed and v is not None}
+        if not updates:
+            return False
+        conn = self._get_conn()
+        try:
+            set_clause = ", ".join(f"{k} = ?" for k in updates)
+            params = list(updates.values()) + [int(goal_id), int(user_id)]
+            cur = conn.execute(
+                f"UPDATE goals SET {set_clause} WHERE id = ? AND user_id = ?",
+                params,
+            )
+            conn.commit()
+            return (cur.rowcount or 0) > 0
+        finally:
+            conn.close()
+
+    def set_goal_current(
+        self,
+        goal_id: int,
+        current_value: float,
+        status: Optional[str] = None,
+        completed_at: Optional[str] = None,
+    ) -> None:
+        conn = self._get_conn()
+        try:
+            if status is not None:
+                conn.execute(
+                    """UPDATE goals SET current_value = ?, status = ?, completed_at = ?
+                       WHERE id = ?""",
+                    (float(current_value), status, completed_at, int(goal_id)),
+                )
+            else:
+                conn.execute(
+                    "UPDATE goals SET current_value = ? WHERE id = ?",
+                    (float(current_value), int(goal_id)),
+                )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def delete_goal(self, goal_id: int, user_id: int) -> bool:
+        conn = self._get_conn()
+        try:
+            cur = conn.execute(
+                "DELETE FROM goals WHERE id = ? AND user_id = ?",
+                (int(goal_id), int(user_id)),
+            )
+            conn.commit()
+            return (cur.rowcount or 0) > 0
+        finally:
+            conn.close()
+
+    # ── Session-4: milestones ──────────────────────────────────────────
+
+    def create_milestone(
+        self, goal_id: int, label: str, threshold_value: float
+    ) -> int:
+        conn = self._get_conn()
+        try:
+            cur = conn.execute(
+                """INSERT INTO milestones (goal_id, label, threshold_value, reached)
+                   VALUES (?, ?, ?, 0)""",
+                (int(goal_id), label, float(threshold_value)),
+            )
+            conn.commit()
+            return int(cur.lastrowid)
+        finally:
+            conn.close()
+
+    def mark_milestone_reached(self, milestone_id: int) -> None:
+        conn = self._get_conn()
+        try:
+            now = datetime.now().isoformat(timespec="seconds")
+            conn.execute(
+                """UPDATE milestones SET reached = 1, reached_at = ?
+                   WHERE id = ? AND reached = 0""",
+                (now, int(milestone_id)),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def list_milestones(self, user_id: int) -> List[Dict]:
+        """Return every milestone for the user's goals, with goal context joined."""
+        conn = self._get_conn()
+        try:
+            rows = conn.execute(
+                """SELECT m.*, g.title AS goal_title, g.goal_type, g.exercise
+                   FROM milestones m
+                   JOIN goals g ON g.id = m.goal_id
+                   WHERE g.user_id = ?
+                   ORDER BY m.reached DESC, m.reached_at DESC, g.created_at DESC,
+                            m.threshold_value ASC""",
+                (int(user_id),),
+            ).fetchall()
+            out = []
+            for r in rows:
+                d = dict(r)
+                d["reached"] = bool(d.get("reached", 0))
+                out.append(d)
+            return out
+        finally:
+            conn.close()
+
+    def list_goal_milestones(self, goal_id: int) -> List[Dict]:
+        conn = self._get_conn()
+        try:
+            rows = conn.execute(
+                "SELECT * FROM milestones WHERE goal_id = ? ORDER BY threshold_value ASC",
+                (int(goal_id),),
+            ).fetchall()
+            return [
+                {**dict(r), "reached": bool(dict(r).get("reached", 0))} for r in rows
+            ]
+        finally:
+            conn.close()
+
+    # ── Session-4: plans ───────────────────────────────────────────────
+
+    def create_plan(
+        self,
+        user_id: int,
+        *,
+        title: str,
+        summary: Optional[str],
+        start_date: str,
+        end_date: str,
+        created_by_chat: bool = False,
+        conversation_id: Optional[int] = None,
+    ) -> int:
+        conn = self._get_conn()
+        try:
+            now = datetime.now().isoformat(timespec="seconds")
+            cur = conn.execute(
+                """INSERT INTO plans
+                       (user_id, title, summary, start_date, end_date, status,
+                        created_by_chat, conversation_id, created_at)
+                   VALUES (?, ?, ?, ?, ?, 'active', ?, ?, ?)""",
+                (
+                    int(user_id),
+                    title.strip(),
+                    summary,
+                    start_date,
+                    end_date,
+                    1 if created_by_chat else 0,
+                    conversation_id,
+                    now,
+                ),
+            )
+            conn.commit()
+            return int(cur.lastrowid)
+        finally:
+            conn.close()
+
+    def create_plan_day(
+        self,
+        plan_id: int,
+        day_date: str,
+        exercises_json: str,
+        is_rest: bool = False,
+    ) -> int:
+        conn = self._get_conn()
+        try:
+            cur = conn.execute(
+                """INSERT INTO plan_days
+                       (plan_id, day_date, is_rest, exercises, completed)
+                   VALUES (?, ?, ?, ?, 0)""",
+                (
+                    int(plan_id),
+                    day_date,
+                    1 if is_rest else 0,
+                    exercises_json,
+                ),
+            )
+            conn.commit()
+            return int(cur.lastrowid)
+        finally:
+            conn.close()
+
+    def list_plans(self, user_id: int) -> List[Dict]:
+        conn = self._get_conn()
+        try:
+            rows = conn.execute(
+                """SELECT * FROM plans WHERE user_id = ?
+                   ORDER BY (status = 'active') DESC, created_at DESC""",
+                (int(user_id),),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            conn.close()
+
+    def get_plan(self, plan_id: int, user_id: int) -> Optional[Dict]:
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                "SELECT * FROM plans WHERE id = ? AND user_id = ?",
+                (int(plan_id), int(user_id)),
+            ).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def get_plan_full(self, plan_id: int, user_id: int) -> Optional[Dict]:
+        conn = self._get_conn()
+        try:
+            plan = conn.execute(
+                "SELECT * FROM plans WHERE id = ? AND user_id = ?",
+                (int(plan_id), int(user_id)),
+            ).fetchone()
+            if not plan:
+                return None
+            days = conn.execute(
+                "SELECT * FROM plan_days WHERE plan_id = ? ORDER BY day_date ASC",
+                (int(plan_id),),
+            ).fetchall()
+            plan_d = dict(plan)
+            day_list = []
+            for d in days:
+                dd = dict(d)
+                dd["is_rest"] = bool(dd.get("is_rest", 0))
+                dd["completed"] = bool(dd.get("completed", 0))
+                try:
+                    dd["exercises"] = json.loads(dd.get("exercises") or "[]")
+                except (ValueError, TypeError):
+                    dd["exercises"] = []
+                day_list.append(dd)
+            plan_d["days"] = day_list
+            return plan_d
+        finally:
+            conn.close()
+
+    def get_plan_day(self, plan_day_id: int, user_id: int) -> Optional[Dict]:
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                """SELECT pd.*, p.user_id AS plan_user_id, p.id AS plan_id_join
+                   FROM plan_days pd
+                   JOIN plans p ON p.id = pd.plan_id
+                   WHERE pd.id = ? AND p.user_id = ?""",
+                (int(plan_day_id), int(user_id)),
+            ).fetchone()
+            if not row:
+                return None
+            d = dict(row)
+            d["is_rest"] = bool(d.get("is_rest", 0))
+            d["completed"] = bool(d.get("completed", 0))
+            try:
+                d["exercises"] = json.loads(d.get("exercises") or "[]")
+            except (ValueError, TypeError):
+                d["exercises"] = []
+            return d
+        finally:
+            conn.close()
+
+    def mark_plan_day_completed(self, plan_day_id: int, user_id: int) -> bool:
+        """Mark the day complete; returns True on success. Verifies ownership."""
+        conn = self._get_conn()
+        try:
+            # Ownership check via JOIN
+            owned = conn.execute(
+                """SELECT pd.id FROM plan_days pd
+                   JOIN plans p ON p.id = pd.plan_id
+                   WHERE pd.id = ? AND p.user_id = ?""",
+                (int(plan_day_id), int(user_id)),
+            ).fetchone()
+            if not owned:
+                return False
+            now = datetime.now().isoformat(timespec="seconds")
+            conn.execute(
+                """UPDATE plan_days SET completed = 1, completed_at = ?
+                   WHERE id = ?""",
+                (now, int(plan_day_id)),
+            )
+            conn.commit()
+            return True
+        finally:
+            conn.close()
+
+    def plan_all_days_completed(self, plan_id: int) -> bool:
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                """SELECT
+                       COUNT(*) AS total,
+                       SUM(CASE WHEN completed = 1 OR is_rest = 1 THEN 1 ELSE 0 END) AS done
+                   FROM plan_days WHERE plan_id = ?""",
+                (int(plan_id),),
+            ).fetchone()
+            total = int(row["total"] or 0)
+            done = int(row["done"] or 0)
+            return total > 0 and total == done
+        finally:
+            conn.close()
+
+    def set_plan_status(self, plan_id: int, status: str) -> None:
+        conn = self._get_conn()
+        try:
+            conn.execute(
+                "UPDATE plans SET status = ? WHERE id = ?",
+                (status, int(plan_id)),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def delete_plan(self, plan_id: int, user_id: int) -> bool:
+        conn = self._get_conn()
+        try:
+            cur = conn.execute(
+                "DELETE FROM plans WHERE id = ? AND user_id = ?",
+                (int(plan_id), int(user_id)),
+            )
+            conn.commit()
+            return (cur.rowcount or 0) > 0
+        finally:
+            conn.close()
+
+    def get_todays_plan_day(self, user_id: int) -> Optional[Dict]:
+        """Return today's plan_day from the user's active plan, or None."""
+        today_iso = datetime.now().strftime("%Y-%m-%d")
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                """SELECT pd.*, p.id AS plan_id, p.title AS plan_title
+                   FROM plan_days pd
+                   JOIN plans p ON p.id = pd.plan_id
+                   WHERE p.user_id = ? AND p.status = 'active'
+                     AND DATE(pd.day_date) = ?
+                   ORDER BY p.created_at DESC
+                   LIMIT 1""",
+                (int(user_id), today_iso),
+            ).fetchone()
+            if not row:
+                return None
+            d = dict(row)
+            d["is_rest"] = bool(d.get("is_rest", 0))
+            d["completed"] = bool(d.get("completed", 0))
+            try:
+                d["exercises"] = json.loads(d.get("exercises") or "[]")
+            except (ValueError, TypeError):
+                d["exercises"] = []
+            return d
+        finally:
+            conn.close()
+
+    # ── Session-4: badges ──────────────────────────────────────────────
+
+    def insert_badge(
+        self,
+        user_id: int,
+        badge_key: str,
+        metadata: Optional[Dict] = None,
+    ) -> bool:
+        """Insert a badge. Returns False if UNIQUE(user_id, badge_key) conflicts."""
+        conn = self._get_conn()
+        try:
+            now = datetime.now().isoformat(timespec="seconds")
+            try:
+                conn.execute(
+                    """INSERT INTO user_badges (user_id, badge_key, earned_at, metadata)
+                       VALUES (?, ?, ?, ?)""",
+                    (
+                        int(user_id),
+                        badge_key,
+                        now,
+                        json.dumps(metadata or {}),
+                    ),
+                )
+                conn.commit()
+                return True
+            except sqlite3.IntegrityError:
+                return False
+        finally:
+            conn.close()
+
+    def list_badges(self, user_id: int) -> List[Dict]:
+        conn = self._get_conn()
+        try:
+            rows = conn.execute(
+                """SELECT * FROM user_badges WHERE user_id = ?
+                   ORDER BY earned_at DESC""",
+                (int(user_id),),
+            ).fetchall()
+            out = []
+            for r in rows:
+                d = dict(r)
+                try:
+                    d["metadata"] = json.loads(d.get("metadata") or "{}")
+                except (ValueError, TypeError):
+                    d["metadata"] = {}
+                out.append(d)
+            return out
+        finally:
+            conn.close()
+
+    def has_badge(self, user_id: int, badge_key: str) -> bool:
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                "SELECT 1 FROM user_badges WHERE user_id = ? AND badge_key = ?",
+                (int(user_id), badge_key),
+            ).fetchone()
+            return row is not None
+        finally:
+            conn.close()

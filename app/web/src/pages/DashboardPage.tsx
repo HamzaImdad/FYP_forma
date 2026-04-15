@@ -19,6 +19,8 @@ import { ActivityHeatmap } from "../components/dashboard/ActivityHeatmap";
 import { MuscleBalanceRadar } from "../components/dashboard/MuscleBalanceRadar";
 import { SessionHistoryList } from "../components/dashboard/SessionHistoryList";
 import { PersonalCoachPanel } from "../components/dashboard/PersonalCoachPanel";
+import { ActiveGoalsCard } from "../components/dashboard/ActiveGoalsCard";
+import { TodaysPlanStrip } from "../components/dashboard/TodaysPlanStrip";
 import { useSessionCompleted } from "../hooks/useSessionCompleted";
 import { useAuth } from "../context/AuthContext";
 
@@ -193,13 +195,16 @@ export function DashboardPage() {
         </section>
       ) : (
         <>
+          <TodaysPlanStrip />
+
           <TodayRibbon today={overview.today} wow={overview.wow_deltas} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <InsightCard insights={overview.top_insights} />
             </div>
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-6">
+              <ActiveGoalsCard />
               <MuscleBalanceRadar groups={overview.muscle_balance} />
             </div>
           </div>

@@ -1,22 +1,37 @@
 // useChat — encapsulates the streaming chat lifecycle for one conversation.
 //
 // State: messages, streamingText, pending, error, conversationId.
-// Sends to either /api/chat/guide or /api/chat/personal based on `mode`.
+// Sends to /api/chat/guide, /api/chat/personal, or /api/chat/plan based on mode.
 // On done, the streaming text is committed to messages as an assistant row.
 // On error, the error is surfaced and streaming is cleared.
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { streamChat, type ChatMessageDTO, chatApi } from "@/lib/chatApi";
 
-export type ChatMode = "guide" | "personal";
+export type ChatMode = "guide" | "personal" | "plan";
 
 export type UseChatOptions = {
   mode: ChatMode;
   conversationId?: number | null;
   initialMessages?: ChatMessageDTO[];
+  // Session 4: called whenever a streaming turn finishes (done or error).
+  // Plans page uses this to refetch /api/chat/conversations/:id/plan_draft
+  // and render the live preview card.
+  onTurnDone?: (conversationId: number | null) => void;
 };
 
-export function useChat({ mode, conversationId, initialMessages }: UseChatOptions) {
+const ENDPOINT_BY_MODE: Record<ChatMode, string> = {
+  guide: "/api/chat/guide",
+  personal: "/api/chat/personal",
+  plan: "/api/chat/plan",
+};
+
+export function useChat({
+  mode,
+  conversationId,
+  initialMessages,
+  onTurnDone,
+}: UseChatOptions) {
   const [messages, setMessages] = useState<ChatMessageDTO[]>(initialMessages ?? []);
   const [streamingText, setStreamingText] = useState("");
   const [pending, setPending] = useState(false);
@@ -25,14 +40,18 @@ export function useChat({ mode, conversationId, initialMessages }: UseChatOption
     conversationId ?? null,
   );
   const abortRef = useRef<AbortController | null>(null);
+  const activeIdRef = useRef<number | null>(activeConversationId);
+  activeIdRef.current = activeConversationId;
+  const onTurnDoneRef = useRef(onTurnDone);
+  onTurnDoneRef.current = onTurnDone;
 
   useEffect(() => {
     setActiveConversationId(conversationId ?? null);
   }, [conversationId]);
 
-  // Load past conversation history when the id changes (personal mode only).
+  // Load past conversation history when the id changes (personal + plan modes).
   useEffect(() => {
-    if (mode !== "personal" || activeConversationId == null) return;
+    if (mode === "guide" || activeConversationId == null) return;
     let cancelled = false;
     chatApi
       .loadConversation(activeConversationId)
@@ -80,11 +99,11 @@ export function useChat({ mode, conversationId, initialMessages }: UseChatOption
       const controller = new AbortController();
       abortRef.current = controller;
 
-      const endpoint = mode === "guide" ? "/api/chat/guide" : "/api/chat/personal";
+      const endpoint = ENDPOINT_BY_MODE[mode];
       const body: Record<string, unknown> = {
         messages: next.map((m) => ({ role: m.role, content: m.content })),
       };
-      if (mode === "personal" && activeConversationId != null) {
+      if (mode !== "guide" && activeConversationId != null) {
         body.conversation_id = activeConversationId;
       }
 
@@ -111,6 +130,7 @@ export function useChat({ mode, conversationId, initialMessages }: UseChatOption
               }
               setStreamingText("");
               setPending(false);
+              onTurnDoneRef.current?.(activeIdRef.current);
             } else if (event.type === "error") {
               setError(event.error);
               if (buffer.trim()) {
@@ -121,6 +141,7 @@ export function useChat({ mode, conversationId, initialMessages }: UseChatOption
               }
               setStreamingText("");
               setPending(false);
+              onTurnDoneRef.current?.(activeIdRef.current);
             }
           },
           controller.signal,

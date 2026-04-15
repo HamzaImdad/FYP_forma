@@ -17,9 +17,12 @@ import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { SessionDetailPanel } from "./components/dashboard/SessionDetailPanel";
+import { CelebrationToast } from "./components/milestones/CelebrationToast";
+import { useAuth } from "./context/AuthContext";
 
 export function App() {
   const { pathname } = useLocation();
+  const { user } = useAuth();
   // Session, workout, and auth pages are fullscreen (no nav/footer)
   const fullscreen =
     pathname === "/session" ||
@@ -30,6 +33,7 @@ export function App() {
   return (
     <>
       <SmoothScroll />
+      {user && <CelebrationToast />}
       {!fullscreen && <Nav />}
       <main className="relative z-[2]">
         <PageTransition>

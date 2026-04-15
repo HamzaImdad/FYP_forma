@@ -11,13 +11,17 @@ import { useChat } from "@/hooks/useChat";
 import { useSessionCompleted } from "@/hooks/useSessionCompleted";
 
 type Props = {
-  mode: "guide" | "personal";
+  mode: "guide" | "personal" | "plan";
   showSidebar?: boolean;
   initialContext?: SuggestedContext;
   title?: string;
   tagline?: string;
   authed?: boolean;
   onSignupClick?: () => void;
+  // Session 4: Plans page hooks this so the live plan preview can refetch
+  // the conversation's plan_draft column whenever a streaming turn completes.
+  onTurnDone?: (conversationId: number | null) => void;
+  inputPlaceholder?: string;
 };
 
 const ERROR_COPY: Record<string, string> = {
@@ -40,6 +44,8 @@ export function ChatShell({
   tagline,
   authed = false,
   onSignupClick,
+  onTurnDone,
+  inputPlaceholder,
 }: Props) {
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const [conversationReloadKey, setConversationReloadKey] = useState(0);
@@ -54,7 +60,7 @@ export function ChatShell({
     send,
     reset,
     injectAssistantHint,
-  } = useChat({ mode, conversationId: activeConversationId });
+  } = useChat({ mode, conversationId: activeConversationId, onTurnDone });
 
   // Personal mode: when a session completes, surface a proactive nudge.
   useSessionCompleted(
@@ -92,7 +98,7 @@ export function ChatShell({
 
   // Sync the conversation id once the server assigns one (first send).
   useEffect(() => {
-    if (mode === "personal" && conversationId != null && activeConversationId == null) {
+    if (mode !== "guide" && conversationId != null && activeConversationId == null) {
       setActiveConversationId(conversationId);
     }
   }, [mode, conversationId, activeConversationId]);
@@ -104,38 +110,50 @@ export function ChatShell({
         ? initialContext
         : "has-data";
 
-  const emptyState =
-    mode === "guide" ? (
-      <div className="max-w-xl text-center">
-        <div
-          className="text-[color:var(--color-ink)] mb-3"
-          style={{ fontFamily: "var(--font-display)", fontSize: "2.4rem", letterSpacing: "0.04em" }}
-        >
-          {title ?? "MEET YOUR FORMA GUIDE"}
-        </div>
-        <p
-          className="italic text-[color:var(--color-ink-3)] text-lg"
-          style={{ fontFamily: "var(--font-serif)" }}
-        >
-          {tagline ?? "Ask anything about FORMA, what it tracks, and how it works."}
-        </p>
+  const emptyStateContent = (() => {
+    if (mode === "guide") {
+      return {
+        title: title ?? "MEET YOUR FORMA GUIDE",
+        tagline:
+          tagline ?? "Ask anything about FORMA, what it tracks, and how it works.",
+      };
+    }
+    if (mode === "plan") {
+      return {
+        title: title ?? "PLAN ARCHITECT",
+        tagline:
+          tagline ??
+          "Tell me how you train and I'll build an adaptive workout plan.",
+      };
+    }
+    return {
+      title: title ?? "YOUR PERSONAL COACH",
+      tagline:
+        tagline ??
+        "I read every rep you've logged. Ask me anything about your training.",
+    };
+  })();
+
+  const emptyState = (
+    <div className="max-w-xl text-center">
+      <div
+        className="text-[color:var(--color-ink)] mb-3"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "2.4rem",
+          letterSpacing: "0.04em",
+        }}
+      >
+        {emptyStateContent.title}
       </div>
-    ) : (
-      <div className="max-w-xl text-center">
-        <div
-          className="text-[color:var(--color-ink)] mb-3"
-          style={{ fontFamily: "var(--font-display)", fontSize: "2.4rem", letterSpacing: "0.04em" }}
-        >
-          {title ?? "YOUR PERSONAL COACH"}
-        </div>
-        <p
-          className="italic text-[color:var(--color-ink-3)] text-lg"
-          style={{ fontFamily: "var(--font-serif)" }}
-        >
-          {tagline ?? "I read every rep you've logged. Ask me anything about your training."}
-        </p>
-      </div>
-    );
+      <p
+        className="italic text-[color:var(--color-ink-3)] text-lg"
+        style={{ fontFamily: "var(--font-serif)" }}
+      >
+        {emptyStateContent.tagline}
+      </p>
+    </div>
+  );
 
   return (
     <div className="flex h-full min-h-0 w-full">
@@ -180,9 +198,12 @@ export function ChatShell({
           onSend={handleSend}
           initialValue={inputDraft}
           placeholder={
-            mode === "guide"
+            inputPlaceholder ??
+            (mode === "guide"
               ? "Ask about FORMA…"
-              : "Ask about your training…"
+              : mode === "plan"
+                ? "Describe your schedule and goals…"
+                : "Ask about your training…")
           }
         />
       </div>
