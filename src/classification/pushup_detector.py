@@ -58,6 +58,7 @@ from ..utils.constants import (
     RIGHT_WRIST,
 )
 from ..utils.geometry import calculate_angle
+from .base_detector import _load_muscles_for  # Session-1 muscle group lookup
 
 
 # ── Rep FSM thresholds ───────────────────────────────────────────────────
@@ -176,6 +177,7 @@ class PushUpDetector:
         self._dtw_matcher = dtw_matcher
         self._posture_classifier = PostureClassifier()
         self._coach = CoachingEngine("pushup")
+        self._muscle_groups: List[str] = _load_muscles_for(self.EXERCISE_NAME)
         self.reset()
 
     def reset(self):
@@ -206,7 +208,15 @@ class PushUpDetector:
         self._set_count = 0
         self._reps_in_current_set = 0
         self._set_reps: List[int] = []
+        # Session-1: parallel per-set metadata
+        self._set_records: List[Dict] = []
+        self._last_set_end_time: float = 0.0
         self._recent_rep_durations: deque = deque(maxlen=3)
+
+        # Session-1: rep tempo timestamps. descent = eccentric start;
+        # concentric = start of the up phase (stamped at DOWN/GOING_UP).
+        self._descent_start_time: float = 0.0
+        self._concentric_start_time: float = 0.0
 
         # Per-rep form tracking
         self._current_rep_issues: List[str] = []
@@ -487,6 +497,7 @@ class PushUpDetector:
 
             if self._reps_in_current_set > 0:
                 self._set_reps.append(self._reps_in_current_set)
+                self._close_current_set(now, failure_type="clean_stop")
                 self._set_count += 1
                 self._reps_in_current_set = 0
                 self._reset_rep_fsm()
@@ -629,6 +640,7 @@ class PushUpDetector:
         s = self._session_state
         if s == SessionState.ACTIVE and self._reps_in_current_set > 0:
             self._set_reps.append(self._reps_in_current_set)
+            self._close_current_set(time.time(), failure_type="timeout")
             self._set_count += 1
             self._reps_in_current_set = 0
             self._reset_rep_fsm()
@@ -715,6 +727,8 @@ class PushUpDetector:
             if raw_elbow < REP_START_DOWN:
                 self._state = PushUpState.GOING_DOWN
                 self._rep_start_time = now
+                self._descent_start_time = now           # eccentric begins
+                self._concentric_start_time = 0.0        # reset — stamped at DOWN
                 self._bottom_frame_count = 0
                 self._rep_min_elbow = raw_elbow
                 self._first_rep_started = True
@@ -724,6 +738,7 @@ class PushUpDetector:
         elif self._state == PushUpState.GOING_DOWN:
             if raw_elbow <= REP_DEPTH_MAX:
                 self._state = PushUpState.DOWN
+                self._concentric_start_time = now        # end of eccentric
                 self._half_rep = 0.5
                 self._bottom_frame_count = 0
             elif raw_elbow >= REP_COMPLETE_UP:
@@ -745,9 +760,68 @@ class PushUpDetector:
             if raw_elbow <= REP_DEPTH_MAX:
                 # User dropped back into the bottom — second dip.
                 self._state = PushUpState.DOWN
+                self._concentric_start_time = now        # re-stamp on dip
                 self._bottom_frame_count = 0
 
         return rep_completed
+
+    # ── Session-1 capture helpers ────────────────────────────────────────
+
+    def _augment_rep_entry(self, rep_entry: Dict, now: float) -> None:
+        """Mutate rep_entry in place with Session-1 capture fields.
+        Mirrors BaseExerciseDetector._augment_rep_entry so the push-up
+        summary schema stays consistent with all other exercises."""
+        scores = self._current_rep_scores or [0.0]
+        # For push-up, depth is tracked as _rep_min_elbow (lower = deeper)
+        peak = getattr(self, "_rep_min_elbow", None)
+        rep_entry["peak_angle"] = round(float(peak), 1) if peak is not None else None
+        rep_entry["score_min"] = round(float(min(scores)), 2)
+        rep_entry["score_max"] = round(float(max(scores)), 2)
+        ecc = 0.0
+        con = 0.0
+        if self._descent_start_time and self._concentric_start_time:
+            ecc = max(0.0, self._concentric_start_time - self._descent_start_time)
+        if self._concentric_start_time:
+            con = max(0.0, now - self._concentric_start_time)
+        rep_entry["ecc_sec"] = round(ecc, 2)
+        rep_entry["con_sec"] = round(con, 2)
+        rep_entry["set_num"] = self._set_count + 1
+
+    def _close_current_set(self, now: float, failure_type: str = "clean_stop") -> None:
+        """Append a per-set record based on the reps in the just-finished set."""
+        reps_count = int(self._reps_in_current_set)
+        if reps_count <= 0 and not self._rep_history:
+            return
+
+        tail = self._rep_history[-reps_count:] if reps_count > 0 else []
+        scores = [float(r.get("score", 0.0)) for r in tail]
+
+        if scores:
+            avg = sum(scores) / len(scores)
+            dropoff = scores[0] - scores[-1]
+        else:
+            avg = 0.0
+            dropoff = 0.0
+
+        ft = failure_type
+        if ft == "clean_stop" and len(scores) >= 3:
+            if scores[-3] > scores[-2] > scores[-1]:
+                ft = "form_breakdown"
+
+        rest_before = 0.0
+        if self._last_set_end_time > 0.0:
+            rest_before = min(600.0, max(0.0, now - self._last_set_end_time))
+
+        record = {
+            "set_num": int(self._set_count + 1),
+            "reps_count": reps_count,
+            "rest_before_sec": round(rest_before, 2),
+            "avg_form_score": round(avg, 2),
+            "score_dropoff": round(dropoff, 2),
+            "failure_type": ft,
+        }
+        self._set_records.append(record)
+        self._last_set_end_time = now
 
     def _record_rep(self, now: float) -> None:
         avg_score = sum(self._current_rep_scores) / max(
@@ -769,13 +843,15 @@ class PushUpDetector:
             else RepQuality.BAD
         )
         if len(self._rep_history) < MAX_REP_HISTORY:
-            self._rep_history.append({
+            rep_entry = {
                 "rep": self._rep_count,
                 "score": round(avg_score, 2),
                 "quality": quality,
                 "issues": self._current_rep_issues[:3],
                 "duration": round(duration, 1),
-            })
+            }
+            self._augment_rep_entry(rep_entry, now)
+            self._rep_history.append(rep_entry)
 
     # ── Form assessment (unchanged scoring logic) ────────────────────────
 
@@ -1063,6 +1139,10 @@ class PushUpDetector:
         if self._reps_in_current_set > 0:
             all_set_reps.append(self._reps_in_current_set)
 
+        # Flush any open final set so the summary is complete.
+        if self._reps_in_current_set > 0 and len(self._set_records) < len(all_set_reps):
+            self._close_current_set(time.time(), failure_type="clean_stop")
+
         good_reps = sum(1 for r in self._rep_history if r["quality"] == RepQuality.GOOD)
         moderate_reps = sum(1 for r in self._rep_history if r["quality"] == RepQuality.MODERATE)
         bad_reps = sum(1 for r in self._rep_history if r["quality"] == RepQuality.BAD)
@@ -1073,19 +1153,65 @@ class PushUpDetector:
                 issue_counts[issue] = issue_counts.get(issue, 0) + 1
         common_issues = sorted(issue_counts.items(), key=lambda x: -x[1])[:5]
 
-        avg_score = (
-            sum(r["score"] for r in self._rep_history) / max(len(self._rep_history), 1)
+        rep_scores = [float(r["score"]) for r in self._rep_history]
+        avg_score = (sum(rep_scores) / len(rep_scores)) if rep_scores else 0.0
+
+        total_rest_sec = sum(
+            float(s.get("rest_before_sec", 0.0)) for s in self._set_records
         )
+        duration_sec = float(getattr(self, "_session_duration_sec", 0.0) or 0.0)
+        work_to_rest_ratio = round(
+            duration_sec / max(total_rest_sec, 1.0), 2
+        ) if duration_sec > 0 else 0.0
+
+        if rep_scores:
+            consistency_score = round(max(0.0, 1.0 - float(np.std(rep_scores))), 2)
+        else:
+            consistency_score = 0.0
+
+        if len(rep_scores) >= 3:
+            try:
+                slope = float(np.polyfit(range(len(rep_scores)), rep_scores, 1)[0])
+            except Exception:
+                slope = 0.0
+            fatigue_index = round(slope, 4)
+        else:
+            fatigue_index = 0.0
 
         return {
             "exercise": "pushup",
             "total_reps": self._rep_count,
-            "sets": len(all_set_reps),
+            "num_sets": len(all_set_reps),
             "reps_per_set": all_set_reps,
             "good_reps": good_reps,
             "moderate_reps": moderate_reps,
             "bad_reps": bad_reps,
             "avg_form_score": round(avg_score, 2),
+            # Session-1: per-set + session aggregates
+            "sets": list(self._set_records),
+            "total_rest_sec": round(total_rest_sec, 2),
+            "work_to_rest_ratio": work_to_rest_ratio,
+            "consistency_score": consistency_score,
+            "fatigue_index": fatigue_index,
+            "muscle_groups": list(self._muscle_groups),
+            # Session-1: per-rep details in the same shape as other exercises
+            "reps": [
+                {
+                    "rep_num": r["rep"],
+                    "form_score": r["score"],
+                    "quality": r["quality"],
+                    "issues": r.get("issues", []),
+                    "duration": r.get("duration", 0),
+                    "peak_angle": r.get("peak_angle"),
+                    "ecc_sec": r.get("ecc_sec", 0),
+                    "con_sec": r.get("con_sec", 0),
+                    "score_min": r.get("score_min"),
+                    "score_max": r.get("score_max"),
+                    "set_num": r.get("set_num"),
+                }
+                for r in self._rep_history
+            ],
+            # Legacy field — kept for the vanilla UI at app/static/app.js.
             "rep_details": self._rep_history,
             "common_issues": [
                 {"issue": name, "count": count}

@@ -11,6 +11,7 @@ Usage:
 """
 
 import os
+import re
 import sys
 import json
 import time
@@ -22,8 +23,15 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from flask import Flask, render_template, request, jsonify
-from flask_socketio import SocketIO, emit
+from dotenv import load_dotenv
+
+# Load .env BEFORE importing anything that reads FORMA_JWT_SECRET.
+load_dotenv(Path(__file__).parent.parent / ".env")
+
+from flask import Flask, render_template, request, jsonify, send_from_directory, abort, g, make_response
+from flask_socketio import SocketIO, emit, disconnect
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 logger = logging.getLogger(__name__)
 
@@ -45,17 +53,43 @@ REALTIME_CONFIG.min_tracking_confidence = 0.5
 # Max frame dimension for processing (resize large frames)
 MAX_FRAME_DIM = 720
 
+# React build output (Vite → app/static/dist/)
+REACT_DIST_DIR = Path(__file__).parent / "static" / "dist"
+REACT_INDEX = REACT_DIST_DIR / "index.html"
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("EXERVISION_SECRET_KEY", "exervision-dev-fallback")
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
+# Rate limiter — in-memory storage is fine for single-instance local dev.
+limiter = Limiter(get_remote_address, app=app, default_limits=[])
+
+# FORMA auth primitives (depends on FORMA_JWT_SECRET already being loaded)
+from app.auth import (
+    JWT_COOKIE,
+    clear_auth_cookie,
+    create_jwt,
+    current_user_id,
+    decode_jwt,
+    hash_password,
+    require_auth,
+    set_auth_cookie,
+    verify_password,
+)
+
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
 # One pipeline per connected session
 pipelines = {}
+# Parallel per-sid → user_id map (set on connect from JWT cookie)
+user_ids: dict = {}
 # Per-session processing lock to drop frames when busy
 processing = {}
 # Per-session last frame timestamp for server-side rate limiting (max 15 fps)
 last_frame_time = {}
 MIN_FRAME_INTERVAL = 1.0 / 20  # ~50ms
+# Per-session last voice text — used to emit voice_text only when it changes
+last_voice_text: dict = {}
 
 # Initialize session history database
 from app.database import ExerVisionDB
@@ -80,9 +114,61 @@ _preloaded_ml.load_all_models()
 
 # ── Routes ───────────────────────────────────────────────────────────────
 
+# Client-side routes the React router owns — Flask serves the SPA shell for each.
+# Keep in sync with app/web/src/App.tsx routes.
+SPA_ROUTES = {
+    "",
+    "exercises",
+    "guide",
+    "session",
+    "report",
+    "dashboard",
+    "about",
+    "voice-coaching",
+    "chatbot",
+    "plans",
+    "milestones",
+    "workout",
+    "_dev",
+}
+
+
+def _serve_react_shell():
+    """Serve the built React SPA shell, falling back to the legacy template if
+    the Vite build output is missing (first run, clean checkouts)."""
+    if REACT_INDEX.exists():
+        return send_from_directory(REACT_DIST_DIR, "index.html")
+    return render_template("index.html", exercises=EXERCISES)
+
+
 @app.route("/")
 def index():
+    return _serve_react_shell()
+
+
+@app.route("/legacy")
+def legacy_index():
+    """Old vanilla-JS UI, kept during the React migration (phases 1–5)."""
     return render_template("index.html", exercises=EXERCISES)
+
+
+@app.route("/assets/<path:filename>")
+def react_assets(filename):
+    """Serve hashed JS/CSS/font assets emitted by `vite build`."""
+    assets_dir = REACT_DIST_DIR / "assets"
+    if not assets_dir.exists():
+        abort(404)
+    return send_from_directory(assets_dir, filename)
+
+
+@app.route("/<path:spa_path>")
+def spa_catchall(spa_path):
+    """Client-side routes owned by React Router — serve the SPA shell.
+    API and socket.io paths are handled by their own routes above."""
+    first = spa_path.split("/", 1)[0]
+    if first in SPA_ROUTES:
+        return _serve_react_shell()
+    abort(404)
 
 
 @app.route("/api/exercises")
@@ -155,66 +241,229 @@ def get_exercise_guide(exercise):
 
 
 def _add_detector_fields(feedback, pipeline, result):
-    """Add detector-specific fields (set/phase/progress) to the response."""
+    """Add detector-specific fields to the response.
+
+    Unified path: PushUpDetector and RobustExerciseDetector now expose the
+    same @property interface (set_count, reps_in_current_set, session_state,
+    current_posture, last_set_reps), so every exercise emits the same rich
+    session fields. Per-exercise branching is limited to the phase/progress
+    label and plank-specific hold duration.
+    """
     detector = pipeline._detectors.get(pipeline.exercise)
-    if detector:
-        feedback["set_count"] = detector.set_count
-        feedback["reps_in_set"] = detector.reps_in_current_set
+    if not detector:
+        return
+
+    # ── Shared rep/set/session fields (all exercises) ───────────────────
+    feedback["set_count"] = getattr(detector, "set_count", 0)
+    feedback["reps_in_set"] = getattr(detector, "reps_in_current_set", 0)
+
+    # session_state / posture_label / last_set_reps — present on PushUp and
+    # RobustExerciseDetector; fall back gracefully if a future detector
+    # doesn't expose them.
+    session_state_val = None
+    ss = getattr(detector, "session_state", None)
+    if ss is not None:
+        session_state_val = ss.value if hasattr(ss, "value") else str(ss)
+        feedback["session_state"] = session_state_val
+
+    posture = getattr(detector, "current_posture", None)
+    if posture is not None:
+        feedback["posture_label"] = posture.value if hasattr(posture, "value") else str(posture)
+
+    last_set_reps = getattr(detector, "last_set_reps", 0)
+    feedback["last_set_reps"] = last_set_reps
+
+    # Display fields — HUD reads these directly so it never reconciles
+    # session state client-side.
+    if session_state_val == "active":
+        feedback["current_set_number"] = detector.set_count + 1
+        feedback["current_set_reps"] = detector.reps_in_current_set
+    elif session_state_val == "resting":
+        feedback["current_set_number"] = max(detector.set_count, 1)
+        feedback["current_set_reps"] = last_set_reps
+    else:  # setup, idle, or unknown
+        feedback["current_set_number"] = max(detector.set_count + 1, 1)
+        feedback["current_set_reps"] = 0
+
+    feedback["between_sets"] = (
+        session_state_val == "resting"
+        if session_state_val is not None
+        else getattr(detector, "_between_sets", False)
+    )
+
+    # ── Phase / progress labels ─────────────────────────────────────────
+    if pipeline.exercise == "pushup":
+        phase_names = {
+            "up": "Top position",
+            "going_down": "Lowering",
+            "down": "Bottom position",
+            "going_up": "Pushing up",
+        }
+        feedback["phase"] = phase_names.get(detector._state, "")
+        elbow = detector.last_elbow_angle
+        if elbow is not None:
+            progress_pct = max(0, min(100, int((150 - elbow) / (150 - 105) * 100)))
+            feedback["progress"] = f"{progress_pct}%"
+        else:
+            feedback["progress"] = ""
+    else:
+        # RobustExerciseDetector-based detectors stash phase/progress in
+        # result.details — surface them verbatim.
         if result and isinstance(result.details, dict):
             feedback["phase"] = result.details.get("phase", "")
             feedback["progress"] = result.details.get("progress", "")
             feedback["rest_tier"] = result.details.get("rest_tier", "")
             feedback["activity_state"] = result.details.get("activity", "")
-            # Plank: include hold duration
-            if hasattr(detector, '_hold_duration'):
-                feedback["hold_duration"] = round(detector._hold_duration, 1)
         else:
             feedback["phase"] = ""
             feedback["progress"] = ""
+
+    # ── Plank-specific: time-held fields ────────────────────────────────
+    if hasattr(detector, "_hold_duration"):
+        # Total hold across the entire session (accumulates across rests).
+        feedback["total_hold_duration"] = round(detector._hold_duration, 1)
+        # Current attempt's hold (resets to 0 after each set close).
+        feedback["current_set_hold"] = round(
+            getattr(detector, "current_set_hold", detector._hold_duration), 1
+        )
+        # Just-closed attempt's hold (0 before any set closes).
+        feedback["last_set_hold"] = round(getattr(detector, "last_set_hold", 0.0), 1)
+        # Legacy name kept for existing consumers.
+        feedback["hold_duration"] = feedback["current_set_hold"]
+
+
+# ── Auth API ───────────────────────────────────────────────────────────
+
+def _public_user(row: dict) -> dict:
+    """Strip sensitive columns before returning a user row to the client."""
+    return {k: v for k, v in row.items() if k != "password_hash"}
+
+
+@app.route("/api/auth/signup", methods=["POST"])
+@limiter.limit("5/minute")
+def auth_signup():
+    body = request.get_json(silent=True) or {}
+    email = (body.get("email") or "").strip().lower()
+    password = body.get("password") or ""
+    display_name = (body.get("display_name") or "").strip()
+
+    if not EMAIL_RE.match(email):
+        return jsonify({"error": "invalid_email"}), 400
+    if len(password) < 8:
+        return jsonify({"error": "password_too_short"}), 400
+    if not display_name:
+        return jsonify({"error": "display_name_required"}), 400
+
+    if db.get_user_by_email(email) is not None:
+        return jsonify({"error": "email_exists"}), 409
+
+    user_id = db.create_user(email, hash_password(password), display_name)
+
+    # Claim every orphan session so the user's existing training history
+    # shows up in the dashboard from day one.
+    try:
+        claimed = db.reassign_orphan_sessions(user_id)
+        if claimed:
+            logger.info("Signup reassigned %d orphan sessions → user %d", claimed, user_id)
+    except Exception as e:
+        logger.warning("Failed to reassign orphan sessions: %s", e)
+
+    user = db.get_user_by_id(user_id)
+    resp = make_response(jsonify({"user": _public_user(user)}))
+    set_auth_cookie(resp, create_jwt(user_id))
+    return resp
+
+
+@app.route("/api/auth/login", methods=["POST"])
+@limiter.limit("10/minute")
+def auth_login():
+    body = request.get_json(silent=True) or {}
+    email = (body.get("email") or "").strip().lower()
+    password = body.get("password") or ""
+
+    user = db.get_user_by_email(email)
+    if not user or not verify_password(password, user["password_hash"]):
+        return jsonify({"error": "invalid_credentials"}), 401
+
+    db.update_last_login(user["id"])
+    user = db.get_user_by_id(user["id"])
+    resp = make_response(jsonify({"user": _public_user(user)}))
+    set_auth_cookie(resp, create_jwt(user["id"]))
+    return resp
+
+
+@app.route("/api/auth/logout", methods=["POST"])
+def auth_logout():
+    resp = make_response(jsonify({"ok": True}))
+    clear_auth_cookie(resp)
+    return resp
+
+
+@app.route("/api/auth/me")
+@require_auth
+def auth_me():
+    user = db.get_user_by_id(g.user_id)
+    if not user:
+        return jsonify({"error": "unauthorized"}), 401
+    return jsonify({"user": _public_user(user)})
+
+
+@app.route("/api/auth/profile", methods=["PATCH"])
+@require_auth
+def auth_profile():
+    body = request.get_json(silent=True) or {}
+    db.update_user_profile(g.user_id, body)
+    user = db.get_user_by_id(g.user_id)
+    return jsonify({"user": _public_user(user)})
 
 
 # ── Dashboard API ──────────────────────────────────────────────────────
 
 @app.route("/api/dashboard/stats")
+@require_auth
 def dashboard_stats():
     """Aggregate stats for dashboard summary cards."""
     period = request.args.get("period")
     exercise = request.args.get("exercise")
-    return jsonify(db.get_stats(period, exercise))
+    return jsonify(db.get_stats(g.user_id, period, exercise))
 
 
 @app.route("/api/dashboard/sessions")
+@require_auth
 def dashboard_sessions():
     """List sessions with optional filters."""
     exercise = request.args.get("exercise")
     period = request.args.get("period")
     limit = int(request.args.get("limit", 20))
     offset = int(request.args.get("offset", 0))
-    return jsonify(db.get_sessions(exercise, period, limit, offset))
+    return jsonify(db.get_sessions(g.user_id, exercise, period, limit, offset))
 
 
 @app.route("/api/dashboard/session/<int:session_id>")
+@require_auth
 def dashboard_session_detail(session_id):
     """Full session detail with per-rep breakdown."""
-    detail = db.get_session_detail(session_id)
+    detail = db.get_session_detail(g.user_id, session_id)
     if not detail:
         return jsonify({"error": "Session not found"}), 404
     return jsonify(detail)
 
 
 @app.route("/api/dashboard/scores")
+@require_auth
 def dashboard_scores():
     """Daily average form scores for line chart."""
     days = int(request.args.get("days", 30))
     exercise = request.args.get("exercise")
-    return jsonify(db.get_daily_scores(days, exercise))
+    return jsonify(db.get_daily_scores(g.user_id, days, exercise))
 
 
 @app.route("/api/dashboard/distribution")
+@require_auth
 def dashboard_distribution():
     """Exercise breakdown for pie/doughnut chart."""
     period = request.args.get("period")
-    return jsonify(db.get_exercise_distribution(period))
+    return jsonify(db.get_exercise_distribution(g.user_id, period))
 
 
 # ── Socket.IO Events ────────────────────────────────────────────────────
@@ -222,13 +471,20 @@ def dashboard_distribution():
 @socketio.on("connect")
 def handle_connect():
     sid = request.sid
+    # Enforce JWT cookie auth on every Socket.IO session.
+    token = request.cookies.get(JWT_COOKIE)
+    uid = decode_jwt(token)
+    if uid is None:
+        logger.info("Rejected unauthenticated Socket.IO connect: %s", sid)
+        return False  # reject the handshake
+    user_ids[sid] = uid
     pipelines[sid] = ExerVisionPipeline(
         exercise="squat", classifier_type="rule_based", config=REALTIME_CONFIG,
         preloaded_classifier=_preloaded_ml,
     )
     processing[sid] = False
     last_frame_time[sid] = 0
-    logger.info("Client connected: %s", sid)
+    logger.info("Client connected: %s (user %d)", sid, uid)
     emit("connected", {"status": "ok", "exercises": EXERCISES})
 
 
@@ -250,6 +506,8 @@ def handle_disconnect():
         del pipelines[sid]
     processing.pop(sid, None)
     last_frame_time.pop(sid, None)
+    last_voice_text.pop(sid, None)
+    user_ids.pop(sid, None)
     logger.info("Client disconnected: %s", sid)
 
 
@@ -285,6 +543,7 @@ def handle_start_session(data=None):
     pipeline = pipelines[sid]
 
     # Optionally set exercise and classifier from data
+    weight_kg = None
     if data:
         exercise = data.get("exercise")
         if exercise and exercise in EXERCISES:
@@ -294,7 +553,17 @@ def handle_start_session(data=None):
         if classifier in ("rule_based", "ml", "bilstm"):
             pipeline.set_classifier(classifier)
 
-    pipeline.start_session()
+        # Weight logging for weight-based exercises (deadlift, squat, bench, etc.)
+        raw_weight = data.get("weight_kg")
+        if raw_weight is not None:
+            try:
+                weight_kg = float(raw_weight)
+                if weight_kg <= 0:
+                    weight_kg = None
+            except (TypeError, ValueError):
+                weight_kg = None
+
+    pipeline.start_session(weight_kg=weight_kg)
 
     # Start offline session capture (trace.jsonl + thresholds snapshot)
     try:
@@ -314,7 +583,16 @@ def handle_start_session(data=None):
         "exercise": pipeline.exercise,
         "classifier": pipeline.classifier_type,
         "capture_id": captures[sid].session_id if sid in captures else None,
+        "weight_kg": weight_kg,
     })
+
+    # Push today's running totals for this exercise so the UI can show
+    # "Today · N sets · M reps" before the user does anything new.
+    try:
+        totals = db.get_today_totals(user_ids[sid], pipeline.exercise)
+        emit("today_totals", totals)
+    except Exception as e:
+        logger.warning("Failed to load today's totals: %s", e)
 
 
 @socketio.on("end_session")
@@ -326,9 +604,12 @@ def handle_end_session():
 
     summary = pipelines[sid].end_session()
 
-    # Auto-save session to database
+    # Auto-save session to database (scoped to the authed user)
+    uid = user_ids.get(sid)
     try:
-        session_id = db.save_session(summary)
+        if uid is None:
+            raise RuntimeError("socket session has no user_id")
+        session_id = db.save_session(summary, uid)
         summary["session_id"] = session_id
     except Exception as e:
         logger.warning(f"Failed to save session: {e}")
@@ -344,6 +625,15 @@ def handle_end_session():
             logger.warning("Failed to finalize session capture: %s", e)
 
     emit("session_report", summary)
+
+    # Re-query today's totals so the UI can show the updated "today so far"
+    # immediately after the session ends.
+    try:
+        if uid is not None:
+            totals = db.get_today_totals(uid, pipelines[sid].exercise)
+            emit("today_totals", totals)
+    except Exception as e:
+        logger.warning("Failed to refresh today's totals: %s", e)
 
 
 @socketio.on("frame")
@@ -432,7 +722,7 @@ def handle_frame(data):
     if result:
         feedback["is_correct"] = result.is_correct
         feedback["confidence"] = round(result.confidence, 2) if result.confidence is not None else 0
-        feedback["details"] = list(result.details.values()) if result.details else []
+        feedback["details"] = [v for k, v in result.details.items() if k != "voice"] if result.details else []
         feedback["form_score"] = round(result.form_score, 2)
         feedback["is_active"] = result.is_active
         feedback["joint_feedback"] = result.joint_feedback
@@ -450,6 +740,17 @@ def handle_frame(data):
 
     # Push-up specific: send set/phase info for on-video HUD
     _add_detector_fields(feedback, pipeline, result)
+
+    # Voice coaching: emit only when text changes (severe-form triggers)
+    if pipeline.exercise == "pushup" and result is not None:
+        details_dict = result.details if isinstance(result.details, dict) else {}
+        raw_voice = details_dict.get("voice", "") or ""
+        prev = last_voice_text.get(sid, "")
+        feedback["voice_text"] = raw_voice if raw_voice and raw_voice != prev else ""
+        if raw_voice:
+            last_voice_text[sid] = raw_voice
+    else:
+        feedback["voice_text"] = ""
 
     # Write per-frame trace to disk if session capture is active
     capture = captures.get(sid)
@@ -514,10 +815,11 @@ def handle_landmarks(data):
         t_total = time.perf_counter() - t_start
 
         if result:
+            details_dict = result.details if isinstance(result.details, dict) else {}
             feedback = {
                 "is_correct": result.is_correct,
                 "confidence": round(result.confidence, 2) if result.confidence is not None else 0,
-                "details": list(result.details.values()) if isinstance(result.details, dict) else result.details,
+                "details": [v for k, v in details_dict.items() if k != "voice"],
                 "form_score": round(result.form_score, 2),
                 "is_active": result.is_active,
                 "joint_feedback": result.joint_feedback,
@@ -530,16 +832,35 @@ def handle_landmarks(data):
                 "client_timestamp": data.get("timestamp", 0),
             }
         else:
+            details_dict = {}
             feedback = {
-                "form_score": 0, "is_active": False, "rep_count": 0,
-                "joint_feedback": {}, "details": [],
-                "dtw_similarity": 1.0, "dtw_worst_joint": None,
+                "is_correct": None,
+                "confidence": 0,
+                "details": [],
+                "form_score": 0,
+                "is_active": False,
+                "joint_feedback": {},
+                "dtw_similarity": 1.0,
+                "dtw_worst_joint": None,
+                "rep_count": 0,
+                "fps": round(pipeline.fps, 1),
+                "classifier": pipeline.classifier_type,
                 "timing": {"total_ms": round(t_total * 1000, 1)},
                 "client_timestamp": data.get("timestamp", 0),
             }
 
         # Push-up specific: send set/phase info for on-video HUD
         _add_detector_fields(feedback, pipeline, result)
+
+        # Voice coaching: emit only when text changes (severe-form triggers)
+        if pipeline.exercise == "pushup" and result is not None:
+            raw_voice = details_dict.get("voice", "") or ""
+            prev = last_voice_text.get(sid, "")
+            feedback["voice_text"] = raw_voice if raw_voice and raw_voice != prev else ""
+            if raw_voice:
+                last_voice_text[sid] = raw_voice
+        else:
+            feedback["voice_text"] = ""
 
         # Write per-frame trace to disk if session capture is active
         capture = captures.get(sid)

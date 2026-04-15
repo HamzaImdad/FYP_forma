@@ -9,10 +9,13 @@ Each exercise detector overrides:
   - _build_feedback_text(): actionable feedback string
 """
 
+import json
 import time
 from abc import ABC, abstractmethod
 from collections import deque
 from enum import Enum
+from functools import lru_cache
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
@@ -25,6 +28,25 @@ from ..utils.activity_detector import ActivityDetector, ActivityState, RestTier
 from ..feature_extraction.landmark_features import LandmarkFeatureExtractor
 from .dtw_matcher import DTWMatcher, DTWScore
 from .posture_classifier import PostureClassifier, PostureLabel
+
+
+# ── Muscle-group lookup (shared across all detector instances) ──────────
+_EXERCISE_DATA_PATH = Path(__file__).resolve().parents[2] / "app" / "exercise_data.json"
+
+
+@lru_cache(maxsize=1)
+def _load_exercise_data() -> Dict[str, Dict]:
+    try:
+        return json.loads(_EXERCISE_DATA_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _load_muscles_for(exercise: str) -> List[str]:
+    data = _load_exercise_data()
+    entry = data.get(exercise) or {}
+    muscles = entry.get("muscles")
+    return list(muscles) if isinstance(muscles, list) else []
 
 
 # ── Shared constants ────────────────────────────────────────────────────
@@ -88,6 +110,7 @@ class BaseExerciseDetector(ABC):
                  dtw_matcher: Optional["DTWMatcher"] = None):
         self._coverage_penalty = coverage_penalty
         self._dtw_matcher: Optional["DTWMatcher"] = dtw_matcher
+        self._muscle_groups: List[str] = _load_muscles_for(self.EXERCISE_NAME)
         self.reset()
 
     def reset(self):
@@ -99,7 +122,8 @@ class BaseExerciseDetector(ABC):
         self._rep_count = 0
         self._last_rep_time = 0.0
         self._rep_start_time = 0.0
-        self._descent_start_time = 0.0  # when GOING_DOWN started
+        self._descent_start_time = 0.0    # when GOING_DOWN started (= ecc start)
+        self._concentric_start_time = 0.0 # when GOING_UP started (= con start)
         self._bottom_frame_count = 0     # frames spent in BOTTOM state
         self._first_rep_started = False  # suppress issues before first descent
 
@@ -108,6 +132,10 @@ class BaseExerciseDetector(ABC):
         self._reps_in_current_set = 0
         self._last_active_time = 0.0
         self._set_reps: List[int] = []
+        # Per-set records with tempo/fatigue metadata — parallel to _set_reps
+        # for back-compat. Closed sets are appended by _close_current_set().
+        self._set_records: List[Dict] = []
+        self._last_set_end_time: float = 0.0
         # Between-sets gate: True while user is resting *after* finishing a set
         # and before starting the next one. Cleared only when a new rep's
         # descent actually begins (not on idle/movement alone).
@@ -366,6 +394,7 @@ class BaseExerciseDetector(ABC):
                 # are flushed so returning to frame starts a fresh set.
                 if self._reps_in_current_set > 0 and not self._between_sets:
                     self._set_reps.append(self._reps_in_current_set)
+                    self._close_current_set(now, failure_type="timeout")
                     self._set_count += 1
                     self._reps_in_current_set = 0
                     self._between_sets = True
@@ -459,6 +488,7 @@ class BaseExerciseDetector(ABC):
         long_idle = rest_tier in (RestTier.EXTENDED_REST, RestTier.LONG_REST)
         if long_idle and self._reps_in_current_set > 0 and not self._between_sets:
             self._set_reps.append(self._reps_in_current_set)
+            self._close_current_set(now, failure_type="clean_stop")
             self._set_count += 1
             self._reps_in_current_set = 0
             self._between_sets = True
@@ -472,6 +502,7 @@ class BaseExerciseDetector(ABC):
                 self._state = RepPhase.GOING_DOWN
                 self._rep_start_time = now
                 self._descent_start_time = now
+                self._concentric_start_time = 0.0  # reset — stamped at BOTTOM
                 self._bottom_frame_count = 0
                 self._first_rep_started = True
                 self._current_rep_issues = []
@@ -485,6 +516,7 @@ class BaseExerciseDetector(ABC):
         elif self._state == RepPhase.GOING_DOWN:
             if primary <= self.PRIMARY_ANGLE_BOTTOM:
                 self._state = RepPhase.BOTTOM
+                self._concentric_start_time = now  # end of eccentric phase
                 self._bottom_frame_count = 0
             elif primary > self.PRIMARY_ANGLE_TOP:
                 self._state = RepPhase.TOP
@@ -605,6 +637,7 @@ class BaseExerciseDetector(ABC):
                     rep_entry["dtw_similarity"] = round(dtw_sim, 2)
                     if dtw_worst:
                         rep_entry["dtw_worst_joint"] = dtw_worst
+                self._augment_rep_entry(rep_entry, now)
                 self._rep_history.append(rep_entry)
 
         # ── Smooth form score ──
@@ -669,12 +702,94 @@ class BaseExerciseDetector(ABC):
     def _inactive_result(self, message: str) -> ClassificationResult:
         return self._build_result(0.0, False, {}, {"setup": message})
 
+    # ── Session-1 capture helpers ───────────────────────────────────────
+
+    def _augment_rep_entry(self, rep_entry: Dict, now: float) -> None:
+        """Mutate rep_entry in place with the Session-1 capture fields
+        (tempo, peak angle, score min/max, set_num). Called from both the
+        legacy and robust rep-commit paths."""
+        scores = self._current_rep_scores or [0.0]
+        peak = getattr(self, "_rep_peak", None)
+        rep_entry["peak_angle"] = round(float(peak), 1) if peak is not None else None
+        rep_entry["score_min"] = round(float(min(scores)), 2)
+        rep_entry["score_max"] = round(float(max(scores)), 2)
+        # ecc_sec = descent duration; con_sec = ascent duration. Zero when a
+        # phase timestamp wasn't stamped (defensive for the legacy path).
+        ecc = 0.0
+        con = 0.0
+        if self._descent_start_time and self._concentric_start_time:
+            ecc = max(0.0, self._concentric_start_time - self._descent_start_time)
+        if self._concentric_start_time:
+            con = max(0.0, now - self._concentric_start_time)
+        rep_entry["ecc_sec"] = round(ecc, 2)
+        rep_entry["con_sec"] = round(con, 2)
+        # set_num is 1-indexed: sets 1..N while the current set is open
+        # and _set_count has not yet been incremented.
+        rep_entry["set_num"] = self._set_count + 1
+
+    def _close_current_set(self, now: float, failure_type: str = "clean_stop") -> None:
+        """Build and append a per-set record to `_set_records` based on the
+        reps in the just-finished set. Call this at every site that also
+        appends to `_set_reps` + increments `_set_count`.
+
+        `failure_type` is the caller's best guess:
+          - 'timeout' when the caller fired due to SET_REST_TIMEOUT / idle
+          - 'clean_stop' when the user voluntarily stopped (the default)
+          - 'form_breakdown' is auto-inferred here if the final 3 reps of
+             the set strictly trended downward (overrides 'clean_stop').
+        """
+        reps_count = int(self._reps_in_current_set)
+        if reps_count <= 0 and not self._rep_history:
+            return
+
+        # Pull the scores from the trailing `reps_count` rep_history entries
+        # (this set's reps). Guard against short histories.
+        tail = self._rep_history[-reps_count:] if reps_count > 0 else []
+        scores = [float(r.get("score", 0.0)) for r in tail]
+
+        if scores:
+            avg = sum(scores) / len(scores)
+            dropoff = scores[0] - scores[-1]
+        else:
+            avg = 0.0
+            dropoff = 0.0
+
+        # Auto-detect form breakdown (only if caller didn't already say timeout)
+        ft = failure_type
+        if ft == "clean_stop" and len(scores) >= 3:
+            if scores[-3] > scores[-2] > scores[-1]:
+                ft = "form_breakdown"
+
+        rest_before = 0.0
+        if self._last_set_end_time > 0.0:
+            rest_before = min(600.0, max(0.0, now - self._last_set_end_time))
+
+        record = {
+            # _set_count is incremented at the same caller site — use the
+            # post-increment value so set_num matches the outward-facing
+            # "set 1, 2, 3" numbering.
+            "set_num": int(self._set_count + 1),
+            "reps_count": reps_count,
+            "rest_before_sec": round(rest_before, 2),
+            "avg_form_score": round(avg, 2),
+            "score_dropoff": round(dropoff, 2),
+            "failure_type": ft,
+        }
+        self._set_records.append(record)
+        self._last_set_end_time = now
+
     # ── Session summary ─────────────────────────────────────────────────
 
     def get_session_summary(self) -> Dict:
         all_set_reps = list(self._set_reps)
         if self._reps_in_current_set > 0:
             all_set_reps.append(self._reps_in_current_set)
+
+        # Flush any open final set into _set_records so the summary includes it.
+        # Only applies if reps were committed but the set hasn't been closed
+        # (e.g. user hit End Session mid-set).
+        if self._reps_in_current_set > 0 and len(self._set_records) < len(all_set_reps):
+            self._close_current_set(time.time(), failure_type="clean_stop")
 
         good = sum(1 for r in self._rep_history if r["quality"] == RepQuality.GOOD)
 
@@ -684,9 +799,31 @@ class BaseExerciseDetector(ABC):
                 issue_counts[issue] = issue_counts.get(issue, 0) + 1
         common_issues = sorted(issue_counts.items(), key=lambda x: -x[1])[:5]
 
-        avg_score = (
-            sum(r["score"] for r in self._rep_history) / max(len(self._rep_history), 1)
-        ) if self._rep_history else 0.0
+        rep_scores = [float(r["score"]) for r in self._rep_history]
+        avg_score = (sum(rep_scores) / len(rep_scores)) if rep_scores else 0.0
+
+        # Session-1 aggregates
+        total_rest_sec = sum(
+            float(s.get("rest_before_sec", 0.0)) for s in self._set_records
+        )
+        duration_sec = float(getattr(self, "_session_duration_sec", 0.0) or 0.0)
+        work_to_rest_ratio = round(
+            duration_sec / max(total_rest_sec, 1.0), 2
+        ) if duration_sec > 0 else 0.0
+
+        if rep_scores:
+            consistency_score = round(max(0.0, 1.0 - float(np.std(rep_scores))), 2)
+        else:
+            consistency_score = 0.0
+
+        if len(rep_scores) >= 3:
+            try:
+                slope = float(np.polyfit(range(len(rep_scores)), rep_scores, 1)[0])
+            except Exception:
+                slope = 0.0
+            fatigue_index = round(slope, 4)
+        else:
+            fatigue_index = 0.0
 
         summary = {
             "exercise": self.EXERCISE_NAME,
@@ -695,6 +832,13 @@ class BaseExerciseDetector(ABC):
             "avg_form_score": round(avg_score, 2),
             "reps_per_set": all_set_reps,
             "common_issues": [{"issue": n, "count": c} for n, c in common_issues],
+            # Session-1 session-level fields
+            "total_rest_sec": round(total_rest_sec, 2),
+            "work_to_rest_ratio": work_to_rest_ratio,
+            "consistency_score": consistency_score,
+            "fatigue_index": fatigue_index,
+            "muscle_groups": list(self._muscle_groups),
+            "sets": list(self._set_records),
             "reps": [
                 {
                     "rep_num": r["rep"],
@@ -702,6 +846,13 @@ class BaseExerciseDetector(ABC):
                     "quality": r["quality"],
                     "issues": r.get("issues", []),
                     "duration": r.get("duration", 0),
+                    # Session-1 per-rep fields
+                    "peak_angle": r.get("peak_angle"),
+                    "ecc_sec": r.get("ecc_sec", 0),
+                    "con_sec": r.get("con_sec", 0),
+                    "score_min": r.get("score_min"),
+                    "score_max": r.get("score_max"),
+                    "set_num": r.get("set_num"),
                 }
                 for r in self._rep_history
             ],
@@ -829,6 +980,36 @@ class RobustExerciseDetector(BaseExerciseDetector):
 
         # Current posture (exposed for trace)
         self._current_posture: PostureLabel = PostureLabel.UNKNOWN
+
+        # Static-hold (plank) per-set breakdown.
+        # _hold_duration accumulates total time across rests; these track
+        # per-attempt chunks so the HUD can show "Set 1: 0:45, Set 2: 0:32".
+        self._set_hold_durations: List[float] = []
+        self._current_set_hold_start: float = 0.0
+
+    # ── Public accessors (parity with PushUpDetector) ───────────────────
+    @property
+    def session_state(self) -> SessionState:
+        return self._session_state
+
+    @property
+    def current_posture(self) -> PostureLabel:
+        return self._current_posture
+
+    @property
+    def last_set_reps(self) -> int:
+        return self._set_reps[-1] if self._set_reps else 0
+
+    @property
+    def last_set_hold(self) -> float:
+        """Static-hold seconds held in the most recently closed attempt."""
+        return self._set_hold_durations[-1] if self._set_hold_durations else 0.0
+
+    @property
+    def current_set_hold(self) -> float:
+        """Static-hold seconds held in the currently active attempt
+        (resets to 0 when a set closes, ticks upward while ACTIVE)."""
+        return max(0.0, self._hold_duration - self._current_set_hold_start)
 
     # ── Helpers ──────────────────────────────────────────────────────────
 
@@ -1016,8 +1197,43 @@ class RobustExerciseDetector(BaseExerciseDetector):
     def _close_active_set_or_rollback(self, now: float) -> None:
         """Shared logic for ACTIVE→RESTING (set close) or ACTIVE→SETUP (false
         start rollback). Called from both posture and visibility paths."""
+        # Static-hold branch (plank): snapshot the current-attempt hold
+        # duration, advance the per-set cursor, and transition to RESTING.
+        # Without this, plank would always fall to the "false start" path
+        # because _reps_in_current_set is never incremented for holds.
+        if self.IS_STATIC:
+            attempt_secs = self._hold_duration - self._current_set_hold_start
+            if attempt_secs >= 1.0:  # ignore <1s accidental re-entries
+                self._set_hold_durations.append(round(attempt_secs, 1))
+                # Static holds record a minimal set entry so downstream
+                # consumers can still iterate `_set_records` uniformly.
+                hold_record = {
+                    "set_num": int(self._set_count + 1),
+                    "reps_count": 0,
+                    "rest_before_sec": round(
+                        min(600.0, max(0.0, now - self._last_set_end_time))
+                        if self._last_set_end_time > 0.0 else 0.0, 2),
+                    "avg_form_score": 0.0,
+                    "score_dropoff": 0.0,
+                    "failure_type": "clean_stop",
+                    "hold_sec": round(attempt_secs, 1),
+                }
+                self._set_records.append(hold_record)
+                self._last_set_end_time = now
+                self._set_count += 1
+                self._current_set_hold_start = self._hold_duration
+                self._between_sets = True
+                self._pending_set_announce = True
+                self._session_state = SessionState.RESTING
+            else:
+                # Too-brief entry — treat as a false start, stay in SETUP.
+                self._session_state = SessionState.SETUP
+            self._unknown_streak = 0
+            return
+
         if self._reps_in_current_set > 0:
             self._set_reps.append(self._reps_in_current_set)
+            self._close_current_set(now, failure_type="clean_stop")
             self._set_count += 1
             self._reps_in_current_set = 0
             self._between_sets = True
@@ -1091,10 +1307,13 @@ class RobustExerciseDetector(BaseExerciseDetector):
         if self._reached_depth(last_primary):
             self._state = RepPhase.BOTTOM
             self._bottom_frame_count = 1
+            self._concentric_start_time = descent_start_t
         elif depth_reached:
             self._state = RepPhase.GOING_UP
+            self._concentric_start_time = descent_start_t
         else:
             self._state = RepPhase.GOING_DOWN
+            self._concentric_start_time = 0.0
             self._bottom_frame_count = 0
 
         self._pre_active_trace.clear()
@@ -1161,6 +1380,7 @@ class RobustExerciseDetector(BaseExerciseDetector):
                 self._state = RepPhase.GOING_DOWN
                 self._rep_start_time = now
                 self._descent_start_time = now  # for MIN_DESCENT_DURATION gate
+                self._concentric_start_time = 0.0  # reset — stamped at BOTTOM
                 self._bottom_frame_count = 0
                 self._rep_peak = primary
                 self._robust_first_rep_started = True
@@ -1173,6 +1393,7 @@ class RobustExerciseDetector(BaseExerciseDetector):
         elif self._state == RepPhase.GOING_DOWN:
             if self._reached_depth(primary):
                 self._state = RepPhase.BOTTOM
+                self._concentric_start_time = now  # end of eccentric phase
                 self._bottom_frame_count = 0
             elif self._back_at_top(primary):
                 # Elbow back to top without reaching depth AND primary
@@ -1190,6 +1411,7 @@ class RobustExerciseDetector(BaseExerciseDetector):
             if self._reached_depth(primary):
                 # Dropped back into bottom — second dip
                 self._state = RepPhase.BOTTOM
+                self._concentric_start_time = now  # re-stamp on double-dip
                 self._bottom_frame_count = 0
 
         return False
@@ -1270,6 +1492,7 @@ class RobustExerciseDetector(BaseExerciseDetector):
             if self._frames_since_pose >= NO_POSE_RESET_FRAMES:
                 if self._reps_in_current_set > 0 and not self._between_sets:
                     self._set_reps.append(self._reps_in_current_set)
+                    self._close_current_set(now, failure_type="timeout")
                     self._set_count += 1
                     self._reps_in_current_set = 0
                     self._between_sets = True
@@ -1482,6 +1705,7 @@ class RobustExerciseDetector(BaseExerciseDetector):
                 rep_entry["dtw_similarity"] = round(dtw_sim, 2)
                 if dtw_worst:
                     rep_entry["dtw_worst_joint"] = dtw_worst
+            self._augment_rep_entry(rep_entry, now)
             self._rep_history.append(rep_entry)
 
     def _classify_static_hold(self, angles: Dict[str, Optional[float]], now: float) -> ClassificationResult:
