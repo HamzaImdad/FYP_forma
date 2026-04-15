@@ -15,6 +15,8 @@ import { AboutPage } from "./pages/AboutPage";
 import { WorkoutPage } from "./pages/WorkoutPage";
 import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { SessionDetailPanel } from "./components/dashboard/SessionDetailPanel";
 
 export function App() {
   const { pathname } = useLocation();
@@ -77,11 +79,15 @@ export function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <Stub
-                    phase="Phase 04"
-                    title="Dashboard"
-                    description="Form trend, push-up focus, session history, streak heatmap."
-                  />
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/session/:id"
+              element={
+                <ProtectedRoute>
+                  <SessionDetailPanel />
                 </ProtectedRoute>
               }
             />

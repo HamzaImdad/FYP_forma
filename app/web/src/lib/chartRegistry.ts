@@ -1,0 +1,50 @@
+// Register chart.js components once for the whole dashboard.
+import {
+  Chart as ChartJS,
+  ArcElement,
+  BarController,
+  BarElement,
+  CategoryScale,
+  Filler,
+  LineController,
+  LineElement,
+  LinearScale,
+  PointElement,
+  PolarAreaController,
+  RadialLinearScale,
+  ScatterController,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  ArcElement,
+  BarController,
+  BarElement,
+  CategoryScale,
+  Filler,
+  LineController,
+  LineElement,
+  LinearScale,
+  PointElement,
+  PolarAreaController,
+  RadialLinearScale,
+  ScatterController,
+  Tooltip,
+  Legend,
+);
+
+export const FORMA_CHART_COLORS = {
+  ink: "#1a1a1a",
+  ink2: "#3c3a36",
+  ink3: "#6b6760",
+  ink4: "#9a958c",
+  gold: "#b8864a",
+  goldSoft: "#d4a574",
+  orange: "#d44514",
+  good: "#2f7d5b",
+  warn: "#a06a00",
+  bad: "#b8341c",
+  rule: "rgba(26,26,26,0.08)",
+  ruleStrong: "rgba(26,26,26,0.16)",
+};

@@ -19,6 +19,7 @@ import base64
 import logging
 import argparse
 from pathlib import Path
+from typing import Dict
 
 
 import cv2
@@ -466,6 +467,168 @@ def dashboard_distribution():
     return jsonify(db.get_exercise_distribution(g.user_id, period))
 
 
+# ── Session 2 dashboard endpoints ──────────────────────────────────────
+
+from app.insights import (  # noqa: E402
+    generate_insights,
+    muscle_balance,
+    personal_records,
+    resolve_muscle_groups,
+)
+
+
+@app.route("/api/dashboard/insights")
+@require_auth
+def dashboard_insights():
+    """Ranked insights for the current user, optionally filtered by exercise."""
+    exercise = request.args.get("exercise") or None
+    period = request.args.get("period", "month")
+    try:
+        limit = int(request.args.get("limit", 10))
+    except (TypeError, ValueError):
+        limit = 10
+    items = generate_insights(
+        g.user_id, exercise=exercise, period=period, limit=limit, db=db
+    )
+    return jsonify({"insights": [i.to_dict() for i in items]})
+
+
+def _streak_days(user_id: int) -> int:
+    """Count consecutive days (ending today or yesterday) that have ≥1 session."""
+    conn = db._get_conn()
+    try:
+        rows = conn.execute(
+            """SELECT DISTINCT DATE(date) AS d FROM sessions
+               WHERE user_id = ? ORDER BY d DESC""",
+            (int(user_id),),
+        ).fetchall()
+    finally:
+        conn.close()
+    if not rows:
+        return 0
+    from datetime import date as _date, datetime as _dt, timedelta as _td
+
+    today = _date.today()
+    dates = [_dt.fromisoformat(r["d"]).date() for r in rows]
+    if (today - dates[0]) > _td(days=1):
+        return 0
+    streak = 1
+    cursor = dates[0]
+    for d in dates[1:]:
+        if cursor - d == _td(days=1):
+            streak += 1
+            cursor = d
+        else:
+            break
+    return streak
+
+
+@app.route("/api/dashboard/overview")
+@require_auth
+def dashboard_overview():
+    """Single payload that powers the top of the dashboard."""
+    uid = g.user_id
+    from datetime import datetime as _dt
+
+    start_of_day = _dt.now().replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    conn = db._get_conn()
+    try:
+        today_row = conn.execute(
+            """SELECT COALESCE(SUM(total_reps),0) AS reps,
+                      COALESCE(AVG(NULLIF(avg_form_score,0)),0) AS form,
+                      COALESCE(SUM(duration_sec),0) AS time,
+                      COUNT(*) AS sessions
+               FROM sessions WHERE user_id = ? AND date >= ?""",
+            (uid, start_of_day),
+        ).fetchone()
+        total_sessions_row = conn.execute(
+            "SELECT COUNT(*) AS n FROM sessions WHERE user_id = ?", (uid,)
+        ).fetchone()
+    finally:
+        conn.close()
+
+    wow = db.get_wow_deltas(uid)
+    streak = _streak_days(uid)
+    top_insights = generate_insights(uid, limit=3, db=db)
+    prs = personal_records(uid, db=db)
+    balance = muscle_balance(uid, days=7, db=db)
+
+    def _delta(curr: float, prev: float) -> Dict:
+        diff = curr - prev
+        pct = None
+        if prev:
+            pct = (diff / prev) * 100
+        return {"current": curr, "previous": prev, "delta": diff, "pct": pct}
+
+    return jsonify(
+        {
+            "today": {
+                "reps": int(today_row["reps"] or 0),
+                "avg_form_score": round(float(today_row["form"] or 0), 3),
+                "time_sec": round(float(today_row["time"] or 0), 1),
+                "session_count": int(today_row["sessions"] or 0),
+                "streak_days": streak,
+            },
+            "wow_deltas": {
+                "reps": _delta(wow["this_week"]["reps"], wow["last_week"]["reps"]),
+                "form": _delta(
+                    round(wow["this_week"]["form"], 3),
+                    round(wow["last_week"]["form"], 3),
+                ),
+                "time": _delta(
+                    round(wow["this_week"]["time"], 1),
+                    round(wow["last_week"]["time"], 1),
+                ),
+                "sessions": _delta(
+                    wow["this_week"]["sessions"], wow["last_week"]["sessions"]
+                ),
+            },
+            "top_insights": [i.to_dict() for i in top_insights],
+            "personal_records": prs,
+            "muscle_balance": balance,
+            "totals": {
+                "all_sessions": int(total_sessions_row["n"] or 0),
+            },
+        }
+    )
+
+
+@app.route("/api/dashboard/exercise/<exercise>")
+@require_auth
+def dashboard_exercise(exercise: str):
+    """Per-exercise deep-dive payload."""
+    if exercise not in EXERCISES:
+        return jsonify({"error": "unknown_exercise"}), 404
+    uid = g.user_id
+    data = db.get_exercise_deep_dive(uid, exercise, days=60)
+    data["top_issues"] = db.get_top_issues(uid, exercise, limit=5)
+    data["insights"] = [
+        i.to_dict() for i in generate_insights(uid, exercise=exercise, limit=6, db=db)
+    ]
+    data["muscles"] = resolve_muscle_groups(exercise)
+    return jsonify(data)
+
+
+@app.route("/api/dashboard/heatmap")
+@require_auth
+def dashboard_heatmap():
+    try:
+        days = int(request.args.get("days", 84))
+    except (TypeError, ValueError):
+        days = 84
+    return jsonify({"days": days, "cells": db.get_heatmap(g.user_id, days)})
+
+
+@app.route("/api/dashboard/muscle-balance")
+@require_auth
+def dashboard_muscle_balance():
+    try:
+        days = int(request.args.get("days", 7))
+    except (TypeError, ValueError):
+        days = 7
+    return jsonify({"days": days, "groups": muscle_balance(g.user_id, days, db=db)})
+
+
 # ── Socket.IO Events ────────────────────────────────────────────────────
 
 @socketio.on("connect")
@@ -625,6 +788,17 @@ def handle_end_session():
             logger.warning("Failed to finalize session capture: %s", e)
 
     emit("session_report", summary)
+
+    # Session 2: notify the dashboard so it can refetch overview in real time.
+    emit(
+        "session_completed",
+        {
+            "exercise": pipelines[sid].exercise,
+            "session_id": summary.get("session_id"),
+            "total_reps": summary.get("total_reps"),
+            "avg_form_score": summary.get("avg_form_score"),
+        },
+    )
 
     # Re-query today's totals so the UI can show the updated "today so far"
     # immediately after the session ends.

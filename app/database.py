@@ -530,6 +530,208 @@ class ExerVisionDB:
         finally:
             conn.close()
 
+    # ── Dashboard deep-dive helpers (Session 2) ─────────────────────────
+
+    def get_heatmap(self, user_id: int, days: int = 84) -> List[Dict]:
+        """Activity heatmap: reps count + session count per calendar day."""
+        conn = self._get_conn()
+        try:
+            cutoff = (datetime.now() - timedelta(days=days)).isoformat()
+            rows = conn.execute(
+                """SELECT DATE(date) AS day,
+                          SUM(total_reps) AS reps_count,
+                          COUNT(*) AS session_count,
+                          SUM(duration_sec) AS duration_sec
+                   FROM sessions
+                   WHERE user_id = ? AND date >= ?
+                   GROUP BY DATE(date)
+                   ORDER BY day""",
+                (int(user_id), cutoff),
+            ).fetchall()
+            return [
+                {
+                    "date": r["day"],
+                    "reps_count": int(r["reps_count"] or 0),
+                    "session_count": int(r["session_count"] or 0),
+                    "duration_sec": float(r["duration_sec"] or 0),
+                }
+                for r in rows
+            ]
+        finally:
+            conn.close()
+
+    def get_top_issues(
+        self, user_id: int, exercise: Optional[str] = None, limit: int = 5
+    ) -> List[Dict]:
+        """Aggregate issue frequencies across a user's reps."""
+        conn = self._get_conn()
+        try:
+            q = (
+                "SELECT r.issues FROM reps r "
+                "JOIN sessions s ON r.session_id = s.id "
+                "WHERE s.user_id = ?"
+            )
+            params: list = [int(user_id)]
+            if exercise:
+                q += " AND s.exercise = ?"
+                params.append(exercise)
+            rows = conn.execute(q, params).fetchall()
+            counts: Dict[str, int] = {}
+            for r in rows:
+                try:
+                    for issue in json.loads(r["issues"] or "[]"):
+                        if not issue:
+                            continue
+                        counts[issue] = counts.get(issue, 0) + 1
+                except json.JSONDecodeError:
+                    continue
+            top = sorted(counts.items(), key=lambda kv: kv[1], reverse=True)[:limit]
+            return [{"issue": k, "count": v} for k, v in top]
+        finally:
+            conn.close()
+
+    def get_exercise_deep_dive(
+        self, user_id: int, exercise: str, days: int = 30
+    ) -> Dict:
+        """Bundle everything the per-exercise deep-dive panel needs."""
+        conn = self._get_conn()
+        try:
+            cutoff = (datetime.now() - timedelta(days=days)).isoformat()
+            sessions = conn.execute(
+                """SELECT id, date, duration_sec, total_reps, good_reps, avg_form_score
+                   FROM sessions
+                   WHERE user_id = ? AND exercise = ? AND date >= ?
+                   ORDER BY date ASC""",
+                (int(user_id), exercise, cutoff),
+            ).fetchall()
+            session_ids = [s["id"] for s in sessions]
+
+            rep_rows: list = []
+            if session_ids:
+                placeholders = ",".join("?" * len(session_ids))
+                rep_rows = conn.execute(
+                    f"""SELECT session_id, rep_num, form_score, quality,
+                               peak_angle, ecc_sec, con_sec, set_num
+                        FROM reps
+                        WHERE session_id IN ({placeholders})
+                        ORDER BY session_id ASC, rep_num ASC""",
+                    session_ids,
+                ).fetchall()
+        finally:
+            conn.close()
+
+        scores = [
+            {
+                "session_id": s["id"],
+                "date": s["date"],
+                "avg_form_score": float(s["avg_form_score"] or 0),
+                "total_reps": int(s["total_reps"] or 0),
+                "duration_sec": float(s["duration_sec"] or 0),
+            }
+            for s in sessions
+        ]
+
+        # Quality breakdown per session
+        quality_by_session: Dict[int, Dict[str, int]] = {
+            int(s["id"]): {"good": 0, "moderate": 0, "bad": 0} for s in sessions
+        }
+        tempo: List[Dict] = []
+        depth: List[Dict] = []
+        fatigue_pos: Dict[int, List[float]] = {}
+
+        for r in rep_rows:
+            sid = int(r["session_id"])
+            q = (r["quality"] or "moderate").lower()
+            bucket = quality_by_session.setdefault(
+                sid, {"good": 0, "moderate": 0, "bad": 0}
+            )
+            if q in bucket:
+                bucket[q] += 1
+            else:
+                bucket["moderate"] += 1
+            if r["ecc_sec"] is not None or r["con_sec"] is not None:
+                tempo.append(
+                    {
+                        "session_id": sid,
+                        "rep_num": int(r["rep_num"] or 0),
+                        "ecc_sec": float(r["ecc_sec"] or 0),
+                        "con_sec": float(r["con_sec"] or 0),
+                    }
+                )
+            if r["peak_angle"] is not None:
+                depth.append(
+                    {
+                        "session_id": sid,
+                        "rep_num": int(r["rep_num"] or 0),
+                        "peak_angle": float(r["peak_angle"]),
+                    }
+                )
+            rn = r["rep_num"]
+            sc = r["form_score"]
+            if rn is not None and sc is not None:
+                fatigue_pos.setdefault(int(rn), []).append(float(sc))
+
+        quality_breakdown = [
+            {
+                "session_id": s["id"],
+                "date": s["date"],
+                "good": quality_by_session[int(s["id"])]["good"],
+                "moderate": quality_by_session[int(s["id"])]["moderate"],
+                "bad": quality_by_session[int(s["id"])]["bad"],
+            }
+            for s in sessions
+        ]
+        fatigue_curve = [
+            {
+                "rep_num": pos,
+                "avg_score": round(sum(v) / len(v), 3) if v else 0,
+                "sample": len(v),
+            }
+            for pos, v in sorted(fatigue_pos.items())
+        ]
+        return {
+            "exercise": exercise,
+            "scores": scores,
+            "quality_breakdown": quality_breakdown,
+            "tempo": tempo,
+            "depth": depth,
+            "fatigue_curve": fatigue_curve,
+        }
+
+    def get_wow_deltas(self, user_id: int, exercise: Optional[str] = None) -> Dict:
+        """Week-over-week KPI snapshot (reps, avg form, time trained)."""
+        conn = self._get_conn()
+        try:
+            now = datetime.now()
+            this_start = (now - timedelta(days=7)).isoformat()
+            last_start = (now - timedelta(days=14)).isoformat()
+
+            def agg(start_iso: str, end_iso: str) -> Dict:
+                q = (
+                    "SELECT COALESCE(SUM(total_reps),0) AS reps,"
+                    " COALESCE(AVG(NULLIF(avg_form_score,0)),0) AS form,"
+                    " COALESCE(SUM(duration_sec),0) AS time,"
+                    " COUNT(*) AS sessions"
+                    " FROM sessions WHERE user_id = ? AND date >= ? AND date < ?"
+                )
+                params = [int(user_id), start_iso, end_iso]
+                if exercise:
+                    q += " AND exercise = ?"
+                    params.append(exercise)
+                r = conn.execute(q, params).fetchone()
+                return {
+                    "reps": int(r["reps"] or 0),
+                    "form": float(r["form"] or 0),
+                    "time": float(r["time"] or 0),
+                    "sessions": int(r["sessions"] or 0),
+                }
+
+            this_week = agg(this_start, now.isoformat())
+            last_week = agg(last_start, this_start)
+            return {"this_week": this_week, "last_week": last_week}
+        finally:
+            conn.close()
+
     def _period_to_date(self, period: Optional[str]) -> Optional[str]:
         """Convert period string to ISO date cutoff."""
         if not period or period == "all":
