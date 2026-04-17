@@ -113,6 +113,8 @@ export function WorkoutPage() {
   const timerRef = useRef<HTMLSpanElement>(null);
   const scoreValueRef = useRef<HTMLDivElement>(null);
   const scoreRingFillRef = useRef<SVGCircleElement>(null);
+  const scoreValueRefMobile = useRef<HTMLDivElement>(null);
+  const scoreRingFillRefMobile = useRef<SVGCircleElement>(null);
   const setsDoneRef = useRef<HTMLDivElement>(null);
   const currentSetRef = useRef<HTMLDivElement>(null);
   const currentSetLabelRef = useRef<HTMLDivElement>(null);
@@ -299,15 +301,20 @@ export function WorkoutPage() {
 
         if (active) wasActiveEverRef.current = true;
 
-        // Score ring
-        const ring = scoreRingFillRef.current;
-        if (ring) {
-          const pct = Math.max(0, Math.min(100, score)) / 100;
-          ring.style.strokeDashoffset = String(RING_CIRC * (1 - pct));
-          ring.style.stroke = scoreColor(score);
+        // Score ring — update both desktop + mobile rings (only one is
+        // visible at a time via CSS, but both are in the DOM).
+        const pct = Math.max(0, Math.min(100, score)) / 100;
+        const dashOffset = String(RING_CIRC * (1 - pct));
+        const stroke = scoreColor(score);
+        const scoreText = active ? String(score) : "--";
+        for (const ring of [scoreRingFillRef.current, scoreRingFillRefMobile.current]) {
+          if (ring) {
+            ring.style.strokeDashoffset = dashOffset;
+            ring.style.stroke = stroke;
+          }
         }
-        if (scoreValueRef.current) {
-          scoreValueRef.current.textContent = active ? String(score) : "--";
+        for (const el of [scoreValueRef.current, scoreValueRefMobile.current]) {
+          if (el) el.textContent = scoreText;
         }
 
         // Counters — prefer server-provided set fields, fall back to total reps.
@@ -636,11 +643,11 @@ export function WorkoutPage() {
       />
 
       {/* TOP-LEFT — exercise + timer */}
-      <div className="absolute top-6 left-6 md:top-8 md:left-10">
-        <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--color-gold-soft)]">
+      <div className="absolute top-3 left-3 md:top-8 md:left-10 landscape:top-8 landscape:left-10 max-w-[58%] md:max-w-none landscape:max-w-none">
+        <div className="text-[9px] md:text-[10px] uppercase tracking-[0.24em] text-[color:var(--color-gold-soft)]">
           Live Session
         </div>
-        <div className="mt-1 font-[family-name:var(--font-display)] text-4xl md:text-5xl tracking-[0.04em] leading-none">
+        <div className="mt-1 font-[family-name:var(--font-display)] text-2xl md:text-5xl landscape:text-4xl tracking-[0.04em] leading-none">
           {exercise.name}
           {weightKg != null && (
             <span className="text-[color:var(--color-gold-soft)]">
@@ -649,20 +656,21 @@ export function WorkoutPage() {
             </span>
           )}
         </div>
-        <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-black/70 border border-white/10">
+        <div className="mt-2 md:mt-3 inline-flex items-center gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-sm bg-black/70 border border-white/10">
           <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--color-gold-soft)] animate-pulse" />
           <span
             ref={timerRef}
-            className="font-mono text-sm tabular-nums tracking-[0.1em] text-[color:var(--color-gold-soft)]"
+            className="font-mono text-xs md:text-sm tabular-nums tracking-[0.1em] text-[color:var(--color-gold-soft)]"
           >
             00:00
           </span>
         </div>
       </div>
 
-      {/* TOP-RIGHT — score ring + end */}
-      <div className="absolute top-6 right-6 md:top-8 md:right-10 flex items-start gap-5">
-        <div className="relative h-[110px] w-[110px] rounded-full bg-black/70 border border-white/10 p-2">
+      {/* TOP-RIGHT — score ring (desktop only) + end */}
+      <div className="absolute top-3 right-3 md:top-8 md:right-10 landscape:top-8 landscape:right-10 flex items-start gap-3 md:gap-5">
+        {/* Score ring — hidden on mobile portrait, visible on desktop + landscape */}
+        <div className="relative h-[110px] w-[110px] rounded-full bg-black/70 border border-white/10 p-2 hidden md:block landscape:block">
           <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
             <circle
               cx="60"
@@ -702,65 +710,108 @@ export function WorkoutPage() {
           </div>
         </div>
 
-        <div className="flex flex-col items-stretch gap-2">
+        <div className="flex flex-col items-stretch gap-1.5 md:gap-2">
           <button
             type="button"
             onClick={() => setMirrored((m) => !m)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] hover:bg-white/10 hover:border-white/40 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] hover:bg-white/10 hover:border-white/40 transition-colors"
             aria-label={mirrored ? "Disable mirror" : "Enable mirror"}
             title={mirrored ? "Mirror: on" : "Mirror: off"}
           >
             <FlipHorizontal size={14} />
-            {mirrored ? "Mirror" : "Flip"}
+            <span className="hidden sm:inline">
+              {mirrored ? "Mirror" : "Flip"}
+            </span>
           </button>
           <button
             type="button"
             onClick={handleExit}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] hover:bg-white/10 hover:border-white/40 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] hover:bg-white/10 hover:border-white/40 transition-colors"
             aria-label="End session"
           >
             <X size={14} />
-            End
+            <span className="hidden sm:inline">End</span>
           </button>
         </div>
       </div>
 
-      {/* LEFT PANEL — counters */}
-      <div className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 w-[170px] space-y-3">
-        <div className="px-4 py-3 rounded-sm bg-black/70 border border-white/10">
-          <div className="text-[9px] uppercase tracking-[0.22em] text-white/55">
+      {/* COUNTERS — horizontal strip on mobile portrait, vertical on desktop/landscape */}
+      <div className="absolute left-3 right-3 top-[88px] grid grid-cols-3 gap-2 md:left-10 md:right-auto md:top-1/2 md:-translate-y-1/2 md:w-[170px] md:block md:space-y-3 landscape:left-10 landscape:right-auto landscape:top-1/2 landscape:-translate-y-1/2 landscape:w-[170px] landscape:block landscape:space-y-3">
+        <div className="px-2.5 py-2 md:px-4 md:py-3 rounded-sm bg-black/70 border border-white/10">
+          <div className="text-[8px] md:text-[9px] uppercase tracking-[0.22em] text-white/55">
             Sets Done
           </div>
           <div
             ref={setsDoneRef}
-            className="mt-1 font-[family-name:var(--font-display)] leading-none tabular-nums text-[2rem] text-white/90"
+            className="mt-0.5 md:mt-1 font-[family-name:var(--font-display)] leading-none tabular-nums text-[1.5rem] md:text-[2rem] text-white/90"
           >
             0
           </div>
         </div>
-        <div className="px-4 py-3 rounded-sm bg-black/70 border border-[color:var(--color-gold-soft)]/40">
+        <div className="px-2.5 py-2 md:px-4 md:py-3 rounded-sm bg-black/70 border border-[color:var(--color-gold-soft)]/40">
           <div
             ref={currentSetLabelRef}
-            className="text-[9px] uppercase tracking-[0.22em] text-white/55"
+            className="text-[8px] md:text-[9px] uppercase tracking-[0.22em] text-white/55 truncate"
           >
             Set 1 · {isPlank ? "Hold" : "Reps"}
           </div>
           <div
             ref={currentSetRef}
-            className="mt-1 font-[family-name:var(--font-display)] leading-none tabular-nums text-[3.25rem] text-[color:var(--color-gold-soft)]"
+            className="mt-0.5 md:mt-1 font-[family-name:var(--font-display)] leading-none tabular-nums text-[2.25rem] md:text-[3.25rem] text-[color:var(--color-gold-soft)]"
           >
             0
           </div>
         </div>
-        <div className="px-4 py-3 rounded-sm bg-black/70 border border-white/10">
-          <div className="text-[9px] uppercase tracking-[0.22em] text-white/55">
+        <div className="px-2.5 py-2 md:px-4 md:py-3 rounded-sm bg-black/70 border border-white/10">
+          <div className="text-[8px] md:text-[9px] uppercase tracking-[0.22em] text-white/55 truncate">
             {isPlank ? "Total Time" : "Total Reps"}
           </div>
           <div
             ref={totalRepsRef}
-            className="mt-1 font-[family-name:var(--font-display)] leading-none tabular-nums text-[2rem] text-white/90"
+            className="mt-0.5 md:mt-1 font-[family-name:var(--font-display)] leading-none tabular-nums text-[1.5rem] md:text-[2rem] text-white/90"
           >
             0
+          </div>
+        </div>
+      </div>
+
+      {/* MOBILE SCORE RING — bottom-left, only shown on mobile portrait */}
+      <div className="absolute bottom-20 left-3 h-[84px] w-[84px] rounded-full bg-black/70 border border-white/10 p-1.5 md:hidden landscape:hidden">
+        <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+          <circle
+            cx="60"
+            cy="60"
+            r={RING_RADIUS}
+            fill="none"
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth="6"
+          />
+          <circle
+            ref={scoreRingFillRefMobile}
+            cx="60"
+            cy="60"
+            r={RING_RADIUS}
+            fill="none"
+            stroke="#AEE710"
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray={RING_CIRC}
+            strokeDashoffset={RING_CIRC}
+            style={{
+              transition:
+                "stroke-dashoffset 220ms ease-out, stroke 300ms ease-out",
+            }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div
+            ref={scoreValueRefMobile}
+            className="font-[family-name:var(--font-display)] text-2xl leading-none tabular-nums"
+          >
+            --
+          </div>
+          <div className="text-[8px] uppercase tracking-[0.2em] text-white/60">
+            Form
           </div>
         </div>
       </div>
@@ -772,32 +823,35 @@ export function WorkoutPage() {
           className="pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-300"
           style={{ opacity: 1 }}
         >
-          <div className="text-center px-8 max-w-2xl">
+          <div className="text-center px-4 md:px-8 max-w-2xl">
             <div
               ref={overlayLabelRef}
-              className="font-[family-name:var(--font-display)] text-5xl md:text-6xl tracking-[0.06em] text-white/90"
+              className="font-[family-name:var(--font-display)] tracking-[0.06em] text-white/90 leading-tight"
+              style={{ fontSize: "clamp(1.75rem, 7vw, 3.75rem)" }}
             >
               GET INTO POSITION
             </div>
             <div
               ref={overlaySubtextRef}
-              className="mt-4 font-[family-name:var(--font-serif)] italic text-lg md:text-xl text-[color:var(--color-gold-soft)]/80"
+              className="mt-3 md:mt-4 font-[family-name:var(--font-serif)] italic text-[color:var(--color-gold-soft)]/80"
+              style={{ fontSize: "clamp(0.95rem, 2.4vw, 1.25rem)" }}
             />
           </div>
         </div>
       )}
 
-      {/* Bottom feedback */}
-      <div className="absolute bottom-8 inset-x-0 px-6 md:px-10">
+      {/* Bottom feedback — on mobile it sits to the right of the score ring
+          (ring is bottom-20 left-3), so indent the feedback past it */}
+      <div className="absolute bottom-8 right-3 left-[108px] md:inset-x-0 md:px-10 md:left-0">
         <div
           ref={feedbackRef}
-          className="min-h-[2.25rem] text-center font-[family-name:var(--font-serif)] italic text-xl md:text-2xl text-[color:var(--color-gold-soft)]"
+          className="min-h-[2.25rem] text-left md:text-center font-[family-name:var(--font-serif)] italic text-base md:text-2xl text-[color:var(--color-gold-soft)]"
         />
       </div>
 
       <div
         ref={fpsRef}
-        className="absolute bottom-4 right-6 text-[10px] uppercase tracking-[0.18em] text-white/40 tabular-nums"
+        className="absolute bottom-1.5 right-3 md:bottom-4 md:right-6 text-[9px] md:text-[10px] uppercase tracking-[0.18em] text-white/40 tabular-nums"
       >
         0 fps
       </div>

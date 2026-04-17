@@ -138,7 +138,7 @@ export function GoalSuggestionModal({ planId, exercises, onClose }: Props) {
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-full max-w-[520px] mx-6 bg-[color:var(--color-raised)] border border-[color:var(--rule)] rounded-[4px] shadow-[0_32px_80px_rgba(0,0,0,0.6)] overflow-hidden">
+      <div className="w-full max-w-[520px] max-h-[calc(100vh-2rem)] overflow-y-auto mx-4 sm:mx-6 bg-[color:var(--color-raised)] border border-[color:var(--rule)] rounded-[4px] shadow-[0_32px_80px_rgba(0,0,0,0.6)]">
         <div className="px-6 pt-6 pb-3 border-b border-[color:var(--rule)]">
           <div
             className="text-[color:var(--color-ink)]"

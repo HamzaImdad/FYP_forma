@@ -73,7 +73,7 @@ export function SessionDetailPanel() {
   const sets = data.sets ?? [];
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 md:px-10 pt-[calc(var(--nav-height)+3rem)] pb-24">
+    <div className="max-w-[1100px] mx-auto px-4 sm:px-6 md:px-10 pt-[calc(var(--nav-height)+1.5rem)] md:pt-[calc(var(--nav-height)+3rem)] pb-16 md:pb-24">
       <button
         onClick={() => navigate(-1)}
         className="text-[11px] uppercase tracking-[0.24em] text-[color:var(--color-ink-3)] hover:text-[color:var(--color-gold)] mb-6"
@@ -86,12 +86,12 @@ export function SessionDetailPanel() {
           Session #{data.id} · {fmtDate(data.date)}
         </div>
         <h1
-          className="text-[color:var(--color-ink)] mt-3"
-          style={{ fontFamily: "var(--font-display)", fontSize: "3.5rem", lineHeight: 0.95, letterSpacing: "0.04em" }}
+          className="text-[color:var(--color-ink)] mt-3 break-words"
+          style={{ fontFamily: "var(--font-display)", fontSize: "clamp(2rem, 6vw, 3.5rem)", lineHeight: 0.95, letterSpacing: "0.04em" }}
         >
           {data.exercise.replace(/_/g, " ").toUpperCase()}
         </h1>
-        <div className="mt-5 flex flex-wrap gap-8 text-[11px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)]">
+        <div className="mt-4 md:mt-5 flex flex-wrap gap-x-4 gap-y-2 md:gap-8 text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)]">
           <span>{data.total_reps} reps</span>
           <span>{Math.round(data.duration_sec)}s</span>
           <span>{reps.length} tracked reps</span>
@@ -168,30 +168,30 @@ export function SessionDetailPanel() {
                 <li key={r.id}>
                   <button
                     onClick={() => setExpandedRep(isOpen ? null : r.id)}
-                    className="w-full grid grid-cols-12 py-3 gap-3 text-left hover:bg-[color:var(--color-raised)]/50 transition-colors px-3 rounded-sm"
+                    className="w-full grid grid-cols-[auto_1fr_auto] md:grid-cols-12 py-3 gap-x-3 gap-y-1 text-left hover:bg-[color:var(--color-raised)]/50 transition-colors px-3 rounded-sm min-h-11"
                   >
                     <span
-                      className="col-span-1 text-[color:var(--color-gold)]"
+                      className="md:col-span-1 text-[color:var(--color-gold)]"
                       style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem" }}
                     >
                       #{r.rep_num}
                     </span>
-                    <span className="col-span-2 text-[11px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)]">
+                    <span className="md:col-span-2 text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)]">
                       set {r.set_num ?? "—"}
                     </span>
                     <span
-                      className="col-span-2 text-sm"
+                      className="md:col-span-2 text-sm text-right md:text-left"
                       style={{ color: severityColor(r.form_score ?? 0) }}
                     >
                       {rpct}/100
                     </span>
-                    <span className="col-span-2 text-sm text-[color:var(--color-ink-3)]">
+                    <span className="md:col-span-2 text-xs md:text-sm text-[color:var(--color-ink-3)] md:col-start-auto col-start-2">
                       ecc {r.ecc_sec ? r.ecc_sec.toFixed(2) : "—"}s
                     </span>
-                    <span className="col-span-2 text-sm text-[color:var(--color-ink-3)]">
+                    <span className="md:col-span-2 text-xs md:text-sm text-[color:var(--color-ink-3)]">
                       con {r.con_sec ? r.con_sec.toFixed(2) : "—"}s
                     </span>
-                    <span className="col-span-3 text-sm text-[color:var(--color-ink-3)]">
+                    <span className="md:col-span-3 text-xs md:text-sm text-[color:var(--color-ink-3)] col-start-2 md:col-start-auto">
                       {r.peak_angle != null ? `${r.peak_angle.toFixed(1)}°` : ""}{" "}
                       {r.issues?.length > 0 && (
                         <em className="text-[color:var(--color-bad)]">

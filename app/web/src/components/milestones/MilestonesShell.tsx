@@ -69,8 +69,8 @@ export function MilestonesShell() {
   const archived = goals.filter((g) => g.status === "archived");
 
   return (
-    <div className="min-h-screen bg-[color:var(--color-page)] pt-[72px]">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-10 py-10">
+    <div className="min-h-screen bg-[color:var(--color-page)] pt-[64px] sm:pt-[72px]">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-10 py-6 md:py-10">
         <header className="mb-8 flex items-end justify-between gap-6 flex-wrap">
           <div>
             <h1

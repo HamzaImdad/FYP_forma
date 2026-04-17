@@ -151,7 +151,7 @@ export function DashboardPage() {
     : null;
 
   return (
-    <div className="relative max-w-[1440px] mx-auto px-6 md:px-10 pt-[calc(var(--nav-height)+2.5rem)] pb-24 space-y-10 overflow-hidden">
+    <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 md:px-10 pt-[calc(var(--nav-height)+1.5rem)] md:pt-[calc(var(--nav-height)+2.5rem)] pb-20 md:pb-24 space-y-6 md:space-y-10 overflow-hidden">
       <GradientGlow position="top-right" intensity="medium" />
       <GradientGlow position="bottom-left" intensity="subtle" />
       <header className="relative">
@@ -175,7 +175,7 @@ export function DashboardPage() {
       </header>
 
       {showEmptyState ? (
-        <section className="border border-[color:var(--rule)] rounded-sm bg-[color:var(--color-raised)]/60 px-10 py-20 text-center">
+        <section className="border border-[color:var(--rule)] rounded-sm bg-[color:var(--color-raised)]/60 px-6 sm:px-10 py-12 sm:py-20 text-center">
           <h2
             className="mb-4 text-[color:var(--color-ink)]"
             style={{ fontFamily: "var(--font-display)", fontSize: "2.5rem", letterSpacing: "0.04em" }}
@@ -201,11 +201,11 @@ export function DashboardPage() {
 
           <TodayRibbon today={overview.today} wow={overview.wow_deltas} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             <div className="lg:col-span-2">
               <InsightCard insights={overview.top_insights} />
             </div>
-            <div className="lg:col-span-1 space-y-6">
+            <div className="lg:col-span-1 space-y-4 md:space-y-6">
               <ActiveGoalsCard />
               <MuscleBalanceRadar groups={overview.muscle_balance} />
             </div>

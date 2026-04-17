@@ -164,8 +164,8 @@ export function EditPlanDayModal({
           </div>
         </header>
 
-        <div className="p-6 space-y-4 overflow-auto">
-          <div className="grid grid-cols-2 gap-3">
+        <div className="p-4 sm:p-6 space-y-4 overflow-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <label className="block">
               <div className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)] mb-1">
                 Date

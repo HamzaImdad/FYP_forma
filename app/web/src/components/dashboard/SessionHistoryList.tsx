@@ -93,9 +93,9 @@ export function SessionHistoryList({ filterDate, onOpen }: Props) {
       <li key={s.id}>
         <button
           onClick={() => onOpen(s.id)}
-          className="w-full grid grid-cols-12 gap-3 py-3 text-left hover:bg-[color:var(--color-page)] transition-colors px-2 rounded-sm"
+          className="w-full grid grid-cols-2 md:grid-cols-12 gap-x-3 gap-y-1 py-3 text-left hover:bg-[color:var(--color-page)] transition-colors px-2 rounded-sm min-h-11"
         >
-          <span className="col-span-3 text-[11px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)]">
+          <span className="md:col-span-3 text-[10px] md:text-[11px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)] order-1">
             {new Date(s.date).toLocaleDateString(undefined, {
               month: "short",
               day: "numeric",
@@ -104,7 +104,7 @@ export function SessionHistoryList({ filterDate, onOpen }: Props) {
             })}
           </span>
           <span
-            className="col-span-3 text-[color:var(--color-ink)]"
+            className="md:col-span-3 text-[color:var(--color-ink)] text-sm md:text-base truncate order-3 md:order-2"
             style={{
               fontFamily: "var(--font-display)",
               letterSpacing: "0.06em",
@@ -112,14 +112,14 @@ export function SessionHistoryList({ filterDate, onOpen }: Props) {
           >
             {s.exercise.replace(/_/g, " ").toUpperCase()}
           </span>
-          <span className="col-span-2 text-[color:var(--color-ink-2)] text-sm">
+          <span className="md:col-span-2 text-[color:var(--color-ink-2)] text-xs md:text-sm order-4 md:order-3">
             {incomplete ? "incomplete" : `${s.total_reps} reps`}
           </span>
-          <span className="col-span-2 text-[color:var(--color-ink-2)] text-sm">
+          <span className="md:col-span-2 text-[color:var(--color-ink-2)] text-xs md:text-sm order-5 md:order-4">
             {Math.round(s.duration_sec)}s
           </span>
           <span
-            className={`col-span-2 text-sm text-right ${
+            className={`md:col-span-2 text-xs md:text-sm text-right order-2 md:order-5 ${
               pct >= 75
                 ? "text-[color:var(--color-good)]"
                 : pct >= 55
@@ -148,7 +148,7 @@ export function SessionHistoryList({ filterDate, onOpen }: Props) {
   }
 
   return (
-    <section className="bg-[color:var(--color-raised)]/60 border border-[color:var(--rule)] rounded-sm px-6 py-7">
+    <section className="bg-[color:var(--color-raised)]/60 border border-[color:var(--rule)] rounded-sm px-4 sm:px-6 py-5 sm:py-7">
       <div className="flex items-baseline justify-between mb-4 flex-wrap gap-3">
         <h2
           className="text-[color:var(--color-ink)]"
@@ -227,13 +227,13 @@ export function SessionHistoryList({ filterDate, onOpen }: Props) {
                       [g.exercise]: !isOpen,
                     }))
                   }
-                  className="w-full grid grid-cols-12 gap-3 py-3 text-left hover:bg-[color:var(--color-page)] transition-colors px-2 rounded-sm items-baseline"
+                  className="w-full grid grid-cols-[auto_1fr_auto] md:grid-cols-12 gap-x-3 gap-y-1 py-3 text-left hover:bg-[color:var(--color-page)] transition-colors px-2 rounded-sm items-baseline min-h-11"
                 >
-                  <span className="col-span-1 text-[color:var(--color-ink-3)]">
+                  <span className="md:col-span-1 text-[color:var(--color-ink-3)]">
                     {isOpen ? "▾" : "▸"}
                   </span>
                   <span
-                    className="col-span-5 text-[color:var(--color-ink)]"
+                    className="md:col-span-5 text-[color:var(--color-ink)] text-sm md:text-base truncate"
                     style={{
                       fontFamily: "var(--font-display)",
                       letterSpacing: "0.06em",
@@ -241,12 +241,14 @@ export function SessionHistoryList({ filterDate, onOpen }: Props) {
                   >
                     {g.exercise.replace(/_/g, " ").toUpperCase()}
                   </span>
-                  <span className="col-span-3 text-[color:var(--color-ink-2)] text-sm">
+                  <span
+                    className={`md:col-span-3 md:order-none order-3 md:col-start-auto col-start-2 text-[color:var(--color-ink-2)] text-xs md:text-sm`}
+                  >
                     {g.sessions.length}{" "}
                     {g.sessions.length === 1 ? "session" : "sessions"}
                   </span>
                   <span
-                    className={`col-span-3 text-sm text-right ${
+                    className={`md:col-span-3 text-xs md:text-sm text-right ${
                       pct >= 75
                         ? "text-[color:var(--color-good)]"
                         : pct >= 55
@@ -258,7 +260,7 @@ export function SessionHistoryList({ filterDate, onOpen }: Props) {
                   </span>
                 </button>
                 {isOpen && (
-                  <ul className="divide-y divide-[color:var(--rule)] pl-6 pb-2">
+                  <ul className="divide-y divide-[color:var(--rule)] pl-4 md:pl-6 pb-2">
                     {g.sessions.map(renderRow)}
                   </ul>
                 )}

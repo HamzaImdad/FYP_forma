@@ -78,7 +78,7 @@ export function Nav() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-[500] bg-[color:var(--color-page)]/95 backdrop-blur-md border-b border-[color:var(--rule)]">
-      <div className="mx-auto max-w-[1440px] px-6 md:px-10 h-[72px] flex items-center justify-between gap-6">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 md:px-10 h-[64px] sm:h-[72px] flex items-center justify-between gap-3 sm:gap-6">
         {/* Logo */}
         <Link
           to="/"
@@ -139,7 +139,7 @@ export function Nav() {
               <button
                 type="button"
                 onClick={() => setUserMenuOpen((v) => !v)}
-                className="flex items-center justify-center w-9 h-9 rounded-full text-[0.85rem] font-[family-name:var(--font-display)] tracking-wider bg-[color:var(--color-gold)] text-[color:var(--color-page)] hover:bg-[color:var(--color-gold-hover)] transition-colors"
+                className="flex items-center justify-center w-11 h-11 sm:w-9 sm:h-9 rounded-full text-[0.95rem] sm:text-[0.85rem] font-[family-name:var(--font-display)] tracking-wider bg-[color:var(--color-gold)] text-[color:var(--color-page)] hover:bg-[color:var(--color-gold-hover)] transition-colors"
                 aria-label={`Account menu — ${user.display_name}`}
                 aria-expanded={userMenuOpen}
               >
@@ -147,7 +147,7 @@ export function Nav() {
               </button>
               <div
                 className={
-                  "absolute right-0 top-full mt-2 min-w-[220px] bg-[color:var(--color-raised)] border border-[rgba(174,231,16,0.08)] shadow-[0_16px_40px_rgba(0,0,0,0.5)] rounded-[2px] transition-all duration-200 " +
+                  "absolute right-0 top-full mt-2 w-[min(260px,calc(100vw-2rem))] bg-[color:var(--color-raised)] border border-[rgba(174,231,16,0.08)] shadow-[0_16px_40px_rgba(0,0,0,0.5)] rounded-[2px] transition-all duration-200 " +
                   (userMenuOpen
                     ? "opacity-100 translate-y-0 pointer-events-auto"
                     : "opacity-0 -translate-y-1 pointer-events-none")
@@ -202,7 +202,7 @@ export function Nav() {
             <button
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
-              className="flex items-center gap-2 px-3 py-2.5 text-xs uppercase tracking-[0.14em] text-[color:var(--color-ink)] hover:text-[color:var(--color-gold)] transition-colors"
+              className="flex items-center justify-center gap-2 min-h-11 min-w-11 px-3 py-2.5 text-xs uppercase tracking-[0.14em] text-[color:var(--color-ink)] hover:text-[color:var(--color-gold)] transition-colors"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
             >
@@ -213,7 +213,7 @@ export function Nav() {
             {/* Dropdown panel */}
             <div
               className={
-                "absolute right-0 top-full mt-2 w-[280px] bg-[color:var(--color-raised)] border border-[rgba(174,231,16,0.08)] shadow-[0_24px_64px_rgba(0,0,0,0.55)] rounded-[2px] transition-all duration-200 origin-top-right " +
+                "absolute right-0 top-full mt-2 w-[min(280px,calc(100vw-2rem))] bg-[color:var(--color-raised)] border border-[rgba(174,231,16,0.08)] shadow-[0_24px_64px_rgba(0,0,0,0.55)] rounded-[2px] transition-all duration-200 origin-top-right " +
                 (menuOpen
                   ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
                   : "opacity-0 -translate-y-2 scale-[0.98] pointer-events-none")

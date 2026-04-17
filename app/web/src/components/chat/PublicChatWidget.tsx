@@ -86,7 +86,7 @@ export function PublicChatWidget() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={
-          "fixed bottom-6 right-6 z-[600] h-14 w-14 rounded-full flex items-center justify-center " +
+          "fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[600] h-14 w-14 rounded-full flex items-center justify-center " +
           "bg-[color:var(--color-gold)] text-[color:var(--color-page)] " +
           "shadow-[0_12px_40px_-8px_rgba(174,231,16,0.45)] " +
           "hover:bg-[color:var(--color-gold-hover)] transition-all duration-200 " +
@@ -120,7 +120,8 @@ export function PublicChatWidget() {
       {/* Chat panel */}
       <div
         className={
-          "fixed bottom-24 right-6 z-[600] w-[calc(100vw-3rem)] sm:w-[380px] max-h-[calc(100vh-8rem)] " +
+          "fixed bottom-20 right-3 left-3 sm:bottom-24 sm:right-6 sm:left-auto z-[600] " +
+          "sm:w-[380px] max-h-[calc(100vh-7rem)] sm:max-h-[calc(100vh-8rem)] " +
           "rounded-[8px] overflow-hidden flex flex-col " +
           "bg-[color:var(--color-page)] border border-[color:var(--rule)] " +
           "shadow-[0_32px_80px_-20px_rgba(0,0,0,0.5)] " +

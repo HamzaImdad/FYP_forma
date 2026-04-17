@@ -14,7 +14,7 @@ export function PersonalCoachPanel() {
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Open coach"
-          className="fixed bottom-6 right-6 z-[60] px-5 py-3 bg-[color:var(--color-gold)] text-[color:var(--color-page)] text-[11px] uppercase tracking-[0.22em] font-medium rounded-full shadow-[0_6px_24px_rgba(174,231,16,0.35)] hover:bg-[color:var(--color-gold-hover)] transition-colors"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60] min-h-11 px-4 sm:px-5 py-3 bg-[color:var(--color-gold)] text-[color:var(--color-page)] text-[10px] sm:text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] font-medium rounded-full shadow-[0_6px_24px_rgba(174,231,16,0.35)] hover:bg-[color:var(--color-gold-hover)] transition-colors"
         >
           Ask your coach
         </button>
@@ -29,7 +29,7 @@ export function PersonalCoachPanel() {
       )}
 
       <aside
-        className={`fixed top-0 right-0 z-[56] h-full w-full max-w-[480px] bg-[color:var(--color-page)] border-l border-[color:var(--rule)] shadow-[-8px_0_32px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out flex flex-col ${
+        className={`fixed top-0 right-0 z-[56] h-full w-full sm:max-w-[480px] bg-[color:var(--color-page)] border-l border-[color:var(--rule)] shadow-[-8px_0_32px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-out flex flex-col ${
           open ? "translate-x-0" : "translate-x-full pointer-events-none"
         }`}
       >

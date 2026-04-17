@@ -6,7 +6,7 @@ import { VideoBackdrop } from "../sections/VideoBackdrop";
 // AuthShell only owns the region below the 72px nav.
 export function AuthShell({ children }: { children: ReactNode }) {
   return (
-    <main className="relative grid md:grid-cols-2 bg-[color:var(--color-page)] pt-[72px] md:min-h-screen">
+    <main className="relative grid md:grid-cols-2 bg-[color:var(--color-page)] pt-[64px] sm:pt-[72px] md:min-h-screen">
       {/* Mobile video banner — shows above the form on < md */}
       <div className="md:hidden relative h-[220px] w-full overflow-hidden">
         <VideoBackdrop

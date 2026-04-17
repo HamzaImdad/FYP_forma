@@ -56,7 +56,7 @@ export function EditPlanModal({ plan, onClose, onSaved }: Props) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-[520px] bg-[color:var(--color-page)] border border-[color:var(--rule)] rounded-[4px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)]"
+        className="w-full max-w-[520px] max-h-[calc(100vh-2rem)] overflow-y-auto bg-[color:var(--color-page)] border border-[color:var(--rule)] rounded-[4px] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.4)]"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="px-6 pt-6 pb-4 border-b border-[color:var(--rule)]">
@@ -99,7 +99,7 @@ export function EditPlanModal({ plan, onClose, onSaved }: Props) {
               className="w-full border border-[color:var(--rule)] rounded-[3px] px-3 py-2 bg-[color:var(--color-page)] text-[color:var(--color-ink)] focus:outline-none focus:border-[color:var(--color-gold)] resize-none"
             />
           </label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <label className="block">
               <div className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)] mb-1">
                 Start date

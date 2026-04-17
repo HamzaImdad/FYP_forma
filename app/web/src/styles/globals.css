@@ -43,6 +43,34 @@ body::before {
   color: #F0F0F0;
 }
 
+/* ─── Responsive utilities ───────────────────────────────────────── */
+/* Prevent accidental horizontal overflow that can appear on mobile
+   when a single descendant doesn't respect the viewport width. */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* Buttons/links that need to be thumb-reachable. WCAG 2.5.5 Level AAA
+   minimum touch target is 44×44 CSS px. */
+@layer utilities {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Fluid display type scale — one source of truth for the biggest
+   page headlines so nothing overflows a 320px phone. */
+.hero-title {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 0.95;
+}
+.section-title {
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 1;
+}
+
 @layer base {
   h1,
   h2,
