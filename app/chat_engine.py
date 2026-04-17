@@ -50,7 +50,25 @@ def _get_client():
         import openai  # imported here to keep module-import cheap
 
         _openai_module = openai
-    _openai_client = _openai_module.OpenAI()
+
+    # Explicitly construct a clean httpx client to avoid the
+    # `TypeError: Client.__init__() got an unexpected keyword argument 'proxies'`
+    # error that occurs when OpenAI v1.x tries to forward proxy settings to
+    # httpx >= 0.28.0, which dropped the `proxies` parameter in favour of
+    # `proxy`. Passing our own http_client bypasses that code path entirely.
+    # Proxy configuration (if needed) should be set via the standard
+    # HTTP_PROXY / HTTPS_PROXY environment variables, which httpx reads
+    # automatically when no explicit client is provided — but since we're
+    # supplying one here, set them on the transport directly if present.
+    import httpx
+
+    proxy_url = os.environ.get("HTTPS_PROXY") or os.environ.get("HTTP_PROXY")
+    http_client = httpx.Client(proxy=proxy_url) if proxy_url else httpx.Client()
+
+    _openai_client = _openai_module.OpenAI(
+        api_key=os.environ["OPENAI_API_KEY"],
+        http_client=http_client,
+    )
     return _openai_client
 
 
