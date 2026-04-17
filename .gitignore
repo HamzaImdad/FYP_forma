@@ -70,6 +70,7 @@ docs/screenshots/
 # Session prompts (conversation-specific)
 SESSION_PROMPTS.md
 
+# Local tool skills
 skills/
 
 # React frontend (Vite build output is regenerable)

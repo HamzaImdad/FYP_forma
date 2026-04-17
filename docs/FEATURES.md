@@ -62,7 +62,7 @@ Scope: features discussed for the next iteration of ExerVision. Built on the exi
 - LLM returns natural-language answer.
 
 **Cost control — prompt caching:**
-- Use Anthropic prompt caching on the Claude API: system prompt + user profile summary gets cached, subsequent queries within the 5-minute window cost ~10% of uncached tokens.
+- Use LLM prompt caching: system prompt + user profile summary gets cached, subsequent queries within the 5-minute window cost ~10% of uncached tokens.
 - Maintain a pre-computed `user_summary` row in DB (updated after each session) so the chatbot doesn't have to re-aggregate on every query.
 - Hard ceiling: free-tier users get N chatbot messages per day.
 
@@ -121,7 +121,7 @@ Day 4: 180 push-ups, 35 squats
 - **Chatbot** — conversational interface to the AI layer.
 - **Plans & Milestones** — current plan progress, past plans.
 
-**Design direction:** industrial luxury fitness (dark charcoal #0D0D0D, gold #D4A574, burnt orange #E8572A) — already established in CLAUDE.md. Bebas Neue + Outfit + Cormorant Garamond. Every page must be visually rich, not sterile.
+**Design direction:** industrial luxury fitness (dark charcoal #0D0D0D, gold #D4A574, burnt orange #E8572A) — already established in the project spec. Bebas Neue + Outfit + Cormorant Garamond. Every page must be visually rich, not sterile.
 
 ---
 
@@ -161,7 +161,7 @@ Every decision above was made with the free tier in mind:
 | Limited RAM | Detectors stay lightweight; no on-device LLM. |
 | Limited CPU | Real-time inference runs in the browser via MediaPipe JS, not on the server. |
 | Egress / compute cost | LLM calls only when user explicitly asks the chatbot or creates a plan. No LLM in real-time loop. |
-| Token budget | Anthropic prompt caching + pre-computed user summary + query-only-relevant-slices. |
+| Token budget | Server-side prompt caching + pre-computed user summary + query-only-relevant-slices. |
 | Storage | SQLite file, rotate old session recordings, store keyframes not full video. |
 
 ---

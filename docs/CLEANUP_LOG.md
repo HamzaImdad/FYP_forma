@@ -98,8 +98,7 @@ Dev iteration screenshots — none referenced by application code.
 | `_archive/` | Already organized archive (1.3 GB) |
 | `scripts/` | Training/pipeline scripts |
 | `tests/` | Test files |
-| `skills/` | Claude Code reference (gitignored) |
 | `Dockerfile`, `nixpacks.toml` | Deploy config |
 | `requirements.txt`, `requirements-deploy.txt` | Python dependencies |
 | `runtime.txt` | Python version spec |
-| `README.md`, `CLAUDE.md`, `pytest.ini` | Root-level essentials |
+| `README.md`, `pytest.ini` | Root-level essentials |
