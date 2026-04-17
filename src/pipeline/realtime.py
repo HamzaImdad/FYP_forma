@@ -69,8 +69,12 @@ class ExerVisionPipeline:
         self._exercise = exercise
         self._classifier_type = classifier_type
 
-        # Pose estimation
-        self._estimator = MediaPipePoseEstimator(self.config, mode="video")
+        # Pose estimation — lazy init. MediaPipe's native C++ code doesn't
+        # cooperate with eventlet's monkey-patching, and the React UI never
+        # hits process_frame (it streams landmarks computed browser-side via
+        # process_landmarks). Only create the estimator when process_frame
+        # is actually invoked (legacy / server-side pose path).
+        self._estimator: Optional[MediaPipePoseEstimator] = None
 
         # Feature extraction
         self._feature_extractor = FeatureExtractor(use_world=True)
@@ -299,7 +303,9 @@ class ExerVisionPipeline:
         if timestamp_ms is None:
             timestamp_ms = int(self._frame_count * (1000 / 30))
 
-        # 1. Pose estimation
+        # 1. Pose estimation (lazy-init estimator on first frame)
+        if self._estimator is None:
+            self._estimator = MediaPipePoseEstimator(self.config, mode="video")
         t0 = time.perf_counter()
         pose = self._estimator.process_video_frame(frame, timestamp_ms)
         t_pose = time.perf_counter() - t0
@@ -496,6 +502,7 @@ class ExerVisionPipeline:
 
     def close(self):
         """Release resources."""
-        self._estimator.close()
+        if self._estimator is not None:
+            self._estimator.close()
         if hasattr(self._classifier, 'close'):
             self._classifier.close()
