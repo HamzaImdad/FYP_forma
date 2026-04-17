@@ -10,7 +10,8 @@ Angles tracked:
 State machine: TOP (standing) -> GOING_DOWN -> BOTTOM (squat) -> GOING_UP -> TOP (1 rep)
 """
 
-from typing import Dict, List, Optional, Tuple
+from collections import deque
+from typing import Deque, Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -18,6 +19,7 @@ from .base_detector import (
     RobustExerciseDetector,
     RepPhase,
     REP_DIRECTION_DECREASING,
+    SessionState,
 )
 from .posture_classifier import PostureLabel
 from ..pose_estimation.base import PoseResult
@@ -26,6 +28,41 @@ from ..utils.constants import (
     LEFT_KNEE, RIGHT_KNEE, LEFT_ANKLE, RIGHT_ANKLE,
     LEFT_HEEL, RIGHT_HEEL, LEFT_FOOT_INDEX, RIGHT_FOOT_INDEX,
 )
+from ..utils.geometry import calculate_angle
+
+# Lowered visibility floor so side-view near-side landmarks still pass.
+# Session trace analysis (data/sessions/2026-04-14_*_squat_*/trace.jsonl)
+# shows MediaPipe's near-side landmarks from a pure side view genuinely
+# live in 0.35–0.55 with frequent dips. 0.3 is the minimum floor where
+# MediaPipe still returns *located* (not rig-inferred) landmarks.
+SQUAT_VIS_THRESHOLD = 0.3
+
+# ── Movement-gated session FSM thresholds ──────────────────────────────
+# FORM LOCKED fires only when the knee has both (a) moved through at
+# least SQUAT_MOTION_MIN_RANGE degrees in the recent rolling window AND
+# (b) currently sits below SQUAT_KNEE_DESCEND. The movement range cleanly
+# separates an active squat (lots of angle change) from a static sit
+# (zero angle change), and catches slow descents that a pure time-window
+# gate would miss.
+SQUAT_KNEE_DESCEND = 140.0        # knee below this → descent committed
+SQUAT_KNEE_AT_TOP = 165.0         # knee >= this → clearly standing at lockout
+SQUAT_MOTION_WINDOW_S = 2.0       # rolling window for movement detection
+SQUAT_MOTION_MIN_RANGE = 25.0     # degrees of knee range required for ACTIVE
+SQUAT_REST_AT_TOP_S = 8.0         # standing at top this long → RESTING
+SQUAT_REST_BELOW_TOP_S = 60.0     # below top this long without rep → RESTING
+
+# Minimum forward torso lean (degrees from vertical) the user must exhibit
+# **during the rep** for it to count as a squat. A standing knee-lift or
+# leg-raise keeps the torso near-vertical (0–5°), whereas every legitimate
+# squat — front, back, high-bar, low-bar, box — produces at least 8–10° of
+# forward lean at the bottom. 7° is the conservative floor that rejects
+# leg-lifts without rejecting stiff-upright front squats.
+SQUAT_MIN_TORSO_LEAN_FOR_REP = 7.0
+# Minimum hip-angle drop (degrees) during the rep. A squat hinges the hips
+# from ~175° standing → ~95° parallel, so Δhip ≈ 80°. A standing leg-lift
+# keeps the stance-leg hip at ~175° and only shrinks the *average* hip
+# because one leg flexes. 35° is the conservative floor.
+SQUAT_MIN_HIP_DROP_FOR_REP = 35.0
 
 
 # ── Thresholds ──────────────────────────────────────────────────────────
@@ -80,7 +117,10 @@ class SquatDetector(RobustExerciseDetector):
     VISIBILITY_GATE_LANDMARKS = (
         LEFT_HIP, RIGHT_HIP, LEFT_KNEE, RIGHT_KNEE, LEFT_ANKLE, RIGHT_ANKLE,
     )
-    VISIBILITY_GATE_THRESHOLD = 0.6
+    # Lowered from 0.6 so side-view landmarks (which hover ~0.4–0.6 on
+    # the near side) can still latch into ACTIVE. Paired with the custom
+    # _check_visibility_gate override which accepts one full side.
+    VISIBILITY_GATE_THRESHOLD = SQUAT_VIS_THRESHOLD
 
     REP_DIRECTION = REP_DIRECTION_DECREASING
     # Rep-FSM thresholds on knee angle. Kept slightly lenient so that a
@@ -96,23 +136,197 @@ class SquatDetector(RobustExerciseDetector):
     MAX_PRIMARY_JUMP_DEG = 60.0
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        # Initialize instance attributes BEFORE super().__init__ because the
+        # base class __init__ calls self.reset(), which touches these fields.
         self._mid_descent_hip_angle = None
         self._bottom_trunk_angle = None   # torso lean snapshot at BOTTOM (for good-morning detection)
+        # Movement-gated session FSM state
+        self._at_top_since: Optional[float] = None
+        self._below_top_since: Optional[float] = None
+        # Rolling knee-angle history for movement-range check.
+        self._knee_history: Deque[Tuple[float, float]] = deque()
+        # Per-rep squat-shape witnesses — reset on TOP, used by
+        # _should_count_rep to reject leg-lifts / knee-bends that are not
+        # actually squats.
+        self._rep_max_torso_lean: Optional[float] = None
+        self._rep_hip_at_start: Optional[float] = None
+        self._rep_min_hip: Optional[float] = None
+        super().__init__(**kwargs)
 
     def reset(self):
         super().reset()
         self._mid_descent_hip_angle = None
         self._bottom_trunk_angle = None
+        self._at_top_since = None
+        self._below_top_since = None
+        self._knee_history.clear()
+        self._rep_max_torso_lean = None
+        self._rep_hip_at_start = None
+        self._rep_min_hip = None
+
+    # ── Movement-gated session FSM ──────────────────────────────────────
+    # FORM LOCKED only fires when the knee shows active movement — the
+    # rolling-window range check rules out static positions (sitting,
+    # standing still) and catches slow descents that a fixed time-window
+    # gate would miss. Sitting in a chair has zero knee motion after
+    # settling, so it never latches into ACTIVE.
+    #
+    # Rest conditions: 8s standing idle at lockout, or 60s below top
+    # without returning (gave up / sat down permanently).
+    def _update_session_state(self, now: float, visibility_ok: bool) -> None:
+        knee = self._get_smooth("knee")
+
+        if knee is None:
+            super()._update_session_state(now, visibility_ok)
+            return
+
+        is_at_top = knee >= SQUAT_KNEE_AT_TOP
+        is_descending = knee < SQUAT_KNEE_DESCEND
+
+        # Update top/below-top continuous-window timers
+        if is_at_top:
+            if self._at_top_since is None:
+                self._at_top_since = now
+            self._below_top_since = None
+        else:
+            if self._below_top_since is None:
+                self._below_top_since = now
+            self._at_top_since = None
+
+        # Rolling knee-angle history (drop entries older than the window)
+        self._knee_history.append((now, knee))
+        window_start = now - SQUAT_MOTION_WINDOW_S
+        while self._knee_history and self._knee_history[0][0] < window_start:
+            self._knee_history.popleft()
+
+        # Movement range over the window
+        if len(self._knee_history) >= 2:
+            values = [v for _, v in self._knee_history]
+            motion_range = max(values) - min(values)
+        else:
+            motion_range = 0.0
+        has_active_motion = motion_range >= SQUAT_MOTION_MIN_RANGE
+
+        s = self._session_state
+
+        # Visibility loss → delegate to base close logic
+        if not visibility_ok:
+            if s == SessionState.ACTIVE:
+                self._unknown_streak += 1
+                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
+                    self._close_active_set_or_rollback(now)
+                    self._knee_history.clear()
+            return
+        self._unknown_streak = 0
+
+        # IDLE → SETUP: body visible
+        if s == SessionState.IDLE:
+            self._session_state = SessionState.SETUP
+            return
+
+        # SETUP → ACTIVE: active knee motion + currently in descent zone
+        if s == SessionState.SETUP:
+            if is_descending and has_active_motion:
+                self._session_state = SessionState.ACTIVE
+                self._reset_robust_rep_fsm()
+                self._rep_start_time = now
+                self._seed_rep_fsm_from_pre_active(now)
+            return
+
+        # RESTING → ACTIVE: same as SETUP but no trace seeding
+        if s == SessionState.RESTING:
+            if is_descending and has_active_motion:
+                self._session_state = SessionState.ACTIVE
+                self._reset_robust_rep_fsm()
+                self._rep_start_time = now
+            return
+
+        # ACTIVE → RESTING
+        if s == SessionState.ACTIVE:
+            if (
+                self._at_top_since is not None
+                and now - self._at_top_since >= SQUAT_REST_AT_TOP_S
+            ):
+                self._close_active_set_or_rollback(now)
+                # Next set requires fresh motion to re-latch.
+                self._knee_history.clear()
+                return
+            if (
+                self._below_top_since is not None
+                and now - self._below_top_since >= SQUAT_REST_BELOW_TOP_S
+            ):
+                self._close_active_set_or_rollback(now)
+                self._knee_history.clear()
+                return
+
+    # ── Side-view-friendly visibility gate ──────────────────────────────
+    # Default base class gate requires ALL of (L+R hip, knee, ankle) at
+    # 0.6 — excludes pure side cameras because MediaPipe infers the far
+    # side and reports it at ~0.3–0.5 confidence. Accept the gate if
+    # EITHER side's hip-knee-ankle chain is fully visible at the squat
+    # threshold. `_lenient_avg_angle` below falls back to whichever side
+    # is actually available.
+    def _check_visibility_gate(self, pose) -> bool:
+        left_ok = all(
+            pose.is_visible(idx, self.VISIBILITY_GATE_THRESHOLD)
+            for idx in (LEFT_HIP, LEFT_KNEE, LEFT_ANKLE)
+        )
+        right_ok = all(
+            pose.is_visible(idx, self.VISIBILITY_GATE_THRESHOLD)
+            for idx in (RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE)
+        )
+        return left_ok or right_ok
+
+    def _lenient_side_angle(
+        self,
+        pose: PoseResult,
+        a_idx: int,
+        b_idx: int,
+        c_idx: int,
+        threshold: float = SQUAT_VIS_THRESHOLD,
+    ) -> Optional[float]:
+        """World-coordinate angle at vertex b, accepting landmarks whose
+        visibility is at least `threshold` (default 0.4 for squat, vs the
+        global MIN_VISIBILITY=0.5 used by the base class's `_angle_at`).
+        Near-side landmarks from a pure side view often sit in that
+        0.4–0.5 range; world coordinates themselves are camera-angle
+        independent once MediaPipe has located the joint."""
+        if not all(pose.is_visible(i, threshold) for i in (a_idx, b_idx, c_idx)):
+            return None
+        return calculate_angle(
+            pose.get_world_landmark(a_idx),
+            pose.get_world_landmark(b_idx),
+            pose.get_world_landmark(c_idx),
+        )
+
+    def _lenient_avg_angle(
+        self,
+        pose: PoseResult,
+        left_triple: Tuple[int, int, int],
+        right_triple: Tuple[int, int, int],
+        name: str,
+    ) -> Optional[float]:
+        """Average left/right angles using the lenient visibility floor,
+        falling back to whichever side is available. Stores L/R values
+        for asymmetry detection (same contract as base `_avg_angle`)."""
+        left = self._lenient_side_angle(pose, *left_triple)
+        right = self._lenient_side_angle(pose, *right_triple)
+        self._lr_angles[name] = (left, right)
+        if left is not None and right is not None:
+            return (left + right) / 2
+        return left if left is not None else right
 
     def _compute_angles(self, pose: PoseResult) -> Dict[str, Optional[float]]:
-        knee = self._avg_angle(
+        # Use lenient angle computation so side-view (and 3/4 view) work:
+        # near-side landmarks from MediaPipe frequently sit in the 0.4–0.6
+        # visibility range which the default 0.5 floor would reject.
+        knee = self._lenient_avg_angle(
             pose,
             (LEFT_HIP, LEFT_KNEE, LEFT_ANKLE),
             (RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE),
             name="knee",
         )
-        hip = self._avg_angle(
+        hip = self._lenient_avg_angle(
             pose,
             (LEFT_SHOULDER, LEFT_HIP, LEFT_KNEE),
             (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_KNEE),
@@ -134,7 +348,7 @@ class SquatDetector(RobustExerciseDetector):
         # Research (Hemmerich 2006): parallel squat needs 25-35° dorsiflexion,
         # which corresponds to included angles of 55-65°. Limited dorsiflexion
         # is the strongest predictor of squat depth (Kim 2015).
-        ankle_dorsi = self._avg_angle(
+        ankle_dorsi = self._lenient_avg_angle(
             pose,
             (LEFT_KNEE, LEFT_ANKLE, LEFT_FOOT_INDEX),
             (RIGHT_KNEE, RIGHT_ANKLE, RIGHT_FOOT_INDEX),
@@ -149,7 +363,7 @@ class SquatDetector(RobustExerciseDetector):
 
         # Track hip angle at mid-descent for butt wink detection
         if knee is not None and self._state == RepPhase.GOING_DOWN and 115 <= knee <= 125:
-            hip_val = self._avg_angle(
+            hip_val = self._lenient_avg_angle(
                 pose,
                 (LEFT_SHOULDER, LEFT_HIP, LEFT_KNEE),
                 (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_KNEE),
@@ -164,6 +378,21 @@ class SquatDetector(RobustExerciseDetector):
         elif self._state == RepPhase.TOP:
             self._bottom_trunk_angle = None  # clear for next rep
 
+        # Per-rep squat-shape witnesses. The rep FSM enters GOING_DOWN the
+        # moment primary (knee) dips below PRIMARY_ANGLE_TOP-DESCENT, which
+        # is the cleanest "rep started" signal available here.
+        if self._state == RepPhase.TOP:
+            self._rep_max_torso_lean = None
+            self._rep_hip_at_start = hip  # freshest standing-hip baseline
+            self._rep_min_hip = None
+        else:
+            if torso is not None:
+                if self._rep_max_torso_lean is None or torso > self._rep_max_torso_lean:
+                    self._rep_max_torso_lean = torso
+            if hip is not None:
+                if self._rep_min_hip is None or hip < self._rep_min_hip:
+                    self._rep_min_hip = hip
+
         return {
             "primary": knee, "knee": knee, "hip": hip, "torso": torso,
             "valgus": valgus, "ankle_dorsi": ankle_dorsi,
@@ -172,10 +401,10 @@ class SquatDetector(RobustExerciseDetector):
 
     def _compute_torso_lean(self, pose: PoseResult) -> Optional[float]:
         """Compute torso forward lean angle from vertical."""
-        left_s = pose.get_world_landmark(LEFT_SHOULDER) if pose.is_visible(LEFT_SHOULDER) else None
-        right_s = pose.get_world_landmark(RIGHT_SHOULDER) if pose.is_visible(RIGHT_SHOULDER) else None
-        left_h = pose.get_world_landmark(LEFT_HIP) if pose.is_visible(LEFT_HIP) else None
-        right_h = pose.get_world_landmark(RIGHT_HIP) if pose.is_visible(RIGHT_HIP) else None
+        left_s = pose.get_world_landmark(LEFT_SHOULDER) if pose.is_visible(LEFT_SHOULDER, SQUAT_VIS_THRESHOLD) else None
+        right_s = pose.get_world_landmark(RIGHT_SHOULDER) if pose.is_visible(RIGHT_SHOULDER, SQUAT_VIS_THRESHOLD) else None
+        left_h = pose.get_world_landmark(LEFT_HIP) if pose.is_visible(LEFT_HIP, SQUAT_VIS_THRESHOLD) else None
+        right_h = pose.get_world_landmark(RIGHT_HIP) if pose.is_visible(RIGHT_HIP, SQUAT_VIS_THRESHOLD) else None
 
         if left_s is None and right_s is None:
             return None
@@ -201,7 +430,7 @@ class SquatDetector(RobustExerciseDetector):
         max_dev = None
         for hip_idx, knee_idx, ankle_idx in [(LEFT_HIP, LEFT_KNEE, LEFT_ANKLE),
                                               (RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE)]:
-            if not all(pose.is_visible(i) for i in (hip_idx, knee_idx, ankle_idx)):
+            if not all(pose.is_visible(i, SQUAT_VIS_THRESHOLD) for i in (hip_idx, knee_idx, ankle_idx)):
                 continue
             hip = np.array(pose.get_world_landmark(hip_idx))
             knee = np.array(pose.get_world_landmark(knee_idx))
@@ -228,7 +457,7 @@ class SquatDetector(RobustExerciseDetector):
         """Detect if heels are lifting off ground. Returns avg rise in meters."""
         rises = []
         for heel_idx, foot_idx in [(LEFT_HEEL, LEFT_FOOT_INDEX), (RIGHT_HEEL, RIGHT_FOOT_INDEX)]:
-            if pose.is_visible(heel_idx) and pose.is_visible(foot_idx):
+            if pose.is_visible(heel_idx, SQUAT_VIS_THRESHOLD) and pose.is_visible(foot_idx, SQUAT_VIS_THRESHOLD):
                 heel_y = pose.get_world_landmark(heel_idx)[1]
                 foot_y = pose.get_world_landmark(foot_idx)[1]
                 rises.append(heel_y - foot_y)  # positive = heel higher than toes
@@ -240,13 +469,39 @@ class SquatDetector(RobustExerciseDetector):
         hip_ys = []
         knee_ys = []
         for h_idx, k_idx in [(LEFT_HIP, LEFT_KNEE), (RIGHT_HIP, RIGHT_KNEE)]:
-            if pose.is_visible(h_idx) and pose.is_visible(k_idx):
+            if pose.is_visible(h_idx, SQUAT_VIS_THRESHOLD) and pose.is_visible(k_idx, SQUAT_VIS_THRESHOLD):
                 hip_ys.append(pose.get_world_landmark(h_idx)[1])
                 knee_ys.append(pose.get_world_landmark(k_idx)[1])
         if not hip_ys:
             return None
         # In MediaPipe world coords, Y increases downward, so hip_y > knee_y means hip is lower
         return (sum(hip_ys) / len(hip_ys)) - (sum(knee_ys) / len(knee_ys))
+
+    def _should_count_rep(self, elapsed: float, angles: Dict[str, Optional[float]]) -> bool:
+        # Base gate: duration, descent time, form score.
+        if not super()._should_count_rep(elapsed, angles):
+            return False
+        # Shape gate: a real squat produces BOTH (a) visible forward torso
+        # lean (≥ SQUAT_MIN_TORSO_LEAN_FOR_REP) AND (b) a meaningful hip
+        # hinge (Δhip ≥ SQUAT_MIN_HIP_DROP_FOR_REP). Standing knee-lifts,
+        # leg raises, and seated knee extensions fail one or both.
+        #
+        # If neither torso nor hip can be measured for the whole rep (very
+        # bad visibility on both shoulders AND one full hip side), fall
+        # through — we don't want to reject legitimate reps when the
+        # measurement itself failed.
+        torso_ok = (
+            self._rep_max_torso_lean is None
+            or self._rep_max_torso_lean >= SQUAT_MIN_TORSO_LEAN_FOR_REP
+        )
+        hip_drop = None
+        if self._rep_hip_at_start is not None and self._rep_min_hip is not None:
+            hip_drop = self._rep_hip_at_start - self._rep_min_hip
+        hip_ok = (hip_drop is None) or (hip_drop >= SQUAT_MIN_HIP_DROP_FOR_REP)
+
+        # Both must pass. If one measurement is unavailable we accept on
+        # the other alone (leniency for occlusion).
+        return torso_ok and hip_ok
 
     def _check_start_position(self, angles: Dict[str, Optional[float]]) -> Tuple[bool, List[str]]:
         issues = []

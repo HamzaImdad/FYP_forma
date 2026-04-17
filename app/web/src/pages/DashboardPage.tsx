@@ -18,9 +18,9 @@ import { DeepDivePanel } from "../components/dashboard/DeepDivePanel";
 import { ActivityHeatmap } from "../components/dashboard/ActivityHeatmap";
 import { MuscleBalanceRadar } from "../components/dashboard/MuscleBalanceRadar";
 import { SessionHistoryList } from "../components/dashboard/SessionHistoryList";
-import { PersonalCoachPanel } from "../components/dashboard/PersonalCoachPanel";
 import { ActiveGoalsCard } from "../components/dashboard/ActiveGoalsCard";
 import { TodaysPlanStrip } from "../components/dashboard/TodaysPlanStrip";
+import { GradientGlow } from "../components/sections/GradientGlow";
 import { useSessionCompleted } from "../hooks/useSessionCompleted";
 import { useAuth } from "../context/AuthContext";
 
@@ -151,8 +151,10 @@ export function DashboardPage() {
     : null;
 
   return (
-    <div className="max-w-[1440px] mx-auto px-6 md:px-10 pt-[calc(var(--nav-height)+2.5rem)] pb-24 space-y-10">
-      <header>
+    <div className="relative max-w-[1440px] mx-auto px-6 md:px-10 pt-[calc(var(--nav-height)+2.5rem)] pb-24 space-y-10 overflow-hidden">
+      <GradientGlow position="top-right" intensity="medium" />
+      <GradientGlow position="bottom-left" intensity="subtle" />
+      <header className="relative">
         <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--color-gold)]">
           Dashboard
         </div>
@@ -236,7 +238,6 @@ export function DashboardPage() {
           <SessionHistoryList filterDate={filterDate} onOpen={openSession} />
         </>
       )}
-      <PersonalCoachPanel />
     </div>
   );
 }

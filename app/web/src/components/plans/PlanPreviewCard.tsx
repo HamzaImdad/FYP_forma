@@ -1,15 +1,24 @@
-// PlanPreviewCard — live preview of the in-flight plan draft from the
-// plan-creator chatbot. Re-renders whenever PlanShell refetches the draft.
+// PlanPreviewCard — live preview of the in-flight plan draft from either
+// the Plan Architect chatbot or the Custom Plan Builder form.
+// Session-5 adds an explicit "Approve & Save" CTA so the user no longer
+// has to type "yes, save it" to the LLM.
 
+import { useState } from "react";
 import type { PlanDraft } from "@/lib/plansApi";
 import { PlanDayTile } from "./PlanDayTile";
 
 type Props = {
   draft: PlanDraft | null;
   loading?: boolean;
+  // When draft.source === "chat", this dispatches a user turn back to the
+  // chat so the LLM calls save_plan. When draft.source === "custom", the
+  // parent already handled the save — this prop is unused.
+  onApproveChat?: () => void;
+  approving?: boolean;
 };
 
-export function PlanPreviewCard({ draft, loading }: Props) {
+export function PlanPreviewCard({ draft, loading, onApproveChat, approving }: Props) {
+  const [localApproving, setLocalApproving] = useState(false);
   if (!draft) {
     return (
       <div className="border border-[color:var(--rule)] rounded-[4px] p-6 bg-[color:var(--color-raised)]/40 min-h-[260px] flex items-center justify-center">
@@ -65,15 +74,39 @@ export function PlanPreviewCard({ draft, loading }: Props) {
             key={`${d.day_date}-${i}`}
             day={{
               id: 0,
+              plan_id: 0,
               day_date: d.day_date,
               is_rest: d.is_rest,
               exercises: d.exercises,
               completed: false,
+              completed_at: null,
             }}
             compact
           />
         ))}
       </div>
+
+      {draft.source === "chat" && onApproveChat && (
+        <div className="px-5 py-3 border-t border-[color:var(--rule)] flex justify-end">
+          <button
+            type="button"
+            disabled={approving || localApproving}
+            onClick={() => {
+              setLocalApproving(true);
+              try {
+                onApproveChat();
+              } finally {
+                // parent resets draft state; keep the visual disabled just
+                // long enough to avoid a double-click.
+                window.setTimeout(() => setLocalApproving(false), 800);
+              }
+            }}
+            className="text-[11px] uppercase tracking-[0.22em] px-5 py-3 bg-[color:var(--color-ink)] text-[color:var(--color-page)] hover:bg-[color:var(--color-gold)] transition-colors rounded-[3px] disabled:opacity-50"
+          >
+            {approving || localApproving ? "Saving…" : "Approve & save"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -16,14 +16,91 @@ const EXERCISE_IMAGES = {
     squat: '/static/images/ex_squat.jpg',
     lunge: '/static/images/ex_lunge.jpg',
     deadlift: '/static/images/ex_deadlift.jpg',
-    bench_press: '/static/images/ex_bench_press.jpg',
-    overhead_press: '/static/images/ex_overhead_press.jpg',
     pullup: '/static/images/ex_pullup.jpg',
     pushup: '/static/images/ex_pushup.jpg',
     plank: '/static/images/ex_plank.jpg',
     bicep_curl: '/static/images/ex_bicep_curl.jpg',
     tricep_dip: '/static/images/ex_tricep_dip.jpg',
+    crunch: '/static/images/ex_crunch.jpg',
+    lateral_raise: '/static/images/ex_lateral_raise.jpg',
+    side_plank: '/static/images/ex_side_plank.jpg',
 };
+
+// ── Voice Coach (Web Speech API) ────────────────────────────────────────
+// Speaks only when the server sends voice_text (severe form issues only).
+// Off by default — user must click the voice button to enable.
+
+const VoiceCoach = (() => {
+    const synth = window.speechSynthesis;
+    if (!synth) {
+        return { speak() {}, toggle() { return false; }, get enabled() { return false; } };
+    }
+
+    let enabled = true;
+    let speaking = false;
+    let lastSpoken = "";
+    let lastSpokeAt = 0;
+    const MIN_GAP_MS = 800;
+    const recentTexts = [];
+    const RECENT_SIZE = 6;
+    let selectedVoice = null;
+
+    function pickVoice() {
+        const voices = synth.getVoices();
+        if (!voices.length) return;
+        const preferred = voices.filter(v => v.lang.startsWith("en"));
+        selectedVoice =
+            preferred.find(v => v.name.includes("Google UK English Female")) ||
+            preferred.find(v => v.name.includes("Google UK English Male")) ||
+            preferred.find(v => v.name.includes("Microsoft")) ||
+            preferred.find(v => v.lang === "en-GB") ||
+            preferred.find(v => v.lang.startsWith("en")) ||
+            voices[0];
+    }
+    if (synth.getVoices().length) pickVoice();
+    else synth.addEventListener("voiceschanged", pickVoice);
+
+    function speak(text) {
+        if (!enabled || !text || speaking) return;
+        const now = performance.now();
+        if (now - lastSpokeAt < MIN_GAP_MS) return;
+        if (text === lastSpoken) return;
+        if (recentTexts.includes(text)) return;
+        if (text === "Good form") return;
+
+        synth.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        if (selectedVoice) utter.voice = selectedVoice;
+        utter.rate = 1.0;
+        utter.pitch = 1.0;
+        utter.volume = 0.9;
+        speaking = true;
+        utter.onend = () => { speaking = false; };
+        utter.onerror = () => { speaking = false; };
+        synth.speak(utter);
+        lastSpoken = text;
+        lastSpokeAt = now;
+        recentTexts.push(text);
+        if (recentTexts.length > RECENT_SIZE) recentTexts.shift();
+    }
+
+    function toggle() {
+        enabled = !enabled;
+        if (!enabled) synth.cancel();
+        return enabled;
+    }
+
+    function mute() {
+        enabled = false;
+        synth.cancel();
+    }
+
+    function unmute() {
+        enabled = true;
+    }
+
+    return { speak, toggle, mute, unmute, get enabled() { return enabled; } };
+})();
 
 // ── Page Navigation ─────────────────────────────────────────────────────
 
@@ -341,8 +418,6 @@ let restState = {
     repsAtRestStart: 0,
     scoresInCurrentSet: [],
     setsCompleted: [],
-    inactiveFrames: 0,
-    THRESHOLD_FRAMES: 120,  // ~4 sec at 30fps
 };
 
 // Session recording
@@ -386,6 +461,10 @@ let hudState = {
     repCount: 0,
     setCount: 0,
     repsInSet: 0,
+    lastSetReps: 0,
+    currentSetNumber: 1,
+    currentSetReps: 0,
+    sessionState: "idle",
     formScore: 0,
     displayScore: 0,        // smoothly interpolated score for display
     phase: "",
@@ -442,13 +521,14 @@ const EXERCISE_ANGLES = {
     squat:          ["left_knee","right_knee","left_hip","right_hip","left_ankle","right_ankle"],
     lunge:          ["left_knee","right_knee","left_hip","right_hip","left_ankle","right_ankle"],
     deadlift:       ["left_hip","right_hip","left_knee","right_knee","left_shoulder","right_shoulder"],
-    bench_press:    ["left_elbow","right_elbow","left_shoulder","right_shoulder"],
-    overhead_press: ["left_elbow","right_elbow","left_shoulder","right_shoulder","left_hip","right_hip"],
     pullup:         ["left_elbow","right_elbow","left_shoulder","right_shoulder"],
     pushup:         ["left_elbow","right_elbow","left_shoulder","right_shoulder","left_hip","right_hip"],
     plank:          ["left_hip","right_hip","left_shoulder","right_shoulder","left_knee","right_knee"],
     bicep_curl:     ["left_elbow","right_elbow","left_shoulder","right_shoulder"],
     tricep_dip:     ["left_elbow","right_elbow","left_shoulder","right_shoulder"],
+    crunch:         ["left_hip","right_hip","left_shoulder","right_shoulder"],
+    lateral_raise:  ["left_elbow","right_elbow","left_shoulder","right_shoulder"],
+    side_plank:     ["left_hip","right_hip","left_shoulder","right_shoulder"],
 };
 
 // Last world landmarks for angle computation
@@ -749,18 +829,16 @@ function drawSessionHUD() {
 
     skeletonCtx.font = `bold ${Math.round(42 * pulseScale)}px 'Bebas Neue', 'Outfit', sans-serif`;
     skeletonCtx.fillStyle = s.repPulse > 0.2 ? "#34D399" : "#FFFFFF";
-    skeletonCtx.fillText(`REP ${s.repsInSet || s.repCount}`, 16, 44);
-    if (s.setCount > 0) {
-        skeletonCtx.font = "bold 22px 'Outfit', sans-serif";
-        skeletonCtx.fillStyle = "#D4A574";
-        skeletonCtx.fillText(`SET ${s.setCount + 1}`, 16, 72);
-    }
+    skeletonCtx.fillText(`${s.currentSetReps} REPS`, 16, 44);
+    skeletonCtx.font = "bold 22px 'Outfit', sans-serif";
+    skeletonCtx.fillStyle = "#D4A574";
+    skeletonCtx.fillText(`SET ${s.currentSetNumber}`, 16, 72);
     skeletonCtx.restore();
 
     // ── Form score ring (top-right) with smooth animation ──
     if (s.isActive && s.displayScore > 0) {
         const scorePct = Math.round(s.displayScore * 100);
-        const scoreColor = scorePct >= 70 ? "#34D399" : scorePct >= 40 ? "#F59E0B" : "#EF4444";
+        const scoreColor = scorePct >= 50 ? "#34D399" : scorePct >= 30 ? "#F59E0B" : "#EF4444";
         const scoreX = w - 70;
         // Background circle
         skeletonCtx.beginPath();
@@ -846,6 +924,32 @@ function drawSessionHUD() {
     }
 }
 
+// Render the HUD's three counters from server-computed fields. Each
+// counter is independent and clearly labelled so the user never has to
+// decode a compound label.
+//
+//   [ Sets Done ]  [ Set N · Reps ]  [ Total Reps ]
+//
+//   * Sets Done       — set_count (completed sets only; 0 during set 1)
+//   * Set N · Reps    — current set number + reps in that set (live)
+//   * Total Reps      — lifetime rep_count across all sets
+function renderSetRepDisplay(data) {
+    const setsDone = data.set_count || 0;
+    const currentSetNum = data.current_set_number || 1;
+    const currentSetReps = data.current_set_reps || 0;
+    const totalReps = data.rep_count || 0;
+
+    const setsDoneEl = document.getElementById("hud-sets-done");
+    const currentSetLabel = document.getElementById("hud-current-set-label");
+    const currentSetEl = document.getElementById("hud-current-reps");
+    const totalRepsEl = document.getElementById("hud-total-reps");
+
+    if (setsDoneEl) setsDoneEl.textContent = setsDone;
+    if (currentSetLabel) currentSetLabel.textContent = `Set ${currentSetNum} · Reps`;
+    if (currentSetEl) currentSetEl.textContent = currentSetReps;
+    if (totalRepsEl) totalRepsEl.textContent = totalReps;
+}
+
 function updateHudState(data) {
     const now = Date.now();
     const s = hudState;
@@ -855,6 +959,10 @@ function updateHudState(data) {
     s.repCount = data.rep_count || 0;
     s.setCount = data.set_count || 0;
     s.repsInSet = data.reps_in_set || 0;
+    s.lastSetReps = data.last_set_reps || 0;
+    s.currentSetNumber = data.current_set_number || 1;
+    s.currentSetReps = data.current_set_reps || 0;
+    s.sessionState = data.session_state || "idle";
     s.formScore = data.form_score || 0;
     s.phase = data.phase || "";
     s.progress = data.progress || "";
@@ -867,11 +975,13 @@ function updateHudState(data) {
         s.setJustCompleted = false;
     }
 
-    // Detect set completion (set count increased)
+    // Detect set completion (set count increased). Use the server-sent
+    // last_set_reps directly — computing it client-side from repCount -
+    // repsInSet was broken on set 2+ because repCount is cumulative.
     if (s.setCount > prevSetCount) {
         s.setJustCompleted = true;
         s.completedSetNum = s.setCount;
-        s.completedSetReps = s.repCount - s.repsInSet;
+        s.completedSetReps = s.lastSetReps;
     }
 
     // Clear set-complete overlay after user starts moving again
@@ -892,38 +1002,29 @@ function updateRestDetection(s) {
     const restSummary = document.getElementById("rest-set-summary");
     if (!restOverlay) return;
 
-    if (!s.isActive && s.repCount > 0) {
-        rs.inactiveFrames++;
-
-        // Trigger rest after threshold
-        if (rs.inactiveFrames >= rs.THRESHOLD_FRAMES && !rs.isResting) {
+    // Server-state driven — fire instantly on the edge into/out of "resting".
+    // The posture classifier's own hysteresis is the only debounce; no client
+    // frame-counter threshold any more.
+    if (s.sessionState === "resting") {
+        if (!rs.isResting) {
             rs.isResting = true;
             rs.restStartTime = Date.now();
             rs.repsAtRestStart = s.repCount;
 
-            // Calculate current set stats
-            const prevTotalReps = rs.setsCompleted.reduce((a, set) => a + set.reps, 0);
-            const setReps = s.repCount - prevTotalReps;
+            const setReps = s.lastSetReps;
             const avgScore = rs.scoresInCurrentSet.length > 0
                 ? Math.round((rs.scoresInCurrentSet.reduce((a, b) => a + b, 0) / rs.scoresInCurrentSet.length) * 100)
                 : 0;
-
             if (setReps > 0) {
                 rs.setsCompleted.push({ reps: setReps, avgScore });
             }
-
-            const setNum = rs.setsCompleted.length;
             if (restSummary && setReps > 0) {
+                const setNum = rs.setsCompleted.length;
                 restSummary.textContent = `Set ${setNum}: ${setReps} reps · ${avgScore}% avg`;
             }
-
-            // Reset set score tracking
             rs.scoresInCurrentSet = [];
 
-            // Show rest overlay
             restOverlay.classList.remove("hidden");
-
-            // Start rest timer
             rs.restTimerInterval = setInterval(() => {
                 const elapsed = Math.round((Date.now() - rs.restStartTime) / 1000);
                 const m = Math.floor(elapsed / 60);
@@ -932,7 +1033,8 @@ function updateRestDetection(s) {
             }, 500);
         }
     } else {
-        // Active — clear rest state
+        // Anything other than "resting" clears the overlay. active / setup /
+        // idle all hide it. Track per-frame scores while active.
         if (rs.isResting) {
             rs.isResting = false;
             restOverlay.classList.add("hidden");
@@ -941,10 +1043,7 @@ function updateRestDetection(s) {
                 rs.restTimerInterval = null;
             }
         }
-        rs.inactiveFrames = 0;
-
-        // Track per-frame scores for current set
-        if (s.isActive && s.formScore > 0) {
+        if (s.sessionState === "active" && s.formScore > 0) {
             rs.scoresInCurrentSet.push(s.formScore);
         }
     }
@@ -980,7 +1079,7 @@ function updateSessionOverlay(data) {
     } else if (!s.isActive && s.wasActive && s.repCount > 0) {
         // Was exercising, now stopped (resting or repositioning)
         overlayText.textContent = "RESTING";
-        overlaySubtext.textContent = `${s.repsInSet || s.repCount} reps so far. Resume when ready.`;
+        overlaySubtext.textContent = `${s.lastSetReps} reps in set ${s.setCount}. Resume when ready.`;
         overlay.className = "session-state-overlay resting";
         overlay.classList.remove("hidden");
     } else if (s.isActive) {
@@ -1013,7 +1112,7 @@ function handleLandmarkResult(data) {
 
     totalFrameCount++;
 
-    repNumber.textContent = data.rep_count || 0;
+    renderSetRepDisplay(data);
     fpsDisplay.textContent = `FPS: ${data.fps || "--"}`;
 
     isUserActive = data.is_active === true;
@@ -1042,11 +1141,11 @@ function handleLandmarkResult(data) {
         const offset = circumference - (circumference * scorePctLive / 100);
         scoreRingFill.style.strokeDashoffset = offset;
 
-        if (scorePctLive >= 70) {
+        if (scorePctLive >= 50) {
             scoreRingFill.style.stroke = 'var(--good)';
             scoreRingContainer.classList.add('good-form');
             scoreRingContainer.classList.remove('mid-form', 'bad-form');
-        } else if (scorePctLive >= 40) {
+        } else if (scorePctLive >= 30) {
             scoreRingFill.style.stroke = 'var(--warn)';
             scoreRingContainer.classList.add('mid-form');
             scoreRingContainer.classList.remove('good-form', 'bad-form');
@@ -1068,19 +1167,10 @@ function handleLandmarkResult(data) {
     // Joint health panel
     updateJointHealth(data.joint_feedback || {}, selectedExercise);
 
-    // Status badge
-    if (!isUserActive) {
-        statusBadge.textContent = "Not Active";
-        statusBadge.className = "status-badge neutral";
-    } else if (data.is_correct === true) {
-        statusBadge.textContent = "Good Form";
-        statusBadge.className = "status-badge correct";
-    } else if (data.is_correct === false) {
-        statusBadge.textContent = "Check Form";
-        statusBadge.className = "status-badge incorrect";
-    } else {
-        statusBadge.textContent = "Detecting...";
-        statusBadge.className = "status-badge neutral";
+    // Status badge intentionally left blank — HUD is reduced to 3 counters.
+    if (statusBadge) {
+        statusBadge.textContent = "";
+        statusBadge.className = "status-badge";
     }
 
     // Confidence gauge (mini bar)
@@ -1109,6 +1199,9 @@ function handleLandmarkResult(data) {
         feedbackDetails.className = "feedback-text";
     }
 
+    // Voice coaching — speaks only when server sends voice_text (severe issues)
+    if (data.voice_text) VoiceCoach.speak(data.voice_text);
+
     updateFloatingHud();
     sending = false;
 }
@@ -1136,11 +1229,9 @@ const reconnectBanner = document.getElementById("reconnect-banner");
 
 const sessionExerciseLabel = document.getElementById("session-exercise-label");
 const sessionTimer = document.getElementById("session-timer");
-const repNumber = document.getElementById("rep-number");
 const gaugeBar = document.getElementById("gauge-bar");
 const gaugeText = document.getElementById("gauge-text");
 const statusBadge = document.getElementById("status-badge");
-const repHistory = document.getElementById("rep-history");
 const feedbackDetails = document.getElementById("feedback-details");
 const fpsDisplay = document.getElementById("fps-display");
 const classifierLabel = document.getElementById("classifier-label");
@@ -1148,6 +1239,7 @@ const endSessionBtn = document.getElementById("end-session-btn");
 const pauseBtn = document.getElementById("pause-btn");
 const mirrorBtn = document.getElementById("mirror-btn");
 const fullscreenBtn = document.getElementById("fullscreen-btn");
+const voiceBtn = document.getElementById("voice-btn");
 
 const scoreRingFill = document.getElementById("score-ring-fill");
 const scoreRingValue = document.getElementById("score-ring-value");
@@ -1158,9 +1250,9 @@ const scoreHistoryCanvas = document.getElementById("score-history-chart");
 const scoreHistoryCtx = scoreHistoryCanvas ? scoreHistoryCanvas.getContext("2d") : null;
 const repChartWrap = document.getElementById("rep-chart-wrap");
 
-const reportScore = document.getElementById("report-score");
 const reportReps = document.getElementById("report-reps");
-const reportGood = document.getElementById("report-good");
+const reportSets = document.getElementById("report-sets");
+const reportAvgPerSet = document.getElementById("report-avg-per-set");
 const reportDuration = document.getElementById("report-duration");
 const repTableBody = document.getElementById("rep-table-body");
 const commonIssuesList = document.getElementById("common-issues-list");
@@ -1180,12 +1272,6 @@ const EXERCISE_ICONS = {
     deadlift: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="24" cy="7" r="4"/><path d="M24 11v12M20 23l-4 8v8M28 23l4 8v8M10 40h28"/><rect x="12" y="38" width="24" height="4" rx="2"/>
     </svg>`,
-    bench_press: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="20" cy="18" r="3"/><path d="M20 21v8M16 29l-2 10M24 29l2 10M8 14h32"/><rect x="6" y="12" width="4" height="4" rx="1"/><rect x="38" y="12" width="4" height="4" rx="1"/>
-    </svg>`,
-    overhead_press: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="24" cy="14" r="4"/><path d="M24 18v12M20 30l-2 12M28 30l2 12M16 6h16"/><path d="M18 18l-2-12M30 18l2-12"/>
-    </svg>`,
     pullup: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="24" cy="12" r="4"/><path d="M10 4h28M24 16v14M20 30l-2 12M28 30l2 12"/><path d="M18 16l-8-12M30 16l8-12"/>
     </svg>`,
@@ -1200,6 +1286,15 @@ const EXERCISE_ICONS = {
     </svg>`,
     tricep_dip: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="24" cy="10" r="4"/><path d="M24 14v10"/><path d="M18 14l-8 4M30 14l8 4"/><path d="M24 24l-4 8v10M24 24l4 8v10"/><path d="M8 18h4M36 18h4"/>
+    </svg>`,
+    crunch: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="14" cy="20" r="3"/><path d="M17 22l8 4 10-4"/><path d="M22 26l-4 8M32 22l4 8"/>
+    </svg>`,
+    lateral_raise: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="24" cy="8" r="4"/><path d="M24 12v18M20 30l-2 12M28 30l2 12"/><path d="M20 18l-14 0M28 18l14 0"/>
+    </svg>`,
+    side_plank: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="10" cy="18" r="3"/><path d="M13 20l26 4"/><path d="M14 20l-2 14M38 24l2 10"/><path d="M24 10l0-6"/>
     </svg>`,
 };
 
@@ -1327,6 +1422,12 @@ beginSessionBtn.addEventListener("click", startSession);
 endSessionBtn.addEventListener("click", showEndConfirmation);
 pauseBtn.addEventListener("click", togglePause);
 mirrorBtn.addEventListener("click", toggleMirror);
+if (voiceBtn) voiceBtn.addEventListener("click", () => {
+    const on = VoiceCoach.toggle();
+    voiceBtn.innerHTML = on ? "\uD83D\uDD0A" : "\uD83D\uDD07";
+    voiceBtn.title = on ? "Voice coaching (on)" : "Voice coaching (off)";
+    voiceBtn.classList.toggle("active", on);
+});
 if (fullscreenBtn) fullscreenBtn.addEventListener("click", toggleFullscreen);
 
 // Fullscreen floating controls
@@ -1352,10 +1453,10 @@ function updateFloatingHud() {
     const ff = document.getElementById("floating-fps");
     if (!fs) return;
     const score = scoreRingValue.textContent;
-    const scoreColor = score !== "--" && parseInt(score) >= 70 ? "#34D399"
-        : score !== "--" && parseInt(score) >= 40 ? "#F59E0B" : "#EF4444";
+    const scoreColor = score !== "--" && parseInt(score) >= 50 ? "#34D399"
+        : score !== "--" && parseInt(score) >= 30 ? "#F59E0B" : "#EF4444";
     fs.innerHTML = `<span style="color:${score === "--" ? "#999" : scoreColor}">${score}</span> <small>FORM</small>`;
-    fr.innerHTML = `${repNumber.textContent} <small>REPS</small>`;
+    fr.innerHTML = `${hudState.currentSetReps} <small>SET ${hudState.currentSetNumber}</small>`;
     ff.textContent = fpsDisplay.textContent;
 }
 
@@ -1367,8 +1468,23 @@ async function startSession() {
     pauseOverlay.classList.add("hidden");
     reconnectBanner.classList.add("hidden");
 
-    repNumber.textContent = "0";
-    repHistory.innerHTML = "";
+    // Voice ON by default on every session start. Reset UI to match so a
+    // previous mic toggle doesn't leak a stale state into the new session.
+    VoiceCoach.unmute();
+    if (voiceBtn) {
+        voiceBtn.innerHTML = "\uD83D\uDD0A"; // 🔊
+        voiceBtn.title = "Voice coaching (on)";
+        voiceBtn.classList.add("active");
+    }
+
+    const setsDoneEl = document.getElementById("hud-sets-done");
+    const currentSetLabel = document.getElementById("hud-current-set-label");
+    const currentSetEl = document.getElementById("hud-current-reps");
+    const totalRepsEl = document.getElementById("hud-total-reps");
+    if (setsDoneEl) setsDoneEl.textContent = "0";
+    if (currentSetLabel) currentSetLabel.textContent = "Set 1 · Reps";
+    if (currentSetEl) currentSetEl.textContent = "0";
+    if (totalRepsEl) totalRepsEl.textContent = "0";
     feedbackDetails.textContent = "Perform the exercise to receive feedback.";
     statusBadge.textContent = "Waiting";
     statusBadge.className = "status-badge neutral";
@@ -1687,7 +1803,7 @@ function handleProcessedFrame(data) {
 
     totalFrameCount++;
 
-    repNumber.textContent = data.rep_count || 0;
+    renderSetRepDisplay(data);
     fpsDisplay.textContent = `FPS: ${data.fps || "--"}`;
 
     // Handle active/inactive state
@@ -1718,11 +1834,11 @@ function handleProcessedFrame(data) {
         const offset = circumference - (circumference * scorePctLive / 100);
         scoreRingFill.style.strokeDashoffset = offset;
 
-        if (scorePctLive >= 70) {
+        if (scorePctLive >= 50) {
             scoreRingFill.style.stroke = 'var(--good)';
             scoreRingContainer.classList.add('good-form');
             scoreRingContainer.classList.remove('mid-form', 'bad-form');
-        } else if (scorePctLive >= 40) {
+        } else if (scorePctLive >= 30) {
             scoreRingFill.style.stroke = 'var(--warn)';
             scoreRingContainer.classList.add('mid-form');
             scoreRingContainer.classList.remove('good-form', 'bad-form');
@@ -1744,19 +1860,10 @@ function handleProcessedFrame(data) {
     // Joint health panel
     updateJointHealth(data.joint_feedback || {}, selectedExercise);
 
-    // Status badge
-    if (!isUserActive) {
-        statusBadge.textContent = "Not Active";
-        statusBadge.className = "status-badge neutral";
-    } else if (data.is_correct === true) {
-        statusBadge.textContent = "Good Form";
-        statusBadge.className = "status-badge correct";
-    } else if (data.is_correct === false) {
-        statusBadge.textContent = "Check Form";
-        statusBadge.className = "status-badge incorrect";
-    } else {
-        statusBadge.textContent = "Detecting...";
-        statusBadge.className = "status-badge neutral";
+    // Status badge intentionally left blank — HUD is reduced to 3 counters.
+    if (statusBadge) {
+        statusBadge.textContent = "";
+        statusBadge.className = "status-badge";
     }
 
     // Confidence gauge (mini bar)
@@ -1783,6 +1890,9 @@ function handleProcessedFrame(data) {
         feedbackDetails.textContent = "Position yourself in frame to begin.";
         feedbackDetails.className = "feedback-text";
     }
+
+    // Voice coaching — speaks only when server sends voice_text (severe issues)
+    if (data.voice_text) VoiceCoach.speak(data.voice_text);
 
     updateFloatingHud();
     sending = false;
@@ -1830,21 +1940,9 @@ function updateDtwPill(data) {
 }
 
 function handleRepCompleted(repInfo) {
-    const dot = document.createElement("div");
-    dot.className = "rep-dot";
-    dot.title = `Rep ${repInfo.rep_num}: ${Math.round(repInfo.form_score * 100)}%`;
-
-    if (repInfo.form_score >= 0.7) {
-        dot.classList.add("good");
-    } else if (repInfo.form_score >= 0.4) {
-        dot.classList.add("mid");
-    } else {
-        dot.classList.add("bad");
-    }
-
-    dot.textContent = repInfo.rep_num;
-    repHistory.appendChild(dot);
-    repHistory.scrollLeft = repHistory.scrollWidth;
+    // Live rep-dot history removed from HUD — reps are shown in the
+    // current-set counter only, and the full rep breakdown lives in
+    // the post-session report page.
 }
 
 function handleSessionReport(summary) {
@@ -1901,15 +1999,19 @@ function showEndConfirmation() {
     const overlay = document.getElementById("end-confirm-overlay");
     if (!overlay) return;
 
-    // Populate stats
-    const repCount = parseInt(document.getElementById("rep-number").textContent) || 0;
+    // Populate stats — lifetime reps, total sets (including the in-progress
+    // set if reps have been done), and elapsed time. No form-score card
+    // because per-rep scoring isn't trustworthy.
+    const repCount = hudState.repCount || 0;
+    const setsComplete = hudState.setCount || 0;
+    const inProgressSet = hudState.repsInSet > 0 ? 1 : 0;
+    const setsTotal = setsComplete + inProgressSet;
     const elapsed = sessionStartTime ? Math.round((Date.now() - sessionStartTime - totalPausedMs) / 1000) : 0;
     const m = Math.floor(elapsed / 60);
     const s = elapsed % 60;
-    const avgScore = hudState.formScore > 0 ? Math.round(hudState.displayScore * 100) : 0;
 
-    document.getElementById("ec-reps").textContent = `${repCount} reps`;
-    document.getElementById("ec-score").textContent = `${avgScore}% avg`;
+    document.getElementById("ec-reps").textContent = `${repCount} ${repCount === 1 ? "rep" : "reps"}`;
+    document.getElementById("ec-sets").textContent = `${setsTotal} ${setsTotal === 1 ? "set" : "sets"}`;
     document.getElementById("ec-time").textContent = `${m}:${String(s).padStart(2, "0")}`;
 
     overlay.classList.remove("hidden");
@@ -2072,34 +2174,38 @@ function updateTimer() {
 // ── Session Report ──────────────────────────────────────────────────────
 
 function showReport(summary) {
-    if (!summary) summary = { total_reps: 0, good_reps: 0, avg_form_score: 0, duration_sec: 0, reps: [], common_issues: [] };
+    if (!summary) summary = { total_reps: 0, sets: 0, reps_per_set: [], duration_sec: 0, reps: [], common_issues: [] };
     const totalReps = summary.total_reps || 0;
-    const goodReps = summary.good_reps || 0;
-    const avgScore = summary.avg_form_score || 0;
+    const totalSets = summary.sets || (summary.reps_per_set || []).length || 0;
     const duration = summary.duration_sec || 0;
+    const avgPerSet = totalSets > 0 ? Math.round(totalReps / totalSets) : 0;
 
-    const scorePct = Math.round(avgScore * 100);
-    reportScore.textContent = scorePct + "%";
-    const scoreCard = reportScore.closest(".score-card");
-
+    // Hero icon + subtitle — tier off rep count, not a form score we can't
+    // trust. Completing any volume is the win.
     const heroIcon = document.getElementById("report-hero-icon");
     const reportSubtitle = document.getElementById("report-subtitle");
-    if (scorePct >= 70) {
-        scoreCard.className = "report-card score-card score-good";
+    const scoreCard = reportReps.closest(".score-card");
+    if (totalReps >= 30) {
+        if (scoreCard) scoreCard.className = "report-card score-card score-good";
         heroIcon.textContent = "\uD83C\uDFC6";
-        reportSubtitle.textContent = "Excellent form! Keep up the great work.";
-    } else if (scorePct >= 40) {
-        scoreCard.className = "report-card score-card score-mid";
+        reportSubtitle.textContent = "Strong session — stack another one tomorrow.";
+    } else if (totalReps >= 10) {
+        if (scoreCard) scoreCard.className = "report-card score-card score-mid";
         heroIcon.textContent = "\uD83D\uDCAA";
-        reportSubtitle.textContent = "Good effort! Focus on the tips below to improve.";
-    } else {
-        scoreCard.className = "report-card score-card score-bad";
+        reportSubtitle.textContent = "Solid work — build on this next session.";
+    } else if (totalReps > 0) {
+        if (scoreCard) scoreCard.className = "report-card score-card";
         heroIcon.textContent = "\uD83C\uDFCB\uFE0F";
-        reportSubtitle.textContent = "Keep practising \u2014 review the feedback to nail your form.";
+        reportSubtitle.textContent = "Every rep counts — keep going.";
+    } else {
+        if (scoreCard) scoreCard.className = "report-card score-card";
+        heroIcon.textContent = "\uD83C\uDFCB\uFE0F";
+        reportSubtitle.textContent = "No reps captured this session.";
     }
 
     reportReps.textContent = totalReps;
-    reportGood.textContent = goodReps;
+    reportSets.textContent = totalSets;
+    reportAvgPerSet.textContent = avgPerSet;
 
     if (duration >= 60) {
         const m = Math.floor(duration / 60);
@@ -2116,7 +2222,9 @@ function showReport(summary) {
         summary.reps.forEach((rep) => {
             const tr = document.createElement("tr");
             const scorePctRep = Math.round(rep.form_score * 100);
-            const scoreClass = scorePctRep >= 70 ? "good" : scorePctRep >= 40 ? "mid" : "bad";
+            // Lenient — must match detector's RepQuality thresholds
+            // (src/classification/pushup_detector.py _record_rep).
+            const scoreClass = scorePctRep >= 50 ? "good" : scorePctRep >= 30 ? "mid" : "bad";
 
             const tdNum = document.createElement("td");
             tdNum.textContent = rep.rep_num;
@@ -2289,7 +2397,7 @@ function renderRepChart(reps) {
 
     reps.forEach((rep) => {
         const scorePct = Math.round(rep.form_score * 100);
-        const barColor = scorePct >= 70 ? "var(--good)" : scorePct >= 40 ? "var(--warn)" : "var(--bad)";
+        const barColor = scorePct >= 50 ? "var(--good)" : scorePct >= 30 ? "var(--warn)" : "var(--bad)";
 
         const col = document.createElement("div");
         col.className = "rep-chart-col";
@@ -2430,9 +2538,10 @@ let dashCurrentPeriod = "week";
 
 const EXERCISE_COLORS = {
     squat: "#E8572A", lunge: "#D4A574", deadlift: "#F59E0B",
-    bench_press: "#34D399", overhead_press: "#60A5FA", pullup: "#A78BFA",
+    pullup: "#A78BFA",
     pushup: "#F472B6", plank: "#2DD4BF", bicep_curl: "#FB923C",
     tricep_dip: "#818CF8",
+    crunch: "#FCA5A5", lateral_raise: "#34D399", side_plank: "#60A5FA",
 };
 
 // Chart.js global defaults for dark theme
@@ -2720,7 +2829,7 @@ function renderDashSessionsList(sessions) {
 
     container.innerHTML = sessions.map((s) => {
         const score = Math.round(s.avg_form_score * 100);
-        const scoreClass = score >= 70 ? "good" : score >= 40 ? "mid" : "bad";
+        const scoreClass = score >= 50 ? "good" : score >= 30 ? "mid" : "bad";
         const date = new Date(s.date);
         const dateStr = date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
         const timeStr = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });

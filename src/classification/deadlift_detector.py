@@ -17,6 +17,7 @@ from .base_detector import (
     RobustExerciseDetector,
     RepPhase,
     REP_DIRECTION_DECREASING,
+    SessionState,
 )
 from ..pose_estimation.base import PoseResult
 from ..utils.constants import (
@@ -24,6 +25,14 @@ from ..utils.constants import (
     LEFT_SHOULDER, RIGHT_SHOULDER, LEFT_HIP, RIGHT_HIP,
     LEFT_KNEE, RIGHT_KNEE, LEFT_ANKLE, RIGHT_ANKLE,
 )
+from ..utils.geometry import calculate_angle
+
+
+# Visibility threshold for deadlift — MediaPipe from a side view often
+# drops the far-side (and sometimes near-side) landmarks to ~0.4–0.5.
+# We accept anything above 0.4 so the hip/knee chain is computable from
+# any camera angle.
+DEADLIFT_VIS_THRESHOLD = 0.4
 
 
 # ── Thresholds ──
@@ -41,6 +50,16 @@ HIP_SHALLOW = 140        # Beyond this = not really a hinge
 KNEE_MAX_BEND = 130      # Knees should stay relatively straight (relaxed for bodyweight)
 KNEE_MIN = 155           # Ideal slight bend
 KNEE_SQUAT = 110         # Too much knee bend = squatting not hinging
+
+# ── Movement-gated session FSM thresholds ──
+# FORM LOCKED fires only on a true hip hinge: hip committed past the rep-start
+# threshold AND knees still near-straight. This discriminates a real deadlift
+# setup from sitting down on a bench (where knees drop with the hips).
+HINGE_HIP_COMMIT = 140.0   # hip must drop below this to count as a hinge
+HINGE_KNEE_MIN = 155.0     # knees must stay above this (else it's a sit/squat)
+AT_TOP_HIP_MIN = 160.0     # above this = clearly standing at lockout
+REST_TOP_SECONDS = 8.0     # standing tall for this long → RESTING
+REST_BOTTOM_SECONDS = 60.0 # hinged/sat below top this long → RESTING
 
 # Back straightness: EAR-to-SHOULDER vertical ratio (image coordinates)
 # Measures how far ear is above shoulder, normalized by torso length.
@@ -67,7 +86,10 @@ class DeadliftDetector(RobustExerciseDetector):
         LEFT_HIP, RIGHT_HIP,
         LEFT_KNEE, RIGHT_KNEE,
     )
-    VISIBILITY_GATE_THRESHOLD = 0.6
+    # Lowered from 0.6 so side-view landmarks (which hover ~0.4–0.6 on
+    # the near side) can still latch into ACTIVE. Paired with the custom
+    # _check_visibility_gate override which accepts one full side.
+    VISIBILITY_GATE_THRESHOLD = DEADLIFT_VIS_THRESHOLD
 
     REP_DIRECTION = REP_DIRECTION_DECREASING
     # Rep-FSM thresholds on hip angle. Standing lockout ~155°, bottom of
@@ -84,11 +106,117 @@ class DeadliftDetector(RobustExerciseDetector):
         super().__init__(**kwargs)
         self._prev_shoulder_y = None
         self._prev_hip_y = None
+        # Movement-gated session FSM timers
+        self._at_top_since: Optional[float] = None
+        self._below_top_since: Optional[float] = None
+        self._last_hinge_time: float = 0.0
 
     def reset(self):
         super().reset()
         self._prev_shoulder_y = None
         self._prev_hip_y = None
+        self._at_top_since = None
+        self._below_top_since = None
+        self._last_hinge_time = 0.0
+
+    # ── Movement-gated session FSM ──────────────────────────────────────
+    # Overrides the base visibility-only gate. FORM LOCKED fires only when
+    # the user commits to a real hip hinge (hip past REP_START_THRESHOLD AND
+    # knees still near-straight). RESTING fires after 8s standing idle at
+    # lockout OR after 60s below lockout (gave up / sat down).
+    def _update_session_state(self, now: float, visibility_ok: bool) -> None:
+        hip = self._get_smooth("hip")
+        knee = self._get_smooth("knee")
+
+        # If either signal is unavailable, defer to the base visibility gate.
+        if hip is None or knee is None:
+            super()._update_session_state(now, visibility_ok)
+            return
+
+        is_true_hinge = (hip < HINGE_HIP_COMMIT and knee >= HINGE_KNEE_MIN)
+        is_at_top = hip >= AT_TOP_HIP_MIN
+
+        # Update at-top / below-top continuous-window timers
+        if is_at_top:
+            if self._at_top_since is None:
+                self._at_top_since = now
+            self._below_top_since = None
+        else:
+            if self._below_top_since is None:
+                self._below_top_since = now
+            self._at_top_since = None
+
+        if is_true_hinge:
+            self._last_hinge_time = now
+
+        s = self._session_state
+
+        # ── Visibility loss handling (delegates to base close logic) ──
+        if not visibility_ok:
+            if s == SessionState.ACTIVE:
+                self._unknown_streak += 1
+                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
+                    self._close_active_set_or_rollback(now)
+            return
+        self._unknown_streak = 0
+
+        # ── IDLE → SETUP: first time the body is visible ──
+        if s == SessionState.IDLE:
+            self._session_state = SessionState.SETUP
+            return
+
+        # ── SETUP → ACTIVE: only on a true hinge (seed first rep from trace) ──
+        if s == SessionState.SETUP:
+            if is_true_hinge:
+                self._session_state = SessionState.ACTIVE
+                self._reset_robust_rep_fsm()
+                self._rep_start_time = now
+                # First rep may have started during SETUP bootstrap — recover it.
+                self._seed_rep_fsm_from_pre_active(now)
+            return
+
+        # ── RESTING → ACTIVE: fresh start, do NOT seed from stale trace ──
+        if s == SessionState.RESTING:
+            if is_true_hinge:
+                self._session_state = SessionState.ACTIVE
+                self._reset_robust_rep_fsm()
+                self._rep_start_time = now
+            return
+
+        # ── ACTIVE → RESTING ──
+        if s == SessionState.ACTIVE:
+            # Trigger 1: standing tall at lockout for 8s straight
+            if (
+                self._at_top_since is not None
+                and now - self._at_top_since >= REST_TOP_SECONDS
+            ):
+                self._close_active_set_or_rollback(now)
+                return
+            # Trigger 2: below top (hinged / sat) for 60s without returning
+            if (
+                self._below_top_since is not None
+                and now - self._below_top_since >= REST_BOTTOM_SECONDS
+            ):
+                self._close_active_set_or_rollback(now)
+                return
+
+    # ── Side-view-friendly visibility gate ──────────────────────────────
+    # Default gate requires ALL of (L+R shoulder, L+R hip, L+R knee) visible,
+    # which excludes pure side-on cameras because the far side's landmarks
+    # are inferred by MediaPipe and drop below the 0.6 threshold. Accept the
+    # gate if EITHER side's shoulder-hip-knee chain is fully visible; the
+    # angle calculations (_angle_at / _avg_angle) already fall back to the
+    # visible side when the other returns None.
+    def _check_visibility_gate(self, pose) -> bool:
+        left_ok = all(
+            pose.is_visible(idx, self.VISIBILITY_GATE_THRESHOLD)
+            for idx in (LEFT_SHOULDER, LEFT_HIP, LEFT_KNEE)
+        )
+        right_ok = all(
+            pose.is_visible(idx, self.VISIBILITY_GATE_THRESHOLD)
+            for idx in (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_KNEE)
+        )
+        return left_ok or right_ok
 
     def _should_count_rep(self, elapsed: float, angles: Dict[str, Optional[float]]) -> bool:
         """Only count rep if form score averaged above 0.3 during the rep.
@@ -104,14 +232,58 @@ class DeadliftDetector(RobustExerciseDetector):
                 return False
         return True
 
+    def _lenient_side_angle(
+        self,
+        pose: PoseResult,
+        a_idx: int,
+        b_idx: int,
+        c_idx: int,
+        threshold: float = DEADLIFT_VIS_THRESHOLD,
+    ) -> Optional[float]:
+        """Compute world-coordinate angle at vertex b, accepting landmarks
+        whose visibility is at least `threshold` (default 0.4 for deadlift,
+        vs. the global MIN_VISIBILITY=0.5 used by the base class's
+        `_angle_at`). Lowered floor lets near-side landmarks pass from a
+        pure side view where MediaPipe often reports ~0.4–0.5 confidence.
+        """
+        if not all(pose.is_visible(i, threshold) for i in (a_idx, b_idx, c_idx)):
+            return None
+        return calculate_angle(
+            pose.get_world_landmark(a_idx),
+            pose.get_world_landmark(b_idx),
+            pose.get_world_landmark(c_idx),
+        )
+
+    def _lenient_avg_angle(
+        self,
+        pose: PoseResult,
+        left_triple: Tuple[int, int, int],
+        right_triple: Tuple[int, int, int],
+        name: str,
+    ) -> Optional[float]:
+        """Average left/right angles using the lenient visibility floor,
+        falling back to whichever side is available. Stores L/R values for
+        asymmetry detection (same contract as base `_avg_angle`)."""
+        left = self._lenient_side_angle(pose, *left_triple)
+        right = self._lenient_side_angle(pose, *right_triple)
+        self._lr_angles[name] = (left, right)
+        if left is not None and right is not None:
+            return (left + right) / 2
+        return left if left is not None else right
+
     def _compute_angles(self, pose: PoseResult) -> Dict[str, Optional[float]]:
-        hip = self._avg_angle(
+        # Use lenient angle computation so side-view (and 3/4 view) work:
+        # near-side landmarks from MediaPipe frequently hover in the
+        # 0.4–0.6 visibility range, which the default 0.5 floor would
+        # reject. The world-coordinate angle itself is accurate from any
+        # camera angle once MediaPipe's pose rig has located the joint.
+        hip = self._lenient_avg_angle(
             pose,
             (LEFT_SHOULDER, LEFT_HIP, LEFT_KNEE),
             (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_KNEE),
             name="hip",
         )
-        knee = self._avg_angle(
+        knee = self._lenient_avg_angle(
             pose,
             (LEFT_HIP, LEFT_KNEE, LEFT_ANKLE),
             (RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE),

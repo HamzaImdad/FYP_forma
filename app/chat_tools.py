@@ -69,7 +69,12 @@ PERSONAL_TOOL_SCHEMAS: List[Dict[str, Any]] = [
         "type": "function",
         "function": {
             "name": "get_recent_sessions",
-            "description": "List the user's most recent workout sessions, newest first.",
+            "description": (
+                "List the user's most recent workout sessions, newest first. "
+                "Each session returns: id, exercise, date, duration_sec "
+                "(seconds the session lasted, float), total_reps, good_reps, "
+                "avg_form_score, weight_kg."
+            ),
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -93,8 +98,11 @@ PERSONAL_TOOL_SCHEMAS: List[Dict[str, Any]] = [
             "name": "get_session_detail",
             "description": (
                 "Fetch the full per-rep breakdown for one session the user "
-                "owns. Returns {error: 'not_found'} if the id is not in "
-                "their history — never leak existence of other users' sessions."
+                "owns. Returns id, exercise, date, duration_sec (seconds), "
+                "total_reps, avg_form_score, fatigue_index, consistency_score, "
+                "plus per-rep and per-set arrays. Returns {error: 'not_found'} "
+                "if the id is not in their history — never leak existence of "
+                "other users' sessions."
             ),
             "parameters": {
                 "type": "object",
@@ -286,6 +294,9 @@ def get_recent_sessions(
             "date": r["date"],
             "duration_sec": round(float(r.get("duration_sec") or 0), 1),
             "total_reps": int(r.get("total_reps") or 0),
+            # Redesign Phase 4 — distinguish good from total so the coach
+            # can say "28 good / 35 total" instead of just "35".
+            "good_reps": int(r.get("good_reps") or 0),
             "avg_form_score": round(float(r.get("avg_form_score") or 0), 3),
             "weight_kg": r.get("weight_kg"),
         }
@@ -532,6 +543,7 @@ from datetime import datetime as _dt, timedelta as _td
 KNOWN_EXERCISES: set = {
     "squat", "lunge", "deadlift", "bench_press", "overhead_press",
     "pullup", "pushup", "plank", "bicep_curl", "tricep_dip",
+    "crunch", "lateral_raise", "side_plank",
 }
 
 # Per-exercise rep ceilings when we have no user history to anchor against.
@@ -577,6 +589,212 @@ def _reps_cap(db: ExerVisionDB, user_id: int, exercise: str) -> int:
     return _DEFAULT_REP_CEILING.get(exercise, 30)
 
 
+def sanitize_day_exercises(
+    exs_in: Any,
+    user_id: int,
+    db: ExerVisionDB,
+    *,
+    label: str = "day",
+) -> Tuple[List[Dict[str, Any]], List[str]]:
+    """Clamp a single day's exercise list against KNOWN_EXERCISES, the
+    per-exercise rep ceilings, and — when FORMA_PHASE3_ENABLED is True
+    (default) — the exercise family's required shape.
+
+    Shared by the chatbot's plan sanitizer AND the manual PATCH
+    /api/plans/:id/days/:day_id route, so manual edits get the same rules
+    as chatbot-proposed plans.
+
+    Redesign Phase 3 output per family (stamps `family` on every row):
+      rep_count  : {exercise, family, target_reps, target_sets, notes}
+      weighted   : {exercise, family, target_weight_kg, target_reps,
+                    target_sets, notes}  — squat allows target_weight_kg=0
+                    (bodyweight); other weighted exercises drop on weight<=0
+      time_hold  : {exercise, family, target_duration_sec, target_sets, notes}
+
+    Phase-3 off (legacy): emits the old rep/sets-only shape.
+    """
+    from app.settings import PHASE3_ENABLED
+    from app.exercise_registry import EXERCISE_FAMILIES, family_of
+
+    warnings: List[str] = []
+    sanitized: List[Dict[str, Any]] = []
+    if not isinstance(exs_in, list):
+        return sanitized, warnings
+
+    if not PHASE3_ENABLED:
+        # ── Legacy path: no family branching, reps+sets only ──────────
+        for e in exs_in:
+            if not isinstance(e, dict):
+                continue
+            ex_name = str(e.get("exercise") or "").strip().lower()
+            if ex_name not in KNOWN_EXERCISES:
+                warnings.append(f"{label}: unknown exercise '{ex_name}' removed")
+                continue
+            try:
+                target_reps = int(e.get("target_reps") or 0)
+            except (TypeError, ValueError):
+                target_reps = 0
+            try:
+                target_sets = int(e.get("target_sets") or 0)
+            except (TypeError, ValueError):
+                target_sets = 0
+            cap = _reps_cap(db, user_id, ex_name)
+            if target_reps <= 0:
+                target_reps = min(10, cap)
+            if target_reps > cap:
+                warnings.append(
+                    f"{label} {ex_name}: target_reps {target_reps} "
+                    f"clamped to {cap}"
+                )
+                target_reps = cap
+            if target_sets <= 0:
+                target_sets = 3
+            if target_sets > 6:
+                warnings.append(
+                    f"{label} {ex_name}: target_sets {target_sets} clamped to 6"
+                )
+                target_sets = 6
+            notes = str(e.get("notes") or "").strip()[:160]
+            sanitized.append({
+                "exercise": ex_name,
+                "target_reps": target_reps,
+                "target_sets": target_sets,
+                "notes": notes,
+            })
+        return sanitized, warnings
+
+    # ── Phase 3: family-aware branching ──────────────────────────────
+    for e in exs_in:
+        if not isinstance(e, dict):
+            continue
+        ex_name = str(e.get("exercise") or "").strip().lower()
+        if ex_name not in EXERCISE_FAMILIES:
+            warnings.append(f"{label}: unknown exercise '{ex_name}' removed")
+            continue
+        fam = family_of(ex_name)
+        meta = EXERCISE_FAMILIES[ex_name]
+        notes = str(e.get("notes") or "").strip()[:160]
+
+        if fam == "rep_count":
+            try:
+                target_reps = int(e.get("target_reps") or 0)
+            except (TypeError, ValueError):
+                target_reps = 0
+            try:
+                target_sets = int(e.get("target_sets") or 0)
+            except (TypeError, ValueError):
+                target_sets = 0
+            cap = _reps_cap(db, user_id, ex_name)
+            if target_reps <= 0:
+                target_reps = min(10, cap)
+            if target_reps > cap:
+                warnings.append(
+                    f"{label} {ex_name}: target_reps {target_reps} "
+                    f"clamped to {cap}"
+                )
+                target_reps = cap
+            if target_sets <= 0:
+                target_sets = meta["default_sets"]
+            if target_sets > 6:
+                warnings.append(
+                    f"{label} {ex_name}: target_sets {target_sets} clamped to 6"
+                )
+                target_sets = 6
+            sanitized.append({
+                "exercise": ex_name,
+                "family": fam,
+                "target_reps": target_reps,
+                "target_sets": target_sets,
+                "notes": notes,
+            })
+
+        elif fam == "weighted":
+            try:
+                target_reps = int(e.get("target_reps") or 0)
+            except (TypeError, ValueError):
+                target_reps = 0
+            try:
+                target_sets = int(e.get("target_sets") or 0)
+            except (TypeError, ValueError):
+                target_sets = 0
+            try:
+                target_weight = float(e.get("target_weight_kg") or 0)
+            except (TypeError, ValueError):
+                target_weight = 0.0
+            if target_weight < 0:
+                target_weight = 0.0
+            # squat is weight_optional — target_weight_kg=0 is legal
+            # (bodyweight mode). Every other weighted exercise must carry
+            # a positive weight; drop the row if missing.
+            if not meta["weight_optional"] and target_weight <= 0:
+                warnings.append(
+                    f"{label} {ex_name}: missing target_weight_kg — dropped"
+                )
+                continue
+            if target_reps <= 0:
+                target_reps = 5
+            if target_reps > 30:
+                warnings.append(
+                    f"{label} {ex_name}: target_reps {target_reps} clamped to 30"
+                )
+                target_reps = 30
+            if target_sets <= 0:
+                target_sets = meta["default_sets"]
+            if target_sets > 8:
+                warnings.append(
+                    f"{label} {ex_name}: target_sets {target_sets} clamped to 8"
+                )
+                target_sets = 8
+            # sanity-cap weight too
+            if target_weight > 500:
+                warnings.append(
+                    f"{label} {ex_name}: target_weight_kg {target_weight} "
+                    f"clamped to 500"
+                )
+                target_weight = 500.0
+            sanitized.append({
+                "exercise": ex_name,
+                "family": fam,
+                "target_weight_kg": round(target_weight, 2),
+                "target_reps": target_reps,
+                "target_sets": target_sets,
+                "notes": notes,
+            })
+
+        elif fam == "time_hold":
+            try:
+                target_duration = int(e.get("target_duration_sec") or 0)
+            except (TypeError, ValueError):
+                target_duration = 0
+            if target_duration <= 0:
+                warnings.append(
+                    f"{label} {ex_name}: missing target_duration_sec — dropped"
+                )
+                continue
+            if target_duration < 5:
+                target_duration = 5
+            if target_duration > 600:
+                warnings.append(
+                    f"{label} {ex_name}: target_duration_sec "
+                    f"{target_duration} clamped to 600"
+                )
+                target_duration = 600
+            try:
+                target_sets = int(e.get("target_sets") or 0)
+            except (TypeError, ValueError):
+                target_sets = 0
+            if target_sets <= 0:
+                target_sets = meta["default_sets"]
+            sanitized.append({
+                "exercise": ex_name,
+                "family": fam,
+                "target_duration_sec": target_duration,
+                "target_sets": target_sets,
+                "notes": notes,
+            })
+    return sanitized, warnings
+
+
 def _sanitize_plan(
     draft: Dict[str, Any], user_id: int, db: ExerVisionDB
 ) -> Tuple[Dict[str, Any], List[str]]:
@@ -601,7 +819,6 @@ def _sanitize_plan(
             warnings.append(f"day {idx} missing day_date — skipped")
             continue
         is_rest = bool(d.get("is_rest"))
-        exs_in = d.get("exercises") or []
         if is_rest:
             sanitized_days.append(
                 {
@@ -611,49 +828,10 @@ def _sanitize_plan(
                 }
             )
             continue
-        sanitized_exs: List[Dict[str, Any]] = []
-        for e in exs_in:
-            if not isinstance(e, dict):
-                continue
-            ex_name = str(e.get("exercise") or "").strip().lower()
-            if ex_name not in KNOWN_EXERCISES:
-                warnings.append(
-                    f"day {idx}: unknown exercise '{ex_name}' removed"
-                )
-                continue
-            try:
-                target_reps = int(e.get("target_reps") or 0)
-            except (TypeError, ValueError):
-                target_reps = 0
-            try:
-                target_sets = int(e.get("target_sets") or 0)
-            except (TypeError, ValueError):
-                target_sets = 0
-            cap = _reps_cap(db, user_id, ex_name)
-            if target_reps <= 0:
-                target_reps = min(10, cap)
-            if target_reps > cap:
-                warnings.append(
-                    f"day {idx} {ex_name}: target_reps {target_reps} "
-                    f"clamped to {cap}"
-                )
-                target_reps = cap
-            if target_sets <= 0:
-                target_sets = 3
-            if target_sets > 6:
-                warnings.append(
-                    f"day {idx} {ex_name}: target_sets {target_sets} clamped to 6"
-                )
-                target_sets = 6
-            notes = str(e.get("notes") or "").strip()[:160]
-            sanitized_exs.append(
-                {
-                    "exercise": ex_name,
-                    "target_reps": target_reps,
-                    "target_sets": target_sets,
-                    "notes": notes,
-                }
-            )
+        sanitized_exs, day_warnings = sanitize_day_exercises(
+            d.get("exercises") or [], user_id, db, label=f"day {idx}"
+        )
+        warnings.extend(day_warnings)
         sanitized_days.append(
             {
                 "day_date": day_date,
@@ -680,12 +858,16 @@ def _apply_modifications(
     """Apply a `modifications` dict from the LLM to a draft in place.
 
     Supported keys (all optional):
-      title, summary, start_date — scalar replacements
-      set_days         — list of days (replaces days entirely)
-      add_days         — list of days appended at the end
-      remove_day_dates — list of day_date strings to drop
-      swap_exercise    — {"from": "squat", "to": "lunge"}
-      scale_volume     — float multiplier on target_reps across the plan
+      title, summary, start_date     — scalar replacements
+      set_days                       — list of days (replaces days entirely)
+      add_days                       — list of days appended at the end
+      remove_day_dates               — list of day_date strings to drop
+      swap_exercise                  — {"from": "squat", "to": "lunge"}
+      scale_volume                   — float multiplier on target_reps
+      set_target_weight              — {"exercise": "deadlift", "weight_kg": 80}
+                                       (Phase 3 — weighted family)
+      set_target_duration            — {"exercise": "plank", "seconds": 90}
+                                       (Phase 3 — time_hold family)
     """
     if not isinstance(mods, dict):
         return draft
@@ -720,9 +902,36 @@ def _apply_modifications(
         for day in out.get("days", []):
             for e in day.get("exercises", []) or []:
                 try:
-                    e["target_reps"] = max(1, int(round(float(e.get("target_reps", 0)) * scale_f)))
+                    e["target_reps"] = max(
+                        1, int(round(float(e.get("target_reps", 0)) * scale_f))
+                    )
                 except (TypeError, ValueError):
                     pass
+    # Phase 3 — family-specific setters.
+    stw = mods.get("set_target_weight") or {}
+    if isinstance(stw, dict) and stw.get("exercise") and stw.get("weight_kg") is not None:
+        target_ex = str(stw["exercise"]).lower()
+        try:
+            target_w = float(stw["weight_kg"])
+        except (TypeError, ValueError):
+            target_w = None
+        if target_w is not None and target_w >= 0:
+            for day in out.get("days", []):
+                for e in day.get("exercises", []) or []:
+                    if e.get("exercise") == target_ex:
+                        e["target_weight_kg"] = target_w
+    std = mods.get("set_target_duration") or {}
+    if isinstance(std, dict) and std.get("exercise") and std.get("seconds") is not None:
+        target_ex = str(std["exercise"]).lower()
+        try:
+            target_s = int(std["seconds"])
+        except (TypeError, ValueError):
+            target_s = None
+        if target_s is not None and target_s > 0:
+            for day in out.get("days", []):
+                for e in day.get("exercises", []) or []:
+                    if e.get("exercise") == target_ex:
+                        e["target_duration_sec"] = target_s
     return out
 
 
@@ -745,6 +954,41 @@ def _plan_active_days(plan: Dict[str, Any]) -> int:
     return sum(1 for d in plan.get("days", []) if not d.get("is_rest"))
 
 
+def _draft_read(db: ExerVisionDB, user_id: int, conversation_id: int) -> Optional[str]:
+    """Phase 3: read from per-user drafts first, fall back to legacy
+    conversation-scoped drafts so mid-migration conversations don't
+    appear to have lost their draft."""
+    from app.settings import PHASE3_ENABLED
+
+    if PHASE3_ENABLED:
+        row = db.get_user_plan_draft(user_id)
+        if row and row.get("draft_json"):
+            return row["draft_json"]
+    return db.get_conversation_plan_draft(conversation_id)
+
+
+def _draft_write(
+    db: ExerVisionDB,
+    user_id: int,
+    conversation_id: int,
+    draft_json: Optional[str],
+) -> None:
+    from app.settings import PHASE3_ENABLED
+
+    if PHASE3_ENABLED:
+        if draft_json is None:
+            db.clear_user_plan_draft(user_id)
+        else:
+            db.set_user_plan_draft(
+                user_id,
+                draft_json,
+                source="chat",
+                conversation_id=conversation_id,
+            )
+    # Also clear the legacy slot so old clients don't read a stale draft.
+    db.set_conversation_plan_draft(conversation_id, draft_json)
+
+
 def propose_plan(
     user_id: int,
     db: ExerVisionDB,
@@ -765,7 +1009,7 @@ def propose_plan(
         sanitized, warnings = _sanitize_plan(draft_in, user_id, db)
     except PlanRejected as e:
         return {"error": "plan_rejected", "message": str(e)}
-    db.set_conversation_plan_draft(conversation_id, _json.dumps(sanitized))
+    _draft_write(db, user_id, conversation_id, _json.dumps(sanitized))
     return {"draft": sanitized, "warnings": warnings}
 
 
@@ -776,7 +1020,7 @@ def revise_plan(
     *,
     modifications: Dict[str, Any],
 ) -> Dict[str, Any]:
-    raw = db.get_conversation_plan_draft(conversation_id)
+    raw = _draft_read(db, user_id, conversation_id)
     if not raw:
         return {
             "error": "no_draft",
@@ -791,7 +1035,7 @@ def revise_plan(
         sanitized, warnings = _sanitize_plan(modified, user_id, db)
     except PlanRejected as e:
         return {"error": "plan_rejected", "message": str(e)}
-    db.set_conversation_plan_draft(conversation_id, _json.dumps(sanitized))
+    _draft_write(db, user_id, conversation_id, _json.dumps(sanitized))
     return {"draft": sanitized, "warnings": warnings}
 
 
@@ -803,7 +1047,7 @@ def save_plan(
     title: Optional[str] = None,
     summary: Optional[str] = None,
 ) -> Dict[str, Any]:
-    raw = db.get_conversation_plan_draft(conversation_id)
+    raw = _draft_read(db, user_id, conversation_id)
     if not raw:
         return {"error": "no_draft", "message": "Nothing to save — call propose_plan first."}
     try:
@@ -832,71 +1076,52 @@ def save_plan(
             _json.dumps(d.get("exercises") or []),
             is_rest=bool(d.get("is_rest")),
         )
-    # Clear the draft so revise_plan can't accidentally re-save it.
-    db.set_conversation_plan_draft(conversation_id, None)
+    # Clear drafts (both scopes) so nothing lingers.
+    _draft_write(db, user_id, conversation_id, None)
+    saved_exercises = sorted({
+        ex.get("exercise")
+        for d in draft["days"]
+        for ex in (d.get("exercises") or [])
+        if ex.get("exercise")
+    })
     return {
         "plan_id": plan_id,
         "title": plan_title,
         "days_saved": len(draft["days"]),
+        "saved_summary": {
+            "exercises": saved_exercises,
+            "day_count": len(draft["days"]),
+            "first_day": draft["days"][0].get("day_date"),
+            "last_day": draft["days"][-1].get("day_date"),
+        },
     }
 
 
 def create_plan_goals(
     user_id: int, db: ExerVisionDB, *, plan_id: int
 ) -> Dict[str, Any]:
-    """Auto-generate one volume goal per distinct exercise + one consistency goal."""
-    plan = db.get_plan_full(plan_id, user_id)
-    if not plan:
-        return {"error": "not_found"}
+    """Auto-generate volume + consistency + plan_progress goals for a saved plan.
+
+    Thin wrapper over goal_engine.create_plan_goals_for_plan so the REST path
+    (POST /api/plans) and the chatbot tool share the same logic.
+    """
     from app import goal_engine as _ge
 
-    created: List[Dict[str, Any]] = []
-    volumes = _plan_volume_by_exercise(plan)
-    for ex, total_reps in sorted(volumes.items()):
-        try:
-            g = _ge.create_goal(
-                user_id,
-                title=f"{plan['title']} — {ex.replace('_', ' ')}",
-                goal_type="volume",
-                target_value=float(total_reps),
-                unit="reps",
-                exercise=ex,
-                period="once",
-                description=f"Finish all the {ex.replace('_', ' ')} volume in this plan.",
-                db=db,
-            )
-            created.append(g.to_dict())
-        except _ge.GoalCapExceeded:
-            return {
-                "error": "goal_cap",
-                "message": "Goal cap reached — couldn't create every plan goal.",
-                "created": created,
-            }
-        except _ge.InvalidGoal as e:
-            created.append({"error": str(e), "exercise": ex})
-    # Plus one consistency goal (active days over the plan window)
-    try:
-        active_days = _plan_active_days(plan)
-        if active_days > 0:
-            g = _ge.create_goal(
-                user_id,
-                title=f"{plan['title']} — finish every workout day",
-                goal_type="consistency",
-                target_value=float(active_days),
-                unit="sessions",
-                period="once",
-                description="Complete every non-rest day in this plan.",
-                db=db,
-            )
-            created.append(g.to_dict())
-    except _ge.GoalCapExceeded:
-        pass
-    except _ge.InvalidGoal:
-        pass
-    return {"goals_created": created}
+    return _ge.create_plan_goals_for_plan(user_id, plan_id, db=db)
 
 
-# OpenAI function schemas for the plan-creator chatbot
+# OpenAI function schemas for the plan-creator chatbot.
+#
+# Redesign Phase 3: per-exercise fields are now family-aware —
+#   rep_count (pushup/pullup/lunge/bicep_curl/tricep_dip):
+#     target_reps + target_sets
+#   weighted (squat/bench_press/deadlift/overhead_press):
+#     target_weight_kg + target_reps + target_sets
+#     (squat allows target_weight_kg=0 for bodyweight)
+#   time_hold (plank):
+#     target_duration_sec (target_sets optional, default 1)
+# The sanitizer (sanitize_day_exercises) enforces per-family requirements
+# at the server — these schemas only loosely hint; validation is real.
 _PLAN_NEW_SCHEMAS: List[Dict[str, Any]] = [
     {
         "type": "function",
@@ -905,7 +1130,10 @@ _PLAN_NEW_SCHEMAS: List[Dict[str, Any]] = [
             "description": (
                 "Draft a workout plan as a list of days. Returns the sanitized "
                 "draft so the frontend renders a live preview card. Does NOT "
-                "save the plan to the database — call save_plan for that."
+                "save the plan to the database — call save_plan for that. "
+                "Per-exercise fields are family-dependent (see system prompt): "
+                "rep_count uses target_reps+target_sets, weighted adds "
+                "target_weight_kg, time_hold uses target_duration_sec only."
             ),
             "parameters": {
                 "type": "object",
@@ -932,15 +1160,25 @@ _PLAN_NEW_SCHEMAS: List[Dict[str, Any]] = [
                                                 "type": "string",
                                                 "enum": sorted(KNOWN_EXERCISES),
                                             },
-                                            "target_reps": {"type": "integer"},
+                                            "target_reps": {
+                                                "type": "integer",
+                                                "description": "rep_count + weighted only",
+                                            },
                                             "target_sets": {"type": "integer"},
+                                            "target_weight_kg": {
+                                                "type": "number",
+                                                "description": (
+                                                    "weighted only. 0 means "
+                                                    "bodyweight (squat only)."
+                                                ),
+                                            },
+                                            "target_duration_sec": {
+                                                "type": "integer",
+                                                "description": "time_hold only (plank)",
+                                            },
                                             "notes": {"type": "string"},
                                         },
-                                        "required": [
-                                            "exercise",
-                                            "target_reps",
-                                            "target_sets",
-                                        ],
+                                        "required": ["exercise"],
                                     },
                                 },
                             },
@@ -959,7 +1197,9 @@ _PLAN_NEW_SCHEMAS: List[Dict[str, Any]] = [
             "description": (
                 "Update the current plan draft using a modifications object. "
                 "Supported keys: title, summary, start_date, set_days, add_days, "
-                "remove_day_dates, swap_exercise ({from,to}), scale_volume (float)."
+                "remove_day_dates, swap_exercise ({from,to}), scale_volume (float), "
+                "set_target_weight ({exercise, weight_kg}), "
+                "set_target_duration ({exercise, seconds})."
             ),
             "parameters": {
                 "type": "object",
@@ -979,7 +1219,10 @@ _PLAN_NEW_SCHEMAS: List[Dict[str, Any]] = [
             "name": "save_plan",
             "description": (
                 "Persist the current sanitized draft as a real plan. Call this "
-                "only after the user has explicitly approved the preview."
+                "only after the user has explicitly approved the preview. "
+                "Server will also auto-create the two plan-level goals "
+                "(plan_progress + consistency). Per-exercise goals are opt-in "
+                "— ask the user and call create_goal for each they want."
             ),
             "parameters": {
                 "type": "object",
@@ -994,15 +1237,48 @@ _PLAN_NEW_SCHEMAS: List[Dict[str, Any]] = [
     {
         "type": "function",
         "function": {
-            "name": "create_plan_goals",
+            "name": "create_goal",
             "description": (
-                "For a saved plan, auto-create one volume goal per exercise + "
-                "one consistency goal. Call after save_plan."
+                "Create ONE goal for the user. Call after save_plan if the "
+                "user agrees to track a specific goal (e.g. 'yes track my "
+                "pushup volume and deadlift strength'). Pick goal_type by "
+                "exercise family: rep_count→volume, weighted→strength, "
+                "time_hold→duration. plan_id is optional — include it to "
+                "link the goal to the just-saved plan so it archives when "
+                "the plan completes."
             ),
             "parameters": {
                 "type": "object",
-                "properties": {"plan_id": {"type": "integer"}},
-                "required": ["plan_id"],
+                "properties": {
+                    "title": {"type": "string"},
+                    "goal_type": {
+                        "type": "string",
+                        "enum": [
+                            "volume", "strength", "duration",
+                            "consistency", "quality",
+                        ],
+                    },
+                    "target_value": {"type": "number"},
+                    "unit": {
+                        "type": "string",
+                        "enum": [
+                            "reps", "kg", "seconds",
+                            "sessions", "days", "form_score",
+                        ],
+                    },
+                    "exercise": {
+                        "type": "string",
+                        "enum": sorted(KNOWN_EXERCISES),
+                    },
+                    "target_reps": {
+                        "type": "integer",
+                        "description": "required for strength goals",
+                    },
+                    "description": {"type": "string"},
+                    "period": {"type": "string", "enum": ["once", "week", "month"]},
+                    "plan_id": {"type": "integer"},
+                },
+                "required": ["title", "goal_type", "target_value", "unit"],
             },
         },
     },
@@ -1012,13 +1288,20 @@ PLAN_TOOL_SCHEMAS: List[Dict[str, Any]] = PERSONAL_TOOL_SCHEMAS + _PLAN_NEW_SCHE
 
 
 def make_plan_dispatcher(
-    user_id: int, db: ExerVisionDB, conversation_id: int
+    user_id: int,
+    db: ExerVisionDB,
+    conversation_id: int,
+    *,
+    on_plan_saved: Optional[Callable[[int], None]] = None,
 ) -> Callable[[str, Dict[str, Any]], Any]:
     """Like make_dispatcher, but also handles the plan-creator tools.
 
     conversation_id is closed over so the plan draft lives on the conversation
     row — the LLM cannot forge it and revise_plan has something to mutate
     between turns.
+
+    If `on_plan_saved` is provided, it is invoked with the new plan_id after a
+    successful save_plan tool call so the HTTP layer can emit a socket event.
     """
     base = make_dispatcher(user_id, db)
 
@@ -1041,19 +1324,51 @@ def make_plan_dispatcher(
                 modifications=args.get("modifications") or {},
             )
         if fn_name == "save_plan":
-            return save_plan(
+            result = save_plan(
                 user_id, db, conversation_id,
                 title=args.get("title"),
                 summary=args.get("summary"),
             )
-        if fn_name == "create_plan_goals":
+            if on_plan_saved is not None and isinstance(result, dict):
+                pid = result.get("plan_id")
+                if isinstance(pid, int) and pid > 0:
+                    try:
+                        on_plan_saved(pid)
+                    except Exception as e:  # noqa: BLE001
+                        logger.warning("on_plan_saved hook failed: %s", e)
+            return result
+        if fn_name == "create_goal":
+            # Redesign Phase 3: post-save per-exercise goal creation, opt-in.
+            # Wraps goal_engine.create_goal; returns error codes on cap /
+            # validation so the LLM can recover.
+            from app import goal_engine as _ge
+
+            kwargs: Dict[str, Any] = {
+                "title": args.get("title") or "",
+                "goal_type": args.get("goal_type") or "",
+                "target_value": args.get("target_value"),
+                "unit": args.get("unit") or "",
+            }
+            for k in ("exercise", "description", "period"):
+                if args.get(k) is not None:
+                    kwargs[k] = args.get(k)
+            if args.get("target_reps") is not None:
+                try:
+                    kwargs["target_reps"] = int(args.get("target_reps"))
+                except (TypeError, ValueError):
+                    pass
+            if args.get("plan_id") is not None:
+                try:
+                    kwargs["plan_id"] = int(args.get("plan_id"))
+                except (TypeError, ValueError):
+                    pass
             try:
-                plan_id = int(args.get("plan_id") or 0)
-            except (TypeError, ValueError):
-                return {"error": "invalid_plan_id"}
-            if plan_id <= 0:
-                return {"error": "invalid_plan_id"}
-            return create_plan_goals(user_id, db, plan_id=plan_id)
+                g = _ge.create_goal(user_id, db=db, **kwargs)
+                return {"goal": g.to_dict()}
+            except _ge.GoalCapExceeded as e:
+                return {"error": "goal_cap", "message": str(e)}
+            except _ge.InvalidGoal as e:
+                return {"error": "invalid_goal", "message": str(e)}
         return base(fn_name, args)
 
     return dispatch

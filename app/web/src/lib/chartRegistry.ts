@@ -35,16 +35,16 @@ ChartJS.register(
 );
 
 export const FORMA_CHART_COLORS = {
-  ink: "#1a1a1a",
-  ink2: "#3c3a36",
-  ink3: "#6b6760",
-  ink4: "#9a958c",
-  gold: "#b8864a",
-  goldSoft: "#d4a574",
-  orange: "#d44514",
-  good: "#2f7d5b",
-  warn: "#a06a00",
-  bad: "#b8341c",
-  rule: "rgba(26,26,26,0.08)",
-  ruleStrong: "rgba(26,26,26,0.16)",
+  ink: "#F0F0F0",
+  ink2: "#A0A0A0",
+  ink3: "#666666",
+  ink4: "#444444",
+  gold: "#AEE710",
+  goldSoft: "#C2F04A",
+  orange: "#AEE710",
+  good: "#4ADE80",
+  warn: "#FBBF24",
+  bad: "#F87171",
+  rule: "rgba(255,255,255,0.08)",
+  ruleStrong: "rgba(255,255,255,0.16)",
 };

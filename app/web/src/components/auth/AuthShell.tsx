@@ -1,54 +1,115 @@
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { VideoBackdrop } from "../sections/VideoBackdrop";
 
-type Props = {
-  kicker: string;
-  title: string;
-  tagline: string;
-  children: ReactNode;
-  footer: ReactNode;
-};
-
-export function AuthShell({ kicker, title, tagline, children, footer }: Props) {
+// 2-column split layout for /login (handles both sign-in and sign-up tabs).
+// Nav is rendered by App.tsx (no longer in the fullscreen exclusion list), so
+// AuthShell only owns the region below the 72px nav.
+export function AuthShell({ children }: { children: ReactNode }) {
   return (
-    <main className="relative min-h-screen flex items-center justify-center px-6 py-16 bg-[color:var(--color-page)]">
-      {/* subtle editorial backdrop */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-        <div
-          className="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full opacity-[0.08] blur-[120px]"
-          style={{ background: "var(--color-gold)" }}
-        />
-        <div
-          className="absolute -bottom-48 -right-48 w-[560px] h-[560px] rounded-full opacity-[0.06] blur-[140px]"
-          style={{ background: "var(--color-orange)" }}
-        />
+    <main className="relative grid md:grid-cols-2 bg-[color:var(--color-page)] pt-[72px] md:min-h-screen">
+      {/* Mobile video banner — shows above the form on < md */}
+      <div className="md:hidden relative h-[220px] w-full overflow-hidden">
+        <VideoBackdrop
+          src="/static/videos/auth-loop.mp4"
+          poster="/static/images/hero_wide.jpg"
+          anchor="bottom"
+          intensity={0.72}
+          className="absolute inset-0"
+          objectPosition="center 30%"
+        >
+          <div className="absolute bottom-6 left-6 right-6 text-[color:var(--color-ink-on-dark)]">
+            <span className="block text-[9px] uppercase tracking-[0.28em] text-[color:var(--color-gold-soft)]">
+              Train with form.
+            </span>
+            <p className="mt-2 font-[family-name:var(--font-serif)] italic text-lg leading-tight">
+              Quiet, honest, in your living room.
+            </p>
+          </div>
+        </VideoBackdrop>
       </div>
 
-      <div className="relative z-[1] w-full max-w-[480px]">
-        <Link
-          to="/"
-          className="block text-center text-[10px] uppercase tracking-[0.4em] text-[color:var(--color-ink-2)] hover:text-[color:var(--color-gold)] transition-colors"
+      {/* Form column — creative gradient: bloom bleeding from the seam
+          (right edge, matching where the video column starts) plus a subtle
+          corner glow at the bottom-left and a faint vertical accent line. */}
+      <div className="relative flex items-center justify-center px-6 md:px-12 py-16 md:py-20 overflow-hidden">
+        {/* Large radial bleeding from the right seam — unifies the two columns */}
+        <div
+          aria-hidden="true"
+          className="absolute top-1/2 -right-[15%] -translate-y-1/2 pointer-events-none rounded-full"
+          style={{
+            width: "720px",
+            height: "720px",
+            background:
+              "radial-gradient(circle, rgba(174,231,16,0.22) 0%, rgba(174,231,16,0.08) 30%, transparent 65%)",
+            filter: "blur(90px)",
+          }}
+        />
+        {/* Secondary soft glow bottom-left */}
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-[20%] -left-[10%] pointer-events-none rounded-full"
+          style={{
+            width: "480px",
+            height: "480px",
+            background:
+              "radial-gradient(circle, rgba(194,240,74,0.08) 0%, transparent 70%)",
+            filter: "blur(80px)",
+          }}
+        />
+        {/* Grain texture */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none opacity-[0.15] mix-blend-overlay"
+          style={{ backgroundImage: "var(--grain)" }}
+        />
+        <div className="relative w-full max-w-[460px]">{children}</div>
+      </div>
+
+      {/* Video column — desktop only. Left edge dissolves into the form
+          column's dark via a heavy horizontal gradient so there's no seam. */}
+      <div className="relative hidden md:block overflow-hidden">
+        <VideoBackdrop
+          src="/static/videos/auth-loop.mp4"
+          poster="/static/images/hero_wide.jpg"
+          anchor="right"
+          intensity={0.62}
+          className="absolute inset-0"
+          objectPosition="center 30%"
         >
-          ← FORMA
-        </Link>
+          <div className="absolute bottom-12 left-12 right-12 max-w-sm text-[color:var(--color-ink-on-dark)]">
+            <span className="block text-[10px] uppercase tracking-[0.32em] text-[color:var(--color-gold-soft)]">
+              Train with form.
+            </span>
+            <p className="mt-4 font-[family-name:var(--font-serif)] italic text-[1.65rem] leading-[1.15]">
+              Quiet, honest, in your living room.
+            </p>
+            <p className="mt-6 text-[10px] uppercase tracking-[0.32em] font-mono text-[color:var(--color-ink-on-dark-2)]">
+              FORMA · 2026
+            </p>
+          </div>
+        </VideoBackdrop>
 
-        <div className="mt-10 text-center">
-          <span className="block text-[10px] uppercase tracking-[0.32em] text-[color:var(--color-gold)]">
-            {kicker}
-          </span>
-          <h1 className="mt-4 font-[family-name:var(--font-display)] text-[clamp(3.2rem,7vw,4.8rem)] leading-[0.88] text-[color:var(--color-ink)] tracking-tight">
-            {title}
-          </h1>
-          <p className="mt-3 font-[family-name:var(--font-serif)] italic text-[1.15rem] text-[color:var(--color-ink-2)]">
-            {tagline}
-          </p>
-        </div>
+        {/* Seam-dissolve: heavy black fade on the left edge that blends the
+            video into the form column. Goes from full page-black on the left
+            to transparent at ~50% so the subject stays visible. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none z-[5]"
+          style={{
+            background:
+              "linear-gradient(90deg, #0A0A0A 0%, rgba(10,10,10,0.92) 12%, rgba(10,10,10,0.55) 28%, rgba(10,10,10,0.18) 50%, transparent 75%)",
+          }}
+        />
 
-        <div className="mt-12">{children}</div>
-
-        <div className="mt-10 text-center font-[family-name:var(--font-serif)] italic text-[0.95rem] text-[color:var(--color-ink-2)]">
-          {footer}
-        </div>
+        {/* Subtle top + bottom vignettes for polish */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none z-[5]"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(10,10,10,0.35) 0%, transparent 18%, transparent 82%, rgba(10,10,10,0.55) 100%)",
+          }}
+        />
       </div>
     </main>
   );
@@ -112,7 +173,7 @@ export function AuthSubmit({ label, loading, disabled }: SubmitProps) {
       className="group w-full py-4 mt-2 bg-[color:var(--color-gold)] text-[color:var(--color-page)]
                  font-[family-name:var(--font-display)] text-[1.35rem] tracking-[0.06em]
                  uppercase transition-all duration-200
-                 hover:bg-[color:var(--color-gold-hover)] hover:shadow-[0_8px_30px_-10px_rgba(184,134,74,0.5)]
+                 hover:bg-[color:var(--color-gold-hover)] hover:shadow-[0_8px_30px_-10px_rgba(174,231,16,0.4)]
                  disabled:opacity-50 disabled:cursor-not-allowed"
       style={{ transitionTimingFunction: "var(--ease-out-editorial)" }}
     >
@@ -133,7 +194,7 @@ export function AuthError({ message }: { message: string | null }) {
       style={{
         borderColor: "var(--color-bad)",
         color: "var(--color-bad)",
-        background: "rgba(184,52,28,0.06)",
+        background: "rgba(248,113,113,0.08)",
       }}
     >
       {message}

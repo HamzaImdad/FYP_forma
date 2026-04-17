@@ -6,6 +6,7 @@ Central definitions for exercises, landmarks, joint angles, and skeleton connect
 EXERCISES = [
     "squat", "lunge", "deadlift", "bench_press", "overhead_press",
     "pullup", "pushup", "plank", "bicep_curl", "tricep_dip",
+    "crunch", "lateral_raise", "side_plank",
 ]
 
 # 33 MediaPipe BlazePose landmark names (index order)
@@ -28,12 +29,16 @@ LANDMARK_INDICES = {name: i for i, name in enumerate(LANDMARK_NAMES)}
 
 # Shorthand index constants for commonly used body landmarks
 NOSE = 0
+LEFT_EAR = 7
+RIGHT_EAR = 8
 LEFT_SHOULDER = 11
 RIGHT_SHOULDER = 12
 LEFT_ELBOW = 13
 RIGHT_ELBOW = 14
 LEFT_WRIST = 15
 RIGHT_WRIST = 16
+LEFT_INDEX = 19
+RIGHT_INDEX = 20
 LEFT_HIP = 23
 RIGHT_HIP = 24
 LEFT_KNEE = 25

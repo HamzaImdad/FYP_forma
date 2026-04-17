@@ -195,9 +195,15 @@ function RepQualityStack({
                 onOpenSession(data[idx].session_id);
               }
             },
+            onHover: (evt, elements) => {
+              const target = evt.native?.target as HTMLElement | undefined;
+              if (target) {
+                target.style.cursor = elements[0] ? "pointer" : "default";
+              }
+            },
             plugins: {
               legend: { position: "bottom", labels: { boxWidth: 10, color: C.ink3, font: { size: 10 } } },
-              tooltip: { backgroundColor: C.ink },
+              tooltip: { backgroundColor: C.ink, callbacks: { footer: () => "Click to open session" } },
             },
             scales: {
               x: { stacked: true, grid: { display: false }, ticks: { color: C.ink3, maxRotation: 0 } },
@@ -232,7 +238,7 @@ function TempoStrip({ tempo }: { tempo: ExerciseDeepDive["tempo"] }) {
               {
                 label: "Reps",
                 data: tempo.map((t) => ({ x: t.ecc_sec, y: t.con_sec })),
-                backgroundColor: "rgba(184,134,74,0.7)",
+                backgroundColor: "rgba(174,231,16,0.7)",
                 pointRadius: 5,
               },
             ],
@@ -286,7 +292,7 @@ function DepthLadder({ depth }: { depth: ExerciseDeepDive["depth"] }) {
                 label: "Peak angle",
                 data: depth.map((d) => d.peak_angle),
                 borderColor: C.orange,
-                backgroundColor: "rgba(212,69,20,0.1)",
+                backgroundColor: "rgba(174,231,16,0.1)",
                 fill: true,
                 tension: 0.3,
                 pointRadius: 3,
@@ -333,7 +339,7 @@ function FatigueCurveChart({ curve }: { curve: ExerciseDeepDive["fatigue_curve"]
                 label: "Avg score",
                 data: curve.map((c) => Math.round(c.avg_score * 100)),
                 borderColor: C.gold,
-                backgroundColor: "rgba(184,134,74,0.15)",
+                backgroundColor: "rgba(174,231,16,0.15)",
                 fill: true,
                 tension: 0.25,
                 pointRadius: 2,

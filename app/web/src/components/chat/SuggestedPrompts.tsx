@@ -22,7 +22,7 @@ const PROMPTS: Record<SuggestedContext, { label: string; text: string }[]> = {
   "no-sessions": [
     { label: "Where do I start?", text: "I've never trained before — where should I start?" },
     { label: "Camera setup", text: "How do I set up my camera for the best form reading?" },
-    { label: "Ten exercises", text: "What are the ten exercises FORMA tracks?" },
+    { label: "Eleven exercises", text: "What are the eleven exercises FORMA tracks?" },
     { label: "First workout", text: "What's a good first workout for a beginner?" },
   ],
   "has-data": [

@@ -1,9 +1,10 @@
 // GoalProgressCard — one active-goal card with progress bar, milestone
 // markers at 25/50/75/100, and linear-extrapolation projected completion.
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Goal } from "@/lib/plansApi";
 import { plansApi } from "@/lib/plansApi";
+import { EditGoalModal } from "./EditGoalModal";
 
 type Props = {
   goal: Goal;
@@ -26,7 +27,33 @@ function prettyType(t: Goal["goal_type"]): string {
 function formatValue(v: number, unit: string): string {
   if (unit === "form_score") return `${Math.round(v)}`;
   if (unit === "seconds") return `${Math.round(v)}s`;
+  if (unit === "kg") return `${Math.round(v * 10) / 10}kg`;
   return `${Math.round(v)}`;
+}
+
+// Redesign Phase 4 — per-type progress line under the goal title.
+// Same numbers as the big display below but phrased in the units that
+// match the goal's intent ("good reps" for volume, "kg x N clean reps"
+// for strength, "seconds" for duration, etc.).
+function formatProgressLine(goal: Goal): string {
+  const cur = formatValue(goal.current_value, goal.unit);
+  const tgt = formatValue(goal.target_value, goal.unit);
+  if (goal.goal_type === "volume") return `${cur} / ${tgt} good reps`;
+  if (goal.goal_type === "strength") {
+    const reps = goal.target_reps ?? "?";
+    return `${cur} / ${tgt} (${reps} clean reps)`;
+  }
+  if (goal.goal_type === "duration") return `${cur} / ${tgt} clean hold`;
+  if (goal.goal_type === "consistency") {
+    return `${cur} / ${tgt} ${goal.unit === "days" ? "days" : "sessions"}`;
+  }
+  if (goal.goal_type === "plan_progress") {
+    return `${cur} / ${tgt} days completed`;
+  }
+  if (goal.goal_type === "quality") return `${cur} / ${tgt} avg form score`;
+  if (goal.goal_type === "balance") return `${cur} / ${tgt} muscle groups`;
+  if (goal.goal_type === "skill") return `${cur} / ${tgt} reps in one set`;
+  return `${cur} / ${tgt} ${goal.unit}`;
 }
 
 function projectedCompletion(goal: Goal): string | null {
@@ -52,6 +79,7 @@ function projectedCompletion(goal: Goal): string | null {
 }
 
 export function GoalProgressCard({ goal, onChanged }: Props) {
+  const [editOpen, setEditOpen] = useState(false);
   const pct = goal.target_value > 0 ? Math.min(1, goal.current_value / goal.target_value) : 0;
   const markers = useMemo(
     () =>
@@ -107,6 +135,13 @@ export function GoalProgressCard({ goal, onChanged }: Props) {
         <div className="flex gap-2 shrink-0">
           <button
             type="button"
+            onClick={() => setEditOpen(true)}
+            className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)] hover:text-[color:var(--color-gold)]"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
             onClick={handlePause}
             className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)] hover:text-[color:var(--color-ink)]"
           >
@@ -122,7 +157,7 @@ export function GoalProgressCard({ goal, onChanged }: Props) {
         </div>
       </div>
 
-      <div className="flex items-baseline justify-between gap-3 mt-2 mb-2">
+      <div className="flex items-baseline justify-between gap-3 mt-2 mb-1">
         <div
           className="text-[color:var(--color-gold)] tabular-nums"
           style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem" }}
@@ -140,6 +175,10 @@ export function GoalProgressCard({ goal, onChanged }: Props) {
             {eta}
           </div>
         )}
+      </div>
+      {/* Phase 4 — per-type context line. */}
+      <div className="text-[11px] uppercase tracking-[0.14em] text-[color:var(--color-ink-3)] mb-2">
+        {formatProgressLine(goal)}
       </div>
 
       <div className="relative h-[6px] bg-[color:var(--color-ink)]/10 rounded-full overflow-visible">
@@ -168,6 +207,14 @@ export function GoalProgressCard({ goal, onChanged }: Props) {
         >
           {goal.description}
         </p>
+      )}
+
+      {editOpen && (
+        <EditGoalModal
+          goal={goal}
+          onClose={() => setEditOpen(false)}
+          onSaved={() => onChanged?.()}
+        />
       )}
     </div>
   );

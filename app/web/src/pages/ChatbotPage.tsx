@@ -6,6 +6,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { ChatShell } from "@/components/chat/ChatShell";
+import { GradientGlow } from "@/components/sections/GradientGlow";
 import { useAuth } from "@/context/AuthContext";
 
 export function ChatbotPage() {
@@ -24,8 +25,10 @@ export function ChatbotPage() {
   const firstName = user?.display_name?.split(" ")[0];
 
   return (
-    <div className="max-w-[1440px] mx-auto px-6 md:px-10 pt-[calc(var(--nav-height)+2rem)] pb-10">
-      <header className="mb-6">
+    <div className="relative max-w-[1440px] mx-auto px-6 md:px-10 pt-[calc(var(--nav-height)+2rem)] pb-10 overflow-hidden">
+      <GradientGlow position="top-right" intensity="medium" />
+      <GradientGlow position="bottom-left" intensity="subtle" />
+      <header className="relative mb-6">
         <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--color-gold)]">
           {authed ? "Personal coach" : "Guide"}
         </div>

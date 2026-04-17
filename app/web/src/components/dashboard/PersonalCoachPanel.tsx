@@ -9,14 +9,16 @@ export function PersonalCoachPanel() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close coach" : "Open coach"}
-        className="fixed bottom-6 right-6 z-[60] px-5 py-3 bg-[color:var(--color-gold)] text-[color:var(--color-page)] text-[11px] uppercase tracking-[0.22em] font-medium rounded-full shadow-[0_6px_24px_rgba(184,134,74,0.35)] hover:bg-[color:var(--color-gold-hover)] transition-colors"
-      >
-        {open ? "Close coach" : "Ask your coach"}
-      </button>
+      {!open && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Open coach"
+          className="fixed bottom-6 right-6 z-[60] px-5 py-3 bg-[color:var(--color-gold)] text-[color:var(--color-page)] text-[11px] uppercase tracking-[0.22em] font-medium rounded-full shadow-[0_6px_24px_rgba(174,231,16,0.35)] hover:bg-[color:var(--color-gold-hover)] transition-colors"
+        >
+          Ask your coach
+        </button>
+      )}
 
       {open && (
         <div
@@ -31,16 +33,28 @@ export function PersonalCoachPanel() {
           open ? "translate-x-0" : "translate-x-full pointer-events-none"
         }`}
       >
-        <header className="px-6 py-5 border-b border-[color:var(--rule)]">
-          <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--color-gold)]">
-            Coach
+        <header className="px-6 py-5 border-b border-[color:var(--rule)] flex items-start justify-between gap-4">
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--color-gold)]">
+              Coach
+            </div>
+            <div
+              className="text-[color:var(--color-ink)] mt-1"
+              style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", letterSpacing: "0.03em" }}
+            >
+              ASK YOUR COACH
+            </div>
           </div>
-          <div
-            className="text-[color:var(--color-ink)] mt-1"
-            style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", letterSpacing: "0.03em" }}
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label="Close coach"
+            className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full border border-[color:var(--rule)] text-[color:var(--color-ink-2)] hover:text-[color:var(--color-ink)] hover:border-[color:var(--color-gold)] transition-colors"
           >
-            ASK YOUR COACH
-          </div>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 3L13 13M13 3L3 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+          </button>
         </header>
         <div className="flex-1 min-h-0 flex">
           <ChatShell

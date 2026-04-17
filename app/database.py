@@ -7,6 +7,7 @@ All query methods accept a user_id argument so data stays scoped per user.
 """
 
 import json
+import os
 import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -29,6 +30,9 @@ _SET_EXT_COLS = (
     ("avg_form_score", "REAL DEFAULT 0"),
     ("score_dropoff", "REAL DEFAULT 0"),
     ("failure_type", "TEXT DEFAULT 'clean_stop'"),
+    # Redesign Phase 1: per-set weight for weighted-family exercises.
+    # Nullable — pre-migration rows get backfilled from sessions.weight_kg.
+    ("weight_kg", "REAL"),
 )
 
 # Per-session columns added in Session-1
@@ -45,8 +49,8 @@ _SESSION_EXT_COLS = (
 class ExerVisionDB:
     """SQLite database for persisting workout session history."""
 
-    def __init__(self, db_path: str = "exervision.db"):
-        self.db_path = db_path
+    def __init__(self, db_path: Optional[str] = None):
+        self.db_path = db_path or os.getenv("DB_PATH", "exervision.db")
         self._init_db()
 
     def _get_conn(self) -> sqlite3.Connection:
@@ -211,6 +215,18 @@ class ExerVisionDB:
                     UNIQUE (user_id, badge_key),
                     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
                 );
+
+                -- Redesign Phase 3: per-user plan draft (was per-conversation).
+                -- At most one in-flight draft per user. Survives closing the
+                -- chat tab; the new conversation can offer "resume draft?".
+                CREATE TABLE IF NOT EXISTS user_plan_drafts (
+                    user_id INTEGER PRIMARY KEY,
+                    draft_json TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    source TEXT,
+                    conversation_id INTEGER,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                );
             """)
             # Idempotent column migrations (ALTER is no-op if column exists).
             self._ensure_columns(conn, "sessions", _SESSION_EXT_COLS)
@@ -222,6 +238,14 @@ class ExerVisionDB:
             self._ensure_columns(
                 conn, "chat_conversations", (("plan_draft", "TEXT"),)
             )
+            # plan_id FK on goals — links auto-created goals back to their plan
+            # so recompute can count completed plan_days directly (plan_progress type)
+            # and plan deletion cascades cleanly.
+            self._ensure_columns(conn, "goals", (("plan_id", "INTEGER"),))
+            # Redesign Phase 1: target_reps on goals — required by the new
+            # `strength` goal type ("hit target_weight_kg for target_reps
+            # clean reps"). Nullable; only strength goals populate it.
+            self._ensure_columns(conn, "goals", (("target_reps", "INTEGER"),))
             # Legacy weight_kg migration — kept for DBs that predate Session-1
             try:
                 conn.execute("ALTER TABLE sessions ADD COLUMN weight_kg REAL")
@@ -1097,6 +1121,70 @@ class ExerVisionDB:
         finally:
             conn.close()
 
+    # ── Redesign Phase 3: per-user plan drafts ─────────────────────────
+    # At most one in-flight plan draft per user, survives tab close.
+    # Replaces the conversation-scoped draft above — old methods kept for
+    # backwards-compat during the rollout + one-shot migration.
+
+    def set_user_plan_draft(
+        self,
+        user_id: int,
+        draft_json: str,
+        *,
+        source: Optional[str] = None,
+        conversation_id: Optional[int] = None,
+    ) -> None:
+        conn = self._get_conn()
+        try:
+            now = datetime.now().isoformat(timespec="seconds")
+            conn.execute(
+                """INSERT INTO user_plan_drafts
+                       (user_id, draft_json, updated_at, source, conversation_id)
+                   VALUES (?, ?, ?, ?, ?)
+                   ON CONFLICT(user_id) DO UPDATE SET
+                       draft_json = excluded.draft_json,
+                       updated_at = excluded.updated_at,
+                       source = excluded.source,
+                       conversation_id = excluded.conversation_id""",
+                (
+                    int(user_id),
+                    draft_json,
+                    now,
+                    source,
+                    int(conversation_id) if conversation_id is not None else None,
+                ),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    def get_user_plan_draft(self, user_id: int) -> Optional[Dict[str, Any]]:
+        """Return the user's in-flight draft row (or None).
+
+        Shape: {"draft_json", "updated_at", "source", "conversation_id"}.
+        Callers parse draft_json themselves.
+        """
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                """SELECT draft_json, updated_at, source, conversation_id
+                   FROM user_plan_drafts WHERE user_id = ?""",
+                (int(user_id),),
+            ).fetchone()
+            return dict(row) if row else None
+        finally:
+            conn.close()
+
+    def clear_user_plan_draft(self, user_id: int) -> None:
+        conn = self._get_conn()
+        try:
+            conn.execute(
+                "DELETE FROM user_plan_drafts WHERE user_id = ?", (int(user_id),)
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
     # ── Session-4: goals ───────────────────────────────────────────────
 
     def create_goal(
@@ -1111,6 +1199,8 @@ class ExerVisionDB:
         deadline: Optional[str] = None,
         period: Optional[str] = None,
         description: Optional[str] = None,
+        plan_id: Optional[int] = None,
+        target_reps: Optional[int] = None,
     ) -> int:
         conn = self._get_conn()
         try:
@@ -1119,8 +1209,8 @@ class ExerVisionDB:
                 """INSERT INTO goals
                        (user_id, title, description, goal_type, exercise,
                         target_value, current_value, unit, period, deadline,
-                        status, created_at)
-                   VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, 'active', ?)""",
+                        status, created_at, plan_id, target_reps)
+                   VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?, 'active', ?, ?, ?)""",
                 (
                     int(user_id),
                     title.strip(),
@@ -1132,6 +1222,8 @@ class ExerVisionDB:
                     period,
                     deadline,
                     now,
+                    int(plan_id) if plan_id is not None else None,
+                    int(target_reps) if target_reps is not None else None,
                 ),
             )
             conn.commit()
@@ -1206,7 +1298,9 @@ class ExerVisionDB:
             conn.close()
 
     def update_goal(self, goal_id: int, user_id: int, **fields) -> bool:
-        allowed = {"title", "description", "target_value", "status"}
+        # Redesign Phase 2 adds `target_reps` (strength goals) to the
+        # editable set.
+        allowed = {"title", "description", "target_value", "status", "target_reps"}
         updates = {k: v for k, v in fields.items() if k in allowed and v is not None}
         if not updates:
             return False
@@ -1321,6 +1415,28 @@ class ExerVisionDB:
             return [
                 {**dict(r), "reached": bool(dict(r).get("reached", 0))} for r in rows
             ]
+        finally:
+            conn.close()
+
+    def update_milestone_threshold(
+        self, milestone_id: int, threshold_value: float, label: Optional[str] = None
+    ) -> None:
+        """Re-anchor an UNREACHED milestone to a new threshold. No-op if reached."""
+        conn = self._get_conn()
+        try:
+            if label is not None:
+                conn.execute(
+                    """UPDATE milestones SET threshold_value = ?, label = ?
+                       WHERE id = ? AND reached = 0""",
+                    (float(threshold_value), label, int(milestone_id)),
+                )
+            else:
+                conn.execute(
+                    """UPDATE milestones SET threshold_value = ?
+                       WHERE id = ? AND reached = 0""",
+                    (float(threshold_value), int(milestone_id)),
+                )
+            conn.commit()
         finally:
             conn.close()
 
@@ -1521,6 +1637,161 @@ class ExerVisionDB:
             )
             conn.commit()
             return (cur.rowcount or 0) > 0
+        finally:
+            conn.close()
+
+    # ── Session-5: manual plan + plan_day edits ────────────────────────
+
+    _PLAN_PATCH_COLS = ("title", "summary", "start_date", "end_date")
+    _PLAN_DAY_PATCH_COLS = ("day_date", "is_rest", "exercises")
+
+    def update_plan(self, plan_id: int, user_id: int, patch: Dict) -> Optional[Dict]:
+        """PATCH whitelisted plan fields. Returns updated plan dict, or None if
+        not owned. Caller supplies already-validated values.
+        """
+        cleaned: Dict[str, Any] = {}
+        for key in self._PLAN_PATCH_COLS:
+            if key in patch and patch[key] is not None:
+                cleaned[key] = patch[key]
+        if not cleaned:
+            return self.get_plan(plan_id, user_id)
+        conn = self._get_conn()
+        try:
+            owned = conn.execute(
+                "SELECT id FROM plans WHERE id = ? AND user_id = ?",
+                (int(plan_id), int(user_id)),
+            ).fetchone()
+            if not owned:
+                return None
+            set_clause = ", ".join(f"{k} = ?" for k in cleaned.keys())
+            params = list(cleaned.values()) + [int(plan_id)]
+            conn.execute(
+                f"UPDATE plans SET {set_clause} WHERE id = ?",
+                params,
+            )
+            conn.commit()
+        finally:
+            conn.close()
+        return self.get_plan(plan_id, user_id)
+
+    def update_plan_day(
+        self,
+        plan_id: int,
+        plan_day_id: int,
+        user_id: int,
+        patch: Dict,
+    ) -> Optional[Dict]:
+        """PATCH whitelisted plan_day fields. Rejects edits to completed days.
+
+        Returns (status, day) where status is one of:
+          'ok'       : updated successfully, day = updated row
+          'not_found': plan_day not owned by user
+          'locked'   : day is already completed, refused
+        """
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                """SELECT pd.* FROM plan_days pd
+                   JOIN plans p ON p.id = pd.plan_id
+                   WHERE pd.id = ? AND pd.plan_id = ? AND p.user_id = ?""",
+                (int(plan_day_id), int(plan_id), int(user_id)),
+            ).fetchone()
+            if not row:
+                return {"status": "not_found"}
+            if int(row["completed"] or 0) == 1:
+                return {"status": "locked"}
+            cleaned: Dict[str, Any] = {}
+            if "day_date" in patch and patch["day_date"]:
+                cleaned["day_date"] = str(patch["day_date"])
+            if "is_rest" in patch:
+                cleaned["is_rest"] = 1 if patch["is_rest"] else 0
+            if "exercises" in patch:
+                # Caller has already sanitised — serialise as JSON.
+                cleaned["exercises"] = json.dumps(patch["exercises"])
+            if not cleaned:
+                return {"status": "ok", "day": dict(row)}
+            set_clause = ", ".join(f"{k} = ?" for k in cleaned.keys())
+            params = list(cleaned.values()) + [int(plan_day_id)]
+            conn.execute(
+                f"UPDATE plan_days SET {set_clause} WHERE id = ?",
+                params,
+            )
+            conn.commit()
+            row2 = conn.execute(
+                "SELECT * FROM plan_days WHERE id = ?",
+                (int(plan_day_id),),
+            ).fetchone()
+            d = dict(row2) if row2 else {}
+            if d:
+                d["is_rest"] = bool(d.get("is_rest", 0))
+                d["completed"] = bool(d.get("completed", 0))
+                try:
+                    d["exercises"] = json.loads(d.get("exercises") or "[]")
+                except (ValueError, TypeError):
+                    d["exercises"] = []
+            return {"status": "ok", "day": d}
+        finally:
+            conn.close()
+
+    def insert_plan_day(
+        self,
+        plan_id: int,
+        user_id: int,
+        *,
+        day_date: str,
+        is_rest: bool,
+        exercises: Any,
+    ) -> Optional[int]:
+        """Append a new day to an existing plan. Returns new day_id or None."""
+        conn = self._get_conn()
+        try:
+            owned = conn.execute(
+                "SELECT id FROM plans WHERE id = ? AND user_id = ?",
+                (int(plan_id), int(user_id)),
+            ).fetchone()
+            if not owned:
+                return None
+            cur = conn.execute(
+                """INSERT INTO plan_days
+                       (plan_id, day_date, is_rest, exercises, completed)
+                   VALUES (?, ?, ?, ?, 0)""",
+                (
+                    int(plan_id),
+                    str(day_date),
+                    1 if is_rest else 0,
+                    json.dumps(exercises or []),
+                ),
+            )
+            conn.commit()
+            return int(cur.lastrowid)
+        finally:
+            conn.close()
+
+    def delete_plan_day(
+        self, plan_id: int, plan_day_id: int, user_id: int
+    ) -> str:
+        """Delete a plan_day. Rejects if completed.
+
+        Returns one of: 'ok', 'not_found', 'locked'.
+        """
+        conn = self._get_conn()
+        try:
+            row = conn.execute(
+                """SELECT pd.id, pd.completed FROM plan_days pd
+                   JOIN plans p ON p.id = pd.plan_id
+                   WHERE pd.id = ? AND pd.plan_id = ? AND p.user_id = ?""",
+                (int(plan_day_id), int(plan_id), int(user_id)),
+            ).fetchone()
+            if not row:
+                return "not_found"
+            if int(row["completed"] or 0) == 1:
+                return "locked"
+            conn.execute(
+                "DELETE FROM plan_days WHERE id = ?",
+                (int(plan_day_id),),
+            )
+            conn.commit()
+            return "ok"
         finally:
             conn.close()
 

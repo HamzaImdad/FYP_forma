@@ -8,7 +8,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { streamChat, type ChatMessageDTO, chatApi } from "@/lib/chatApi";
 
-export type ChatMode = "guide" | "personal" | "plan";
+export type ChatMode = "guide" | "personal" | "plan" | "public";
 
 export type UseChatOptions = {
   mode: ChatMode;
@@ -24,6 +24,7 @@ const ENDPOINT_BY_MODE: Record<ChatMode, string> = {
   guide: "/api/chat/guide",
   personal: "/api/chat/personal",
   plan: "/api/chat/plan",
+  public: "/api/chat/public",
 };
 
 export function useChat({
@@ -44,14 +45,23 @@ export function useChat({
   activeIdRef.current = activeConversationId;
   const onTurnDoneRef = useRef(onTurnDone);
   onTurnDoneRef.current = onTurnDone;
+  // Ids whose messages are already faithfully represented in local state.
+  // Prevents the load-on-id-change effect from racing with an in-flight
+  // stream (meta assigns the id mid-send → reload would overwrite the
+  // optimistic user turn and duplicate the assistant reply once `done`
+  // commits on top).
+  const localSyncedIds = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     setActiveConversationId(conversationId ?? null);
   }, [conversationId]);
 
   // Load past conversation history when the id changes (personal + plan modes).
+  // Skip when this id was assigned mid-send — local state is already in sync
+  // with what the server has, and reloading would race with the live stream.
   useEffect(() => {
-    if (mode === "guide" || activeConversationId == null) return;
+    if (mode === "guide" || mode === "public" || activeConversationId == null) return;
+    if (localSyncedIds.current.has(activeConversationId)) return;
     let cancelled = false;
     chatApi
       .loadConversation(activeConversationId)
@@ -64,6 +74,7 @@ export function useChat({
         );
         setStreamingText("");
         setError(null);
+        localSyncedIds.current.add(activeConversationId);
       })
       .catch(() => {
         if (!cancelled) setError("conversation_load_failed");
@@ -103,7 +114,7 @@ export function useChat({
       const body: Record<string, unknown> = {
         messages: next.map((m) => ({ role: m.role, content: m.content })),
       };
-      if (mode !== "guide" && activeConversationId != null) {
+      if (mode !== "guide" && mode !== "public" && activeConversationId != null) {
         body.conversation_id = activeConversationId;
       }
 
@@ -115,6 +126,7 @@ export function useChat({
           (event) => {
             if (event.type === "meta") {
               if (event.conversation_id != null) {
+                localSyncedIds.current.add(event.conversation_id);
                 setActiveConversationId(event.conversation_id);
               }
             } else if (event.type === "chunk") {
@@ -122,11 +134,16 @@ export function useChat({
               setStreamingText(buffer);
             } else if (event.type === "done") {
               // Commit the streaming text as the final assistant turn.
+              // Dedup guard: StrictMode dev double-invokes plus any SSE
+              // edge-case re-fire used to append the same reply twice.
               if (buffer.trim()) {
-                setMessages((prev) => [
-                  ...prev,
-                  { role: "assistant", content: buffer },
-                ]);
+                setMessages((prev) => {
+                  const last = prev[prev.length - 1];
+                  if (last && last.role === "assistant" && last.content === buffer) {
+                    return prev;
+                  }
+                  return [...prev, { role: "assistant", content: buffer }];
+                });
               }
               setStreamingText("");
               setPending(false);
@@ -134,10 +151,13 @@ export function useChat({
             } else if (event.type === "error") {
               setError(event.error);
               if (buffer.trim()) {
-                setMessages((prev) => [
-                  ...prev,
-                  { role: "assistant", content: buffer },
-                ]);
+                setMessages((prev) => {
+                  const last = prev[prev.length - 1];
+                  if (last && last.role === "assistant" && last.content === buffer) {
+                    return prev;
+                  }
+                  return [...prev, { role: "assistant", content: buffer }];
+                });
               }
               setStreamingText("");
               setPending(false);

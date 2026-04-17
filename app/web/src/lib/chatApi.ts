@@ -69,6 +69,7 @@ export async function streamChat(
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
+  let terminated = false;
 
   while (true) {
     const { value, done } = await reader.read();
@@ -108,8 +109,10 @@ export async function streamChat(
           model: typeof meta.model === "string" ? meta.model : undefined,
         });
       } else if (eventName === "done") {
+        terminated = true;
         handler({ type: "done" });
       } else if (eventName === "error") {
+        terminated = true;
         const err = (parsed ?? {}) as Record<string, unknown>;
         handler({
           type: "error",
@@ -119,7 +122,10 @@ export async function streamChat(
       }
     }
   }
-  handler({ type: "done" });
+  // Safety-net done — only fire if the server never sent a terminal event
+  // (e.g. connection dropped). Otherwise we'd duplicate the assistant turn
+  // because useChat commits the buffer on every `done`.
+  if (!terminated) handler({ type: "done" });
 }
 
 export const chatApi = {

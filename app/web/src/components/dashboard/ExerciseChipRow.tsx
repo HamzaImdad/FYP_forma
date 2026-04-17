@@ -17,13 +17,14 @@ const IMAGES: Record<string, string> = {
   squat: "/static/images/ex_squat.jpg",
   lunge: "/static/images/ex_lunge.jpg",
   deadlift: "/static/images/ex_deadlift.jpg",
-  bench_press: "/static/images/ex_bench_press.jpg",
-  overhead_press: "/static/images/ex_overhead_press.jpg",
   pullup: "/static/images/ex_pullup.jpg",
   pushup: "/static/images/ex_pushup.jpg",
   plank: "/static/images/ex_plank.jpg",
   bicep_curl: "/static/images/ex_bicep_curl.jpg",
   tricep_dip: "/static/images/ex_tricep_dip.jpg",
+  crunch: "/static/images/ex_crunch.jpg",
+  lateral_raise: "/static/images/ex_lateral_raise.jpg",
+  side_plank: "/static/images/ex_side_plank.jpg",
 };
 
 export function ExerciseChipRow({ exercises, selected, onSelect }: Props) {
@@ -57,7 +58,7 @@ export function ExerciseChipRow({ exercises, selected, onSelect }: Props) {
               title={disabled ? "not yet trained" : `Drill into ${ex.display_name}`}
               className={`relative aspect-[4/3] overflow-hidden border rounded-sm group text-left transition-all duration-300 ${
                 active
-                  ? "border-[color:var(--color-gold)] shadow-[0_0_0_2px_rgba(184,134,74,0.35)]"
+                  ? "border-[color:var(--color-gold)] shadow-[0_0_0_2px_rgba(174,231,16,0.35)]"
                   : "border-[color:var(--rule)]"
               } ${disabled ? "opacity-40 cursor-not-allowed grayscale" : "hover:border-[color:var(--color-gold-soft)]"}`}
             >

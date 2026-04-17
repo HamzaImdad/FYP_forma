@@ -161,30 +161,31 @@
         "camera_distance": "2-3m",
         "camera_height": "floor",
         "instructions": [
-            "Start on forearms and toes, elbows under shoulders",
+            "Start on forearms and toes, elbows directly under shoulders",
+            "Bend elbows to about 90 degrees - forearm plank, not high plank on hands",
             "Keep your body in a straight line from head to heels",
-            "Engage your core by pulling your belly button toward your spine",
-            "Keep your hips level - not sagging or piking",
-            "Breathe steadily and hold the position"
+            "Keep head neutral - look at the floor just ahead of your hands",
+            "Engage your core and hold the position, breathing steadily"
         ],
         "common_mistakes": [
             "Hips sagging toward the floor",
             "Hips piking up too high",
+            "Doing a high plank on hands instead of forearms",
+            "Resting head on the floor",
             "Head dropping or looking up",
-            "Holding breath instead of breathing steadily",
             "Elbows too far forward or backward"
         ]
     },
     "bicep_curl": {
         "display_name": "Bicep Curl",
         "muscles": ["Biceps", "Forearms"],
-        "camera_setup": "Stand facing the camera. Arms from shoulders to hands must be clearly visible. Front angle works best for detecting upper arm movement and torso swing.",
-        "camera_angle": "front",
+        "camera_setup": "Stand sideways to the camera with your working arm facing the camera. Full arm from shoulder to hand must be visible. Step back 2-3m so your full upper body is in frame.",
+        "camera_angle": "side",
         "camera_distance": "2-3m",
         "camera_height": "waist",
         "instructions": [
-            "Stand with feet hip-width apart, arms at your sides",
-            "Hold dumbbells with palms facing forward",
+            "Stand sideways to the camera, feet hip-width apart",
+            "Hold dumbbells with palms facing away from the camera",
             "Keep your upper arms stationary against your torso",
             "Curl the weights up by bending your elbows",
             "Lower with control to full arm extension"
@@ -200,23 +201,91 @@
     "tricep_dip": {
         "display_name": "Tricep Dip",
         "muscles": ["Triceps", "Chest", "Shoulders"],
-        "camera_setup": "Side view or front angle. Arms, shoulders and torso must be visible. If using a bench, position camera so the full upper body and arms are in frame.",
+        "camera_setup": "Side view only - camera 2-3 metres to your side at waist height. Full body from hands on bench to feet must be visible.",
         "camera_angle": "side",
         "camera_distance": "2-3m",
         "camera_height": "waist",
         "instructions": [
-            "Grip the dip bars or bench with arms straight",
-            "Lower your body by bending your elbows to about 90 degrees",
-            "Keep your elbows pointing backward, not flaring out",
-            "Press back up to full arm extension",
-            "Keep your torso relatively upright for tricep focus"
+            "Sit at the edge of a bench, hands gripping the edge beside your hips",
+            "Extend legs forward with knees straight - body forms an L-shape",
+            "Press up to full arm extension to start",
+            "Lower by bending elbows to about 90 degrees",
+            "Press back up to full extension - keep torso upright"
         ],
         "common_mistakes": [
             "Going too deep and stressing the shoulders",
-            "Flaring elbows out to the sides",
-            "Leaning too far forward",
+            "Bending knees instead of keeping legs extended",
+            "Leaning forward instead of staying upright",
             "Not achieving full lockout at the top",
-            "Using momentum instead of controlled movement"
+            "Hips drifting too far from the bench"
+        ]
+    },
+    "crunch": {
+        "display_name": "V-Up Crunch",
+        "muscles": ["Abs", "Hip Flexors", "Core"],
+        "camera_setup": "Side view at floor level, 2-3 metres away. Full body from head to feet must be visible. Ensure enough space to see legs and arms fully extended.",
+        "camera_angle": "side",
+        "camera_distance": "2-3m",
+        "camera_height": "floor",
+        "instructions": [
+            "Lie on your back with legs extended and arms reaching forward",
+            "Lift legs and torso simultaneously, keeping arms extended",
+            "Meet in the middle forming a V-shape at the top",
+            "Lower back down with control -- feet never touch the floor",
+            "Keep arms straight throughout, reaching toward your shins at the top"
+        ],
+        "common_mistakes": [
+            "Letting feet touch the ground between reps",
+            "Bending the arms instead of keeping them extended",
+            "Using momentum instead of controlled movement",
+            "Not closing the hip angle enough at the top",
+            "Asymmetric movement -- one side leading"
+        ]
+    },
+    "lateral_raise": {
+        "display_name": "Lateral Raise",
+        "muscles": ["Lateral Deltoid", "Anterior Deltoid", "Traps"],
+        "camera_setup": "Front view, camera at waist height, 2-3 metres away. Full upper body including both arms and hips must be visible.",
+        "camera_angle": "front",
+        "camera_distance": "2-3m",
+        "camera_height": "waist",
+        "instructions": [
+            "Stand with feet shoulder-width apart, dumbbells at your sides",
+            "Keep a slight bend in your elbows throughout the movement",
+            "Raise arms out to the sides until level with your shoulders",
+            "Lead with your elbows, not your wrists",
+            "Lower the dumbbells back to your sides with control"
+        ],
+        "common_mistakes": [
+            "Bending elbows too much to shorten the lever arm",
+            "Flicking wrists above elbows at the top",
+            "Shrugging shoulders up toward ears",
+            "Swinging the torso for momentum",
+            "Raising arms above shoulder height (traps take over)",
+            "Uneven arm height -- one side higher than the other"
+        ]
+    },
+    "side_plank": {
+        "display_name": "Side Plank",
+        "muscles": ["Obliques", "Core", "Shoulders", "Glutes"],
+        "camera_setup": "Side view facing the front of your body, camera at floor level, 2-3 metres away. Full body from head to feet must be visible.",
+        "camera_angle": "side",
+        "camera_distance": "2-3m",
+        "camera_height": "floor",
+        "instructions": [
+            "Lie on your side supported by one forearm, elbow directly under shoulder",
+            "Stack your feet or stagger them slightly for balance",
+            "Lift your hips to form a straight line from head to feet",
+            "Rest your top arm on your hip or extend it upward",
+            "Hold the position, breathing steadily"
+        ],
+        "common_mistakes": [
+            "Hips sagging toward the floor",
+            "Hips piking up too high",
+            "Elbow not directly under the shoulder",
+            "Rotating the body toward the floor",
+            "Dropping the head out of alignment",
+            "Bending the knees (modified version)"
         ]
     }
 }

@@ -1,62 +1,80 @@
 // ActivePlanCard — shows the user's current active plan with progress
-// and clickable PlanDayTiles.
+// and clickable PlanDayTiles. Session-5 adds a lifecycle menu
+// (Pause / Archive / Delete) instead of a standalone Delete button.
 
-import { useEffect, useState } from "react";
-import { plansApi, type Plan } from "@/lib/plansApi";
+import { useCallback, useEffect, useState } from "react";
+import { plansApi, type Plan, type PlanStatus } from "@/lib/plansApi";
 import { PlanDayTile } from "./PlanDayTile";
+import { EditPlanModal } from "./EditPlanModal";
+import { usePlanDayCompleted } from "@/hooks/usePlanDayCompleted";
 
 type Props = {
   reloadKey?: number;
+  onChanged?: () => void;
 };
 
-export function ActivePlanCard({ reloadKey = 0 }: Props) {
+export function ActivePlanCard({ reloadKey = 0, onChanged }: Props) {
   const [plan, setPlan] = useState<Plan | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+
+  const fetchPlan = useCallback(async () => {
+    setLoading(true);
+    try {
+      const plans = await plansApi.listPlans();
+      const active = plans.find((p) => p.status === "active") ?? null;
+      if (!active) {
+        setPlan(null);
+        return;
+      }
+      const full = await plansApi.getPlan(active.id);
+      setPlan(full);
+    } catch (e) {
+      setError((e as Error)?.message ?? "Failed to load plans");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    plansApi
-      .listPlans()
-      .then(async (plans) => {
-        if (cancelled) return;
-        const active = plans.find((p) => p.status === "active") ?? plans[0] ?? null;
-        if (!active) {
-          setPlan(null);
-          return;
-        }
-        const full = await plansApi.getPlan(active.id);
-        if (cancelled) return;
-        setPlan(full);
-      })
-      .catch((e) => {
-        if (!cancelled) setError(e?.message ?? "Failed to load plans");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey]);
+    void fetchPlan();
+  }, [fetchPlan, reloadKey]);
+
+  usePlanDayCompleted(useCallback(() => void fetchPlan(), [fetchPlan]));
 
   const handleComplete = async (planDayId: number) => {
     if (!plan) return;
     try {
       const refreshed = await plansApi.completePlanDay(plan.id, planDayId);
       setPlan(refreshed);
+      onChanged?.();
     } catch (e) {
       console.warn("completePlanDay failed", e);
     }
   };
 
+  const handleStatus = async (status: PlanStatus) => {
+    if (!plan) return;
+    setMenuOpen(false);
+    try {
+      await plansApi.updatePlanStatus(plan.id, status);
+      setPlan(null);
+      onChanged?.();
+    } catch (e) {
+      console.warn("updatePlanStatus failed", e);
+    }
+  };
+
   const handleDelete = async () => {
     if (!plan) return;
+    setMenuOpen(false);
     if (!window.confirm(`Delete plan "${plan.title}"?`)) return;
     try {
       await plansApi.deletePlan(plan.id);
       setPlan(null);
+      onChanged?.();
     } catch (e) {
       console.warn("deletePlan failed", e);
     }
@@ -116,13 +134,55 @@ export function ActivePlanCard({ reloadKey = 0 }: Props) {
           >
             {plan.title}
           </h3>
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)] hover:text-[color:var(--color-bad)]"
-          >
-            Delete
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-ink-3)] hover:text-[color:var(--color-ink)] px-2 py-1 rounded-[2px] border border-transparent hover:border-[color:var(--rule)]"
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+            >
+              ··· Actions
+            </button>
+            {menuOpen && (
+              <div
+                className="absolute right-0 top-full mt-1 z-10 min-w-[160px] bg-[color:var(--color-page)] border border-[color:var(--rule)] rounded-[3px] shadow-[0_8px_24px_-12px_rgba(0,0,0,0.25)]"
+                role="menu"
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setEditOpen(true);
+                  }}
+                  className="w-full text-left px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-[color:var(--color-ink)] hover:bg-[color:var(--color-raised)]/60"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleStatus("paused")}
+                  className="w-full text-left px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-[color:var(--color-ink)] hover:bg-[color:var(--color-raised)]/60"
+                >
+                  Pause
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleStatus("archived")}
+                  className="w-full text-left px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-[color:var(--color-ink)] hover:bg-[color:var(--color-raised)]/60"
+                >
+                  Archive
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="w-full text-left px-3 py-2 text-[11px] uppercase tracking-[0.16em] text-[color:var(--color-bad)] hover:bg-[color:var(--color-bad)]/10 border-t border-[color:var(--rule)]"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         {plan.summary && (
           <p
@@ -157,9 +217,23 @@ export function ActivePlanCard({ reloadKey = 0 }: Props) {
             completable
             onComplete={handleComplete}
             compact
+            editable
+            onUpdated={(updated) => setPlan(updated)}
           />
         ))}
       </div>
+
+      {editOpen && (
+        <EditPlanModal
+          plan={plan}
+          onClose={() => setEditOpen(false)}
+          onSaved={async (_p) => {
+            const full = await plansApi.getPlan(plan.id);
+            setPlan(full);
+            onChanged?.();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,15 +1,38 @@
 // PlanDayTile — one calendar cell inside a plan preview or active plan.
 // Shows date, exercises (or REST), and a mark-complete button for past days.
 
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import type { PlanDay, PlanDayExercise } from "@/lib/plansApi";
+import type { Plan, PlanDay, PlanDayExercise } from "@/lib/plansApi";
+import { exerciseFamilyOf } from "@/lib/plansApi";
+import { EditPlanDayModal } from "./EditPlanDayModal";
+
+function formatTarget(e: PlanDayExercise): string {
+  const fam = exerciseFamilyOf(e);
+  if (fam === "weighted") {
+    const w = (e as { target_weight_kg?: number }).target_weight_kg ?? 0;
+    const reps = (e as { target_reps: number }).target_reps;
+    const sets = e.target_sets;
+    return w > 0 ? `${sets}x${reps} @${w}kg` : `${sets}x${reps}`;
+  }
+  if (fam === "time_hold") {
+    const s = (e as { target_duration_sec: number }).target_duration_sec;
+    return `${e.target_sets}x${s}s`;
+  }
+  const reps = (e as { target_reps: number }).target_reps;
+  return `${e.target_sets}x${reps}`;
+}
 
 type Props = {
-  day: Pick<PlanDay, "day_date" | "is_rest" | "exercises" | "completed" | "id">;
+  day: PlanDay;
   planId?: number;
   completable?: boolean;
   onComplete?: (planDayId: number) => void;
   compact?: boolean;
+  /** Session-5: show pencil button that opens EditPlanDayModal. */
+  editable?: boolean;
+  /** Called with the refreshed plan after an edit/delete. */
+  onUpdated?: (plan: Plan) => void;
 };
 
 function prettyDate(iso: string): string {
@@ -31,9 +54,13 @@ export function PlanDayTile({
   completable = false,
   onComplete,
   compact = false,
+  editable = false,
+  onUpdated,
 }: Props) {
   const pretty = prettyDate(day.day_date);
   const primary = (day.exercises?.[0] as PlanDayExercise | undefined) ?? null;
+  const [editOpen, setEditOpen] = useState(false);
+  const canEdit = editable && !day.completed && planId != null;
 
   return (
     <div
@@ -48,11 +75,24 @@ export function PlanDayTile({
         >
           {pretty}
         </div>
-        {day.completed && (
-          <div className="text-[10px] tracking-[0.16em] text-[color:var(--color-good)] uppercase">
-            done
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          {canEdit && (
+            <button
+              type="button"
+              onClick={() => setEditOpen(true)}
+              aria-label="Edit day"
+              className="text-[11px] text-[color:var(--color-ink-3)] hover:text-[color:var(--color-gold)]"
+              title="Edit day"
+            >
+              ✎
+            </button>
+          )}
+          {day.completed && (
+            <div className="text-[10px] tracking-[0.16em] text-[color:var(--color-good)] uppercase">
+              done
+            </div>
+          )}
+        </div>
       </div>
 
       {day.is_rest ? (
@@ -78,7 +118,7 @@ export function PlanDayTile({
                 className="text-[color:var(--color-gold)] tabular-nums"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {e.target_sets}×{e.target_reps}
+                {formatTarget(e)}
               </span>
             </li>
           ))}
@@ -103,6 +143,16 @@ export function PlanDayTile({
             </button>
           )}
         </div>
+      )}
+
+      {editOpen && planId != null && (
+        <EditPlanDayModal
+          planId={planId}
+          day={day}
+          onClose={() => setEditOpen(false)}
+          onSaved={(plan) => onUpdated?.(plan)}
+          onDeleted={(plan) => onUpdated?.(plan)}
+        />
       )}
     </div>
   );

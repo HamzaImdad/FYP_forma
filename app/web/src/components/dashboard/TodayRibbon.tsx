@@ -30,12 +30,13 @@ function deltaClass(value: number, better: "higher" | "lower"): string {
 type TileProps = {
   label: string;
   value: string;
+  subvalue?: string;  // Phase 4 — "NN good" under the big reps number
   delta: KpiDelta;
   deltaLabel?: string;
   better?: "higher" | "lower";
 };
 
-function Tile({ label, value, delta, deltaLabel, better = "higher" }: TileProps) {
+function Tile({ label, value, subvalue, delta, deltaLabel, better = "higher" }: TileProps) {
   return (
     <div className="relative px-8 py-7 bg-[color:var(--color-raised)]/60 border border-[color:var(--rule)] rounded-sm overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[color:var(--color-gold-soft)]/60 to-transparent" />
@@ -48,6 +49,11 @@ function Tile({ label, value, delta, deltaLabel, better = "higher" }: TileProps)
       >
         {value}
       </div>
+      {subvalue && (
+        <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--color-gold)]">
+          {subvalue}
+        </div>
+      )}
       <div className={`mt-3 text-[11px] uppercase tracking-[0.2em] font-medium ${deltaClass(delta.delta, better)}`}>
         {formatPct(delta.pct)}
         <span className="ml-2 text-[color:var(--color-ink-4)] normal-case tracking-[0.1em]">
@@ -65,6 +71,11 @@ export function TodayRibbon({ today, wow }: Props) {
       <Tile
         label="Reps today"
         value={String(today.reps)}
+        subvalue={
+          typeof today.good_reps === "number"
+            ? `${today.good_reps} good`
+            : undefined
+        }
         delta={wow.reps}
       />
       <Tile

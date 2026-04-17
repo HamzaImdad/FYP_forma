@@ -63,6 +63,10 @@ export function MilestonesShell() {
 
   const active = goals.filter((g) => g.status === "active");
   const reached = milestones.filter((m) => m.reached);
+  // Redesign Phase 4 — split completed vs archived so the user can see
+  // the recent wins AND find old ones that auto-archived after 7 days.
+  const completed = goals.filter((g) => g.status === "completed");
+  const archived = goals.filter((g) => g.status === "archived");
 
   return (
     <div className="min-h-screen bg-[color:var(--color-page)] pt-[72px]">
@@ -126,10 +130,60 @@ export function MilestonesShell() {
               )}
             </section>
 
+            {/* Recently completed (still visible for ~7 days before
+                auto-archive; shown faded so they don't compete with
+                active ones). */}
+            {completed.length > 0 && (
+              <section>
+                <h2
+                  className="text-[color:var(--color-ink-3)] uppercase tracking-[0.22em] mb-4"
+                  style={{ fontFamily: "var(--font-display)", fontSize: "0.95rem" }}
+                >
+                  Recently completed
+                </h2>
+                <div className="grid gap-4 md:grid-cols-2 opacity-75">
+                  {completed.map((g) => (
+                    <GoalProgressCard key={g.id} goal={g} onChanged={fetchAll} />
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Badges */}
             <section>
               <BadgeWall badges={badges} />
             </section>
+
+            {/* Archived goals (post-7-day sweep). Rendered as a
+                compressed list since these are frozen history. */}
+            {archived.length > 0 && (
+              <section>
+                <h2
+                  className="text-[color:var(--color-ink-3)] uppercase tracking-[0.22em] mb-4"
+                  style={{ fontFamily: "var(--font-display)", fontSize: "0.95rem" }}
+                >
+                  Archived
+                </h2>
+                <ul className="space-y-1">
+                  {archived.map((g) => (
+                    <li
+                      key={g.id}
+                      className="flex items-baseline justify-between gap-3 text-[12px] text-[color:var(--color-ink-3)] border-b border-[color:var(--rule)] pb-1"
+                    >
+                      <span className="truncate">
+                        {g.title} ·{" "}
+                        <span className="italic">
+                          {g.goal_type.replace("_", " ")}
+                        </span>
+                      </span>
+                      <span className="text-[10px] uppercase tracking-[0.18em]">
+                        {prettyDate(g.completed_at)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
             {/* Timeline */}
             <section>

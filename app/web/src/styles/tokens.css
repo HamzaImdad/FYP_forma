@@ -1,0 +1,83 @@
+/* ════════════════════════════════════════════════════════════════════
+   FORMA — Design Tokens (React port)
+   Dark theme — near-black surfaces + electric lime #AEE710 accent
+   ════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ─── Colors: surfaces (dark hierarchy) ─────────────────────────── */
+  --color-page: #0A0A0A;
+  --color-raised: #141414;
+  --color-sunken: #0E0E0E;
+  --color-contrast: #1A1A1A;
+  --color-contrast-2: #222222;
+
+  /* ─── Colors: ink (light text on dark) ──────────────────────────── */
+  --color-ink: #F0F0F0;
+  --color-ink-2: #A0A0A0;
+  --color-ink-3: #666666;
+  --color-ink-4: #444444;
+  --color-ink-on-dark: #F0F0F0;
+  --color-ink-on-dark-2: #888888;
+
+  /* ─── Colors: brand — electric lime ─────────────────────────────── */
+  --color-gold: #AEE710;
+  --color-gold-hover: #9BD00E;
+  --color-gold-soft: #C2F04A;
+  --color-orange: #AEE710;
+  --color-orange-hover: #9BD00E;
+
+  /* ─── Colors: semantic (boosted for dark bg) ────────────────────── */
+  --color-good: #4ADE80;
+  --color-warn: #FBBF24;
+  --color-bad: #F87171;
+
+  /* ─── Typography: families ───────────────────────────────────────── */
+  --font-display: "Bebas Neue", Impact, "Arial Black", sans-serif;
+  --font-sans: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ─── Motion ─────────────────────────────────────────────────────── */
+  --ease-out-editorial: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ease-in-out-smooth: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ─── Layout ─────────────────────────────────────────────────────── */
+  --spacing-nav: 4.5rem;
+  --spacing-section-y: clamp(6rem, 10vw, 10rem);
+}
+
+/* ─── Plain CSS vars for non-Tailwind uses (gradients, grain) ──────── */
+:root {
+  --rule: rgba(255, 255, 255, 0.08);
+  --rule-strong: rgba(255, 255, 255, 0.16);
+  --rule-on-dark: rgba(255, 255, 255, 0.12);
+
+  --gold-wash: rgba(174, 231, 16, 0.08);
+  --orange-wash: rgba(174, 231, 16, 0.08);
+  --good-wash: rgba(74, 222, 128, 0.08);
+  --warn-wash: rgba(251, 191, 36, 0.08);
+  --bad-wash: rgba(248, 113, 113, 0.08);
+
+  --gradient-primary: linear-gradient(135deg, #AEE710 0%, #C2F04A 100%);
+  --gradient-text: linear-gradient(135deg, #9BD00E 0%, #AEE710 100%);
+  --gradient-hero-overlay: linear-gradient(
+    115deg,
+    rgba(10, 10, 10, 0.92) 0%,
+    rgba(10, 10, 10, 0.68) 45%,
+    rgba(10, 10, 10, 0.35) 100%
+  );
+
+  --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+
+  --fs-display: clamp(5rem, 14vw, 12rem);
+  --fs-h1: clamp(3rem, 6vw, 5rem);
+  --fs-h2: clamp(2rem, 4vw, 3.25rem);
+  --fs-h3: clamp(1.5rem, 2.4vw, 2rem);
+
+  --tracking-widest: 0.24em;
+  --tracking-wider: 0.14em;
+
+  --nav-height: 72px;
+  --max-width: 1440px;
+}

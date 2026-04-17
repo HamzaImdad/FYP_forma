@@ -53,9 +53,9 @@ export function FormTrendChart({ exercises }: Props) {
           onChange={(e) => setSelected(e.target.value)}
           className="bg-[color:var(--color-page)] border border-[color:var(--rule-strong)] px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-[color:var(--color-ink)] focus:outline-none focus:border-[color:var(--color-gold)] rounded-sm"
         >
-          <option value="">All exercises</option>
+          <option value="" style={{ color: "#0A0A0A", background: "#F5F5F5" }}>All exercises</option>
           {exercises.filter((e) => e.has_data).map((e) => (
-            <option key={e.id} value={e.id}>
+            <option key={e.id} value={e.id} style={{ color: "#0A0A0A", background: "#F5F5F5" }}>
               {e.display_name}
             </option>
           ))}
@@ -89,7 +89,7 @@ export function FormTrendChart({ exercises }: Props) {
                   label: "Form score",
                   data: data!.scores.map((s) => Math.round(s * 100)),
                   borderColor: C.gold,
-                  backgroundColor: "rgba(184,134,74,0.15)",
+                  backgroundColor: "rgba(174,231,16,0.15)",
                   fill: true,
                   tension: 0.3,
                   pointRadius: 4,
@@ -115,8 +115,8 @@ export function FormTrendChart({ exercises }: Props) {
                 legend: { display: false },
                 tooltip: {
                   backgroundColor: C.ink,
-                  titleColor: "#faf7f2",
-                  bodyColor: "#faf7f2",
+                  titleColor: "#F0F0F0",
+                  bodyColor: "#F0F0F0",
                   padding: 10,
                   cornerRadius: 2,
                 },

@@ -15,7 +15,10 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+import json
+
 from app.database import ExerVisionDB
+from app.exercise_registry import CLEAN_REP_THRESHOLD
 from app.insights import personal_records
 
 
@@ -33,6 +36,8 @@ BADGE_KEYS: List[str] = [
     "plank_2min",
     "comeback",
     "plan_complete",
+    # Redesign Phase 4 — plan day where EVERY rep scored >= CLEAN_REP_THRESHOLD.
+    "clean_machine",
 ]
 
 BADGE_META: Dict[str, Dict[str, str]] = {
@@ -49,6 +54,7 @@ BADGE_META: Dict[str, Dict[str, str]] = {
     "plank_2min":         {"title": "Two-minute plank",     "description": "Held a clean plank for 120+ seconds."},
     "comeback":           {"title": "Welcome back",         "description": "First session after 14+ days off."},
     "plan_complete":      {"title": "Plan complete",        "description": "Finished every day of a workout plan."},
+    "clean_machine":      {"title": "Clean machine",        "description": "Finished a plan day with every rep scoring 80+ across every exercise."},
 }
 
 
@@ -191,6 +197,56 @@ def _any_plan_completed(conn, user_id: int):
     return None
 
 
+def _clean_machine_hit(conn, user_id: int) -> Optional[Dict[str, Any]]:
+    """Redesign Phase 4 — find a completed plan day where EVERY rep across
+    every session on that date (matching one of the day's exercises)
+    scored >= CLEAN_REP_THRESHOLD. Returns the first match or None.
+
+    One-shot badge — UNIQUE(user_id, badge_key) in user_badges handles
+    dedup so re-running is a no-op once earned.
+    """
+    rows = conn.execute(
+        """SELECT pd.id AS pd_id, pd.day_date, pd.exercises, pd.plan_id
+           FROM plan_days pd
+           JOIN plans p ON p.id = pd.plan_id
+           WHERE p.user_id = ? AND pd.completed = 1 AND pd.is_rest = 0""",
+        (int(user_id),),
+    ).fetchall()
+    for pd in rows:
+        try:
+            exs = json.loads(pd["exercises"] or "[]")
+        except (TypeError, ValueError, json.JSONDecodeError):
+            continue
+        names = {
+            e.get("exercise") for e in exs
+            if isinstance(e, dict) and e.get("exercise")
+        }
+        if not names:
+            continue
+        placeholders = ",".join("?" * len(names))
+        min_row = conn.execute(
+            f"""SELECT COALESCE(MIN(r.form_score), 0) AS mn,
+                       COUNT(r.id) AS n
+                FROM reps r
+                JOIN sessions s ON s.id = r.session_id
+                WHERE s.user_id = ?
+                  AND DATE(s.date) = ?
+                  AND s.exercise IN ({placeholders})""",
+            (int(user_id), pd["day_date"], *names),
+        ).fetchone()
+        n = int(min_row["n"] or 0)
+        mn = float(min_row["mn"] or 0)
+        if n > 0 and mn >= CLEAN_REP_THRESHOLD:
+            return {
+                "plan_day_id": int(pd["pd_id"]),
+                "plan_id": int(pd["plan_id"]),
+                "day_date": str(pd["day_date"]),
+                "min_form_score": round(mn, 3),
+                "rep_count": n,
+            }
+    return None
+
+
 # ── Orchestrator ─────────────────────────────────────────────────────
 
 def check_badges(user_id: int, db: Optional[ExerVisionDB] = None) -> List[Badge]:
@@ -219,6 +275,7 @@ def check_badges(user_id: int, db: Optional[ExerVisionDB] = None) -> List[Badge]
         streak = _current_streak(conn, user_id)
         comeback = _comeback_gap(conn, user_id)
         plan_done = _any_plan_completed(conn, user_id)
+        clean_machine = _clean_machine_hit(conn, user_id)
     finally:
         conn.close()
 
@@ -286,5 +343,9 @@ def check_badges(user_id: int, db: Optional[ExerVisionDB] = None) -> List[Badge]
             db.set_plan_status(plan_done, "completed")
         except Exception:
             pass
+
+    # Phase 4 — Clean Machine: every rep on a completed plan day >= 0.8
+    if clean_machine is not None:
+        _try("clean_machine", clean_machine)
 
     return earned

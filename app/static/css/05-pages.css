@@ -1360,30 +1360,53 @@
     color: var(--ink-on-dark);
 }
 
-#page-session .rep-display {
+#page-session .counter-stack {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--space-2xs);
+    gap: var(--space-sm);
     margin-bottom: var(--space-md);
+    min-width: 10rem;
 }
 
-#page-session .rep-big-number {
+#page-session .counter-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3xs);
+    padding: var(--space-xs) var(--space-sm);
+    border-left: 2px solid rgba(184, 134, 74, 0.35);
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: 2px;
+}
+
+#page-session .counter-block.counter-primary {
+    border-left-color: var(--gold);
+    background: rgba(184, 134, 74, 0.12);
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
+}
+
+#page-session .counter-label {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--ink-on-dark-2);
+    opacity: 0.85;
+}
+
+#page-session .counter-value {
     font-family: var(--font-display);
-    font-size: clamp(4rem, 6vw, 6rem);
+    font-size: clamp(2rem, 3.5vw, 3rem);
     color: var(--gold);
     line-height: 1;
     letter-spacing: var(--tracking-tight);
-    text-shadow: 0 0 24px rgba(184, 134, 74, 0.4);
 }
 
-#page-session .rep-big-label {
-    font-family: var(--font-body);
-    font-size: var(--fs-caption);
-    font-weight: 500;
-    letter-spacing: var(--tracking-wider);
-    text-transform: uppercase;
-    color: var(--ink-on-dark-2);
+#page-session .counter-block.counter-primary .counter-value {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    text-shadow: 0 0 24px rgba(184, 134, 74, 0.4);
 }
 
 /* Bottom HUD bar */
@@ -1636,10 +1659,10 @@
 .forma-report .report-summary {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0;
+    gap: var(--space-lg);
     margin-bottom: var(--space-4xl);
-    padding-block: var(--space-2xl);
-    border-block: 1px solid var(--rule);
+    padding: 0;
+    border: none;
 }
 
 @media (max-width: 800px) {
@@ -1647,31 +1670,29 @@
 }
 
 .forma-report .report-card {
-    background-color: transparent !important;
-    border: none !important;
-    padding: var(--space-md) var(--space-lg);
+    background-color: rgba(15, 13, 10, 0.04);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md, 8px);
+    padding: var(--space-xl) var(--space-lg);
     display: flex;
     flex-direction: column;
-    gap: var(--space-2xs);
-    border-left: 1px solid var(--rule);
+    gap: var(--space-sm);
+    align-items: flex-start;
+    min-height: 8rem;
+    justify-content: center;
     backdrop-filter: none !important;
 }
 
 .forma-report .report-card:first-child {
-    border-left: none;
+    border-left: 1px solid var(--rule);
 }
 
 .forma-report .report-value {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 4vw, 4rem);
-    color: var(--ink);
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    color: var(--gold);
     line-height: 1;
     letter-spacing: var(--tracking-tight);
-}
-
-.forma-report .score-card .report-value {
-    color: var(--gold);
-    text-shadow: 0 0 24px rgba(184, 134, 74, 0.2);
 }
 
 .forma-report .report-label {

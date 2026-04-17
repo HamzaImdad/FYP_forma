@@ -2,7 +2,7 @@
 // list on the left, thread + input on the right. Also used by the dashboard's
 // floating coach panel in compact mode (sidebar hidden).
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type MutableRefObject } from "react";
 import { MessageThread } from "./MessageThread";
 import { MessageInput } from "./MessageInput";
 import { SuggestedPrompts, type SuggestedContext } from "./SuggestedPrompts";
@@ -22,13 +22,20 @@ type Props = {
   // the conversation's plan_draft column whenever a streaming turn completes.
   onTurnDone?: (conversationId: number | null) => void;
   inputPlaceholder?: string;
+  // Session 5: ref handle exposing `send(text)` + the current pending flag so
+  // the Plans page can trigger an "Approve and save this plan." turn from
+  // the preview card without the user having to type it.
+  sendRef?: MutableRefObject<
+    | { send: (text: string) => void; pending: boolean }
+    | null
+  >;
 };
 
 const ERROR_COPY: Record<string, string> = {
   daily_token_budget_exceeded:
     "You've used your daily chat budget. Try again tomorrow or shorten your questions.",
   openai_key_missing:
-    "The coach is offline — the server is missing its OpenAI key. Set OPENAI_API_KEY in .env to enable it.",
+    "The coach is offline for maintenance. Try again shortly.",
   conversation_not_found: "That conversation doesn't exist.",
   stream_failed: "Connection dropped mid-answer. Try again.",
   empty_messages: "Type a message first.",
@@ -46,6 +53,7 @@ export function ChatShell({
   onSignupClick,
   onTurnDone,
   inputPlaceholder,
+  sendRef,
 }: Props) {
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const [conversationReloadKey, setConversationReloadKey] = useState(0);
@@ -102,6 +110,19 @@ export function ChatShell({
       setActiveConversationId(conversationId);
     }
   }, [mode, conversationId, activeConversationId]);
+
+  // Session 5: expose the current send handle via sendRef so the parent
+  // (Plans page) can dispatch turns without a user input. Recomputed every
+  // render so `pending` stays fresh; callers should always read from .current.
+  useEffect(() => {
+    if (!sendRef) return;
+    sendRef.current = { send: handleSend, pending };
+    return () => {
+      if (sendRef.current && sendRef.current.send === handleSend) {
+        sendRef.current = null;
+      }
+    };
+  }, [sendRef, handleSend, pending]);
 
   const context: SuggestedContext =
     mode === "guide"

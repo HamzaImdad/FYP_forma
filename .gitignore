@@ -1,6 +1,16 @@
 # Data files (too large for git)
 data/
 *.db
+*.db.bak-*
+
+# Archived old models and experiments (1.3 GB — keep local only)
+_archive/
+
+# Internal planning notes
+.planning/
+
+# Heavy MediaPipe model — app uses lite by default
+models/mediapipe/pose_landmarker_heavy.task
 
 # Models (large files excluded, essentials force-added)
 models/trained/*_classifier.pkl
@@ -43,11 +53,16 @@ extraction_parallel_log.txt
 Thumbs.db
 
 # Temporary screenshots
+*.jpg
 *.jpeg
 *.png
 !app/static/images/*.png
 !app/static/images/*.jpg
 !app/static/images/*.jpeg
+!app/static/images/cinematic/*.jpg
+
+# Dev screenshots archive
+docs/screenshots/
 
 # Playwright MCP
 .playwright-mcp/
@@ -56,3 +71,8 @@ Thumbs.db
 SESSION_PROMPTS.md
 
 skills/
+
+# React frontend (Vite build output is regenerable)
+app/web/node_modules/
+app/web/dist/
+app/static/dist/

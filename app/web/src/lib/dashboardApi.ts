@@ -30,6 +30,9 @@ export type KpiDelta = {
 export type DashboardOverview = {
   today: {
     reps: number;
+    // Redesign Phase 4 — form-gated rep count for the "total · good"
+    // subtitle on TodayRibbon.
+    good_reps?: number;
     avg_form_score: number;
     time_sec: number;
     session_count: number;

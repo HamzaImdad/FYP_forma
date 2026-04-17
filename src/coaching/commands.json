@@ -1,0 +1,1947 @@
+{
+  "_meta": {
+    "version": "2.0",
+    "description": "Complete coaching command library for FORMA / ExerVision — with variants, escalation, and external cues",
+    "categories": [
+      "setup      — getting into starting position",
+      "visibility — body parts not visible to camera",
+      "correction — form errors during the movement (with variants + external cues)",
+      "phase_cue  — positive guidance for current movement phase",
+      "breathing  — inhale/exhale timing",
+      "tempo      — movement speed and control",
+      "encourage  — positive reinforcement (varied)",
+      "milestone  — rep/duration/set achievements",
+      "fatigue    — form degradation warnings",
+      "safety     — injury risk / stop cues",
+      "rep_result — per-rep quality summary",
+      "fix_ack    — acknowledging when user corrects an issue",
+      "compensation — root cause chains linking related issues"
+    ],
+    "severities": ["info", "encourage", "warning", "error", "safety"],
+    "escalation_tiers": {
+      "gentle": "First occurrence — soft suggestion",
+      "firm": "2-3 repeated occurrences — direct instruction",
+      "urgent": "4+ occurrences — strong warning, may suggest stopping"
+    },
+    "cue_types": {
+      "internal": "Focus on body/muscles (e.g., 'squeeze your glutes')",
+      "external": "Focus on environment/effect (e.g., 'push the floor away') — research shows 2x more effective (Wulf 2013)"
+    }
+  },
+
+
+  "global": {
+    "encourage": {
+      "good_rep": [
+        "Nailed it",
+        "Solid rep",
+        "That's the form",
+        "Clean",
+        "Textbook",
+        "Perfect",
+        "Right on the money",
+        "Locked in",
+        "That's how it's done",
+        "Spot on"
+      ],
+      "moderate_rep": [
+        "Getting there",
+        "Almost",
+        "Close — small fix",
+        "Not bad — tighten up",
+        "Decent — one more adjustment",
+        "Close to it — small tweak"
+      ],
+      "improvement": [
+        "Better than last rep",
+        "Good correction",
+        "That's an improvement",
+        "You fixed it — keep that",
+        "Nice adjustment — hold that form",
+        "See the difference? That's it"
+      ],
+      "streak": {
+        "3": "3 in a row — keep it going",
+        "5": "5 solid reps — you're in a groove",
+        "8": "8 good ones — consistency is there",
+        "10": "10 clean reps — that's a set"
+      },
+      "set_complete": [
+        "Good set — take a breather",
+        "Set done — rest up",
+        "Solid set — shake it out",
+        "Done — nice work on that set"
+      ]
+    },
+
+    "fix_ack": {
+      "depth": [
+        "That's better — depth is there now",
+        "Good fix — much deeper that rep",
+        "There it is — that's the depth you want"
+      ],
+      "alignment": [
+        "Better alignment — keep that",
+        "Good correction — hold that position",
+        "You straightened it out — maintain that"
+      ],
+      "stability": [
+        "Much more controlled — keep it steady",
+        "More stable that time — good",
+        "Tighter — that's the control you need"
+      ],
+      "safety": [
+        "Good — that's the safer position",
+        "Better angle — joints will thank you",
+        "You corrected it — much safer now"
+      ],
+      "generic": [
+        "You fixed it — keep that up",
+        "Good adjustment",
+        "Better — hold that form"
+      ]
+    },
+
+    "breathing": {
+      "general": "Keep breathing — don't hold your breath",
+      "brace": "Big breath in, brace your core",
+      "reminder": "Remember to breathe through the movement",
+      "exhale_effort": "Breathe out on the effort",
+      "rhythm": "Find a breathing rhythm — in on the easy part, out on the hard part"
+    },
+
+    "tempo": {
+      "too_fast": "Slow down — control beats speed",
+      "rush": "Don't rush — quality over quantity",
+      "controlled": "Good tempo — keep that pace",
+      "pause_bottom": "Try pausing at the bottom for a count",
+      "negative": "Slow the lowering phase — that's where strength is built"
+    },
+
+    "fatigue": {
+      "mild": [
+        "Form starting to drift — stay focused",
+        "Getting a bit sloppy — tighten up",
+        "Focus — form is slipping"
+      ],
+      "moderate": [
+        "Losing form — consider ending the set",
+        "Form is breaking down — one or two more max",
+        "Quality is dropping — better to stop clean"
+      ],
+      "stop": [
+        "Form has broken down — rack it, rest, reset",
+        "Stop — form is gone, rest before next set",
+        "End the set — pushing through bad form builds bad habits"
+      ]
+    },
+
+    "safety": {
+      "pain": "If you feel sharp pain, stop immediately",
+      "reduce_weight": "Consider reducing weight to maintain form",
+      "joint_stress": "Joint under excessive stress — reduce range or weight",
+      "stop_set": "End the set — protect yourself for the next one"
+    },
+
+    "milestone": {
+      "reps": {
+        "5":  "5 reps — solid start",
+        "10": "10 reps — strong set",
+        "15": "15 reps — endurance kicking in",
+        "20": "20 reps — that's a burner",
+        "25": "25 reps — serious work"
+      },
+      "duration": {
+        "10":  "10 seconds",
+        "20":  "20 seconds — holding strong",
+        "30":  "30 seconds — halfway to a good hold",
+        "45":  "45 seconds — almost there",
+        "60":  "60 seconds — one minute, solid",
+        "90":  "90 seconds — impressive hold",
+        "120": "2 minutes — elite level"
+      }
+    },
+
+    "rep_result": {
+      "good": ["nice", "clean rep", "that's the one"],
+      "moderate": ["keep it tight", "small fix needed"],
+      "bad": ["reset and focus", "control the movement"]
+    },
+
+    "asymmetry": {
+      "warning": [
+        "Slight imbalance between left and right",
+        "One side is working harder — even it out"
+      ],
+      "bad": [
+        "Significant left/right imbalance — {side} side weaker ({diff}\u00b0 diff)",
+        "Big difference between sides — {side} is lagging ({diff}\u00b0)"
+      ]
+    },
+
+    "visibility": {
+      "general": "Step into frame — full body must be visible",
+      "too_close": "Step back — camera is too close",
+      "partial": "Adjust camera — can't see {parts}"
+    }
+  },
+
+
+  "exercises": {
+
+    "squat": {
+      "setup": [
+        {"id": "squat_setup_face", "text": "Stand facing the camera — knees must be visible", "severity": "info"},
+        {"id": "squat_setup_stand", "text": "Stand up straight to begin", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "squat_vis_knees", "text": "Can't see knees and hips — adjust your camera", "severity": "info", "joints": ["left_knee", "right_knee", "left_hip", "right_hip"]}
+      ],
+      "corrections": {
+        "depth_shallow": {
+          "id": "squat_depth_shallow",
+          "variants": [
+            "Go deeper — thighs should reach parallel",
+            "A bit more depth — aim for parallel",
+            "Keep dropping — not deep enough yet"
+          ],
+          "external_cue": "Push the floor away as you come up from deeper",
+          "escalation": {
+            "gentle": "Try to get a little deeper each rep",
+            "firm": "You need to squat deeper — parallel is the target",
+            "urgent": "Depth hasn't improved — focus only on this"
+          },
+          "severity": "warning",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["going_down", "bottom"],
+          "category": "depth"
+        },
+        "depth_very_shallow": {
+          "id": "squat_depth_very_shallow",
+          "variants": [
+            "Squat deeper — thighs need to reach parallel",
+            "Way too shallow — drop down further",
+            "That's a quarter squat — go deeper"
+          ],
+          "external_cue": "Sit back into an invisible chair behind you",
+          "escalation": {
+            "gentle": "Try sitting back more — imagine a chair behind you",
+            "firm": "Squat deeper — thighs need to reach parallel",
+            "urgent": "Depth is not there — try box squats to learn the range"
+          },
+          "severity": "error",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["going_down"],
+          "category": "depth"
+        },
+        "hip_shallow": {
+          "id": "squat_hip_shallow",
+          "variants": [
+            "Drop hips lower — aim for hip crease below knee",
+            "Hips need to go lower — crease below knee",
+            "Sit deeper into the squat"
+          ],
+          "external_cue": "Imagine sitting down onto a low box",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["bottom", "going_up"],
+          "category": "depth"
+        },
+        "torso_lean_mild": {
+          "id": "squat_torso_lean_mild",
+          "variants": [
+            "Keep chest up — reduce forward lean",
+            "Chest is dropping — stay more upright",
+            "Torso tilting forward — chest proud"
+          ],
+          "external_cue": "Point your chest at the wall in front of you",
+          "escalation": {
+            "gentle": "Try to keep your chest a bit more upright",
+            "firm": "Keep chest up — you're leaning too far forward",
+            "urgent": "Forward lean is persistent — try front squats to build the pattern"
+          },
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "alignment"
+        },
+        "torso_lean_severe": {
+          "id": "squat_torso_lean_severe",
+          "variants": [
+            "Excessive forward lean — keep torso upright",
+            "You're folding over — chest up, chest up",
+            "Way too much lean — this puts strain on your back"
+          ],
+          "external_cue": "Drive your back into an imaginary wall behind you",
+          "severity": "error",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "alignment"
+        },
+        "knee_valgus_mild": {
+          "id": "squat_knee_valgus_mild",
+          "variants": [
+            "Slight knee cave — focus on pushing knees outward",
+            "Knees drifting in a bit — track them over your toes",
+            "Watch your knees — they're collapsing inward slightly"
+          ],
+          "external_cue": "Spread the floor apart with your feet",
+          "escalation": {
+            "gentle": "Try to keep your knees tracking over your toes",
+            "firm": "Knees are caving — push them outward",
+            "urgent": "Knee valgus is a real injury risk — reduce weight or widen stance"
+          },
+          "severity": "warning",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "safety"
+        },
+        "knee_valgus_severe": {
+          "id": "squat_knee_valgus_severe",
+          "variants": [
+            "Knees caving in — injury risk, push knees out over toes",
+            "Serious knee collapse — this can hurt your ACL",
+            "Knees are way in — stop and reset your stance"
+          ],
+          "external_cue": "Screw your feet into the floor — turn them outward",
+          "severity": "safety",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "safety"
+        },
+        "ankle_mobility_limited": {
+          "id": "squat_ankle_limited",
+          "variants": [
+            "Limited ankle mobility — try a wider stance or heel elevation",
+            "Ankles are tight — put small plates under your heels",
+            "Ankle restriction limiting your depth — work on calf stretches"
+          ],
+          "severity": "warning",
+          "joints": ["left_ankle", "right_ankle"],
+          "phase": ["bottom"],
+          "category": "mobility"
+        },
+        "ankle_tight": {
+          "id": "squat_ankle_tight",
+          "variants": [
+            "Ankle tight — consider wider stance for better depth",
+            "Limited ankle range — try squat shoes or heel wedges"
+          ],
+          "severity": "info",
+          "joints": ["left_ankle", "right_ankle"],
+          "phase": ["bottom"],
+          "category": "mobility"
+        },
+        "good_morning": {
+          "id": "squat_good_morning",
+          "variants": [
+            "Good morning pattern — drive chest up with the hips",
+            "Hips rising without your chest — lead with the chest",
+            "You're turning it into a good morning — chest and hips together"
+          ],
+          "external_cue": "Push your back into the bar as you stand up",
+          "severity": "error",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_up"],
+          "category": "alignment"
+        },
+        "heel_rise": {
+          "id": "squat_heel_rise",
+          "variants": [
+            "Heels lifting — keep weight on heels",
+            "Stay flat-footed — heels are coming up",
+            "Weight shifting to toes — press through your heels"
+          ],
+          "external_cue": "Grip the floor with your toes and press heels down",
+          "severity": "warning",
+          "joints": ["left_ankle", "right_ankle"],
+          "phase": ["going_down", "bottom"],
+          "category": "stability"
+        },
+        "butt_wink_severe": {
+          "id": "squat_butt_wink_severe",
+          "variants": [
+            "Butt wink — pelvis tucking under at bottom",
+            "Lower back rounding at the bottom — pelvis is tucking",
+            "Posterior pelvic tilt at depth — stop just above this point"
+          ],
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["bottom"],
+          "category": "alignment"
+        },
+        "butt_wink_mild": {
+          "id": "squat_butt_wink_mild",
+          "variants": [
+            "Slight butt wink — try stopping just above this depth",
+            "Minor pelvic tuck at the bottom — not a problem yet"
+          ],
+          "severity": "info",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["bottom"],
+          "category": "alignment"
+        }
+      },
+      "compensation": {
+        "ankle_to_lean": {
+          "root": "ankle_tight",
+          "symptom": "torso_lean_mild",
+          "text": "Your forward lean might be caused by tight ankles — try heel elevation"
+        },
+        "ankle_to_heel": {
+          "root": "ankle_mobility_limited",
+          "symptom": "heel_rise",
+          "text": "Heels lifting because of tight ankles — work on calf mobility"
+        },
+        "lean_to_good_morning": {
+          "root": "torso_lean_mild",
+          "symptom": "good_morning",
+          "text": "The good morning pattern starts with the forward lean — fix that first"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Good — begin rep", "Ready — go down", "Set — drop it"], "severity": "encourage"},
+        "going_down": {"variants": ["Good — keep lowering", "Controlled descent", "Nice and steady"], "severity": "encourage"},
+        "bottom":     {"variants": ["Good depth! Drive back up", "That's parallel — push up", "Solid depth — explode up"], "severity": "encourage"},
+        "going_up":   {"variants": ["Push! Drive through your heels", "Up! Chest first", "Stand it up — strong finish"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Big breath in — brace before you descend",
+        "ascend": "Breathe out as you drive up",
+        "reminder": "Brace your core — big breath at the top of each rep"
+      },
+      "tempo": {
+        "too_fast": "Slow the descent — control the weight down",
+        "controlled_negative": "Good — control the way down"
+      },
+      "regression": {
+        "depth": "Try box squats — sit back to a box at parallel to learn the depth",
+        "balance": "Goblet squats build control — try those to reinforce the pattern",
+        "mobility": "Work on ankle and hip mobility before adding weight"
+      }
+    },
+
+
+    "lunge": {
+      "setup": [
+        {"id": "lunge_setup_face", "text": "Stand with feet hip-width apart — both legs must be visible", "severity": "info"},
+        {"id": "lunge_setup_side", "text": "Side view works best for lunges", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "lunge_vis_legs", "text": "Both legs must be fully visible — hips to feet", "severity": "info", "joints": ["left_knee", "right_knee"]}
+      ],
+      "corrections": {
+        "front_knee_shallow": {
+          "id": "lunge_front_shallow",
+          "variants": [
+            "Go deeper — front thigh should be parallel to floor",
+            "Drop lower — front knee should hit 90 degrees",
+            "More depth on the front leg"
+          ],
+          "external_cue": "Lower your back knee toward the floor",
+          "escalation": {
+            "gentle": "Try to get a little deeper each rep",
+            "firm": "You need more depth — front thigh parallel to floor",
+            "urgent": "Shallow lunges aren't training the full range — commit to depth"
+          },
+          "severity": "warning",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["going_down", "bottom"],
+          "category": "depth"
+        },
+        "back_knee_high": {
+          "id": "lunge_back_knee_high",
+          "variants": [
+            "Drop back knee closer to floor",
+            "Back knee should almost touch the ground",
+            "Lower the back knee — hover it just above the floor"
+          ],
+          "external_cue": "Touch your back knee to a towel on the floor",
+          "severity": "warning",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["bottom"],
+          "category": "depth"
+        },
+        "torso_lean_mild": {
+          "id": "lunge_torso_lean_mild",
+          "variants": [
+            "Keep torso upright — don't lean forward",
+            "Chest is dropping — stay tall",
+            "Stand taller through the lunge"
+          ],
+          "external_cue": "Imagine a string pulling the top of your head to the ceiling",
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "alignment"
+        },
+        "torso_lean_severe": {
+          "id": "lunge_torso_lean_severe",
+          "variants": [
+            "Excessive forward lean — chest up!",
+            "You're folding forward — stay upright",
+            "Way too much lean — this shifts load off the legs"
+          ],
+          "external_cue": "Keep your eyes on the horizon line — don't look down",
+          "severity": "error",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "alignment"
+        },
+        "pelvic_tilt_moderate": {
+          "id": "lunge_pelvic_tilt_mod",
+          "variants": [
+            "Hips tilting to one side — engage glutes and core",
+            "Pelvis is uneven — squeeze your glutes to level out",
+            "Hip drop detected — focus on glute activation"
+          ],
+          "external_cue": "Keep your belt line level — imagine balancing a glass of water on your hips",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["bottom", "going_up"],
+          "category": "stability"
+        },
+        "pelvic_tilt_mild": {
+          "id": "lunge_pelvic_tilt_mild",
+          "variants": [
+            "Slight hip drop — keep pelvis level",
+            "Minor Trendelenburg — strengthen that glute med"
+          ],
+          "severity": "info",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["bottom"],
+          "category": "stability"
+        },
+        "front_knee_past_toe": {
+          "id": "lunge_knee_past_toe",
+          "variants": [
+            "Front knee tracking too far forward — keep shin vertical",
+            "Knee is over your toes — take a bigger step",
+            "Step further out — knee shouldn't pass your toes"
+          ],
+          "external_cue": "Take a longer step so your shin stays vertical",
+          "severity": "warning",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["bottom"],
+          "category": "alignment"
+        },
+        "stance_narrow": {
+          "id": "lunge_stance_narrow",
+          "variants": [
+            "Widen your stance — feet too close together for balance",
+            "Step wider — you're on a tightrope",
+            "More hip-width between your feet for stability"
+          ],
+          "severity": "warning",
+          "joints": [],
+          "phase": ["top"],
+          "category": "stability"
+        }
+      },
+      "compensation": {
+        "weak_glute_to_lean": {
+          "root": "pelvic_tilt_moderate",
+          "symptom": "torso_lean_mild",
+          "text": "Your forward lean may be compensating for weak glutes — focus on hip stability first"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Good — step forward", "Ready — step out", "Set — go"], "severity": "encourage"},
+        "going_down": {"variants": ["Good — keep lowering", "Controlled descent", "Dropping nicely"], "severity": "encourage"},
+        "bottom":     {"variants": ["Good depth! Drive back up", "Solid lunge — push back", "Deep enough — explode up"], "severity": "encourage"},
+        "going_up":   {"variants": ["Push through the front heel", "Drive up! Front heel", "Strong push — back to start"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Breathe in as you step and lower",
+        "ascend": "Breathe out as you push back up"
+      },
+      "tempo": {
+        "too_fast": "Slow the step — control the descent"
+      },
+      "regression": {
+        "balance": "Try stationary lunges first — no stepping, just up and down",
+        "depth": "Use a pad under your back knee as a depth target"
+      }
+    },
+
+
+    "deadlift": {
+      "setup": [
+        {"id": "deadlift_setup_side", "text": "Stand sideways to the camera — hips must be visible", "severity": "info"},
+        {"id": "deadlift_setup_hinge", "text": "Stand tall with soft knees to begin", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "deadlift_vis_back", "text": "Can't see hips and shoulders — side view works best", "severity": "info", "joints": ["left_hip", "right_hip", "left_shoulder", "right_shoulder"]}
+      ],
+      "corrections": {
+        "hip_hinge_shallow": {
+          "id": "deadlift_hinge_shallow",
+          "variants": [
+            "Hinge a bit deeper — push hips back",
+            "More hip hinge — push your butt back further",
+            "Not deep enough — reach further toward the floor"
+          ],
+          "external_cue": "Push your hips back toward the wall behind you",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_down"],
+          "category": "depth"
+        },
+        "hip_hinge_very_shallow": {
+          "id": "deadlift_hinge_very_shallow",
+          "variants": [
+            "Push your hips back and hinge forward",
+            "Barely hinging — push your butt way back",
+            "This needs to be a hip movement — hinge, don't squat"
+          ],
+          "external_cue": "Close a door behind you with your butt",
+          "severity": "error",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_down"],
+          "category": "depth"
+        },
+        "not_locked_out": {
+          "id": "deadlift_not_locked",
+          "variants": [
+            "Stand up fully at the top",
+            "Finish the rep — full lockout",
+            "Hips forward at the top — stand tall"
+          ],
+          "external_cue": "Push your hips into the bar at the top",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["top"],
+          "category": "rom"
+        },
+        "knee_too_bent_mild": {
+          "id": "deadlift_knee_bent_mild",
+          "variants": [
+            "Try to keep legs a bit straighter",
+            "Less knee bend — this is a hip hinge, not a squat",
+            "Knees are bending too much — push hips back instead"
+          ],
+          "external_cue": "Let the bar pull you forward from your hips, not down through your knees",
+          "severity": "info",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "knee_too_bent_severe": {
+          "id": "deadlift_knee_bent_severe",
+          "variants": [
+            "Too much knee bend — push hips back instead",
+            "You're squatting the deadlift — hinge at the hips",
+            "Knees way too bent — this should feel like a hip hinge"
+          ],
+          "external_cue": "Imagine you're doing a bow — hips back, legs mostly straight",
+          "severity": "warning",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "back_rounding_mild": {
+          "id": "deadlift_back_round_mild",
+          "variants": [
+            "Keep chest up — back starting to round",
+            "Upper back rounding — pull your shoulders back",
+            "Spine is flexing — stay neutral"
+          ],
+          "external_cue": "Show the logo on your chest to the wall in front of you",
+          "escalation": {
+            "gentle": "Focus on keeping your chest proud",
+            "firm": "Back is rounding — this is where injuries happen",
+            "urgent": "Back rounding hasn't improved — reduce the weight"
+          },
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "safety"
+        },
+        "back_rounding_severe": {
+          "id": "deadlift_back_round_severe",
+          "variants": [
+            "Back rounding — straighten up, chest proud",
+            "Significant back rounding — this is dangerous",
+            "Spine is flexed under load — stop and reset"
+          ],
+          "external_cue": "Stick your chest out — proud posture",
+          "severity": "error",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "safety"
+        },
+        "hip_shoot_mild": {
+          "id": "deadlift_hip_shoot_mild",
+          "variants": [
+            "Lead with your chest — hips shooting up",
+            "Hips are rising first — stay with it",
+            "Chest is falling behind — drive both up together"
+          ],
+          "external_cue": "Push the floor away while pulling your chest up",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up"],
+          "category": "alignment"
+        },
+        "hip_shoot_severe": {
+          "id": "deadlift_hip_shoot_severe",
+          "variants": [
+            "Drive chest and hips up together",
+            "Hips shot up way before your chest — that's a stripper pull",
+            "Chest must lead — hips and shoulders rise at the same rate"
+          ],
+          "external_cue": "Imagine someone is pulling you up by a rope attached to your chest",
+          "severity": "error",
+          "joints": ["left_hip", "right_hip", "left_shoulder", "right_shoulder"],
+          "phase": ["going_up"],
+          "category": "alignment"
+        },
+        "bar_drift": {
+          "id": "deadlift_bar_drift",
+          "variants": [
+            "Keep the bar close to your body — it's drifting forward",
+            "Bar is swinging away — drag it up your legs",
+            "Keep the weight close — it should graze your shins"
+          ],
+          "external_cue": "Paint your legs with the bar on the way up",
+          "severity": "warning",
+          "joints": [],
+          "phase": ["going_up"],
+          "category": "alignment"
+        },
+        "hyperextension": {
+          "id": "deadlift_hyperextend",
+          "variants": [
+            "Don't lean back at the top — stand tall, squeeze glutes",
+            "Stop leaning back — stand vertical at lockout",
+            "Hyperextending at the top — just stand straight"
+          ],
+          "external_cue": "At the top, imagine you're standing against a wall — flat contact",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["top"],
+          "category": "safety"
+        }
+      },
+      "compensation": {
+        "weak_back_to_round": {
+          "root": "back_rounding_mild",
+          "symptom": "hip_shoot_mild",
+          "text": "The hip shoot is happening because your back can't hold position — strengthen your back or reduce weight"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Good lockout — begin next rep", "Locked out — nice", "Good — reset for next rep"], "severity": "encourage"},
+        "going_down": {"variants": ["Good hinge — keep pushing hips back", "Hinging well", "Controlled descent — good"], "severity": "encourage"},
+        "bottom":     {"variants": ["Good depth! Drive up", "Full range — now pull", "Deep enough — stand it up"], "severity": "encourage"},
+        "going_up":   {"variants": ["Push! Chest and hips together", "Drive the floor away", "Stand it up — strong pull"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Big breath in at the top — brace hard",
+        "ascend": "Breathe out as you lock out"
+      },
+      "tempo": {
+        "too_fast": "Don't jerk the weight — smooth pull off the floor",
+        "lower_controlled": "Lower with control — don't just drop it"
+      },
+      "regression": {
+        "back": "Romanian deadlifts are easier on form — practice the hinge pattern first",
+        "depth": "Try rack pulls from knee height to build lockout strength"
+      }
+    },
+
+
+    "bench_press": {
+      "setup": [
+        {"id": "bench_setup_side", "text": "Position camera to the side — both arms must be visible", "severity": "info"},
+        {"id": "bench_setup_lockout", "text": "Press bar to full lockout to begin", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "bench_vis_arms", "text": "Can't detect elbows — position camera so arms are visible", "severity": "info", "joints": ["left_elbow", "right_elbow"]}
+      ],
+      "corrections": {
+        "depth_shallow": {
+          "id": "bench_depth_shallow",
+          "variants": [
+            "Lower the bar more — touch or near chest",
+            "Not deep enough — bring it to your chest",
+            "More range of motion — bar should touch"
+          ],
+          "external_cue": "Touch the bar to your shirt — light contact",
+          "escalation": {
+            "gentle": "Try getting a bit more range on the descent",
+            "firm": "You need to touch your chest — that's full range",
+            "urgent": "Half reps aren't building anything — commit to full range"
+          },
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down", "bottom"],
+          "category": "depth"
+        },
+        "depth_very_shallow": {
+          "id": "bench_depth_very_shallow",
+          "variants": [
+            "Press is too shallow — lower to chest",
+            "Way too shallow — the bar needs to come down more",
+            "That's barely a rep — full range to chest"
+          ],
+          "severity": "error",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down"],
+          "category": "depth"
+        },
+        "lockout_incomplete": {
+          "id": "bench_lockout",
+          "variants": [
+            "Lock out arms at the top",
+            "Finish the rep — straighten your arms",
+            "Full extension at the top — lock it"
+          ],
+          "external_cue": "Push the bar away from you — reach for the ceiling",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["top"],
+          "category": "rom"
+        },
+        "asymmetry_mild": {
+          "id": "bench_asym_mild",
+          "variants": [
+            "Uneven press — one arm ahead of the other",
+            "Bar is tilting — press both sides evenly",
+            "Left/right not in sync — match the pace"
+          ],
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "asymmetry_severe": {
+          "id": "bench_asym_severe",
+          "variants": [
+            "Arms very uneven — press both sides equally",
+            "Big imbalance between arms — consider dumbbell work",
+            "One arm is way ahead — this will cause injuries"
+          ],
+          "severity": "error",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "elbows_too_tucked": {
+          "id": "bench_elbows_tucked",
+          "variants": [
+            "Arms too tucked — chest not fully loaded",
+            "Elbows too tight to body — widen to 45 degrees",
+            "Bring elbows out a bit — currently too narrow"
+          ],
+          "severity": "info",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "elbow_flare_mild": {
+          "id": "bench_flare_mild",
+          "variants": [
+            "Elbows flaring — tuck closer to 45\u00b0 to protect shoulders",
+            "Elbows going wide — tuck them in more",
+            "Flare building — bring elbows closer to body"
+          ],
+          "external_cue": "Point your elbows toward your hips, not your ears",
+          "escalation": {
+            "gentle": "Try tucking your elbows a bit more",
+            "firm": "Elbows are flaring — this puts your shoulders at risk",
+            "urgent": "Persistent flare — reduce weight and work on elbow position"
+          },
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom"],
+          "category": "safety"
+        },
+        "elbow_flare_severe": {
+          "id": "bench_flare_severe",
+          "variants": [
+            "Elbows too wide — impingement risk, tuck arms",
+            "Dangerous flare — your shoulders will pay for this",
+            "Elbows at 90\u00b0 — that's a rotator cuff injury waiting to happen"
+          ],
+          "severity": "safety",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom"],
+          "category": "safety"
+        },
+        "forearm_not_vertical": {
+          "id": "bench_forearm_vert",
+          "variants": [
+            "Forearms not vertical — grip width mismatch",
+            "Grip too wide or narrow — forearms should be straight up and down at the bottom",
+            "Adjust your grip — forearms aren't stacked at the bottom"
+          ],
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["bottom"],
+          "category": "alignment"
+        },
+        "scapula_retraction": {
+          "id": "bench_scapula",
+          "variants": [
+            "Keep shoulders pulled back — maintain scapular retraction",
+            "Shoulders rolling forward — pull your shoulder blades together",
+            "You lost your arch — retract your scapulae"
+          ],
+          "external_cue": "Squeeze a pencil between your shoulder blades — don't let it drop",
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "stability"
+        },
+        "bar_path_straight": {
+          "id": "bench_bar_path",
+          "variants": [
+            "At lockout, press bar back toward shoulders — slight arc",
+            "Bar should travel in a J-curve — back over shoulders at the top",
+            "Press up and slightly back — not straight up"
+          ],
+          "severity": "info",
+          "joints": [],
+          "phase": ["going_up", "top"],
+          "category": "technique"
+        },
+        "hips_off_bench": {
+          "id": "bench_hips_off",
+          "variants": [
+            "Keep hips on the bench — butt is lifting",
+            "Glutes came off the bench — keep them planted",
+            "Butt is rising — that's using your legs to help"
+          ],
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "bounce": {
+          "id": "bench_bounce",
+          "variants": [
+            "Don't bounce off your chest — pause briefly at the bottom",
+            "Chest bounce — that's cheating the rep, control it",
+            "Touch and go — don't slam it off your chest"
+          ],
+          "severity": "warning",
+          "joints": [],
+          "phase": ["bottom"],
+          "category": "tempo"
+        }
+      },
+      "compensation": {
+        "weak_chest_to_flare": {
+          "root": "elbows_too_tucked",
+          "symptom": "elbow_flare_mild",
+          "text": "Flare often happens when chest is weak — try paused reps to build off-chest strength"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Good lockout — control the descent", "Locked out — nice, bring it down", "Good — lower with control"], "severity": "encourage"},
+        "going_down": {"variants": ["Good — keep lowering with control", "Controlled descent", "Nice and steady down"], "severity": "encourage"},
+        "bottom":     {"variants": ["Good depth! Press up", "Chest contact — drive!", "Full range — push it back up"], "severity": "encourage"},
+        "going_up":   {"variants": ["Push! Lock it out", "Drive! Arms straight", "Strong press — lock it"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Breathe in as you lower the bar",
+        "ascend": "Breathe out as you press up"
+      },
+      "tempo": {
+        "too_fast": "Slow the descent — lower with control",
+        "pause": "Brief pause at the chest before pressing"
+      },
+      "regression": {
+        "stability": "Try dumbbell press to build independent arm strength",
+        "depth": "Use a board or foam pad on your chest as a depth target"
+      }
+    },
+
+
+    "overhead_press": {
+      "setup": [
+        {"id": "ohp_setup_face", "text": "Stand facing the camera — full body from feet to hands", "severity": "info"},
+        {"id": "ohp_setup_rack", "text": "Bring bar to shoulder height to begin", "severity": "info"},
+        {"id": "ohp_setup_too_low", "text": "Raise bar to shoulder height to begin", "severity": "info"},
+        {"id": "ohp_setup_too_back", "text": "Arms too far back — bring bar to shoulders", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "ohp_vis_arms", "text": "Step back — hands go out of frame at lockout", "severity": "info", "joints": ["left_elbow", "right_elbow"]}
+      ],
+      "corrections": {
+        "lockout_incomplete": {
+          "id": "ohp_lockout_incomplete",
+          "variants": [
+            "Lock out fully — straighten elbows and shrug up",
+            "Arms aren't fully straight at the top",
+            "Finish the rep — full lockout overhead"
+          ],
+          "external_cue": "Push the bar through the ceiling",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["top"],
+          "category": "rom"
+        },
+        "lockout_not_full": {
+          "id": "ohp_lockout_partial",
+          "variants": [
+            "Lock out arms fully overhead",
+            "Straighten those arms at the top",
+            "Full extension — push through"
+          ],
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_up"],
+          "category": "rom"
+        },
+        "back_arch_mild": {
+          "id": "ohp_back_arch_mild",
+          "variants": [
+            "Don't arch back — brace core, stay upright",
+            "Lower back arching — squeeze your glutes",
+            "You're leaning back — stay vertical"
+          ],
+          "external_cue": "Squeeze your glutes like you're cracking a walnut",
+          "escalation": {
+            "gentle": "Try to keep a bit more upright",
+            "firm": "You're arching your back — this stresses your spine",
+            "urgent": "Back arch isn't improving — reduce the weight"
+          },
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up", "top"],
+          "category": "safety"
+        },
+        "back_arch_severe": {
+          "id": "ohp_back_arch_severe",
+          "variants": [
+            "Excessive back arch — lumbar hyperextension risk, reduce weight",
+            "Dangerous back arch — this is a standing incline press now",
+            "Way too much arch — you'll hurt your lower back"
+          ],
+          "severity": "safety",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up", "top"],
+          "category": "safety"
+        },
+        "head_through": {
+          "id": "ohp_head_through",
+          "variants": [
+            "Push head through at the top — head between the arms",
+            "Get your head through — it should be under the bar at lockout",
+            "At the top, push your head forward under the bar"
+          ],
+          "external_cue": "Look through a window that the bar creates at the top",
+          "severity": "info",
+          "joints": [],
+          "phase": ["top"],
+          "category": "technique"
+        },
+        "bar_path_drift": {
+          "id": "ohp_bar_drift",
+          "variants": [
+            "Keep bar path vertical — reduce forward/backward drift",
+            "Bar is drifting forward — press straight up",
+            "Bar is going out front — it should go straight up from your chin"
+          ],
+          "external_cue": "Press the bar straight up your face — just clear your nose",
+          "severity": "warning",
+          "joints": [],
+          "phase": ["going_up"],
+          "category": "technique"
+        },
+        "leg_drive": {
+          "id": "ohp_leg_drive",
+          "variants": [
+            "Keep legs straight — don't use leg drive (that's a push press)",
+            "You're dipping your knees — strict press means no leg help",
+            "Legs bending — this should be all shoulders"
+          ],
+          "severity": "warning",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["going_up"],
+          "category": "technique"
+        },
+        "ribcage_flare": {
+          "id": "ohp_ribcage",
+          "variants": [
+            "Pull ribs down — ribcage flaring",
+            "Ribs are popping out — brace your core harder",
+            "Ribcage opening up — pull it down with your abs"
+          ],
+          "external_cue": "Imagine you're zipping up a tight jacket — ribs in",
+          "severity": "warning",
+          "joints": [],
+          "phase": ["going_up", "top"],
+          "category": "alignment"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Good lockout — lower with control", "Nice press — bring it down", "Overhead — well done"], "severity": "encourage"},
+        "going_down": {"variants": ["Good — bring it to shoulders", "Controlled return", "Steady descent"], "severity": "encourage"},
+        "bottom":     {"variants": ["Good — press up!", "Ready — drive overhead", "At shoulders — go!"], "severity": "encourage"},
+        "going_up":   {"variants": ["Drive! Lock it overhead", "Push! Full lockout", "Press through — lock it out"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Breathe in as you lower to shoulders",
+        "ascend": "Breathe out as you press overhead"
+      },
+      "tempo": {
+        "too_fast": "Don't heave — strict press with control"
+      },
+      "regression": {
+        "strength": "Try seated overhead press to remove the balance component",
+        "arch": "If you can't stop arching, the weight is too heavy — drop down"
+      }
+    },
+
+
+    "pullup": {
+      "setup": [
+        {"id": "pullup_setup_hang", "text": "Start from a full dead hang — arms extended", "severity": "info"},
+        {"id": "pullup_setup_not_ext", "text": "Extend arms fully — dead hang to start", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "pullup_vis_body", "text": "Full body from hands to feet must be visible", "severity": "info", "joints": ["left_elbow", "right_elbow"]}
+      ],
+      "corrections": {
+        "not_fully_extended": {
+          "id": "pullup_not_extended",
+          "variants": [
+            "Extend arms fully at the bottom — full dead hang",
+            "Arms aren't straight at the bottom — dead hang",
+            "Full extension between reps — let yourself hang"
+          ],
+          "external_cue": "Let gravity pull you down — relax at the bottom",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["top"],
+          "category": "rom"
+        },
+        "chin_not_clearing": {
+          "id": "pullup_chin_low",
+          "variants": [
+            "Pull higher — chin should clear the bar",
+            "Not quite high enough — chin above the bar",
+            "A bit more height — get your chin over"
+          ],
+          "external_cue": "Try to look over the bar — peek over the top",
+          "escalation": {
+            "gentle": "Try to pull just a little higher",
+            "firm": "Chin must clear the bar — that's a full pull-up",
+            "urgent": "If you can't get chin over, try band-assisted pull-ups"
+          },
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_up", "bottom"],
+          "category": "rom"
+        },
+        "chin_almost": {
+          "id": "pullup_chin_almost",
+          "variants": [
+            "Pull a bit higher — chin just below bar level",
+            "So close — one more inch",
+            "Almost there — drive those elbows down harder"
+          ],
+          "severity": "info",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["bottom"],
+          "category": "rom"
+        },
+        "chin_not_high_enough": {
+          "id": "pullup_chin_not_enough",
+          "variants": [
+            "Not high enough — chin must clear the bar",
+            "Half rep — pull all the way up",
+            "That doesn't count — chin over the bar"
+          ],
+          "severity": "error",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_up"],
+          "category": "rom"
+        },
+        "body_swing_mild": {
+          "id": "pullup_swing_mild",
+          "variants": [
+            "Body swinging — keep core tight, no kipping",
+            "Legs are swinging — tighten your core",
+            "Some swing creeping in — brace your abs"
+          ],
+          "external_cue": "Squeeze a coin between your knees — stay rigid",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "body_swing_severe": {
+          "id": "pullup_swing_severe",
+          "variants": [
+            "Excessive kipping — use strict form, no swinging",
+            "Way too much swing — this isn't a CrossFit kip",
+            "All momentum, no muscle — keep your body still"
+          ],
+          "severity": "error",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "scapular": {
+          "id": "pullup_scapular",
+          "variants": [
+            "Engage lats — pull shoulders down before pulling up",
+            "Start the pull from your shoulder blades, not your arms",
+            "Depress your scapulae first — shoulders down, then pull"
+          ],
+          "external_cue": "Put your shoulder blades in your back pockets before you pull",
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["top"],
+          "category": "technique"
+        },
+        "half_rep": {
+          "id": "pullup_half_rep",
+          "variants": [
+            "Full range of motion — extend fully and pull chin over bar",
+            "Half reps — go all the way down and all the way up",
+            "Full ROM builds real strength — don't cheat the range"
+          ],
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_up"],
+          "category": "rom"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Dead hang — initiate the pull", "Full hang — go", "Extended — pull up"], "severity": "encourage"},
+        "going_down": {"variants": ["Lower with control", "Controlled negative — good", "Slow descent — nice"], "severity": "encourage"},
+        "bottom":     {"variants": ["Chin over bar — well done! Lower down", "Over the bar — solid", "Full pull-up — nice work"], "severity": "encourage"},
+        "going_up":   {"variants": ["Pull! Drive elbows down and back", "Pull hard! Chin over", "Drive those elbows to the floor"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Breathe in at the bottom during the hang",
+        "ascend": "Breathe out as you pull up"
+      },
+      "tempo": {
+        "too_fast": "Control the descent — don't just drop",
+        "controlled_negative": "Good slow negative — that builds strength"
+      },
+      "regression": {
+        "strength": "Try band-assisted pull-ups to build the full range",
+        "technique": "Lat pulldowns teach the same pattern with adjustable resistance"
+      }
+    },
+
+
+    "pushup": {
+      "setup": [
+        {"id": "pushup_setup_plank", "text": "Get into plank position on the floor", "severity": "info"},
+        {"id": "pushup_setup_extend", "text": "Extend your arms fully to start", "severity": "info"},
+        {"id": "pushup_setup_straighten", "text": "Straighten your body — keep hips level", "severity": "info"},
+        {"id": "pushup_setup_visible", "text": "Get into push-up position — full body must be visible", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "pushup_vis_body", "text": "Side view at floor level works best — full body head to feet", "severity": "info", "joints": []}
+      ],
+      "corrections": {
+        "hip_sag_mild": {
+          "id": "pushup_sag_mild",
+          "variants": [
+            "bring your hips up",
+            "hips are dropping",
+            "tighten your core"
+          ],
+          "external_cue": "Imagine a broomstick along your back — it should touch head, back, and hips",
+          "escalation": {
+            "gentle": "Focus on keeping your body in a straight line",
+            "firm": "Hips keep sagging — squeeze your glutes harder",
+            "urgent": "Hip sag isn't improving — try push-ups from your knees to build core strength"
+          },
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "alignment"
+        },
+        "hip_sag_moderate": {
+          "id": "pushup_sag_mod",
+          "variants": [
+            "bring your hips up",
+            "hips are sagging",
+            "lift the hips"
+          ],
+          "external_cue": "Pretend someone is about to tap your stomach — brace for it",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "alignment"
+        },
+        "hip_sag_severe": {
+          "id": "pushup_sag_severe",
+          "variants": [
+            "hips are way down",
+            "lift your hips — keep the line",
+            "core — hips up now"
+          ],
+          "severity": "error",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "alignment"
+        },
+        "hip_sag_check": {
+          "id": "pushup_sag_check",
+          "variants": [
+            "keep a straight line",
+            "stay flat",
+            "hips level"
+          ],
+          "severity": "info",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["top"],
+          "category": "alignment"
+        },
+        "elbow_too_tucked": {
+          "id": "pushup_elbow_tucked",
+          "variants": [
+            "hands a bit wider",
+            "arms too tight"
+          ],
+          "severity": "info",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down"],
+          "category": "alignment"
+        },
+        "elbow_flare_building": {
+          "id": "pushup_flare_build",
+          "variants": [
+            "elbows in closer",
+            "tuck your elbows",
+            "keep elbows close to your body"
+          ],
+          "external_cue": "Point your elbows toward your feet, not the walls",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "elbow_flare_severe": {
+          "id": "pushup_flare_severe",
+          "variants": [
+            "tuck your elbows in",
+            "elbows are flaring out",
+            "bring elbows closer"
+          ],
+          "external_cue": "Make an arrow shape with your body, not a T",
+          "severity": "error",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom"],
+          "category": "safety"
+        },
+        "hip_pike": {
+          "id": "pushup_pike",
+          "variants": [
+            "flatten your hips",
+            "hips too high",
+            "drop your hips down"
+          ],
+          "external_cue": "Push your hips toward the floor until you're a flat plank",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_down", "bottom", "going_up"],
+          "category": "alignment"
+        },
+        "head_drop": {
+          "id": "pushup_head_drop",
+          "variants": [
+            "keep your head up",
+            "head is dropping",
+            "look at the floor ahead"
+          ],
+          "severity": "info",
+          "joints": [],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "head_crane": {
+          "id": "pushup_head_crane",
+          "variants": [
+            "neck neutral",
+            "look down at the floor",
+            "don't crane your neck up"
+          ],
+          "severity": "info",
+          "joints": [],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "asymmetry": {
+          "id": "pushup_asymmetry",
+          "variants": [
+            "even out your arms",
+            "one side is lagging",
+            "push evenly"
+          ],
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down", "going_up"],
+          "category": "stability"
+        },
+        "depth_shallow": {
+          "id": "pushup_depth_shallow",
+          "variants": [
+            "go a little deeper",
+            "chest lower",
+            "not deep enough"
+          ],
+          "external_cue": "Kiss the floor with your chest, then push away",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down"],
+          "category": "depth"
+        },
+        "lockout_incomplete": {
+          "id": "pushup_lockout",
+          "variants": [
+            "straighten your arms at the top",
+            "full extension",
+            "lock out the top"
+          ],
+          "external_cue": "Push the floor as far away as you can",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["top"],
+          "category": "rom"
+        }
+      },
+      "compensation": {
+        "weak_core_to_sag": {
+          "root": "hip_sag_mild",
+          "symptom": "elbow_flare_building",
+          "text": "When your core gives out, elbows compensate by flaring — fix the core first"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Good — go down", "Set — lower", "Arms locked — descend"], "severity": "encourage"},
+        "going_down": {"variants": ["Good — keep lowering", "Controlled descent", "Smooth descent"], "severity": "encourage"},
+        "bottom":     {"variants": ["Good depth! Push up", "Chest down — now push", "Full range — drive up"], "severity": "encourage"},
+        "going_up":   {"variants": ["Push! Extend fully", "Drive! Lock it out", "Up! Full extension"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Breathe in as you lower",
+        "ascend": "Breathe out as you push up"
+      },
+      "tempo": {
+        "too_fast": "Slow down — full range of motion beats speed"
+      },
+      "regression": {
+        "core": "Try push-ups from your knees to build core endurance",
+        "depth": "Push-ups on an incline (hands on a bench) to practice full range"
+      }
+    },
+
+
+    "plank": {
+      "setup": [
+        {"id": "plank_setup_side", "text": "Get into plank position — side view works best", "severity": "info"},
+        {"id": "plank_setup_straighten", "text": "Straighten your body — align shoulders, hips, and ankles", "severity": "info"},
+        {"id": "plank_setup_visible", "text": "Full body from head to feet must be visible", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "plank_vis_body", "text": "Can't see shoulders, hips, or ankles — side view at floor level", "severity": "info", "joints": ["left_hip", "right_hip"]}
+      ],
+      "corrections": {
+        "hip_sag": {
+          "id": "plank_hip_sag",
+          "variants": [
+            "Hips sagging — tighten core and glutes, lift hips",
+            "Hips are dropping — pull your belly button to your spine",
+            "Core is giving way — lift those hips back up"
+          ],
+          "external_cue": "Imagine someone is about to drop a weight on your stomach — brace for it",
+          "escalation": {
+            "gentle": "Try to keep your hips a bit higher",
+            "firm": "Hips keep sagging — this is fatiguing your lower back",
+            "urgent": "Hip sag hasn't improved — end the hold and rest"
+          },
+          "severity": "error",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["static"],
+          "category": "alignment"
+        },
+        "hip_sag_mild": {
+          "id": "plank_hip_sag_mild",
+          "variants": [
+            "Hips starting to drop — squeeze your glutes",
+            "Slight sag — tighten up before it gets worse",
+            "Hips dipping a bit — core tight"
+          ],
+          "external_cue": "Push the floor away from you — create tension through your whole body",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["static"],
+          "category": "alignment"
+        },
+        "hip_pike": {
+          "id": "plank_hip_pike",
+          "variants": [
+            "Hips too high — lower them in line with shoulders and ankles",
+            "You're piking up — flatten out your body",
+            "Butt is up — bring it down to make a straight line"
+          ],
+          "external_cue": "Imagine a ruler from your shoulders to your ankles — your hips should touch it",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["static"],
+          "category": "alignment"
+        },
+        "shoulder_shift": {
+          "id": "plank_shoulder_shift",
+          "variants": [
+            "Shift shoulders over wrists",
+            "Shoulders are behind your hands — shift forward",
+            "Stack your shoulders directly above your elbows/wrists"
+          ],
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["static"],
+          "category": "alignment"
+        },
+        "shoulder_far": {
+          "id": "plank_shoulder_far",
+          "variants": [
+            "Shoulders too far from wrists — reposition",
+            "Way out of alignment — move your elbows under your shoulders",
+            "Reset your position — shoulders should be stacked over elbows"
+          ],
+          "severity": "error",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["static"],
+          "category": "alignment"
+        },
+        "knee_bent": {
+          "id": "plank_knee_bent",
+          "variants": [
+            "Straighten legs — keep knees locked",
+            "Knees are bending — lock them out",
+            "Legs should be straight — no bend"
+          ],
+          "severity": "warning",
+          "joints": ["left_knee", "right_knee"],
+          "phase": ["static"],
+          "category": "alignment"
+        },
+        "head_drop": {
+          "id": "plank_head_drop",
+          "variants": [
+            "Don't let your head hang — keep neck in line with spine",
+            "Head is dropping — look at the floor just ahead of your hands",
+            "Keep your head up — neutral spine from head to heels"
+          ],
+          "severity": "info",
+          "joints": [],
+          "phase": ["static"],
+          "category": "alignment"
+        },
+        "head_up": {
+          "id": "plank_head_up",
+          "variants": [
+            "Don't look up — keep gaze at the floor",
+            "Looking up strains your neck — eyes down",
+            "Head in line with spine — look at the ground"
+          ],
+          "severity": "info",
+          "joints": [],
+          "phase": ["static"],
+          "category": "alignment"
+        }
+      },
+      "fatigue": {
+        "drift_warning": {
+          "id": "plank_drift_warn",
+          "variants": [
+            "Form starting to break ({drift}\u00b0 drift) — stay tight",
+            "Drifting {drift}\u00b0 from where you started — hold it together",
+            "Position shifting — brace harder, you've got this"
+          ],
+          "severity": "warning"
+        },
+        "drift_stop": {
+          "id": "plank_drift_stop",
+          "variants": [
+            "Form degrading ({drift}\u00b0 drift) — end the set",
+            "Too much drift — rest and try again",
+            "Position is gone — break, don't force it"
+          ],
+          "severity": "error"
+        },
+        "fatigue_mild": {
+          "id": "plank_fatigue_mild",
+          "variants": [
+            "You're starting to shake — that's normal, stay tight",
+            "Trembling is good — means your muscles are working",
+            "Shaking? That's the burn — hold through it"
+          ],
+          "severity": "info"
+        }
+      },
+      "phase_cues": {
+        "holding_good":  {"variants": ["Solid hold — keep it locked in", "Good plank — maintain", "Strong hold — don't change a thing"], "severity": "encourage"},
+        "holding_great": {"variants": ["Great hold! {duration}s", "Impressive — {duration}s and counting", "Perfect form at {duration}s"], "severity": "encourage"},
+        "holding_ok":    {"variants": ["Hold position — {duration}s", "Stay there — {duration}s in", "Keep holding — {duration}s"], "severity": "info"}
+      },
+      "breathing": {
+        "steady": "Keep breathing steadily — don't hold your breath",
+        "rhythm": "Slow in through the nose, out through the mouth",
+        "reminder": "Breathe — tension doesn't mean holding your breath"
+      },
+      "milestone": {
+        "10":  "10 seconds — looking solid",
+        "20":  "20 seconds — holding strong",
+        "30":  "30 seconds — halfway there",
+        "45":  "45 seconds — almost there",
+        "60":  "One minute — that's a solid plank",
+        "90":  "90 seconds — impressive",
+        "120": "Two minutes — elite"
+      },
+      "encourage": [
+        "Core engaged — you've got this",
+        "Strong hold — don't quit",
+        "Body's straight — perfect",
+        "Locked in — keep breathing",
+        "That's the position — own it",
+        "Like a steel beam — rigid"
+      ],
+      "regression": {
+        "core": "Try plank from your knees to build endurance",
+        "duration": "Short holds with rest — 20s on, 10s off — build up"
+      }
+    },
+
+
+    "bicep_curl": {
+      "setup": [
+        {"id": "curl_setup_face", "text": "Stand facing camera — arms must be visible", "severity": "info"},
+        {"id": "curl_setup_extend", "text": "Extend arms fully to begin — let weights hang at sides", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "curl_vis_arms", "text": "Arms from shoulders to hands must be visible", "severity": "info", "joints": ["left_elbow", "right_elbow"]}
+      ],
+      "corrections": {
+        "incomplete_contraction": {
+          "id": "curl_incomplete_top",
+          "variants": [
+            "Curl higher — full contraction at the top",
+            "Not curling high enough — squeeze at the top",
+            "Get the full squeeze — bring it all the way up"
+          ],
+          "external_cue": "Try to touch your shoulders with the weight",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_up", "bottom"],
+          "category": "rom"
+        },
+        "incomplete_extension": {
+          "id": "curl_incomplete_bottom",
+          "variants": [
+            "Extend arms fully at the bottom",
+            "Let the weight hang — full stretch at the bottom",
+            "Don't keep tension at the bottom — full extension"
+          ],
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["top"],
+          "category": "rom"
+        },
+        "upper_arm_moving": {
+          "id": "curl_upper_arm_moving",
+          "variants": [
+            "Pin elbows to your sides — upper arm is moving",
+            "Upper arms drifting forward — lock elbows in place",
+            "Elbows should stay at your sides — only forearms move"
+          ],
+          "external_cue": "Pretend your elbows are glued to your ribs",
+          "escalation": {
+            "gentle": "Try to keep your elbows a bit more still",
+            "firm": "Upper arms keep moving — this takes work off the bicep",
+            "urgent": "Elbow drift is persistent — reduce weight and focus on isolation"
+          },
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "upper_arm_swinging": {
+          "id": "curl_upper_arm_swing",
+          "variants": [
+            "Elbows swinging! Keep upper arms stationary",
+            "Arms are swinging like pendulums — pin those elbows",
+            "Way too much elbow movement — the weight is too heavy"
+          ],
+          "severity": "error",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "torso_swing_mild": {
+          "id": "curl_torso_mild",
+          "variants": [
+            "Slight body swing — stay more upright",
+            "Little bit of sway — stay rigid",
+            "Torso moving slightly — brace your core"
+          ],
+          "external_cue": "Lean your back against an imaginary wall",
+          "severity": "info",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "torso_swing_moderate": {
+          "id": "curl_torso_mod",
+          "variants": [
+            "Too much body swing — reduce weight or slow down",
+            "Using momentum — your biceps aren't doing the work",
+            "Body is rocking — this means the weight is too heavy"
+          ],
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "torso_swing_severe": {
+          "id": "curl_torso_severe",
+          "variants": [
+            "Using body swing — control the weight, slow down",
+            "All momentum, no bicep — drop the weight",
+            "You're swinging like a kettlebell — strict form or lighter weight"
+          ],
+          "severity": "error",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up"],
+          "category": "stability"
+        },
+        "wrist_curl": {
+          "id": "curl_wrist",
+          "variants": [
+            "Keep wrists straight — stop curling the wrist",
+            "Wrists are bending — keep them neutral",
+            "Straight wrists — don't curl at the wrist joint"
+          ],
+          "severity": "warning",
+          "joints": [],
+          "phase": ["going_up", "bottom"],
+          "category": "alignment"
+        },
+        "leaning_back": {
+          "id": "curl_lean_back",
+          "variants": [
+            "Don't lean back — keep torso vertical",
+            "You're leaning back to cheat the curl — stay upright",
+            "Torso tilting backward — that's your back doing the work"
+          ],
+          "external_cue": "Stand tall — imagine a wall behind you",
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_up"],
+          "category": "alignment"
+        }
+      },
+      "compensation": {
+        "heavy_to_swing": {
+          "root": "torso_swing_moderate",
+          "symptom": "upper_arm_moving",
+          "text": "The swing and elbow drift are both from too much weight — go lighter and isolate"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Good — begin the curl", "Arms extended — curl up", "Ready — go"], "severity": "encourage"},
+        "going_down": {"variants": ["Good — lower with control", "Slow negative — good", "Controlled descent"], "severity": "encourage"},
+        "bottom":     {"variants": ["Full contraction! Squeeze at the top", "Squeeze the bicep — hold it", "Top of the curl — squeeze"], "severity": "encourage"},
+        "going_up":   {"variants": ["Good — lower slowly", "Slow it down on the way down", "Control the descent"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Breathe in as you lower the weight",
+        "ascend": "Breathe out as you curl up"
+      },
+      "tempo": {
+        "too_fast": "Slow the negative — the eccentric builds muscle",
+        "momentum": "Don't use momentum — isolate the bicep"
+      },
+      "regression": {
+        "weight": "Drop the weight — strict form with light weight beats cheating with heavy",
+        "technique": "Try concentration curls (seated) to learn the isolation"
+      }
+    },
+
+
+    "tricep_dip": {
+      "setup": [
+        {"id": "dip_setup_camera", "text": "Position camera to see arms — elbows must be visible", "severity": "info"},
+        {"id": "dip_setup_extend", "text": "Extend arms fully to start — press up on the bench", "severity": "info"}
+      ],
+      "visibility": [
+        {"id": "dip_vis_arms", "text": "Arms and shoulders must be visible", "severity": "info", "joints": ["left_elbow", "right_elbow"]}
+      ],
+      "corrections": {
+        "too_deep": {
+          "id": "dip_too_deep",
+          "variants": [
+            "Going too deep — stop at 85-90\u00b0 to protect shoulders",
+            "Too much depth — this puts your shoulder capsule at risk",
+            "Ease up on the depth — 90 degrees is plenty"
+          ],
+          "external_cue": "Stop when your upper arm is parallel to the floor — no further",
+          "severity": "safety",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["bottom"],
+          "category": "safety"
+        },
+        "too_shallow": {
+          "id": "dip_too_shallow",
+          "variants": [
+            "Go a bit deeper — bend elbows closer to 90\u00b0",
+            "More range — you're barely bending",
+            "Deeper — you need to feel a stretch at the bottom"
+          ],
+          "external_cue": "Lower until your upper arm is parallel to the ground",
+          "escalation": {
+            "gentle": "Try getting a bit more depth on each rep",
+            "firm": "You need more depth — aim for 90 degree bend",
+            "urgent": "Shallow dips aren't training the muscle — commit to the range"
+          },
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down", "bottom"],
+          "category": "depth"
+        },
+        "lockout_incomplete": {
+          "id": "dip_lockout",
+          "variants": [
+            "Extend arms fully at top",
+            "Lock out — straighten your arms completely",
+            "Finish the rep — full extension"
+          ],
+          "external_cue": "Push yourself away from the bench — arms straight",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["top"],
+          "category": "rom"
+        },
+        "shoulder_extension_warning": {
+          "id": "dip_shoulder_ext_warn",
+          "variants": [
+            "Watch shoulder extension — reducing depth protects the joint",
+            "Shoulders are being stretched too far — ease up on depth",
+            "Shoulder strain building — don't go so deep"
+          ],
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["bottom"],
+          "category": "safety"
+        },
+        "shoulder_impingement": {
+          "id": "dip_shoulder_impinge",
+          "variants": [
+            "Shoulder impingement risk — come up, reduce depth",
+            "Shoulders are compressed — dangerous position, come up",
+            "Impingement territory — reduce depth immediately"
+          ],
+          "severity": "safety",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["bottom"],
+          "category": "safety"
+        },
+        "forward_lean": {
+          "id": "dip_forward_lean",
+          "variants": [
+            "Excessive forward lean — reduces triceps emphasis",
+            "Leaning forward shifts load to chest — stay upright for triceps",
+            "More upright — you're turning this into a chest exercise"
+          ],
+          "external_cue": "Keep your back close to the bench — stay vertical",
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "elbow_flare_mild": {
+          "id": "dip_flare_mild",
+          "variants": [
+            "Elbows flaring — keep them tucked back",
+            "Elbows going out — point them straight behind you",
+            "Tuck your elbows — they're drifting sideways"
+          ],
+          "external_cue": "Point your elbows at the wall behind you, not the walls beside you",
+          "severity": "warning",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "elbow_flare_severe": {
+          "id": "dip_flare_severe",
+          "variants": [
+            "Elbows flaring excessively — tuck closer to body",
+            "Elbows way out — this stresses the shoulder joint",
+            "Major elbow flare — bring them in tight"
+          ],
+          "severity": "error",
+          "joints": ["left_elbow", "right_elbow"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "shoulder_sink": {
+          "id": "dip_shoulder_sink",
+          "variants": [
+            "Shoulders sinking below elbows — control depth",
+            "Shoulders dropped too low — don't let them pass your elbows",
+            "Shoulder position is too low — come up a bit"
+          ],
+          "severity": "warning",
+          "joints": ["left_shoulder", "right_shoulder"],
+          "phase": ["bottom"],
+          "category": "safety"
+        },
+        "hips_close": {
+          "id": "dip_hips_close",
+          "variants": [
+            "Keep hips close to the bench",
+            "Stay close to the bench — don't drift forward",
+            "Hips should be right next to the bench"
+          ],
+          "severity": "info",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        },
+        "hips_far": {
+          "id": "dip_hips_far",
+          "variants": [
+            "Hips too far from bench — stay close",
+            "Scoot back — you're too far from the bench",
+            "Close the gap between your hips and the bench"
+          ],
+          "severity": "warning",
+          "joints": ["left_hip", "right_hip"],
+          "phase": ["going_down", "bottom"],
+          "category": "alignment"
+        }
+      },
+      "phase_cues": {
+        "top":        {"variants": ["Good lockout — begin descent", "Arms locked — go down", "Good — lower with control"], "severity": "encourage"},
+        "going_down": {"variants": ["Good — lower with control", "Controlled descent", "Steady down"], "severity": "encourage"},
+        "bottom":     {"variants": ["Good depth! Press up", "90 degrees — push!", "Full range — drive up"], "severity": "encourage"},
+        "going_up":   {"variants": ["Push! Lock out at the top", "Drive — arms straight", "Up! Full extension"], "severity": "encourage"}
+      },
+      "breathing": {
+        "descend": "Breathe in as you lower",
+        "ascend": "Breathe out as you press up"
+      },
+      "tempo": {
+        "too_fast": "Control the descent — don't just drop into it",
+        "momentum": "Don't bounce at the bottom — controlled reps"
+      },
+      "regression": {
+        "depth": "If shoulders hurt, reduce the depth — you don't need full 90 degrees",
+        "strength": "Feet further from the bench makes it easier — adjust leg position"
+      }
+    }
+  }
+}

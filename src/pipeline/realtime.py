@@ -13,6 +13,7 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+from app.exercise_registry import GOOD_REP_THRESHOLD
 from ..pose_estimation.base import PoseResult
 from ..pose_estimation.mediapipe_estimator import MediaPipePoseEstimator
 from ..feature_extraction.features import FeatureExtractor
@@ -30,6 +31,10 @@ from ..classification.tricep_dip_detector import TricepDipDetector
 from ..classification.bench_press_detector import BenchPressDetector
 from ..classification.overhead_press_detector import OverheadPressDetector
 from ..classification.pullup_detector import PullUpDetector
+from ..classification.crunch_detector import CrunchDetector
+from ..classification.lateral_raise_detector import LateralRaiseDetector
+from ..classification.side_plank_detector import SidePlankDetector
+from ..classification.dtw_matcher import DTWMatcher
 from ..feedback.feedback_engine import FeedbackEngine
 from ..visualization.overlay import draw_skeleton, draw_angle_zones, draw_angle_labels, draw_feedback_panel, draw_exercise_label
 from ..utils.temporal import TemporalSmoother, OneEuroSmoother
@@ -85,18 +90,27 @@ class ExerVisionPipeline:
         # Rule-based fallback for confidence gating
         self._fallback = RuleBasedClassifier()
 
+        # DTW template matcher — shared across all detectors. Templates live
+        # under models/templates/{exercise}.npz; if missing, the matcher returns
+        # None from compare() and detectors run exactly as before.
+        templates_dir = str(self.config.models_dir.parent / "templates")
+        self._dtw_matcher = DTWMatcher(templates_dir)
+
         # Dedicated exercise detectors (bypass generic classifier)
         self._detectors = {
-            "pushup": PushUpDetector(),
-            "squat": SquatDetector(),
-            "deadlift": DeadliftDetector(),
-            "bicep_curl": BicepCurlDetector(),
-            "lunge": LungeDetector(),
-            "plank": PlankDetector(),
-            "tricep_dip": TricepDipDetector(),
-            "bench_press": BenchPressDetector(),
-            "overhead_press": OverheadPressDetector(),
-            "pullup": PullUpDetector(),
+            "pushup": PushUpDetector(dtw_matcher=self._dtw_matcher),
+            "squat": SquatDetector(dtw_matcher=self._dtw_matcher),
+            "deadlift": DeadliftDetector(dtw_matcher=self._dtw_matcher),
+            "bicep_curl": BicepCurlDetector(dtw_matcher=self._dtw_matcher),
+            "lunge": LungeDetector(dtw_matcher=self._dtw_matcher),
+            "plank": PlankDetector(dtw_matcher=self._dtw_matcher),
+            "tricep_dip": TricepDipDetector(dtw_matcher=self._dtw_matcher),
+            "bench_press": BenchPressDetector(dtw_matcher=self._dtw_matcher),
+            "overhead_press": OverheadPressDetector(dtw_matcher=self._dtw_matcher),
+            "pullup": PullUpDetector(dtw_matcher=self._dtw_matcher),
+            "crunch": CrunchDetector(dtw_matcher=self._dtw_matcher),
+            "lateral_raise": LateralRaiseDetector(dtw_matcher=self._dtw_matcher),
+            "side_plank": SidePlankDetector(dtw_matcher=self._dtw_matcher),
         }
 
         # Temporal smoothing — One-Euro filter (adaptive, near-zero lag during movement)
@@ -122,6 +136,7 @@ class ExerVisionPipeline:
         # Session tracking
         self._session_active = False
         self._session_start_time = None
+        self._session_weight_kg: Optional[float] = None
         self._rep_results: List[Dict] = []
         self._current_rep_scores: List[float] = []
         self._current_rep_issues: List[str] = []
@@ -195,10 +210,16 @@ class ExerVisionPipeline:
         self._classifier_type = classifier_type
         self._classifier = self._create_classifier(classifier_type)
 
-    def start_session(self):
-        """Start a new exercise session for tracking."""
+    def start_session(self, weight_kg: Optional[float] = None):
+        """Start a new exercise session for tracking.
+
+        Args:
+            weight_kg: Load in kilograms for weight-based exercises
+                (deadlift, squat, bench press, etc.). None for bodyweight.
+        """
         self._session_active = True
         self._session_start_time = time.time()
+        self._session_weight_kg = weight_kg
         self._rep_results = []
         self._current_rep_scores = []
         self._current_rep_issues = []
@@ -220,6 +241,7 @@ class ExerVisionPipeline:
                 time.time() - self._session_start_time if self._session_start_time else 0, 1
             )
             summary["classifier"] = "detector"
+            summary["weight_kg"] = self._session_weight_kg
             return summary
 
         duration = 0.0
@@ -227,7 +249,10 @@ class ExerVisionPipeline:
             duration = time.time() - self._session_start_time
 
         total_reps = len(self._rep_results)
-        good_reps = sum(1 for r in self._rep_results if r.get("form_score", 0) >= 0.7)
+        good_reps = sum(
+            1 for r in self._rep_results
+            if r.get("form_score", 0) >= GOOD_REP_THRESHOLD
+        )
 
         # Count common issues across all reps
         issue_counts: Dict[str, int] = {}
@@ -253,6 +278,7 @@ class ExerVisionPipeline:
                 {"issue": name, "count": count}
                 for name, count in common_issues
             ],
+            "weight_kg": self._session_weight_kg,
         }
 
     def process_frame(

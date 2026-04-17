@@ -247,8 +247,14 @@ Note: Dedicated detectors are now the primary path. BiLSTM/ML are secondary opti
 ## Commands
 
 ```bash
-# Run web app
+# Run web app (Flask serves the built React SPA at /, legacy vanilla UI at /legacy)
 "C:/Users/Hamza/AppData/Local/Programs/Python/Python310/python.exe" app/server.py
+
+# React frontend (Vite + React 19 + Tailwind 4 + GSAP + Framer Motion + Lenis)
+cd app/web && npm install          # first time only
+cd app/web && npm run dev          # dev server on :5173, proxies /api + /socket.io to Flask :5000
+cd app/web && npm run build        # production build → app/static/dist/ (served by Flask)
+cd app/web && npm run typecheck    # strict TS check, no emit
 
 # UNIFIED PIPELINE — add data + retrain in one command
 "C:/Users/Hamza/AppData/Local/Programs/Python/Python310/python.exe" scripts/pipeline.py

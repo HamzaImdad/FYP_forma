@@ -10,7 +10,7 @@ State machine: TOP (arms extended) -> GOING_DOWN -> BOTTOM (bar at chest) -> GOI
 """
 
 from collections import deque
-from typing import Dict, List, Optional, Tuple
+from typing import Deque, Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -18,6 +18,7 @@ from .base_detector import (
     RobustExerciseDetector,
     RepPhase,
     REP_DIRECTION_DECREASING,
+    SessionState,
 )
 from ..pose_estimation.base import PoseResult
 from ..utils.constants import (
@@ -56,6 +57,22 @@ FOREARM_VERT_WARN = 15  # degrees deviation from vertical
 
 # Bar path (J-curve research — McLaughlin 1984: 5-8cm horizontal over the rep)
 BAR_PATH_HISTORY = 40   # frames of wrist x-position to track
+
+# ── Shape-witness + movement-gated session FSM thresholds ──────────────
+# Per-rep shape witness: user must be lying down (torso horizontal) for
+# at least one frame during the rep. A seated or standing "elbow wave"
+# through the full range would otherwise count as a rep because the
+# elbow-angle FSM alone can't tell the difference.
+BENCH_TORSO_HORIZONTAL_MIN = 55.0   # deg off vertical — below this user is not lying
+# Session FSM — elbow must show real motion in a rolling window AND
+# the torso must have been horizontal recently. Rest windows are longer
+# than squat's because bench press rest-between-reps at lockout is longer.
+BENCH_ELBOW_AT_TOP = 160.0
+BENCH_ELBOW_DESCEND = 145.0
+BENCH_MOTION_WINDOW_S = 2.5
+BENCH_MOTION_MIN_RANGE = 25.0
+BENCH_REST_AT_TOP_S = 12.0
+BENCH_REST_BELOW_TOP_S = 90.0
 
 
 class BenchPressDetector(RobustExerciseDetector):
@@ -96,6 +113,12 @@ class BenchPressDetector(RobustExerciseDetector):
         self._wrist_x_history: deque = deque(maxlen=BAR_PATH_HISTORY)
         self._baseline_shoulder_ear_dist: Optional[float] = None
         self._j_curve_last_reported_rep: int = 0
+        # Per-rep shape witness — reset at TOP, checked in _should_count_rep
+        self._rep_max_torso_off_vertical: Optional[float] = None
+        # Movement-gated session FSM state
+        self._at_top_since: Optional[float] = None
+        self._below_top_since: Optional[float] = None
+        self._elbow_history: Deque[Tuple[float, float]] = deque()
         super().__init__(**kwargs)
 
     def reset(self):
@@ -103,6 +126,10 @@ class BenchPressDetector(RobustExerciseDetector):
         self._wrist_x_history.clear()
         self._baseline_shoulder_ear_dist = None
         self._j_curve_last_reported_rep = 0
+        self._rep_max_torso_off_vertical = None
+        self._at_top_since = None
+        self._below_top_since = None
+        self._elbow_history.clear()
 
     def _compute_angles(self, pose: PoseResult) -> Dict[str, Optional[float]]:
         elbow = self._avg_angle(
@@ -131,14 +158,53 @@ class BenchPressDetector(RobustExerciseDetector):
 
         forearm_tilt = self._compute_forearm_verticality(pose)
         shoulder_ear_delta = self._compute_shoulder_ear_delta(pose)
+        torso_off_vert = self._compute_torso_off_vertical(pose)
         self._track_bar_path(pose)
+
+        # Per-rep witness tracking — reset at TOP, update otherwise.
+        if self._state == RepPhase.TOP:
+            self._rep_max_torso_off_vertical = None
+        else:
+            if torso_off_vert is not None:
+                if (self._rep_max_torso_off_vertical is None
+                        or torso_off_vert > self._rep_max_torso_off_vertical):
+                    self._rep_max_torso_off_vertical = torso_off_vert
 
         return {
             "primary": elbow, "elbow": elbow,
             "symmetry": symmetry, "shoulder": shoulder,
             "forearm_tilt": forearm_tilt,
             "shoulder_ear_delta": shoulder_ear_delta,
+            "torso_off_vert": torso_off_vert,
         }
+
+    def _compute_torso_off_vertical(self, pose: PoseResult) -> Optional[float]:
+        """Angle between the shoulder-hip vector and the world Y axis.
+        Lying flat on a bench ≈ 90°, sitting upright ≈ 0°. Used by the
+        rep-shape witness so seated/standing elbow waves don't count as
+        bench press reps."""
+        thresh = self.VISIBILITY_GATE_THRESHOLD
+        shoulders = []
+        hips = []
+        for s_idx in (LEFT_SHOULDER, RIGHT_SHOULDER):
+            if pose.is_visible(s_idx, thresh):
+                shoulders.append(np.array(pose.get_world_landmark(s_idx)))
+        for h_idx in (LEFT_HIP, RIGHT_HIP):
+            if pose.is_visible(h_idx, thresh):
+                hips.append(np.array(pose.get_world_landmark(h_idx)))
+        if not shoulders or not hips:
+            return None
+        s_mid = sum(shoulders) / len(shoulders)
+        h_mid = sum(hips) / len(hips)
+        diff = s_mid - h_mid
+        norm = float(np.linalg.norm(diff))
+        if norm < 0.05:
+            return None
+        # Angle between torso vector and world +Y (up in MediaPipe is -Y,
+        # but abs() of the projection is symmetric so either axis works).
+        vertical = np.array([0.0, 1.0, 0.0])
+        cos = float(abs(np.dot(diff, vertical)) / norm)
+        return float(np.degrees(np.arccos(np.clip(cos, -1.0, 1.0))))
 
     def _compute_forearm_verticality(self, pose: PoseResult) -> Optional[float]:
         """Compute max(left, right) forearm deviation from vertical gravity.
@@ -188,6 +254,94 @@ class BenchPressDetector(RobustExerciseDetector):
                 xs.append(pose.get_world_landmark(w_idx)[0])
         if xs:
             self._wrist_x_history.append(sum(xs) / len(xs))
+
+    # ── Movement-gated session FSM ──────────────────────────────────────
+    # FORM LOCKED only fires when (a) the elbow shows real motion in the
+    # rolling window, (b) the elbow currently sits below
+    # BENCH_ELBOW_DESCEND, and (c) the user was lying down (torso
+    # horizontal) at some point during the current rep. Rejects seated or
+    # standing elbow waves.
+    def _update_session_state(self, now: float, visibility_ok: bool) -> None:
+        elbow = self._get_smooth("primary")
+        if elbow is None:
+            elbow = self._get_smooth("elbow")
+
+        if elbow is None:
+            super()._update_session_state(now, visibility_ok)
+            return
+
+        is_at_top = elbow >= BENCH_ELBOW_AT_TOP
+        is_descending = elbow < BENCH_ELBOW_DESCEND
+
+        if is_at_top:
+            if self._at_top_since is None:
+                self._at_top_since = now
+            self._below_top_since = None
+        else:
+            if self._below_top_since is None:
+                self._below_top_since = now
+            self._at_top_since = None
+
+        self._elbow_history.append((now, elbow))
+        window_start = now - BENCH_MOTION_WINDOW_S
+        while self._elbow_history and self._elbow_history[0][0] < window_start:
+            self._elbow_history.popleft()
+
+        if len(self._elbow_history) >= 2:
+            values = [v for _, v in self._elbow_history]
+            motion_range = max(values) - min(values)
+        else:
+            motion_range = 0.0
+        has_active_motion = motion_range >= BENCH_MOTION_MIN_RANGE
+
+        is_lying = (
+            self._rep_max_torso_off_vertical is not None
+            and self._rep_max_torso_off_vertical >= BENCH_TORSO_HORIZONTAL_MIN
+        )
+
+        s = self._session_state
+
+        if not visibility_ok:
+            if s == SessionState.ACTIVE:
+                self._unknown_streak += 1
+                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
+                    self._close_active_set_or_rollback(now)
+                    self._elbow_history.clear()
+            return
+        self._unknown_streak = 0
+
+        if s == SessionState.IDLE:
+            self._session_state = SessionState.SETUP
+            return
+
+        if s in (SessionState.SETUP, SessionState.RESTING):
+            if has_active_motion and is_descending and is_lying:
+                self._session_state = SessionState.ACTIVE
+                self._seed_first_rep_from_trace(now)
+            return
+
+        if s == SessionState.ACTIVE:
+            if (self._at_top_since is not None
+                    and (now - self._at_top_since) >= BENCH_REST_AT_TOP_S):
+                self._close_active_set_or_rollback(now)
+                self._elbow_history.clear()
+                return
+            if (self._below_top_since is not None
+                    and (now - self._below_top_since) >= BENCH_REST_BELOW_TOP_S):
+                self._close_active_set_or_rollback(now)
+                self._elbow_history.clear()
+                return
+
+    def _should_count_rep(self, elapsed: float, angles: Dict[str, Optional[float]]) -> bool:
+        if not super()._should_count_rep(elapsed, angles):
+            return False
+        # Shape gate: torso must have been horizontal (lying down) at
+        # some point during the rep. Missing witness falls through lenient.
+        horizontal_ok = (
+            self._rep_max_torso_off_vertical is None
+            or self._rep_max_torso_off_vertical >= BENCH_TORSO_HORIZONTAL_MIN
+        )
+        return horizontal_ok
 
     def _check_start_position(self, angles: Dict[str, Optional[float]]) -> Tuple[bool, List[str]]:
         issues = []

@@ -6,29 +6,31 @@ import { PageTransition } from "./components/layout/PageTransition";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { Home } from "./pages/Home";
 import { Stub } from "./pages/Stub";
+import { ExercisesPage } from "./pages/ExercisesPage";
 import { VoiceCoachingPage } from "./pages/VoiceCoachingPage";
 import { ChatbotPage } from "./pages/ChatbotPage";
 import { PlansPage } from "./pages/PlansPage";
 import { MilestonesPage } from "./pages/MilestonesPage";
 import { DeveloperModePage } from "./pages/DeveloperModePage";
 import { AboutPage } from "./pages/AboutPage";
+import { HowItWorksPage } from "./pages/HowItWorksPage";
+import { FeaturesPage } from "./pages/FeaturesPage";
 import { WorkoutPage } from "./pages/WorkoutPage";
 import { LoginPage } from "./pages/LoginPage";
 import { SignupPage } from "./pages/SignupPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { SessionDetailPanel } from "./components/dashboard/SessionDetailPanel";
 import { CelebrationToast } from "./components/milestones/CelebrationToast";
+import { PublicChatWidget } from "./components/chat/PublicChatWidget";
+import { PersonalCoachPanel } from "./components/dashboard/PersonalCoachPanel";
 import { useAuth } from "./context/AuthContext";
 
 export function App() {
   const { pathname } = useLocation();
   const { user } = useAuth();
-  // Session, workout, and auth pages are fullscreen (no nav/footer)
-  const fullscreen =
-    pathname === "/session" ||
-    pathname === "/login" ||
-    pathname === "/signup" ||
-    pathname.startsWith("/workout/");
+  // Workout pages are fullscreen (no nav/footer). Auth pages now show nav.
+  const fullscreen = pathname.startsWith("/workout/");
 
   return (
     <>
@@ -39,46 +41,7 @@ export function App() {
         <PageTransition>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route
-              path="/exercises"
-              element={
-                <Stub
-                  phase="Phase 03"
-                  title="Exercises"
-                  description="Ten exercises, one index. Arriving with the session-core port."
-                />
-              }
-            />
-            <Route
-              path="/guide"
-              element={
-                <Stub
-                  phase="Phase 03"
-                  title="Camera Setup"
-                  description="Per-exercise guide — framing, distance, lighting."
-                />
-              }
-            />
-            <Route
-              path="/session"
-              element={
-                <Stub
-                  phase="Phase 03"
-                  title="Live Session"
-                  description="Socket.IO video feed + real-time form score. Coming next."
-                />
-              }
-            />
-            <Route
-              path="/report"
-              element={
-                <Stub
-                  phase="Phase 03"
-                  title="Session Report"
-                  description="Per-rep form scores, common issues, set breakdown."
-                />
-              }
-            />
+            <Route path="/exercises" element={<ExercisesPage />} />
             <Route
               path="/dashboard"
               element={
@@ -98,6 +61,8 @@ export function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/how-it-works" element={<HowItWorksPage />} />
+            <Route path="/features" element={<FeaturesPage />} />
             <Route path="/voice-coaching" element={<VoiceCoachingPage />} />
             <Route path="/chatbot" element={<ChatbotPage />} />
             <Route
@@ -113,6 +78,14 @@ export function App() {
               element={
                 <ProtectedRoute>
                   <MilestonesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />
@@ -139,6 +112,12 @@ export function App() {
         </PageTransition>
       </main>
       {!fullscreen && <Footer />}
+      {!user && !fullscreen && pathname !== "/login" && <PublicChatWidget />}
+      {user
+        && !fullscreen
+        && !pathname.startsWith("/plans")
+        && pathname !== "/login"
+        && <PersonalCoachPanel />}
     </>
   );
 }

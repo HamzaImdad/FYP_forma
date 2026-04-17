@@ -1,26 +1,30 @@
 """
-Dedicated plank detector — static hold, no rep counting.
+Dedicated plank detector — static hold, forearm plank only.
 
 Angles tracked:
   - Body line (shoulder-hip-ankle): should be ~180 degrees (straight line)
   - Hip sag/pike (hip position relative to shoulder-ankle line)
-  - Shoulder position (should be over wrists/elbows)
+  - Elbow angle: must be ~90° (forearm plank); high plank (>150°) is flagged
+  - Head/neck alignment (ear-shoulder-hip): head on floor = cheat
+  - Shoulder position (should be over elbows, not wrists)
 
 Tracks hold duration instead of reps.
+Camera: side view.
 """
 
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
-from .base_detector import RobustExerciseDetector
-from .posture_classifier import PostureLabel
+from .base_detector import RobustExerciseDetector, SessionState
 from ..pose_estimation.base import PoseResult
 from ..utils.constants import (
     LEFT_SHOULDER, RIGHT_SHOULDER, LEFT_ELBOW, RIGHT_ELBOW,
     LEFT_WRIST, RIGHT_WRIST, LEFT_HIP, RIGHT_HIP,
     LEFT_KNEE, RIGHT_KNEE, LEFT_ANKLE, RIGHT_ANKLE,
+    LEFT_EAR, RIGHT_EAR,
 )
+from ..utils.geometry import calculate_angle
 
 
 # ── Thresholds ──
@@ -35,8 +39,8 @@ BODY_LINE_BAD = 155     # Significant form breakdown
 HIP_SAG_THRESHOLD = 0.04    # meters — hips sagging below line
 HIP_PIKE_THRESHOLD = 0.04   # meters — hips piking above line
 
-# Shoulder over wrist alignment (world coords, meters)
-SHOULDER_WRIST_GOOD = 0.08   # meters x-offset tolerance
+# Shoulder over ELBOW alignment (forearm plank — shoulders stack over elbows)
+SHOULDER_ELBOW_GOOD = 0.08   # meters x-offset tolerance
 
 # Knee angle — legs should be straight (~180°). Flag bent knees.
 KNEE_STRAIGHT = 170
@@ -46,6 +50,26 @@ BASELINE_FRAMES = 10     # average this many frames after form_validated to set 
 DRIFT_WARN_DEG = 5       # warn at this much drift from baseline
 DRIFT_STOP_DEG = 10      # recommend stopping at this much drift
 
+# Side-view visibility threshold (same as squat/bicep_curl)
+PLANK_VIS_THRESHOLD = 0.3
+
+# Elbow angle — forearm plank vs high plank distinction
+ELBOW_FOREARM_MAX = 120    # <120° = on forearms (correct forearm plank)
+ELBOW_HIGH_PLANK = 150     # >150° = high plank (arms extended, WRONG)
+
+# Head/neck alignment — ear-shoulder-hip angle
+# Neutral neck: head in line with body (~170-180°)
+HEAD_NEUTRAL_MIN = 165
+HEAD_DROPPING = 155        # <155° = head dropping significantly
+HEAD_ON_FLOOR = 140        # <140° = head resting on floor (CHEAT — harsh penalty)
+HEAD_CRANING = 190         # >190° = craning up (neck strain risk)
+
+# Movement-gated FSM for plank (static hold — no motion range needed)
+PLANK_BODY_LINE_MIN = 155.0   # body must be roughly horizontal
+PLANK_BODY_LINE_MAX = 195.0   # not standing upright
+PLANK_POSITION_LATCH_S = 1.5  # hold position for 1.5s to latch ACTIVE
+PLANK_REST_NOT_PLANK_S = 5.0  # out of plank position for 5s → RESTING
+
 
 class PlankDetector(RobustExerciseDetector):
     EXERCISE_NAME = "plank"
@@ -53,43 +77,170 @@ class PlankDetector(RobustExerciseDetector):
     PRIMARY_ANGLE_TOP = BODY_LINE_GOOD
     PRIMARY_ANGLE_BOTTOM = BODY_LINE_BAD
 
-    # ── Robust FSM config (static hold) ─────────────────────────────────
-    # Plank uses the PostureClassifier's PLANK label (empirically works
-    # well — real pushup sessions produce 200-500 PLANK frames). The
-    # robust FSM's static-hold path runs when IS_STATIC = True and skips
-    # the rep FSM entirely, while still using the outer session FSM
-    # (IDLE/SETUP/ACTIVE/RESTING) to pause/resume the hold timer on
-    # walk-aways.
-    SESSION_POSTURE_GATE = PostureLabel.PLANK
+    # ── Robust FSM config (static hold, side view) ─────────────────────
+    # Switched from PostureLabel.PLANK to visibility-only gate for
+    # side-view reliability. The custom _update_session_state gates on
+    # body-line angle + elbow angle (forearm position) instead.
+    SESSION_POSTURE_GATE = None
+    VISIBILITY_GATE_LANDMARKS = (
+        LEFT_SHOULDER, RIGHT_SHOULDER, LEFT_ELBOW, RIGHT_ELBOW,
+        LEFT_HIP, RIGHT_HIP, LEFT_ANKLE, RIGHT_ANKLE,
+    )
+    VISIBILITY_GATE_THRESHOLD = PLANK_VIS_THRESHOLD
     MIN_REAL_PRIMARY_DEG = 0.0  # body-line angle can legitimately be small
     MAX_PRIMARY_JUMP_DEG = 90.0  # generous for a static hold
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # Baseline body-line angle captured after form validation (T35)
+        # Instance state BEFORE super().__init__() — reset() touches these
         self._baseline_body_line: Optional[float] = None
         self._baseline_sample_buf: List[float] = []
         self._drift_stop_warned: bool = False
+        # Movement-gated session FSM state
+        self._plank_position_since: Optional[float] = None
+        self._not_plank_since: Optional[float] = None
+        super().__init__(**kwargs)
 
     def reset(self):
         super().reset()
         self._baseline_body_line = None
         self._baseline_sample_buf = []
         self._drift_stop_warned = False
+        self._plank_position_since = None
+        self._not_plank_since = None
+
+    # ── Side-view helpers ──────────────────────────────────────────────
+
+    def _lenient_side_angle(
+        self,
+        pose: PoseResult,
+        a_idx: int,
+        b_idx: int,
+        c_idx: int,
+        threshold: float = PLANK_VIS_THRESHOLD,
+    ) -> Optional[float]:
+        if not all(pose.is_visible(i, threshold) for i in (a_idx, b_idx, c_idx)):
+            return None
+        return calculate_angle(
+            pose.get_world_landmark(a_idx),
+            pose.get_world_landmark(b_idx),
+            pose.get_world_landmark(c_idx),
+        )
+
+    def _lenient_avg_angle(
+        self,
+        pose: PoseResult,
+        left_triple: Tuple[int, int, int],
+        right_triple: Tuple[int, int, int],
+        name: str,
+    ) -> Optional[float]:
+        left = self._lenient_side_angle(pose, *left_triple)
+        right = self._lenient_side_angle(pose, *right_triple)
+        self._lr_angles[name] = (left, right)
+        if left is not None and right is not None:
+            return (left + right) / 2
+        return left if left is not None else right
+
+    def _check_visibility_gate(self, pose) -> bool:
+        """Accept if EITHER side's shoulder-elbow-hip-ankle chain is visible."""
+        left_ok = all(
+            pose.is_visible(idx, PLANK_VIS_THRESHOLD)
+            for idx in (LEFT_SHOULDER, LEFT_ELBOW, LEFT_HIP, LEFT_ANKLE)
+        )
+        right_ok = all(
+            pose.is_visible(idx, PLANK_VIS_THRESHOLD)
+            for idx in (RIGHT_SHOULDER, RIGHT_ELBOW, RIGHT_HIP, RIGHT_ANKLE)
+        )
+        return left_ok or right_ok
+
+    # ── Movement-gated session FSM (static hold) ──────────────────────
+
+    def _update_session_state(self, now: float, visibility_ok: bool) -> None:
+        """Plank is IS_STATIC — gate on being in plank position (body
+        roughly horizontal + on forearms), not on angle motion range."""
+        body_line = self._get_smooth("body_line")
+        elbow = self._get_smooth("elbow")
+
+        # Determine if user is in plank position
+        in_plank_position = (
+            body_line is not None
+            and elbow is not None
+            and PLANK_BODY_LINE_MIN <= body_line <= PLANK_BODY_LINE_MAX
+            and elbow < ELBOW_FOREARM_MAX
+        )
+
+        # Update position timers
+        if in_plank_position:
+            if self._plank_position_since is None:
+                self._plank_position_since = now
+            self._not_plank_since = None
+        else:
+            if self._not_plank_since is None:
+                self._not_plank_since = now
+            self._plank_position_since = None
+
+        s = self._session_state
+
+        # Visibility loss handling
+        if not visibility_ok:
+            if s == SessionState.ACTIVE:
+                self._unknown_streak += 1
+                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
+                    self._close_active_set_or_rollback(now)
+            return
+        self._unknown_streak = 0
+
+        # IDLE → SETUP: body visible
+        if s == SessionState.IDLE:
+            self._session_state = SessionState.SETUP
+            return
+
+        # SETUP → ACTIVE: in plank position sustained for latch duration
+        if s == SessionState.SETUP:
+            if (self._plank_position_since is not None
+                    and now - self._plank_position_since >= PLANK_POSITION_LATCH_S):
+                self._session_state = SessionState.ACTIVE
+            return
+
+        # RESTING → ACTIVE: same as SETUP
+        if s == SessionState.RESTING:
+            if (self._plank_position_since is not None
+                    and now - self._plank_position_since >= PLANK_POSITION_LATCH_S):
+                self._session_state = SessionState.ACTIVE
+            return
+
+        # ACTIVE → RESTING: out of plank position for rest duration
+        if s == SessionState.ACTIVE:
+            if (self._not_plank_since is not None
+                    and now - self._not_plank_since >= PLANK_REST_NOT_PLANK_S):
+                self._close_active_set_or_rollback(now)
+                return
+
+    # ── Angle computation ─────────────────────────────────────────────
 
     def _compute_angles(self, pose: PoseResult) -> Dict[str, Optional[float]]:
-        body_line = self._avg_angle(
+        body_line = self._lenient_avg_angle(
             pose,
             (LEFT_SHOULDER, LEFT_HIP, LEFT_ANKLE),
             (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_ANKLE),
             name="hip",
         )
 
+        # Elbow angle — forearm plank should be ~90°
+        elbow = self._lenient_avg_angle(
+            pose,
+            (LEFT_SHOULDER, LEFT_ELBOW, LEFT_WRIST),
+            (RIGHT_SHOULDER, RIGHT_ELBOW, RIGHT_WRIST),
+            name="elbow",
+        )
+
+        # Head/neck alignment — ear-shoulder-hip angle
+        head_neck = self._compute_head_neck_angle(pose)
+
         hip_deviation = self._compute_hip_deviation(pose)
         shoulder_alignment = self._compute_shoulder_alignment(pose)
 
-        # T39: knee angle — straight legs expected
-        knee = self._avg_angle(
+        # Knee angle — straight legs expected
+        knee = self._lenient_avg_angle(
             pose,
             (LEFT_HIP, LEFT_KNEE, LEFT_ANKLE),
             (RIGHT_HIP, RIGHT_KNEE, RIGHT_ANKLE),
@@ -112,11 +263,28 @@ class PlankDetector(RobustExerciseDetector):
         return {
             "primary": body_line,
             "body_line": body_line,
+            "elbow": elbow,
+            "head_neck": head_neck,
             "hip_deviation": hip_deviation,
             "shoulder_alignment": shoulder_alignment,
             "knee": knee,
             "drift": drift,
         }
+
+    def _compute_head_neck_angle(self, pose: PoseResult) -> Optional[float]:
+        """Head/neck alignment: angle at shoulder between ear-shoulder-hip.
+        ~170-180° = neutral head position (in line with body).
+        <155° = head dropping. <140° = head on floor (cheating).
+        >190° = craning up (neck strain)."""
+        angles = []
+        for ear_idx, s_idx, h_idx in [
+            (LEFT_EAR, LEFT_SHOULDER, LEFT_HIP),
+            (RIGHT_EAR, RIGHT_SHOULDER, RIGHT_HIP),
+        ]:
+            angle = self._lenient_side_angle(pose, ear_idx, s_idx, h_idx)
+            if angle is not None:
+                angles.append(angle)
+        return sum(angles) / len(angles) if angles else None
 
     def _compute_hip_deviation(self, pose: PoseResult) -> Optional[float]:
         """Compute how much hips deviate from straight shoulder-ankle line.
@@ -126,7 +294,7 @@ class PlankDetector(RobustExerciseDetector):
         deviations = []
         for s_idx, h_idx, a_idx in [(LEFT_SHOULDER, LEFT_HIP, LEFT_ANKLE),
                                      (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_ANKLE)]:
-            if all(pose.is_visible(i) for i in (s_idx, h_idx, a_idx)):
+            if all(pose.is_visible(i, PLANK_VIS_THRESHOLD) for i in (s_idx, h_idx, a_idx)):
                 s = np.array(pose.get_world_landmark(s_idx))
                 h = np.array(pose.get_world_landmark(h_idx))
                 a = np.array(pose.get_world_landmark(a_idx))
@@ -148,24 +316,30 @@ class PlankDetector(RobustExerciseDetector):
         return sum(deviations) / len(deviations) if deviations else None
 
     def _compute_shoulder_alignment(self, pose: PoseResult) -> Optional[float]:
-        """Check if shoulders are over wrists/elbows using world coordinates."""
+        """Check if shoulders are over elbows using world coordinates.
+        For forearm plank: elbows on ground, shoulders directly above."""
         offsets = []
-        for s_idx, w_idx in [(LEFT_SHOULDER, LEFT_WRIST), (RIGHT_SHOULDER, RIGHT_WRIST)]:
-            if pose.is_visible(s_idx) and pose.is_visible(w_idx):
+        for s_idx, e_idx in [(LEFT_SHOULDER, LEFT_ELBOW), (RIGHT_SHOULDER, RIGHT_ELBOW)]:
+            if pose.is_visible(s_idx, PLANK_VIS_THRESHOLD) and pose.is_visible(e_idx, PLANK_VIS_THRESHOLD):
                 s = np.array(pose.get_world_landmark(s_idx))
-                w = np.array(pose.get_world_landmark(w_idx))
+                e = np.array(pose.get_world_landmark(e_idx))
                 # Horizontal offset (x-axis in world coords)
-                offsets.append(float(s[0] - w[0]))
+                offsets.append(float(s[0] - e[0]))
 
         return sum(offsets) / len(offsets) if offsets else None
+
+    # ── Start position + missing parts ────────────────────────────────
 
     def _check_start_position(self, angles: Dict[str, Optional[float]]) -> Tuple[bool, List[str]]:
         issues = []
         body_line = angles.get("body_line")
+        elbow = angles.get("elbow")
         if body_line is None:
             return False, ["Get into plank position — full body must be visible from the side"]
         if body_line < BODY_LINE_BAD:
             issues.append("Straighten your body — align shoulders, hips, and ankles")
+        if elbow is not None and elbow > ELBOW_HIGH_PLANK:
+            issues.append("Get onto your forearms — this is a forearm plank")
         if not issues:
             return True, []
         return False, issues
@@ -175,6 +349,8 @@ class PlankDetector(RobustExerciseDetector):
             return ["shoulders, hips, or ankles"]
         return ["body"]
 
+    # ── Form assessment ───────────────────────────────────────────────
+
     def _assess_form(self, angles: Dict[str, Optional[float]]) -> Tuple[float, Dict[str, str], List[str]]:
         joint_feedback = {}
         issues = []
@@ -183,6 +359,8 @@ class PlankDetector(RobustExerciseDetector):
         body_line = angles.get("body_line")
         hip_dev = angles.get("hip_deviation")
         shoulder_align = angles.get("shoulder_alignment")
+        elbow = angles.get("elbow")
+        head_neck = angles.get("head_neck")
 
         # Pre-compute suppression: drift is the better fatigue signal than hip sag
         drift = angles.get("drift")
@@ -209,6 +387,38 @@ class PlankDetector(RobustExerciseDetector):
                 joint_feedback["right_hip"] = "incorrect"
                 scores["body_line"] = 0.1
 
+        # ── Elbow angle — forearm plank check ──
+        if elbow is not None:
+            if elbow <= ELBOW_FOREARM_MAX:           # <=120° — on forearms (correct)
+                scores["elbow"] = 1.0
+            elif elbow <= ELBOW_HIGH_PLANK:          # 120-150° — transitional
+                issues.append("Get down onto your forearms — elbows should be bent at 90°")
+                joint_feedback["left_elbow"] = "warning"
+                joint_feedback["right_elbow"] = "warning"
+                scores["elbow"] = 0.4
+            else:                                     # >150° — high plank (wrong)
+                issues.append("Wrong position — get onto forearms, not hands")
+                joint_feedback["left_elbow"] = "incorrect"
+                joint_feedback["right_elbow"] = "incorrect"
+                scores["elbow"] = 0.1
+
+        # ── Head/neck alignment ──
+        if head_neck is not None:
+            if HEAD_NEUTRAL_MIN <= head_neck <= 185:
+                scores["head_neck"] = 1.0
+            elif head_neck < HEAD_ON_FLOOR:           # <140° — head on floor = CHEAT
+                issues.append("Head resting on floor — lift your head in line with spine")
+                joint_feedback["left_shoulder"] = "incorrect"
+                scores["head_neck"] = 0.1
+            elif head_neck < HEAD_DROPPING:           # <155° — head dropping
+                issues.append("Head dropping — look at the floor just ahead of hands")
+                joint_feedback["left_shoulder"] = "warning"
+                scores["head_neck"] = 0.5
+            elif head_neck > HEAD_CRANING:            # >190° — craning up
+                issues.append("Neck craning up — keep head neutral, look at floor")
+                joint_feedback["left_shoulder"] = "warning"
+                scores["head_neck"] = 0.5
+
         # ── Hip sag/pike detection ──
         if hip_dev is not None:
             if hip_dev > HIP_SAG_THRESHOLD:
@@ -225,15 +435,15 @@ class PlankDetector(RobustExerciseDetector):
             else:
                 scores["hip_dev"] = 1.0
 
-        # ── Shoulder alignment ──
+        # ── Shoulder alignment (over elbows for forearm plank) ──
         if shoulder_align is not None:
-            if abs(shoulder_align) <= SHOULDER_WRIST_GOOD:
+            if abs(shoulder_align) <= SHOULDER_ELBOW_GOOD:
                 scores["shoulder"] = 1.0
-            elif abs(shoulder_align) <= SHOULDER_WRIST_GOOD * 2:
-                issues.append("Shift shoulders over wrists")
+            elif abs(shoulder_align) <= SHOULDER_ELBOW_GOOD * 2:
+                issues.append("Shift shoulders over elbows")
                 scores["shoulder"] = 0.6
             else:
-                issues.append("Shoulders too far from wrists — reposition")
+                issues.append("Shoulders too far from elbows — reposition")
                 scores["shoulder"] = 0.3
 
         # ── Knee straightness (T39) ──
@@ -262,6 +472,7 @@ class PlankDetector(RobustExerciseDetector):
         WEIGHTS = {
             "body_line": 1.5, "hip_dev": 1.2, "shoulder": 1.0,
             "knee": 0.8, "drift": 1.1,
+            "elbow": 1.3, "head_neck": 1.0,
         }
         weighted_sum = sum(scores[k] * WEIGHTS.get(k, 1.0) for k in scores)
         weight_total = sum(WEIGHTS.get(k, 1.0) for k in scores)

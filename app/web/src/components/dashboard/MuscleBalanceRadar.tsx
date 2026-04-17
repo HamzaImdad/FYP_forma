@@ -55,12 +55,12 @@ export function MuscleBalanceRadar({ groups }: Props) {
               {
                 data: values,
                 backgroundColor: [
-                  "rgba(184,134,74,0.55)",
-                  "rgba(212,69,20,0.55)",
-                  "rgba(184,134,74,0.35)",
-                  "rgba(212,69,20,0.35)",
-                  "rgba(184,134,74,0.65)",
-                  "rgba(212,69,20,0.65)",
+                  "rgba(174,231,16,0.55)",
+                  "rgba(174,231,16,0.35)",
+                  "rgba(174,231,16,0.25)",
+                  "rgba(194,240,74,0.45)",
+                  "rgba(174,231,16,0.65)",
+                  "rgba(194,240,74,0.55)",
                 ],
                 borderColor: C.ruleStrong,
                 borderWidth: 1,

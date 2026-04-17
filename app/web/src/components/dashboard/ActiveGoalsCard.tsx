@@ -30,12 +30,12 @@ export function ActiveGoalsCard() {
 
   return (
     <div className="border border-[color:var(--rule)] rounded-[4px] p-5 bg-[color:var(--color-raised)]/40">
-      <div className="flex items-baseline justify-between gap-3 mb-3">
+      <div className="flex items-baseline justify-between gap-3">
         <h3
           className="text-[color:var(--color-ink-3)] uppercase tracking-[0.22em]"
           style={{ fontFamily: "var(--font-display)", fontSize: "0.85rem" }}
         >
-          Active goals
+          Weekly targets
         </h3>
         <div className="flex gap-3">
           <button
@@ -53,6 +53,12 @@ export function ActiveGoalsCard() {
           </Link>
         </div>
       </div>
+      <p
+        className="italic text-[color:var(--color-ink-4)] text-[11px] mb-3"
+        style={{ fontFamily: "var(--font-serif)" }}
+      >
+        Longer-term goals you're tracking.
+      </p>
 
       {loading ? (
         <div className="italic text-[color:var(--color-ink-3)] text-[13px]">Loading…</div>
