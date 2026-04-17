@@ -10,6 +10,13 @@ Usage:
     python app/server.py --port 5000 --host 0.0.0.0
 """
 
+# Eventlet monkey-patch MUST run before any import that touches sockets,
+# threading, or SSL (so: before flask, cv2, numpy, etc). Without this,
+# WebSocket upgrades hang behind reverse proxies like Railway's. See plan
+# file for root cause + history.
+import eventlet
+eventlet.monkey_patch()
+
 import os
 import re
 import sys
@@ -61,7 +68,13 @@ REACT_INDEX = REACT_DIST_DIR / "index.html"
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("EXERVISION_SECRET_KEY", "exervision-dev-fallback")
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+
+
+@app.route("/health", methods=["GET"])
+def health():
+    """Cheap, non-auth endpoint for Railway health probes + uptime monitors."""
+    return {"status": "ok"}, 200
 
 
 def _user_room(user_id: int) -> str:
