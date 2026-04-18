@@ -108,11 +108,11 @@ export function WorkoutPage() {
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
-  const [mirrored, setMirrored] = useState<boolean>(exercise.slug !== "pushup");
-  // Separate Y-axis flip on top of the baseline 180° correction. Lets the
-  // user invert the vertical axis when their specific phone mount has the
-  // camera reading upside-down relative to our baseline.
-  const [flippedVertical, setFlippedVertical] = useState<boolean>(false);
+  // Direct axis toggles — no hidden baseline rotation. Both default on so
+  // the view matches the previous 180° correction (scaleX * scaleY == 180°),
+  // and each button cleanly inverts exactly one axis.
+  const [mirrored, setMirrored] = useState<boolean>(true);
+  const [flippedVertical, setFlippedVertical] = useState<boolean>(true);
   const [saving, setSaving] = useState(false);
 
   // ── Phone orientation (Part B) ────────────────────────────────────────
@@ -769,7 +769,13 @@ export function WorkoutPage() {
           landscapePhone ? "object-cover" : "object-contain"
         }`}
         style={{
-          transform: `${mirrored ? "scaleX(-1) " : ""}${flippedVertical ? "scaleY(-1) " : ""}rotate(180deg)`,
+          transform:
+            [
+              mirrored ? "scaleX(-1)" : "",
+              flippedVertical ? "scaleY(-1)" : "",
+            ]
+              .filter(Boolean)
+              .join(" ") || "none",
         }}
       />
       <canvas
@@ -778,7 +784,13 @@ export function WorkoutPage() {
           landscapePhone ? "object-cover" : "object-contain"
         }`}
         style={{
-          transform: `${mirrored ? "scaleX(-1) " : ""}${flippedVertical ? "scaleY(-1) " : ""}rotate(180deg)`,
+          transform:
+            [
+              mirrored ? "scaleX(-1)" : "",
+              flippedVertical ? "scaleY(-1)" : "",
+            ]
+              .filter(Boolean)
+              .join(" ") || "none",
         }}
       />
 
