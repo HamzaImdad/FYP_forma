@@ -220,6 +220,55 @@ PERSONAL_TOOL_SCHEMAS: List[Dict[str, Any]] = [
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_badges",
+            "description": (
+                "Return the user's earned badges AND the locked badges they "
+                "haven't unlocked yet. Use when the user asks 'what badges "
+                "have I earned', 'what's next', or 'how close am I to X'."
+            ),
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_lifetime_totals",
+            "description": (
+                "Return lifetime career aggregates: total sessions, total "
+                "reps, total good reps (form >= 0.6), total training time, "
+                "lifetime average form score, first-session date, and the "
+                "list of exercises the user has trained. Use for 'total reps "
+                "ever', 'how long have I been training', 'what have I done'."
+            ),
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_plan_detail",
+            "description": (
+                "Return full detail of ONE plan — days, exercises per day, "
+                "rest days, and adherence (days completed / total days). If "
+                "plan_id is omitted, returns the user's currently active "
+                "plan. Use for 'what does my plan look like', 'how am I "
+                "doing vs my plan', or to inspect a specific plan by id."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "plan_id": {
+                        "type": "integer",
+                        "description": "Plan id. Omit to use the active plan.",
+                    },
+                },
+                "required": [],
+            },
+        },
+    },
 ]
 
 
@@ -479,6 +528,124 @@ def get_goals_tool(user_id: int, db: ExerVisionDB) -> Dict[str, Any]:
     return {"goals": out}
 
 
+def get_badges_tool(user_id: int, db: ExerVisionDB) -> Dict[str, Any]:
+    """Earned + locked badges. Locked list = all BADGE_KEYS minus earned."""
+    from app.badge_engine import BADGE_KEYS, BADGE_META
+
+    earned_rows = db.list_badges(user_id)
+    earned_keys = {r["badge_key"] for r in earned_rows}
+    earned = [
+        {
+            "badge_key": r["badge_key"],
+            "title": BADGE_META.get(r["badge_key"], {}).get("title", r["badge_key"]),
+            "description": BADGE_META.get(r["badge_key"], {}).get("description", ""),
+            "earned_at": r["earned_at"],
+            "metadata": r.get("metadata") or {},
+        }
+        for r in earned_rows
+    ]
+    locked = [
+        {
+            "badge_key": k,
+            "title": BADGE_META.get(k, {}).get("title", k),
+            "description": BADGE_META.get(k, {}).get("description", ""),
+        }
+        for k in BADGE_KEYS
+        if k not in earned_keys
+    ]
+    return {"earned": earned, "locked": locked, "earned_count": len(earned), "total_count": len(BADGE_KEYS)}
+
+
+def get_lifetime_totals_tool(user_id: int, db: ExerVisionDB) -> Dict[str, Any]:
+    """Career aggregates across all sessions (no time filter)."""
+    conn = db._get_conn()
+    try:
+        row = conn.execute(
+            """SELECT
+                 COUNT(*) AS n_sessions,
+                 COALESCE(SUM(total_reps), 0) AS total_reps,
+                 COALESCE(SUM(good_reps), 0) AS total_good_reps,
+                 COALESCE(SUM(duration_sec), 0.0) AS total_time_sec,
+                 COALESCE(AVG(NULLIF(avg_form_score, 0)), 0.0) AS avg_form_score,
+                 MIN(date) AS first_session_date
+               FROM sessions WHERE user_id = ?""",
+            (int(user_id),),
+        ).fetchone()
+        exs = conn.execute(
+            """SELECT exercise, COUNT(*) AS n, SUM(total_reps) AS reps
+               FROM sessions WHERE user_id = ?
+               GROUP BY exercise ORDER BY n DESC""",
+            (int(user_id),),
+        ).fetchall()
+    finally:
+        conn.close()
+    return {
+        "total_sessions": int(row["n_sessions"] or 0),
+        "total_reps": int(row["total_reps"] or 0),
+        "total_good_reps": int(row["total_good_reps"] or 0),
+        "total_time_sec": round(float(row["total_time_sec"] or 0.0), 1),
+        "avg_form_score": round(float(row["avg_form_score"] or 0.0), 3),
+        "first_session_date": row["first_session_date"],
+        "exercises_trained": [
+            {"exercise": r["exercise"], "sessions": int(r["n"]), "reps": int(r["reps"] or 0)}
+            for r in exs
+        ],
+    }
+
+
+def get_plan_detail_tool(
+    user_id: int, db: ExerVisionDB, plan_id: Optional[int] = None
+) -> Dict[str, Any]:
+    """Full plan detail + adherence. If plan_id omitted, uses the active plan."""
+    if plan_id is None:
+        all_plans = db.list_plans(user_id)
+        active = next((p for p in all_plans if p.get("status") == "active"), None)
+        if not active:
+            return {"error": "no_active_plan"}
+        plan_id = int(active["id"])
+    try:
+        plan_id = int(plan_id)
+    except (TypeError, ValueError):
+        return {"error": "invalid_plan_id"}
+    full = db.get_plan_full(plan_id, user_id)
+    if not full:
+        return {"error": "plan_not_found"}
+    days = full.get("days") or []
+    total_days = len(days)
+    completed_days = sum(1 for d in days if d.get("completed"))
+    non_rest_total = sum(1 for d in days if not d.get("is_rest"))
+    non_rest_completed = sum(1 for d in days if d.get("completed") and not d.get("is_rest"))
+    return {
+        "id": full["id"],
+        "title": full.get("title"),
+        "summary": full.get("summary"),
+        "start_date": full.get("start_date"),
+        "end_date": full.get("end_date"),
+        "status": full.get("status"),
+        "active": full.get("status") == "active",
+        "days": [
+            {
+                "day_date": d.get("day_date"),
+                "is_rest": bool(d.get("is_rest")),
+                "completed": bool(d.get("completed")),
+                "completed_at": d.get("completed_at"),
+                "exercises": d.get("exercises") or [],
+            }
+            for d in days
+        ],
+        "progress": {
+            "days_total": total_days,
+            "days_completed": completed_days,
+            "training_days_total": non_rest_total,
+            "training_days_completed": non_rest_completed,
+            "adherence_pct": (
+                round(100.0 * non_rest_completed / non_rest_total, 1)
+                if non_rest_total else 0.0
+            ),
+        },
+    }
+
+
 # ── Dispatcher ────────────────────────────────────────────────────────
 
 
@@ -529,6 +696,12 @@ def make_dispatcher(
             )
         if fn_name == "get_goals":
             return get_goals_tool(user_id, db)
+        if fn_name == "get_badges":
+            return get_badges_tool(user_id, db)
+        if fn_name == "get_lifetime_totals":
+            return get_lifetime_totals_tool(user_id, db)
+        if fn_name == "get_plan_detail":
+            return get_plan_detail_tool(user_id, db, plan_id=args.get("plan_id"))
         return {"error": "unknown_tool", "name": fn_name}
 
     return dispatch
@@ -540,13 +713,12 @@ import copy
 import json as _json
 from datetime import datetime as _dt, timedelta as _td
 
-KNOWN_EXERCISES: set = {
-    "squat", "lunge", "deadlift", "bench_press", "overhead_press",
-    "pullup", "pushup", "plank", "bicep_curl", "tricep_dip",
-    "crunch", "lateral_raise", "side_plank",
-}
+from app.exercise_registry import EXERCISE_FAMILIES
 
-# Per-exercise rep ceilings when we have no user history to anchor against.
+KNOWN_EXERCISES: set = set(EXERCISE_FAMILIES.keys())
+
+# Per-exercise rep/duration ceilings when we have no user history to anchor against.
+# Plank and side_plank ceilings are seconds (time_hold family); others are reps.
 _DEFAULT_REP_CEILING: Dict[str, int] = {
     "pushup": 60,
     "squat": 60,
@@ -554,10 +726,11 @@ _DEFAULT_REP_CEILING: Dict[str, int] = {
     "bicep_curl": 60,
     "tricep_dip": 60,
     "pullup": 20,
-    "bench_press": 30,
-    "overhead_press": 30,
     "deadlift": 30,
-    "plank": 300,  # seconds, not reps — used when exercise is plank
+    "crunch": 40,
+    "lateral_raise": 30,
+    "plank": 300,
+    "side_plank": 180,
 }
 
 
@@ -806,8 +979,8 @@ def _sanitize_plan(
     days_in = draft.get("days") or []
     if not isinstance(days_in, list) or not days_in:
         raise PlanRejected("plan has no days")
-    if len(days_in) > 20:
-        raise PlanRejected("plan too long (max 20 days)")
+    if len(days_in) > 60:
+        raise PlanRejected("plan too long (max 60 days)")
 
     sanitized_days: List[Dict[str, Any]] = []
     for idx, d in enumerate(days_in):
