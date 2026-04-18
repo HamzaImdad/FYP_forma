@@ -78,12 +78,16 @@ MIN_OVERALL_VISIBILITY = 0.5
 # real planks from the seated-torso phantom case.
 PLANK_LANDMARK_VISIBILITY = 0.4
 
-# Real-plank shoulder-hip vertical separation. In a true plank, the
-# shoulders float noticeably above the hips (the torso rests on the arms
-# above hip level). When MediaPipe hallucinates a horizontal torso from
-# a sitting user, the shoulder-y ends up within a few cm of hip-y
-# (hip-centered origin). Require at least 8cm of vertical separation.
-PLANK_SHOULDER_ABOVE_HIP_MIN = 0.08
+# Body-frame plank gate: in a real plank the arm extends perpendicular
+# to the shoulder→hip body axis (arm pushes the body up and away from
+# the floor). This range covers both lockout (~90°) and bottom-of-rep
+# (~80-110°) positions across a normal push-up. It replaces the older
+# world-Y shoulder_above_hip check, which fails whenever MediaPipe's
+# world coordinates aren't gravity-aligned — e.g. phone in landscape
+# with screen rotation locked, where image-Y (and therefore world-Y)
+# is rotated 90° from real-world up. Rotation-invariant by construction.
+PLANK_ARM_BODY_ANGLE_MIN = 60.0
+PLANK_ARM_BODY_ANGLE_MAX = 120.0
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -129,6 +133,34 @@ def _safe_midpoint(
 
 def _mean_y(pt: Optional[np.ndarray]) -> Optional[float]:
     return None if pt is None else float(pt[1])
+
+
+def _arm_perpendicular_to_body(pose: PoseResult) -> bool:
+    """Body-frame plank gate. Returns True if at least one arm forms an
+    angle in [PLANK_ARM_BODY_ANGLE_MIN, MAX] at the shoulder vertex
+    between wrist and hip (i.e. arm extends perpendicular-ish to the
+    body axis). Rotation-invariant: uses landmark geometry only, no
+    axis-up convention. Either arm is sufficient (side-on cameras
+    routinely occlude one wrist)."""
+    for shoulder_idx, hip_idx, wrist_idx in (
+        (LEFT_SHOULDER, LEFT_HIP, LEFT_WRIST),
+        (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_WRIST),
+    ):
+        if not all(
+            pose.is_visible(i, MIN_VISIBILITY)
+            for i in (shoulder_idx, hip_idx, wrist_idx)
+        ):
+            continue
+        shoulder = pose.get_world_landmark(shoulder_idx)
+        hip = pose.get_world_landmark(hip_idx)
+        wrist = pose.get_world_landmark(wrist_idx)
+        angle = calculate_angle(wrist, shoulder, hip)
+        if (
+            angle is not None
+            and PLANK_ARM_BODY_ANGLE_MIN <= angle <= PLANK_ARM_BODY_ANGLE_MAX
+        ):
+            return True
+    return False
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -330,15 +362,20 @@ class PostureClassifier:
         ) or pose.is_visible(RIGHT_ANKLE, PLANK_LANDMARK_VISIBILITY)
         legs_visible = knee_visible and ankle_visible
 
-        # Geometric sanity: in a real plank the shoulders float above
-        # the hips (pushed up by the arms). When MediaPipe hallucinates
-        # a horizontal torso from a seated user, shoulder_y sits almost
-        # exactly on top of hip_y (world origin). Require at least 8cm
-        # of vertical separation to rule that case out.
-        shoulder_above_hip = shoulder_y <= hip_y - PLANK_SHOULDER_ABOVE_HIP_MIN
+        # Body-frame geometric sanity: in a real plank, the arm extends
+        # roughly perpendicular to the shoulder→hip body axis (the arm
+        # pushes the body away from the floor). This is rotation-invariant
+        # — no dependency on which axis is "up" — so it works on phone
+        # in any orientation, including landscape with rotation lock,
+        # where MediaPipe's world-Y stops being gravity-aligned. A seated
+        # user with hallucinated horizontal torso has wrists resting on
+        # the desk near the body, NOT extended perpendicular, so this
+        # gate retains the false-positive defense the old check provided.
+        arm_perpendicular = _arm_perpendicular_to_body(pose)
+        feats["arm_perpendicular"] = 1.0 if arm_perpendicular else 0.0
 
         if (body_horizontal and body_line_ok and hip_not_dangling
-                and legs_visible and shoulder_above_hip):
+                and legs_visible and arm_perpendicular):
             # Boost confidence if wrist signals also line up; otherwise still
             # report PLANK (the session FSM treats 0.5+ as valid).
             if wrist_below_shoulder and wrist_ankle_ground:
