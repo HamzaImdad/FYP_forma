@@ -61,6 +61,15 @@ const MIN_MISSING_FRAMES = 12;
 const LEFT_CHAIN = [11, 23, 25];  // shoulder, hip, knee
 const RIGHT_CHAIN = [12, 24, 26];
 
+// Phone cameras ship wider FOV (S23 Ultra front ≈80°) than laptop webcams
+// (~65°), so the subject fills fewer pixels and MediaPipe's 256px internal
+// resize leaves ~3px per joint instead of ~6. We center-crop the video
+// before handing it to detectForVideo() — same body, narrower virtual FOV,
+// ~2× the model-resolution coverage. Landmarks come back normalized to
+// the crop; we rescale them back to video space so the skeleton overlay
+// draws on the right pixels and the server sees consistent coordinates.
+const PHONE_CROP_SCALE = 0.72;
+
 const RING_RADIUS = 48;
 const RING_CIRC = 2 * Math.PI * RING_RADIUS;
 
@@ -152,6 +161,10 @@ export function WorkoutPage() {
   const socketRef = useRef<Socket | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const poseRef = useRef<PoseLandmarker | null>(null);
+  // Offscreen canvas used as MediaPipe input on phones — holds the
+  // center-cropped region of the live video so wide-angle phone cameras
+  // produce laptop-quality landmarks. Lazy-init on first phone frame.
+  const poseInputCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastPoseTimestampRef = useRef<number>(-1);
   const lastSentRef = useRef(0);
@@ -246,6 +259,35 @@ export function WorkoutPage() {
       }
 
       streamRef.current = stream;
+
+      // Phone-only best-effort: snap focus once so autofocus hunting during
+      // a rep stops blurring frames, and apply a small native zoom if the
+      // capability is exposed (stacks with the canvas crop below). Wrapped
+      // in try/catch because MediaTrack Image Capture constraints have
+      // uneven browser support — unavailable properties just no-op.
+      if (isPhone) {
+        const track = stream.getVideoTracks()[0];
+        if (track) {
+          try {
+            const caps = (track.getCapabilities?.() ?? {}) as Record<string, unknown>;
+            const advanced: MediaTrackConstraintSet[] = [];
+            const focusModes = caps.focusMode as string[] | undefined;
+            if (focusModes && focusModes.includes("single-shot")) {
+              advanced.push({ focusMode: "single-shot" } as MediaTrackConstraintSet);
+            }
+            const zoomCap = caps.zoom as { min?: number; max?: number } | undefined;
+            if (zoomCap && typeof zoomCap.max === "number" && zoomCap.max >= 1.4) {
+              advanced.push({ zoom: 1.4 } as unknown as MediaTrackConstraintSet);
+            }
+            if (advanced.length > 0) {
+              await track.applyConstraints({ advanced });
+            }
+          } catch {
+            // Unsupported constraint → no-op, the canvas crop still runs.
+          }
+        }
+      }
+
       const video = videoRef.current;
       if (!video) return;
       video.srcObject = stream;
@@ -523,7 +565,51 @@ export function WorkoutPage() {
 
       let result;
       try {
-        result = pose.detectForVideo(video, ts);
+        if (isPhone) {
+          // Center-crop the live video onto an offscreen canvas, then feed
+          // that to MediaPipe. Narrows effective FOV to roughly laptop
+          // range, gives the pose model more pixels per joint, and keeps
+          // extremities out of the distorted edge region.
+          const vw = video.videoWidth;
+          const vh = video.videoHeight;
+          if (vw > 0 && vh > 0) {
+            const sw = Math.round(vw * PHONE_CROP_SCALE);
+            const sh = Math.round(vh * PHONE_CROP_SCALE);
+            const sx = Math.round((vw - sw) / 2);
+            const sy = Math.round((vh - sh) / 2);
+            let pic = poseInputCanvasRef.current;
+            if (!pic) {
+              pic = document.createElement("canvas");
+              poseInputCanvasRef.current = pic;
+            }
+            if (pic.width !== sw) pic.width = sw;
+            if (pic.height !== sh) pic.height = sh;
+            const pctx = pic.getContext("2d", { willReadFrequently: true });
+            if (pctx) {
+              pctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+              result = pose.detectForVideo(pic, ts);
+              // Rescale landmarks from crop-space (0-1 over the crop) back
+              // to video-space (0-1 over the full video frame) so the
+              // skeleton overlay and server-bound payload use consistent
+              // coordinates. World landmarks are meters-calibrated and
+              // image-independent — leave them alone.
+              const lms = result?.landmarks?.[0];
+              if (lms) {
+                const sideGap = (1 - PHONE_CROP_SCALE) / 2;
+                for (const lm of lms) {
+                  lm.x = sideGap + lm.x * PHONE_CROP_SCALE;
+                  lm.y = sideGap + lm.y * PHONE_CROP_SCALE;
+                }
+              }
+            } else {
+              result = pose.detectForVideo(video, ts);
+            }
+          } else {
+            result = pose.detectForVideo(video, ts);
+          }
+        } else {
+          result = pose.detectForVideo(video, ts);
+        }
       } catch {
         return;
       }
