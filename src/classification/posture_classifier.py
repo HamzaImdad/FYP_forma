@@ -69,13 +69,14 @@ HIP_SHOULDER_LEVEL_MAX_LYING = 0.20
 
 MIN_OVERALL_VISIBILITY = 0.5
 
-# Plank classification uses stricter per-landmark visibility than the
-# generic MIN_VISIBILITY (0.5). MediaPipe will happily pass the 0.5
-# threshold on hallucinated legs when the user is sitting upright with
-# only their torso in frame, producing a phantom-plank signature
-# (torso_angle ~92°, ankles fabricated below hip). A 0.7 gate forces
-# the predictor to actually see the legs before we classify plank.
-PLANK_LANDMARK_VISIBILITY = 0.7
+# Plank classification per-landmark visibility. 0.7 was originally chosen
+# to block a sitting-user phantom-plank (torso_angle ~92°, ankles
+# fabricated below hip), but on mobile side-view push-ups the far-side
+# knee/ankle bounces 0.4-0.6 — never stable above 0.7, so PLANK never
+# fires and the session never enters ACTIVE. Lowered to 0.4; the
+# shoulder_above_hip >= 8cm guard below is what actually discriminates
+# real planks from the seated-torso phantom case.
+PLANK_LANDMARK_VISIBILITY = 0.4
 
 # Real-plank shoulder-hip vertical separation. In a true plank, the
 # shoulders float noticeably above the hips (the torso rests on the arms
