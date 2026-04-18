@@ -195,6 +195,22 @@ class CrunchDetector(RobustExerciseDetector):
                 offsets.append(float(ankle[1] - hip[1]))
         return max(offsets) if offsets else None
 
+    # ── Stance: lying on the floor with legs up (shoulder ~ hip level). ──
+    def _is_in_stance(self, pose, visibility_ok: bool) -> bool:
+        # If the user sat up and walked away, the shoulders sit well
+        # above the hips in image coords — clearly not crunch stance.
+        if not visibility_ok:
+            return False
+        try:
+            lm = pose.landmarks
+            shoulder_y = 0.5 * (lm[LEFT_SHOULDER, 1] + lm[RIGHT_SHOULDER, 1])
+            hip_y = 0.5 * (lm[LEFT_HIP, 1] + lm[RIGHT_HIP, 1])
+            # Image Y is normalized 0..1 (top→bottom). Lying on back from the
+            # side means shoulder and hip are at roughly the same Y: ∆ < 0.18.
+            return abs(shoulder_y - hip_y) < 0.18
+        except (IndexError, AttributeError):
+            return True  # missing landmarks → fall back to visibility_ok
+
     # ── Movement-gated session FSM ─────────────────────────────────────
     def _update_session_state(self, now: float, visibility_ok: bool) -> None:
         hip = self._get_smooth("hip")
@@ -227,13 +243,18 @@ class CrunchDetector(RobustExerciseDetector):
         has_active_motion = motion_range >= CRUNCH_MOTION_MIN_RANGE
 
         s = self._session_state
+        pose = self._last_pose
+        in_stance = bool(pose is not None and self._is_in_stance(pose, visibility_ok))
+
+        if s == SessionState.ACTIVE:
+            if self._should_close_for_out_of_stance(now, in_stance):
+                self._close_active_set_or_rollback(now)
+                self._hip_history.clear()
+            else:
+                self._unknown_streak = 0
+            return
 
         if not visibility_ok:
-            if s == SessionState.ACTIVE:
-                self._unknown_streak += 1
-                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
-                    self._close_active_set_or_rollback(now)
-                    self._hip_history.clear()
             return
         self._unknown_streak = 0
 
@@ -246,6 +267,7 @@ class CrunchDetector(RobustExerciseDetector):
                 self._session_state = SessionState.ACTIVE
                 self._reset_robust_rep_fsm()
                 self._rep_start_time = now
+                self._out_of_stance_since = None
                 self._seed_rep_fsm_from_pre_active(now)
             return
 
@@ -254,23 +276,8 @@ class CrunchDetector(RobustExerciseDetector):
                 self._session_state = SessionState.ACTIVE
                 self._reset_robust_rep_fsm()
                 self._rep_start_time = now
+                self._out_of_stance_since = None
             return
-
-        if s == SessionState.ACTIVE:
-            if (
-                self._at_top_since is not None
-                and now - self._at_top_since >= CRUNCH_REST_AT_TOP_S
-            ):
-                self._close_active_set_or_rollback(now)
-                self._hip_history.clear()
-                return
-            if (
-                self._below_top_since is not None
-                and now - self._below_top_since >= CRUNCH_REST_BELOW_TOP_S
-            ):
-                self._close_active_set_or_rollback(now)
-                self._hip_history.clear()
-                return
 
     # ── Start position / missing parts ─────────────────────────────────
     def _check_start_position(

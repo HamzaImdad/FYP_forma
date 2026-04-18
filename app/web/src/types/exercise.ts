@@ -13,6 +13,8 @@ export type ExerciseSlug =
 
 export type CameraView = "side" | "front" | "three_quarter";
 
+export type PhoneOrientation = "portrait" | "landscape";
+
 export type CameraGuidance = {
   view: CameraView;
   /** One-line headline — "Place the camera on your side". */
@@ -31,6 +33,10 @@ export type Exercise = {
   /** Pre-session camera placement instructions the user confirms before the
    *  session connects. Each exercise has a recommended view. */
   cameraGuidance: CameraGuidance;
+  /** Recommended phone orientation for this exercise. Floor exercises where
+   *  the body is horizontal need landscape; upright exercises work in portrait.
+   *  Smart default — user can override in the camera-setup overlay. */
+  preferredOrientation: PhoneOrientation;
 };
 
 export const EXERCISES: Exercise[] = [
@@ -40,6 +46,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "The default. Start here.",
     primary: true,
     isWeighted: false,
+    preferredOrientation: "landscape",
     cameraGuidance: {
       view: "side",
       headline: "Place the camera on your side",
@@ -52,6 +59,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Depth, torso, knees.",
     primary: false,
     isWeighted: true,
+    preferredOrientation: "portrait",
     cameraGuidance: {
       view: "front",
       headline: "Place the camera front or side",
@@ -64,6 +72,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Front knee, back knee, upright torso.",
     primary: false,
     isWeighted: false,
+    preferredOrientation: "portrait",
     cameraGuidance: {
       view: "side",
       headline: "Place the camera on your side",
@@ -76,6 +85,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Hip hinge, flat back.",
     primary: false,
     isWeighted: true,
+    preferredOrientation: "portrait",
     cameraGuidance: {
       view: "front",
       headline: "Place the camera in front of you",
@@ -88,6 +98,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Legs up, arms forward.",
     primary: false,
     isWeighted: false,
+    preferredOrientation: "landscape",
     cameraGuidance: {
       view: "side",
       headline: "Place the camera on your side",
@@ -100,6 +111,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Elbows lead, no shrug.",
     primary: false,
     isWeighted: false,
+    preferredOrientation: "portrait",
     cameraGuidance: {
       view: "front",
       headline: "Place the camera in front of you",
@@ -112,6 +124,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Hips stacked, hold it.",
     primary: false,
     isWeighted: false,
+    preferredOrientation: "landscape",
     cameraGuidance: {
       view: "side",
       headline: "Place the camera facing the front of your body",
@@ -124,6 +137,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Chin above bar, no swing.",
     primary: false,
     isWeighted: false,
+    preferredOrientation: "portrait",
     cameraGuidance: {
       view: "front",
       headline: "Place the camera in front of you",
@@ -136,6 +150,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "One line, hold it.",
     primary: false,
     isWeighted: false,
+    preferredOrientation: "landscape",
     cameraGuidance: {
       view: "side",
       headline: "Place the camera on your side",
@@ -148,6 +163,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Upper arm still.",
     primary: false,
     isWeighted: false,
+    preferredOrientation: "portrait",
     cameraGuidance: {
       view: "side",
       headline: "Place the camera on your side",
@@ -160,6 +176,7 @@ export const EXERCISES: Exercise[] = [
     tagline: "Elbow depth, chest up.",
     primary: false,
     isWeighted: false,
+    preferredOrientation: "landscape",
     cameraGuidance: {
       view: "side",
       headline: "Place the camera on your side",

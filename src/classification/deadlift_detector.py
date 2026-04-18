@@ -150,13 +150,18 @@ class DeadliftDetector(RobustExerciseDetector):
             self._last_hinge_time = now
 
         s = self._session_state
+        pose = self._last_pose
+        in_stance = bool(pose is not None and self._is_in_stance(pose, visibility_ok))
 
-        # ── Visibility loss handling (delegates to base close logic) ──
+        # ── ACTIVE → RESTING: stance-based (3s out-of-stance debounce) ──
+        if s == SessionState.ACTIVE:
+            if self._should_close_for_out_of_stance(now, in_stance):
+                self._close_active_set_or_rollback(now)
+            else:
+                self._unknown_streak = 0
+            return
+
         if not visibility_ok:
-            if s == SessionState.ACTIVE:
-                self._unknown_streak += 1
-                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
-                    self._close_active_set_or_rollback(now)
             return
         self._unknown_streak = 0
 
@@ -171,6 +176,7 @@ class DeadliftDetector(RobustExerciseDetector):
                 self._session_state = SessionState.ACTIVE
                 self._reset_robust_rep_fsm()
                 self._rep_start_time = now
+                self._out_of_stance_since = None
                 # First rep may have started during SETUP bootstrap — recover it.
                 self._seed_rep_fsm_from_pre_active(now)
             return
@@ -181,24 +187,8 @@ class DeadliftDetector(RobustExerciseDetector):
                 self._session_state = SessionState.ACTIVE
                 self._reset_robust_rep_fsm()
                 self._rep_start_time = now
+                self._out_of_stance_since = None
             return
-
-        # ── ACTIVE → RESTING ──
-        if s == SessionState.ACTIVE:
-            # Trigger 1: standing tall at lockout for 8s straight
-            if (
-                self._at_top_since is not None
-                and now - self._at_top_since >= REST_TOP_SECONDS
-            ):
-                self._close_active_set_or_rollback(now)
-                return
-            # Trigger 2: below top (hinged / sat) for 60s without returning
-            if (
-                self._below_top_since is not None
-                and now - self._below_top_since >= REST_BOTTOM_SECONDS
-            ):
-                self._close_active_set_or_rollback(now)
-                return
 
     # ── Side-view-friendly visibility gate ──────────────────────────────
     # Default gate requires ALL of (L+R shoulder, L+R hip, L+R knee) visible,

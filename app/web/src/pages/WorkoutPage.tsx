@@ -4,7 +4,11 @@ import { io, Socket } from "socket.io-client";
 import { FlipHorizontal, X } from "lucide-react";
 import type { PoseLandmarker } from "@mediapipe/tasks-vision";
 import { exerciseBySlug, isExerciseSlug } from "../types/exercise";
+import type { PhoneOrientation } from "../types/exercise";
 import { drawSkeleton, flattenLandmarks, getPoseLandmarker } from "../lib/pose";
+import { useOrientation } from "../hooks/useOrientation";
+import { usePhone } from "../hooks/usePhone";
+import { OrientationGate } from "../components/session/OrientationGate";
 
 type Phase =
   | "idle"
@@ -106,6 +110,22 @@ export function WorkoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [mirrored, setMirrored] = useState<boolean>(exercise.slug !== "pushup");
   const [saving, setSaving] = useState(false);
+
+  // ── Phone orientation (Part B) ────────────────────────────────────────
+  // Current phone orientation tracked via matchMedia.
+  const orientation = useOrientation();
+  const isPhone = usePhone();
+  // User's chosen target orientation — starts at the exercise default,
+  // flips when they pick the other option in the camera-setup toggle.
+  const [desiredOrientation, setDesiredOrientation] = useState<PhoneOrientation>(
+    exercise.preferredOrientation,
+  );
+  // If the user decides to proceed despite a mismatch, we stop showing
+  // the rotate-phone gate for this session.
+  const [orientationOverridden, setOrientationOverridden] = useState(false);
+  const orientationMismatch =
+    isPhone && orientation !== desiredOrientation && !orientationOverridden;
+  const landscapePhone = isPhone && orientation === "landscape";
 
   // DOM refs
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -628,17 +648,23 @@ export function WorkoutPage() {
 
   return (
     <div className="fixed inset-0 z-[400] bg-black text-white overflow-hidden font-[family-name:var(--font-body)]">
-      {/* Live video + skeleton overlay (native 30fps) */}
+      {/* Live video + skeleton overlay (native 30fps).
+          Phone landscape uses object-cover for a true full-bleed fit;
+          portrait / desktop letterbox to preserve aspect. */}
       <video
         ref={videoRef}
         muted
         playsInline
-        className="absolute inset-0 h-full w-full object-contain bg-black"
+        className={`absolute inset-0 h-full w-full bg-black ${
+          landscapePhone ? "object-cover" : "object-contain"
+        }`}
         style={{ transform: mirrored ? "scaleX(-1)" : "none" }}
       />
       <canvas
         ref={skeletonCanvasRef}
-        className="absolute inset-0 h-full w-full object-contain pointer-events-none"
+        className={`absolute inset-0 h-full w-full pointer-events-none ${
+          landscapePhone ? "object-cover" : "object-contain"
+        }`}
         style={{ transform: mirrored ? "scaleX(-1)" : "none" }}
       />
 
@@ -856,6 +882,18 @@ export function WorkoutPage() {
         0 fps
       </div>
 
+      {/* Rotate-phone gate — shown on phones when the current orientation
+          doesn't match the user's chosen target. Sits on top of the
+          camera-setup overlay (higher z-index) so it blocks the "I'm Ready"
+          button until the user either rotates or opts to override. */}
+      {phase === "camera-setup" && orientationMismatch && (
+        <OrientationGate
+          exercise={{ ...exercise, preferredOrientation: desiredOrientation }}
+          current={orientation}
+          onOverride={() => setOrientationOverridden(true)}
+        />
+      )}
+
       {/* Camera-setup overlay — video is visible underneath so the user
           can verify their framing while reading the guidance. */}
       {phase === "camera-setup" && (
@@ -870,6 +908,56 @@ export function WorkoutPage() {
             <p className="mt-4 font-[family-name:var(--font-serif)] italic text-lg text-white/80 leading-relaxed">
               {exercise.cameraGuidance.detail}
             </p>
+
+            {/* Phone-only orientation toggle. Recommended pre-selected;
+                flipping it shows an amber note. Desktop hides this row. */}
+            {isPhone && (
+              <div className="mt-6">
+                <div className="text-[10px] uppercase tracking-[0.18em] text-white/55 mb-2">
+                  Phone orientation
+                </div>
+                <div
+                  role="radiogroup"
+                  aria-label="Phone orientation"
+                  className="grid grid-cols-2 gap-0 border border-white/15 overflow-hidden rounded-sm"
+                >
+                  {(["portrait", "landscape"] as PhoneOrientation[]).map((opt) => {
+                    const selected = desiredOrientation === opt;
+                    const recommended = exercise.preferredOrientation === opt;
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        onClick={() => {
+                          setDesiredOrientation(opt);
+                          setOrientationOverridden(false);
+                        }}
+                        className={`py-3 text-[11px] uppercase tracking-[0.18em] transition-colors ${
+                          selected
+                            ? "bg-[color:var(--color-gold-soft)] text-[#0A0A0A]"
+                            : "bg-transparent text-white/65 hover:bg-white/5"
+                        }`}
+                      >
+                        {opt}
+                        {recommended && (
+                          <span className="ml-1.5 text-[9px] opacity-70">(rec.)</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                {desiredOrientation !== exercise.preferredOrientation && (
+                  <div className="mt-3 border-l-2 border-[color:var(--color-warn)] bg-[color:var(--color-warn)]/10 px-3 py-2 text-[11px] text-white/80">
+                    {exercise.preferredOrientation === "landscape"
+                      ? "Landscape is recommended — in portrait your body may not fit the frame."
+                      : "Portrait is recommended — landscape may cut off your standing height."}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Redesign Phase 4 — weighted exercises want a working
                 weight recorded so strength goals and weighted plan-day
                 completion can attribute the session. Non-blocking

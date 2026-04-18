@@ -158,6 +158,15 @@ class SidePlankDetector(RobustExerciseDetector):
             return (left + right) / 2
         return left if left is not None else right
 
+    # ── Stance: actually in the side-plank pose (body roughly straight). ──
+    def _is_in_stance(self, pose, visibility_ok: bool) -> bool:
+        if not visibility_ok:
+            return False
+        body_line = self._get_smooth("body_line")
+        if body_line is None:
+            return False
+        return SIDE_PLANK_BODY_LINE_MIN <= body_line <= SIDE_PLANK_BODY_LINE_MAX
+
     # ── Position-gated session FSM (mirrors plank_detector pattern) ───
     def _update_session_state(self, now: float, visibility_ok: bool) -> None:
         """Side plank is IS_STATIC — gate on being in side plank position
@@ -170,24 +179,26 @@ class SidePlankDetector(RobustExerciseDetector):
             and SIDE_PLANK_BODY_LINE_MIN <= body_line <= SIDE_PLANK_BODY_LINE_MAX
         )
 
-        # Update position timers
+        # Track sustained-entry timer for SETUP→ACTIVE (still needs 1.5s).
         if in_side_plank:
             if self._side_plank_position_since is None:
                 self._side_plank_position_since = now
-            self._not_side_plank_since = None
         else:
-            if self._not_side_plank_since is None:
-                self._not_side_plank_since = now
             self._side_plank_position_since = None
 
         s = self._session_state
+        pose = self._last_pose
+        in_stance = bool(pose is not None and self._is_in_stance(pose, visibility_ok))
 
-        # Visibility loss handling
+        # ACTIVE → RESTING: stance-based (3s out-of-stance debounce).
+        if s == SessionState.ACTIVE:
+            if self._should_close_for_out_of_stance(now, in_stance):
+                self._close_active_set_or_rollback(now)
+            else:
+                self._unknown_streak = 0
+            return
+
         if not visibility_ok:
-            if s == SessionState.ACTIVE:
-                self._unknown_streak += 1
-                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
-                    self._close_active_set_or_rollback(now)
             return
         self._unknown_streak = 0
 
@@ -201,6 +212,7 @@ class SidePlankDetector(RobustExerciseDetector):
             if (self._side_plank_position_since is not None
                     and now - self._side_plank_position_since >= 1.5):
                 self._session_state = SessionState.ACTIVE
+                self._out_of_stance_since = None
             return
 
         # RESTING → ACTIVE: same as SETUP
@@ -208,14 +220,8 @@ class SidePlankDetector(RobustExerciseDetector):
             if (self._side_plank_position_since is not None
                     and now - self._side_plank_position_since >= 1.5):
                 self._session_state = SessionState.ACTIVE
+                self._out_of_stance_since = None
             return
-
-        # ACTIVE → RESTING: out of side plank position for 5s
-        if s == SessionState.ACTIVE:
-            if (self._not_side_plank_since is not None
-                    and now - self._not_side_plank_since >= 5.0):
-                self._close_active_set_or_rollback(now)
-                return
 
     # ── Which-side detection ───────────────────────────────────────────
     def _detect_supporting_side(self, pose: PoseResult) -> Optional[str]:

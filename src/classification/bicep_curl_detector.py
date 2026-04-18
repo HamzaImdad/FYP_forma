@@ -173,13 +173,18 @@ class BicepCurlDetector(RobustExerciseDetector):
         has_active_motion = motion_range >= CURL_MOTION_MIN_RANGE
 
         s = self._session_state
+        pose = self._last_pose
+        in_stance = bool(pose is not None and self._is_in_stance(pose, visibility_ok))
+
+        if s == SessionState.ACTIVE:
+            if self._should_close_for_out_of_stance(now, in_stance):
+                self._close_active_set_or_rollback(now)
+                self._elbow_history.clear()
+            else:
+                self._unknown_streak = 0
+            return
 
         if not visibility_ok:
-            if s == SessionState.ACTIVE:
-                self._unknown_streak += 1
-                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
-                    self._close_active_set_or_rollback(now)
-                    self._elbow_history.clear()
             return
         self._unknown_streak = 0
 
@@ -192,6 +197,7 @@ class BicepCurlDetector(RobustExerciseDetector):
                 self._session_state = SessionState.ACTIVE
                 self._reset_robust_rep_fsm()
                 self._rep_start_time = now
+                self._out_of_stance_since = None
                 self._seed_rep_fsm_from_pre_active(now)
             return
 
@@ -200,23 +206,8 @@ class BicepCurlDetector(RobustExerciseDetector):
                 self._session_state = SessionState.ACTIVE
                 self._reset_robust_rep_fsm()
                 self._rep_start_time = now
+                self._out_of_stance_since = None
             return
-
-        if s == SessionState.ACTIVE:
-            if (
-                self._at_top_since is not None
-                and now - self._at_top_since >= CURL_REST_AT_TOP_S
-            ):
-                self._close_active_set_or_rollback(now)
-                self._elbow_history.clear()
-                return
-            if (
-                self._below_top_since is not None
-                and now - self._below_top_since >= CURL_REST_BELOW_TOP_S
-            ):
-                self._close_active_set_or_rollback(now)
-                self._elbow_history.clear()
-                return
 
     # ── Angle computation ──────────────────────────────────────────────
     def _compute_angles(self, pose: PoseResult) -> Dict[str, Optional[float]]:

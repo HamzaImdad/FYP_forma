@@ -947,6 +947,12 @@ class RobustExerciseDetector(BaseExerciseDetector):
     UNKNOWN_GRACE_FRAMES: int = 20
     PRE_ACTIVE_TRACE_SIZE: int = 15
 
+    # Stance-based set-boundary detection.
+    # A set closes only when the user has been OUT of the exercise stance
+    # for this long. While in stance, the set stays open regardless of how
+    # long the user pauses between reps — mid-set rest is same set.
+    OUT_OF_STANCE_DEBOUNCE_S: float = 3.0
+
     # Visibility-gate config (used when SESSION_POSTURE_GATE is None).
     # Subclass can override to require different landmarks.
     VISIBILITY_GATE_LANDMARKS: Tuple[int, ...] = ()  # set in subclass if needed
@@ -986,6 +992,11 @@ class RobustExerciseDetector(BaseExerciseDetector):
         # per-attempt chunks so the HUD can show "Set 1: 0:45, Set 2: 0:32".
         self._set_hold_durations: List[float] = []
         self._current_set_hold_start: float = 0.0
+
+        # Stance-based set boundary. Tracks when the user first left stance
+        # so we can debounce a 3-second absence before closing the set.
+        self._out_of_stance_since: Optional[float] = None
+        self._last_pose: Optional[PoseResult] = None
 
     # ── Public accessors (parity with PushUpDetector) ───────────────────
     @property
@@ -1111,58 +1122,87 @@ class RobustExerciseDetector(BaseExerciseDetector):
             for idx in self.VISIBILITY_GATE_LANDMARKS
         )
 
-    def _update_session_state(self, now: float, visibility_ok: bool) -> None:
-        """Drive IDLE/SETUP/ACTIVE/RESTING transitions. Posture-label-driven
-        when SESSION_POSTURE_GATE is set; visibility-driven otherwise.
+    # ── Stance-based set boundary (push-up style, unified across exercises) ─
 
-        Mirrors pushup_detector.py:451–538.
+    def _is_in_stance(self, pose: PoseResult, visibility_ok: bool) -> bool:
+        """Is the user currently in the exercise stance?
+
+        Default: posture gate if set, else the visibility gate. Subclasses
+        can override to add exercise-specific witnesses (e.g. "torso must
+        be horizontal for crunch/side_plank", "must be hanging for pullup").
+
+        The point of this method is to drive the set-boundary decision:
+        mid-rep pauses IN stance do not end a set; leaving stance for
+        OUT_OF_STANCE_DEBOUNCE_S seconds does.
+        """
+        if self.SESSION_POSTURE_GATE is not None:
+            return self._current_posture == self.SESSION_POSTURE_GATE
+        return visibility_ok
+
+    def _should_close_for_out_of_stance(self, now: float, in_stance: bool) -> bool:
+        """Debounced out-of-stance detector.
+
+        While in stance, resets the timer and returns False so the set
+        stays open indefinitely. When out of stance, starts a timer and
+        only returns True once OUT_OF_STANCE_DEBOUNCE_S has elapsed —
+        forgiving brief stumbles / momentary landmark loss.
+        """
+        if in_stance:
+            self._out_of_stance_since = None
+            return False
+        if self._out_of_stance_since is None:
+            self._out_of_stance_since = now
+            return False
+        return (now - self._out_of_stance_since) >= self.OUT_OF_STANCE_DEBOUNCE_S
+
+    def _update_session_state(self, now: float, visibility_ok: bool) -> None:
+        """Drive IDLE/SETUP/ACTIVE/RESTING transitions using stance-based
+        set boundary detection.
+
+        Set stays open as long as user is IN stance — pauses of any length
+        between reps do not close the set. Set only closes after the user
+        has been OUT of stance for OUT_OF_STANCE_DEBOUNCE_S seconds.
+
+        Subclasses may still override this for exercise-specific SETUP→
+        ACTIVE entry witnesses (motion/stance guards against false starts).
         """
         s = self._session_state
+        pose = self._last_pose
+        in_stance = bool(pose is not None and self._is_in_stance(pose, visibility_ok))
 
-        # Visibility-only gate (pullup, optionally tricep_dip fallback).
+        # Visibility-only gate path.
         if self.SESSION_POSTURE_GATE is None:
             if s == SessionState.ACTIVE:
-                if visibility_ok:
+                if self._should_close_for_out_of_stance(now, in_stance):
+                    self._close_active_set_or_rollback(now)
+                else:
                     self._unknown_streak = 0
-                    return
-                self._unknown_streak += 1
-                if self._unknown_streak < self.UNKNOWN_GRACE_FRAMES:
-                    return
-                # Grace exhausted — close set or roll back
-                self._close_active_set_or_rollback(now)
                 return
             if s in (SessionState.IDLE, SessionState.SETUP, SessionState.RESTING):
-                if visibility_ok:
+                if in_stance:
                     self._session_state = SessionState.ACTIVE
                     self._reset_robust_rep_fsm()
                     self._rep_start_time = now
                     self._unknown_streak = 0
+                    self._out_of_stance_since = None
                     if s in (SessionState.IDLE, SessionState.SETUP):
                         self._seed_rep_fsm_from_pre_active(now)
-                else:
-                    # Remain in current non-active state; fall to SETUP
-                    # from IDLE on first "at least something visible" frame
-                    if s == SessionState.IDLE:
-                        # Stay IDLE until pose becomes visible enough
-                        return
+                elif s == SessionState.IDLE:
+                    return
             return
 
-        # Posture-gated path (everyone else).
+        # Posture-gated path (push-up and anything else with a hard label).
         posture = self._current_posture
         in_gate = self._is_gate_posture(posture)
 
         if s == SessionState.ACTIVE:
-            if in_gate:
-                self._unknown_streak = 0
-                return
-            if posture == PostureLabel.UNKNOWN:
-                self._unknown_streak += 1
-                if self._unknown_streak < self.UNKNOWN_GRACE_FRAMES:
-                    return
+            # Stance = in gate posture. UNKNOWN and explicit non-gate both
+            # count as "out of stance"; 3-second debounce forgives brief
+            # landmark dropouts mid-rep.
+            if self._should_close_for_out_of_stance(now, in_gate):
+                self._close_active_set_or_rollback(now)
             else:
-                # Explicit non-gate label — close immediately
                 self._unknown_streak = 0
-            self._close_active_set_or_rollback(now)
             return
 
         # Non-ACTIVE states: UNKNOWN is held, other labels drive transitions.
@@ -1229,6 +1269,7 @@ class RobustExerciseDetector(BaseExerciseDetector):
                 # Too-brief entry — treat as a false start, stay in SETUP.
                 self._session_state = SessionState.SETUP
             self._unknown_streak = 0
+            self._out_of_stance_since = None
             return
 
         if self._reps_in_current_set > 0:
@@ -1245,6 +1286,8 @@ class RobustExerciseDetector(BaseExerciseDetector):
             self._reset_robust_rep_fsm()
             self._session_state = SessionState.SETUP
         self._unknown_streak = 0
+        # Fresh stance-debounce window for the next ACTIVE transition.
+        self._out_of_stance_since = None
 
     # ── Pre-active trace seeding ─────────────────────────────────────────
 
@@ -1448,6 +1491,9 @@ class RobustExerciseDetector(BaseExerciseDetector):
         threshold-crossing FSM and timer-based set detection with the
         push-up methodology."""
         now = timestamp if timestamp is not None else time.time()
+        # Stash the current pose so _update_session_state can consult it
+        # for stance witnesses (e.g. torso orientation, wrist positions).
+        self._last_pose = pose
 
         # 1. Compute and smooth angles (same as base)
         raw_angles = self._compute_angles(pose)

@@ -243,29 +243,16 @@ class LungeDetector(RobustExerciseDetector):
         front_knee = self._get_smooth("primary")
         if front_knee is None:
             front_knee = self._get_smooth("front_knee")
-        stance = None
-        # Pull the latest stance offset from the most recent angles dict
-        # (it's cached via the per-frame compute). Falling back to None
-        # is safe — the witness path still runs through super().
         last_stance_witness = self._rep_max_stance_offset
 
         if front_knee is None:
             super()._update_session_state(now, visibility_ok)
             return
 
-        is_at_top = front_knee >= LUNGE_KNEE_AT_TOP
         is_descending = front_knee < LUNGE_KNEE_DESCEND
 
-        if is_at_top:
-            if self._at_top_since is None:
-                self._at_top_since = now
-            self._below_top_since = None
-        else:
-            if self._below_top_since is None:
-                self._below_top_since = now
-            self._at_top_since = None
-
-        # Rolling front-knee history for movement-range check
+        # Rolling front-knee history for movement-range check (SETUP→ACTIVE
+        # entry witness — keeps walking / knee lifts from triggering reps).
         self._front_knee_history.append((now, front_knee))
         window_start = now - LUNGE_MOTION_WINDOW_S
         while self._front_knee_history and self._front_knee_history[0][0] < window_start:
@@ -278,20 +265,25 @@ class LungeDetector(RobustExerciseDetector):
             motion_range = 0.0
         has_active_motion = motion_range >= LUNGE_MOTION_MIN_RANGE
 
-        # Stance check: use the witness if we have one (tracks through
-        # the rep); otherwise accept and let _should_count_rep reject.
         has_split_stance = (
             last_stance_witness is not None and last_stance_witness >= LUNGE_STANCE_MIN_M
         )
 
         s = self._session_state
+        pose = self._last_pose
+        in_stance = bool(pose is not None and self._is_in_stance(pose, visibility_ok))
+
+        if s == SessionState.ACTIVE:
+            # Stance-based set boundary: pauses in stance never end the set,
+            # only a 3s absence does.
+            if self._should_close_for_out_of_stance(now, in_stance):
+                self._close_active_set_or_rollback(now)
+                self._front_knee_history.clear()
+            else:
+                self._unknown_streak = 0
+            return
 
         if not visibility_ok:
-            if s == SessionState.ACTIVE:
-                self._unknown_streak += 1
-                if self._unknown_streak >= self.UNKNOWN_GRACE_FRAMES:
-                    self._close_active_set_or_rollback(now)
-                    self._front_knee_history.clear()
             return
         self._unknown_streak = 0
 
@@ -302,20 +294,9 @@ class LungeDetector(RobustExerciseDetector):
         if s in (SessionState.SETUP, SessionState.RESTING):
             if has_active_motion and is_descending and has_split_stance:
                 self._session_state = SessionState.ACTIVE
+                self._out_of_stance_since = None
                 self._seed_first_rep_from_trace(now)
             return
-
-        if s == SessionState.ACTIVE:
-            if (self._at_top_since is not None
-                    and (now - self._at_top_since) >= LUNGE_REST_AT_TOP_S):
-                self._close_active_set_or_rollback(now)
-                self._front_knee_history.clear()
-                return
-            if (self._below_top_since is not None
-                    and (now - self._below_top_since) >= LUNGE_REST_BELOW_TOP_S):
-                self._close_active_set_or_rollback(now)
-                self._front_knee_history.clear()
-                return
 
     def _should_count_rep(self, elapsed: float, angles: Dict[str, Optional[float]]) -> bool:
         if not super()._should_count_rep(elapsed, angles):
