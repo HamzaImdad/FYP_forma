@@ -127,23 +127,6 @@ export function WorkoutPage() {
     isPhone && orientation !== desiredOrientation && !orientationOverridden;
   const landscapePhone = isPhone && orientation === "landscape";
 
-  // Live screen-orientation angle — separate from useOrientation because we
-  // need the raw 0/90/180/270 value, not just portrait/landscape. Used to
-  // counter-rotate the video when re-acquisition doesn't fix the stream.
-  const [screenAngle, setScreenAngle] = useState<number>(() =>
-    typeof screen !== "undefined" && screen.orientation
-      ? screen.orientation.angle
-      : 0,
-  );
-  useEffect(() => {
-    if (typeof screen === "undefined" || !screen.orientation) return;
-    const read = () =>
-      setScreenAngle(screen.orientation?.angle ?? 0);
-    screen.orientation.addEventListener("change", read);
-    read();
-    return () => screen.orientation?.removeEventListener("change", read);
-  }, []);
-
   // DOM refs
   const videoRef = useRef<HTMLVideoElement>(null);
   const skeletonCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -165,10 +148,6 @@ export function WorkoutPage() {
   // State refs
   const socketRef = useRef<Socket | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  // screen.orientation.angle at the moment the current stream was acquired.
-  // Used to counter-rotate the video if the phone rotates mid-session — keeps
-  // the subject upright even when the browser hasn't re-oriented the stream.
-  const streamAngleRef = useRef<number>(0);
   const poseRef = useRef<PoseLandmarker | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastPoseTimestampRef = useRef<number>(-1);
@@ -264,7 +243,6 @@ export function WorkoutPage() {
       }
 
       streamRef.current = stream;
-      streamAngleRef.current = screen.orientation?.angle ?? 0;
       const video = videoRef.current;
       if (!video) return;
       video.srcObject = stream;
@@ -648,7 +626,6 @@ export function WorkoutPage() {
         }
         const previous = streamRef.current;
         streamRef.current = fresh;
-        streamAngleRef.current = screen.orientation?.angle ?? 0;
         const video = videoRef.current;
         if (video) {
           video.srcObject = fresh;
@@ -777,35 +754,26 @@ export function WorkoutPage() {
       {/* Live video + skeleton overlay (native 30fps).
           Phone landscape uses object-cover for a true full-bleed fit;
           portrait / desktop letterbox to preserve aspect.
-          Counter-rotation: if the phone is rotated AFTER the stream was
-          acquired and the browser hasn't re-oriented (or re-acquire is
-          still in flight), apply the delta so the subject stays upright. */}
-      {(() => {
-        const delta =
-          ((screenAngle - streamAngleRef.current) % 360 + 360) % 360;
-        const counterRotate = delta === 0 ? "" : ` rotate(${-delta}deg)`;
-        const videoTransform = `${mirrored ? "scaleX(-1)" : ""}${counterRotate}`.trim() || "none";
-        return (
-          <>
-            <video
-              ref={videoRef}
-              muted
-              playsInline
-              className={`absolute inset-0 h-full w-full bg-black ${
-                landscapePhone ? "object-cover" : "object-contain"
-              }`}
-              style={{ transform: videoTransform }}
-            />
-            <canvas
-              ref={skeletonCanvasRef}
-              className={`absolute inset-0 h-full w-full pointer-events-none ${
-                landscapePhone ? "object-cover" : "object-contain"
-              }`}
-              style={{ transform: videoTransform }}
-            />
-          </>
-        );
-      })()}
+          Orientation handling is the browser's job at getUserMedia time
+          plus our re-acquire effect on rotation change — no CSS rotation
+          transforms (they were making the body flip upside down on some
+          device orientations). */}
+      <video
+        ref={videoRef}
+        muted
+        playsInline
+        className={`absolute inset-0 h-full w-full bg-black ${
+          landscapePhone ? "object-cover" : "object-contain"
+        }`}
+        style={{ transform: mirrored ? "scaleX(-1)" : "none" }}
+      />
+      <canvas
+        ref={skeletonCanvasRef}
+        className={`absolute inset-0 h-full w-full pointer-events-none ${
+          landscapePhone ? "object-cover" : "object-contain"
+        }`}
+        style={{ transform: mirrored ? "scaleX(-1)" : "none" }}
+      />
 
       {/* TOP-LEFT — exercise + timer */}
       <div className="absolute top-3 left-3 md:top-8 md:left-10 landscape:top-8 landscape:left-10 max-w-[58%] md:max-w-none landscape:max-w-none">
@@ -832,7 +800,7 @@ export function WorkoutPage() {
         </div>
       </div>
 
-      {/* TOP-RIGHT — score ring (desktop only) + end */}
+      {/* TOP-RIGHT — score ring (desktop only) + X cancel + Mirror + Stop */}
       <div className="absolute top-3 right-3 md:top-8 md:right-10 landscape:top-8 landscape:right-10 flex items-start gap-3 md:gap-5">
         {/* Score ring — hidden on mobile portrait, visible on desktop + landscape */}
         <div className="relative h-[110px] w-[110px] rounded-full bg-black/70 border border-white/10 p-2 hidden md:block landscape:block">
@@ -875,7 +843,19 @@ export function WorkoutPage() {
           </div>
         </div>
 
-        <div className="flex flex-col items-stretch gap-1.5 md:gap-2">
+        <div className="flex flex-col items-end gap-1.5 md:gap-2">
+          {/* Cancel (X) — discards without saving. Circular icon button,
+              sits in the top-right corner of the button stack so it reads
+              as the escape hatch. */}
+          <button
+            type="button"
+            onClick={handleDiscard}
+            aria-label="Cancel session without saving"
+            title="Cancel (don't save)"
+            className="h-10 w-10 flex items-center justify-center rounded-full bg-black/70 border border-white/20 text-white/75 hover:text-white hover:bg-black/90 hover:border-white/45 transition-colors"
+          >
+            <X size={18} />
+          </button>
           <button
             type="button"
             onClick={() => setMirrored((m) => !m)}
@@ -888,27 +868,16 @@ export function WorkoutPage() {
               {mirrored ? "Mirror" : "Flip"}
             </span>
           </button>
-          {/* Stop (save) — logs reps / form to the database. */}
+          {/* Stop & Save — prominent gold-filled button. Primary action. */}
           <button
             type="button"
             onClick={handleExit}
-            className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-[color:var(--color-gold-soft)]/15 border border-[color:var(--color-gold-soft)]/45 text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-gold-soft)] hover:bg-[color:var(--color-gold-soft)]/25 transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-4 py-3 md:px-5 md:py-3.5 min-h-[48px] bg-[color:var(--color-gold-soft)] text-[#0A0A0A] text-xs md:text-sm uppercase tracking-[0.16em] font-medium shadow-lg shadow-[color:var(--color-gold-soft)]/20 hover:bg-[color:var(--color-gold)] transition-colors"
             aria-label="Stop and save session"
             title="Stop and save"
           >
-            <Square size={14} fill="currentColor" />
-            <span className="hidden sm:inline">Stop</span>
-          </button>
-          {/* Cancel (discard) — tears down without saving. */}
-          <button
-            type="button"
-            onClick={handleDiscard}
-            className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] text-white/70 hover:bg-white/10 hover:text-white hover:border-white/40 transition-colors"
-            aria-label="Cancel session without saving"
-            title="Cancel (don't save)"
-          >
-            <X size={14} />
-            <span className="hidden sm:inline">Cancel</span>
+            <Square size={16} fill="currentColor" />
+            <span>Stop &amp; Save</span>
           </button>
         </div>
       </div>
