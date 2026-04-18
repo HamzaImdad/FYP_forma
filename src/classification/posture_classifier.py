@@ -141,13 +141,19 @@ def _arm_perpendicular_to_body(pose: PoseResult) -> bool:
     between wrist and hip (i.e. arm extends perpendicular-ish to the
     body axis). Rotation-invariant: uses landmark geometry only, no
     axis-up convention. Either arm is sufficient (side-on cameras
-    routinely occlude one wrist)."""
+    routinely occlude one wrist).
+
+    Visibility gate uses PLANK_LANDMARK_VISIBILITY (0.4) rather than the
+    generic MIN_VISIBILITY (0.5) because phone side-view push-ups push
+    the far-side wrist into the 0.3-0.5 confidence band — the stricter
+    gate would reject both arms at the bottom of every rep, the exact
+    moment we need PLANK to stay locked."""
     for shoulder_idx, hip_idx, wrist_idx in (
         (LEFT_SHOULDER, LEFT_HIP, LEFT_WRIST),
         (RIGHT_SHOULDER, RIGHT_HIP, RIGHT_WRIST),
     ):
         if not all(
-            pose.is_visible(i, MIN_VISIBILITY)
+            pose.is_visible(i, PLANK_LANDMARK_VISIBILITY)
             for i in (shoulder_idx, hip_idx, wrist_idx)
         ):
             continue
