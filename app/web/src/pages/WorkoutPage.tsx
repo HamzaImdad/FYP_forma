@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, Navigate, useSearchParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { FlipHorizontal, X } from "lucide-react";
+import { FlipHorizontal, Square, X } from "lucide-react";
 import type { PoseLandmarker } from "@mediapipe/tasks-vision";
 import { exerciseBySlug, isExerciseSlug } from "../types/exercise";
 import type { PhoneOrientation } from "../types/exercise";
@@ -127,6 +127,23 @@ export function WorkoutPage() {
     isPhone && orientation !== desiredOrientation && !orientationOverridden;
   const landscapePhone = isPhone && orientation === "landscape";
 
+  // Live screen-orientation angle — separate from useOrientation because we
+  // need the raw 0/90/180/270 value, not just portrait/landscape. Used to
+  // counter-rotate the video when re-acquisition doesn't fix the stream.
+  const [screenAngle, setScreenAngle] = useState<number>(() =>
+    typeof screen !== "undefined" && screen.orientation
+      ? screen.orientation.angle
+      : 0,
+  );
+  useEffect(() => {
+    if (typeof screen === "undefined" || !screen.orientation) return;
+    const read = () =>
+      setScreenAngle(screen.orientation?.angle ?? 0);
+    screen.orientation.addEventListener("change", read);
+    read();
+    return () => screen.orientation?.removeEventListener("change", read);
+  }, []);
+
   // DOM refs
   const videoRef = useRef<HTMLVideoElement>(null);
   const skeletonCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -148,6 +165,10 @@ export function WorkoutPage() {
   // State refs
   const socketRef = useRef<Socket | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  // screen.orientation.angle at the moment the current stream was acquired.
+  // Used to counter-rotate the video if the phone rotates mid-session — keeps
+  // the subject upright even when the browser hasn't re-oriented the stream.
+  const streamAngleRef = useRef<number>(0);
   const poseRef = useRef<PoseLandmarker | null>(null);
   const rafRef = useRef<number | null>(null);
   const lastPoseTimestampRef = useRef<number>(-1);
@@ -243,6 +264,7 @@ export function WorkoutPage() {
       }
 
       streamRef.current = stream;
+      streamAngleRef.current = screen.orientation?.angle ?? 0;
       const video = videoRef.current;
       if (!video) return;
       video.srcObject = stream;
@@ -626,6 +648,7 @@ export function WorkoutPage() {
         }
         const previous = streamRef.current;
         streamRef.current = fresh;
+        streamAngleRef.current = screen.orientation?.angle ?? 0;
         const video = videoRef.current;
         if (video) {
           video.srcObject = fresh;
@@ -701,6 +724,40 @@ export function WorkoutPage() {
     window.setTimeout(finish, 2500);
   }, [cleanup, navigate]);
 
+  // Cancel flow — explicitly DISCARDS the session. Sends discard_session
+  // so the server tears down in-memory state and purges the on-disk capture
+  // without saving anything to the sessions table. Used for the X button.
+  const handleDiscard = useCallback(() => {
+    const socket = socketRef.current;
+
+    if (!socket || !socket.connected || endedRef.current) {
+      cleanup();
+      navigate("/");
+      return;
+    }
+
+    if (rafRef.current != null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      cleanup();
+      navigate("/");
+    };
+    socket.once("session_discarded", finish);
+    try {
+      socket.emit("discard_session");
+    } catch {
+      /* fall through to timeout */
+    }
+    endedRef.current = true;
+    window.setTimeout(finish, 1200);
+  }, [cleanup, navigate]);
+
   const handleReady = useCallback(() => {
     userReadyRef.current?.();
   }, []);
@@ -719,23 +776,36 @@ export function WorkoutPage() {
     <div className="fixed inset-0 z-[400] bg-black text-white overflow-hidden font-[family-name:var(--font-body)]">
       {/* Live video + skeleton overlay (native 30fps).
           Phone landscape uses object-cover for a true full-bleed fit;
-          portrait / desktop letterbox to preserve aspect. */}
-      <video
-        ref={videoRef}
-        muted
-        playsInline
-        className={`absolute inset-0 h-full w-full bg-black ${
-          landscapePhone ? "object-cover" : "object-contain"
-        }`}
-        style={{ transform: mirrored ? "scaleX(-1)" : "none" }}
-      />
-      <canvas
-        ref={skeletonCanvasRef}
-        className={`absolute inset-0 h-full w-full pointer-events-none ${
-          landscapePhone ? "object-cover" : "object-contain"
-        }`}
-        style={{ transform: mirrored ? "scaleX(-1)" : "none" }}
-      />
+          portrait / desktop letterbox to preserve aspect.
+          Counter-rotation: if the phone is rotated AFTER the stream was
+          acquired and the browser hasn't re-oriented (or re-acquire is
+          still in flight), apply the delta so the subject stays upright. */}
+      {(() => {
+        const delta =
+          ((screenAngle - streamAngleRef.current) % 360 + 360) % 360;
+        const counterRotate = delta === 0 ? "" : ` rotate(${-delta}deg)`;
+        const videoTransform = `${mirrored ? "scaleX(-1)" : ""}${counterRotate}`.trim() || "none";
+        return (
+          <>
+            <video
+              ref={videoRef}
+              muted
+              playsInline
+              className={`absolute inset-0 h-full w-full bg-black ${
+                landscapePhone ? "object-cover" : "object-contain"
+              }`}
+              style={{ transform: videoTransform }}
+            />
+            <canvas
+              ref={skeletonCanvasRef}
+              className={`absolute inset-0 h-full w-full pointer-events-none ${
+                landscapePhone ? "object-cover" : "object-contain"
+              }`}
+              style={{ transform: videoTransform }}
+            />
+          </>
+        );
+      })()}
 
       {/* TOP-LEFT — exercise + timer */}
       <div className="absolute top-3 left-3 md:top-8 md:left-10 landscape:top-8 landscape:left-10 max-w-[58%] md:max-w-none landscape:max-w-none">
@@ -818,14 +888,27 @@ export function WorkoutPage() {
               {mirrored ? "Mirror" : "Flip"}
             </span>
           </button>
+          {/* Stop (save) — logs reps / form to the database. */}
           <button
             type="button"
             onClick={handleExit}
-            className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] hover:bg-white/10 hover:border-white/40 transition-colors"
-            aria-label="End session"
+            className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-[color:var(--color-gold-soft)]/15 border border-[color:var(--color-gold-soft)]/45 text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-gold-soft)] hover:bg-[color:var(--color-gold-soft)]/25 transition-colors"
+            aria-label="Stop and save session"
+            title="Stop and save"
+          >
+            <Square size={14} fill="currentColor" />
+            <span className="hidden sm:inline">Stop</span>
+          </button>
+          {/* Cancel (discard) — tears down without saving. */}
+          <button
+            type="button"
+            onClick={handleDiscard}
+            className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] text-white/70 hover:bg-white/10 hover:text-white hover:border-white/40 transition-colors"
+            aria-label="Cancel session without saving"
+            title="Cancel (don't save)"
           >
             <X size={14} />
-            <span className="hidden sm:inline">End</span>
+            <span className="hidden sm:inline">Cancel</span>
           </button>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { X } from "lucide-react";
 
 import type { Exercise, PhoneOrientation } from "../../types/exercise";
 
@@ -25,6 +26,18 @@ export function OrientationGate({ exercise, current, onOverride }: Props) {
 
   return (
     <div className="absolute inset-0 z-[450] flex items-center justify-center bg-black/92 backdrop-blur-sm p-6">
+      {/* Close (X) — dismiss the gate and go straight to the camera-setup
+          toggle. Same effect as the text override but as a persistent
+          escape hatch in the corner. */}
+      <button
+        type="button"
+        onClick={onOverride}
+        aria-label="Dismiss orientation prompt"
+        className="absolute top-4 right-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white/75 hover:text-white hover:bg-white/20 hover:border-white/40 transition-colors"
+      >
+        <X size={18} />
+      </button>
+
       <div className="w-full max-w-md text-center">
         <div className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--color-gold-soft)] mb-6">
           Rotate your phone

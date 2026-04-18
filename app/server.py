@@ -2401,6 +2401,44 @@ def handle_end_session():
         logger.warning("Failed to refresh today's totals: %s", e)
 
 
+@socketio.on("discard_session")
+def handle_discard_session():
+    """Tear down the session WITHOUT saving to the database.
+
+    Used for the client-side X (cancel) button — empty / aborted sessions
+    that the user explicitly doesn't want persisted. Still drains the
+    pipeline so in-memory state is clean, and closes the capture directory
+    without writing a summary so it can be purged later.
+    """
+    sid = request.sid
+    if sid not in pipelines:
+        return
+
+    try:
+        pipelines[sid].end_session()
+    except Exception as e:
+        logger.warning("pipeline teardown failed on discard: %s", e)
+
+    # Drop the capture directory entirely — no summary, no trace, nothing
+    # left on disk to retroactively attribute to a session.
+    capture = captures.pop(sid, None)
+    if capture is not None:
+        try:
+            if capture._trace_file is not None:
+                capture._trace_file.close()
+                capture._trace_file = None
+        except Exception:
+            pass
+        try:
+            import shutil
+            if capture.session_dir.exists():
+                shutil.rmtree(capture.session_dir, ignore_errors=True)
+        except Exception as e:
+            logger.warning("Failed to purge discarded capture dir: %s", e)
+
+    socketio.emit("session_discarded", {}, to=sid)
+
+
 @socketio.on("frame")
 def handle_frame(data):
     sid = request.sid
