@@ -754,10 +754,9 @@ export function WorkoutPage() {
       {/* Live video + skeleton overlay (native 30fps).
           Phone landscape uses object-cover for a true full-bleed fit;
           portrait / desktop letterbox to preserve aspect.
-          Orientation handling is the browser's job at getUserMedia time
-          plus our re-acquire effect on rotation change — no CSS rotation
-          transforms (they were making the body flip upside down on some
-          device orientations). */}
+          A blanket 180° rotation fixes the upside-down preview users
+          saw in both portrait and landscape; combined with the optional
+          mirror it still yields the "selfie" feel when mirror is on. */}
       <video
         ref={videoRef}
         muted
@@ -765,14 +764,18 @@ export function WorkoutPage() {
         className={`absolute inset-0 h-full w-full bg-black ${
           landscapePhone ? "object-cover" : "object-contain"
         }`}
-        style={{ transform: mirrored ? "scaleX(-1)" : "none" }}
+        style={{
+          transform: `${mirrored ? "scaleX(-1) " : ""}rotate(180deg)`,
+        }}
       />
       <canvas
         ref={skeletonCanvasRef}
         className={`absolute inset-0 h-full w-full pointer-events-none ${
           landscapePhone ? "object-cover" : "object-contain"
         }`}
-        style={{ transform: mirrored ? "scaleX(-1)" : "none" }}
+        style={{
+          transform: `${mirrored ? "scaleX(-1) " : ""}rotate(180deg)`,
+        }}
       />
 
       {/* TOP-LEFT — exercise + timer */}
@@ -844,9 +847,8 @@ export function WorkoutPage() {
         </div>
 
         <div className="flex flex-col items-end gap-1.5 md:gap-2">
-          {/* Cancel (X) — discards without saving. Circular icon button,
-              sits in the top-right corner of the button stack so it reads
-              as the escape hatch. */}
+          {/* Cancel (X) — discards without saving. Sits in the top-right
+              corner as the escape hatch. */}
           <button
             type="button"
             onClick={handleDiscard}
@@ -868,19 +870,24 @@ export function WorkoutPage() {
               {mirrored ? "Mirror" : "Flip"}
             </span>
           </button>
-          {/* Stop & Save — prominent gold-filled button. Primary action. */}
-          <button
-            type="button"
-            onClick={handleExit}
-            className="inline-flex items-center justify-center gap-2 px-4 py-3 md:px-5 md:py-3.5 min-h-[48px] bg-[color:var(--color-gold-soft)] text-[#0A0A0A] text-xs md:text-sm uppercase tracking-[0.16em] font-medium shadow-lg shadow-[color:var(--color-gold-soft)]/20 hover:bg-[color:var(--color-gold)] transition-colors"
-            aria-label="Stop and save session"
-            title="Stop and save"
-          >
-            <Square size={16} fill="currentColor" />
-            <span>Stop &amp; Save</span>
-          </button>
         </div>
       </div>
+
+      {/* Stop & Save — prominent bottom-center pill. Primary action, kept
+          out of the top-right stack so it doesn't collide with the
+          counters strip on phone portrait. */}
+      {running && (
+        <button
+          type="button"
+          onClick={handleExit}
+          aria-label="Stop and save session"
+          title="Stop and save"
+          className="absolute bottom-3 left-1/2 -translate-x-1/2 z-[410] inline-flex items-center justify-center gap-2 px-6 py-3.5 md:px-8 md:py-4 min-h-[52px] rounded-full bg-[color:var(--color-gold-soft)] text-[#0A0A0A] text-xs md:text-sm uppercase tracking-[0.18em] font-medium shadow-lg shadow-[color:var(--color-gold-soft)]/25 hover:bg-[color:var(--color-gold)] transition-colors"
+        >
+          <Square size={16} fill="currentColor" />
+          <span>Stop &amp; Save</span>
+        </button>
+      )}
 
       {/* COUNTERS — horizontal strip on mobile portrait, vertical on desktop/landscape */}
       <div className="absolute left-3 right-3 top-[88px] grid grid-cols-3 gap-2 md:left-10 md:right-auto md:top-1/2 md:-translate-y-1/2 md:w-[170px] md:block md:space-y-3 landscape:left-10 landscape:right-auto landscape:top-1/2 landscape:-translate-y-1/2 landscape:w-[170px] landscape:block landscape:space-y-3">
@@ -987,9 +994,9 @@ export function WorkoutPage() {
         </div>
       )}
 
-      {/* Bottom feedback — on mobile it sits to the right of the score ring
-          (ring is bottom-20 left-3), so indent the feedback past it */}
-      <div className="absolute bottom-8 right-3 left-[108px] md:inset-x-0 md:px-10 md:left-0">
+      {/* Bottom feedback — sits above the Stop & Save pill on phones.
+          On desktop, stays full-width centered above the pill too. */}
+      <div className="absolute bottom-24 right-3 left-[108px] md:bottom-24 md:inset-x-0 md:px-10 md:left-0">
         <div
           ref={feedbackRef}
           className="min-h-[2.25rem] text-left md:text-center font-[family-name:var(--font-serif)] italic text-base md:text-2xl text-[color:var(--color-gold-soft)]"
