@@ -108,10 +108,9 @@ export function WorkoutPage() {
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
-  // Direct axis toggles — no hidden baseline rotation. Mirror defaults on
-  // for the selfie-cam feel; vertical flip defaults off. If the phone
-  // reads upside-down the user clicks Flip V once to correct it.
-  const [mirrored, setMirrored] = useState<boolean>(true);
+  // Direct axis toggles — no hidden baseline rotation. Both flips default
+  // off; the user toggles whichever axis their phone/camera needs.
+  const [mirrored, setMirrored] = useState<boolean>(false);
   const [flippedVertical, setFlippedVertical] = useState<boolean>(false);
   const [saving, setSaving] = useState(false);
 
