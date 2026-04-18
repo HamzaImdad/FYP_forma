@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, Navigate, useSearchParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { FlipHorizontal, Square, X } from "lucide-react";
+import { FlipHorizontal, FlipVertical, Square, X } from "lucide-react";
 import type { PoseLandmarker } from "@mediapipe/tasks-vision";
 import { exerciseBySlug, isExerciseSlug } from "../types/exercise";
 import type { PhoneOrientation } from "../types/exercise";
@@ -109,6 +109,10 @@ export function WorkoutPage() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [mirrored, setMirrored] = useState<boolean>(exercise.slug !== "pushup");
+  // Separate Y-axis flip on top of the baseline 180° correction. Lets the
+  // user invert the vertical axis when their specific phone mount has the
+  // camera reading upside-down relative to our baseline.
+  const [flippedVertical, setFlippedVertical] = useState<boolean>(false);
   const [saving, setSaving] = useState(false);
 
   // ── Phone orientation (Part B) ────────────────────────────────────────
@@ -765,7 +769,7 @@ export function WorkoutPage() {
           landscapePhone ? "object-cover" : "object-contain"
         }`}
         style={{
-          transform: `${mirrored ? "scaleX(-1) " : ""}rotate(180deg)`,
+          transform: `${mirrored ? "scaleX(-1) " : ""}${flippedVertical ? "scaleY(-1) " : ""}rotate(180deg)`,
         }}
       />
       <canvas
@@ -774,7 +778,7 @@ export function WorkoutPage() {
           landscapePhone ? "object-cover" : "object-contain"
         }`}
         style={{
-          transform: `${mirrored ? "scaleX(-1) " : ""}rotate(180deg)`,
+          transform: `${mirrored ? "scaleX(-1) " : ""}${flippedVertical ? "scaleY(-1) " : ""}rotate(180deg)`,
         }}
       />
 
@@ -862,13 +866,21 @@ export function WorkoutPage() {
             type="button"
             onClick={() => setMirrored((m) => !m)}
             className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] hover:bg-white/10 hover:border-white/40 transition-colors"
-            aria-label={mirrored ? "Disable mirror" : "Enable mirror"}
-            title={mirrored ? "Mirror: on" : "Mirror: off"}
+            aria-label={mirrored ? "Disable horizontal flip" : "Enable horizontal flip"}
+            title={mirrored ? "Flip H: on" : "Flip H: off"}
           >
             <FlipHorizontal size={14} />
-            <span className="hidden sm:inline">
-              {mirrored ? "Mirror" : "Flip"}
-            </span>
+            <span className="hidden sm:inline">Flip H</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setFlippedVertical((v) => !v)}
+            className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-2.5 py-2 md:px-4 md:py-2.5 min-h-[44px] min-w-[44px] bg-black/70 border border-white/20 text-[10px] uppercase tracking-[0.18em] hover:bg-white/10 hover:border-white/40 transition-colors"
+            aria-label={flippedVertical ? "Disable vertical flip" : "Enable vertical flip"}
+            title={flippedVertical ? "Flip V: on" : "Flip V: off"}
+          >
+            <FlipVertical size={14} />
+            <span className="hidden sm:inline">Flip V</span>
           </button>
         </div>
       </div>
