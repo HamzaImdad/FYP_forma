@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, Navigate, useSearchParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
-import { FlipHorizontal, FlipVertical, Square, X } from "lucide-react";
+import { FlipHorizontal, FlipVertical, Square, X, ZoomIn, ZoomOut } from "lucide-react";
 import type { PoseLandmarker } from "@mediapipe/tasks-vision";
 import { exerciseBySlug, isExerciseSlug } from "../types/exercise";
 import type { PhoneOrientation } from "../types/exercise";
@@ -68,7 +68,16 @@ const RIGHT_CHAIN = [12, 24, 26];
 // ~2× the model-resolution coverage. Landmarks come back normalized to
 // the crop; we rescale them back to video space so the skeleton overlay
 // draws on the right pixels and the server sees consistent coordinates.
-const PHONE_CROP_SCALE = 0.72;
+//
+// Zoom is exposed to the user via +/- buttons in the workout chrome.
+// 1.0× = no crop (native FOV, widest possible with the front camera);
+// 3.0× = ~one-third of the original frame, useful when the user is
+// further from the phone. cropScale = 1 / zoom, clamped to ≤1.
+const PHONE_MIN_ZOOM = 1.0;
+const PHONE_MAX_ZOOM = 3.0;
+const PHONE_ZOOM_STEP = 0.2;
+const PHONE_DEFAULT_ZOOM = 1.4;       // 1/0.72 ≈ 1.39 — preserves prior behavior
+const PHONE_ZOOM_STORAGE_KEY = "forma:cameraZoom";
 
 const RING_RADIUS = 48;
 const RING_CIRC = 2 * Math.PI * RING_RADIUS;
@@ -121,6 +130,23 @@ export function WorkoutPage() {
   // off; the user toggles whichever axis their phone/camera needs.
   const [mirrored, setMirrored] = useState<boolean>(false);
   const [flippedVertical, setFlippedVertical] = useState<boolean>(false);
+  // Camera zoom (phone only). Persisted in localStorage so users don't
+  // re-set it every session. Lazy initializer parses the stored value
+  // and falls back to PHONE_DEFAULT_ZOOM if missing or out of range.
+  const [cameraZoom, setCameraZoom] = useState<number>(() => {
+    if (typeof window === "undefined") return PHONE_DEFAULT_ZOOM;
+    const raw = window.localStorage.getItem(PHONE_ZOOM_STORAGE_KEY);
+    const parsed = raw == null ? NaN : parseFloat(raw);
+    if (!Number.isFinite(parsed) || parsed < PHONE_MIN_ZOOM || parsed > PHONE_MAX_ZOOM) {
+      return PHONE_DEFAULT_ZOOM;
+    }
+    return parsed;
+  });
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(PHONE_ZOOM_STORAGE_KEY, String(cameraZoom));
+    cameraZoomRef.current = cameraZoom;
+  }, [cameraZoom]);
   const [saving, setSaving] = useState(false);
 
   // ── Phone orientation (Part B) ────────────────────────────────────────
@@ -165,6 +191,9 @@ export function WorkoutPage() {
   // center-cropped region of the live video so wide-angle phone cameras
   // produce laptop-quality landmarks. Lazy-init on first phone frame.
   const poseInputCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Mirrors `cameraZoom` so the pose loop (captured in a useEffect) sees
+  // live zoom changes without restarting the session.
+  const cameraZoomRef = useRef<number>(PHONE_DEFAULT_ZOOM);
   const rafRef = useRef<number | null>(null);
   const lastPoseTimestampRef = useRef<number>(-1);
   const lastSentRef = useRef(0);
@@ -573,8 +602,9 @@ export function WorkoutPage() {
           const vw = video.videoWidth;
           const vh = video.videoHeight;
           if (vw > 0 && vh > 0) {
-            const sw = Math.round(vw * PHONE_CROP_SCALE);
-            const sh = Math.round(vh * PHONE_CROP_SCALE);
+            const cropScale = Math.min(1.0, 1.0 / cameraZoomRef.current);
+            const sw = Math.round(vw * cropScale);
+            const sh = Math.round(vh * cropScale);
             const sx = Math.round((vw - sw) / 2);
             const sy = Math.round((vh - sh) / 2);
             let pic = poseInputCanvasRef.current;
@@ -595,10 +625,10 @@ export function WorkoutPage() {
               // image-independent — leave them alone.
               const lms = result?.landmarks?.[0];
               if (lms) {
-                const sideGap = (1 - PHONE_CROP_SCALE) / 2;
+                const sideGap = (1 - cropScale) / 2;
                 for (const lm of lms) {
-                  lm.x = sideGap + lm.x * PHONE_CROP_SCALE;
-                  lm.y = sideGap + lm.y * PHONE_CROP_SCALE;
+                  lm.x = sideGap + lm.x * cropScale;
+                  lm.y = sideGap + lm.y * cropScale;
                 }
               }
             } else {
@@ -979,6 +1009,47 @@ export function WorkoutPage() {
             <FlipVertical size={14} />
             <span className="hidden sm:inline">Flip V</span>
           </button>
+          {isPhone && (
+            <div className="inline-flex items-center bg-black/70 border border-white/20">
+              <button
+                type="button"
+                onClick={() =>
+                  setCameraZoom((z) =>
+                    Math.max(
+                      PHONE_MIN_ZOOM,
+                      Math.round((z - PHONE_ZOOM_STEP) * 10) / 10,
+                    ),
+                  )
+                }
+                disabled={cameraZoom <= PHONE_MIN_ZOOM}
+                aria-label="Zoom out"
+                title="Zoom out"
+                className="inline-flex items-center justify-center min-h-[44px] min-w-[36px] px-2 text-white/75 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+              >
+                <ZoomOut size={14} />
+              </button>
+              <span className="px-1.5 text-[10px] tabular-nums tracking-[0.12em] text-white/85 select-none">
+                {cameraZoom.toFixed(1)}×
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  setCameraZoom((z) =>
+                    Math.min(
+                      PHONE_MAX_ZOOM,
+                      Math.round((z + PHONE_ZOOM_STEP) * 10) / 10,
+                    ),
+                  )
+                }
+                disabled={cameraZoom >= PHONE_MAX_ZOOM}
+                aria-label="Zoom in"
+                title="Zoom in"
+                className="inline-flex items-center justify-center min-h-[44px] min-w-[36px] px-2 text-white/75 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+              >
+                <ZoomIn size={14} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
