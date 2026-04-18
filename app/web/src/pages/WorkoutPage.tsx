@@ -588,6 +588,75 @@ export function WorkoutPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exercise.slug]);
 
+  // ── Re-acquire camera on phone orientation change ────────────────────
+  // The browser orients the video stream to match device orientation at
+  // the moment getUserMedia() resolves — if the user rotates mid-session,
+  // the stream stays in its original orientation and the preview looks
+  // sideways. Re-requesting with matching width/height hints gets a fresh,
+  // correctly-oriented stream (same as a native camera app).
+  const lastAcquiredOrientationRef = useRef<PhoneOrientation | null>(null);
+  useEffect(() => {
+    if (!isPhone) return;
+    // Don't re-acquire until the first camera grab has happened and the
+    // user has actually changed orientation.
+    if (streamRef.current == null) {
+      lastAcquiredOrientationRef.current = orientation;
+      return;
+    }
+    if (lastAcquiredOrientationRef.current === orientation) return;
+    // Skip if we're not in a phase where the video is being shown.
+    if (phase !== "running" && phase !== "camera-setup") return;
+
+    let cancelled = false;
+    const reacquire = async () => {
+      const landscape = orientation === "landscape";
+      try {
+        const fresh = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+            width: { ideal: landscape ? 1280 : 720 },
+            height: { ideal: landscape ? 720 : 1280 },
+            frameRate: { ideal: 30, max: 30 },
+          },
+          audio: false,
+        });
+        if (cancelled) {
+          fresh.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        const previous = streamRef.current;
+        streamRef.current = fresh;
+        const video = videoRef.current;
+        if (video) {
+          video.srcObject = fresh;
+          try {
+            await video.play();
+          } catch {
+            /* muted + playsInline */
+          }
+          // Wait a frame for videoWidth/Height to update, then resize canvas.
+          requestAnimationFrame(() => {
+            const vw = video.videoWidth || (landscape ? 1280 : 720);
+            const vh = video.videoHeight || (landscape ? 720 : 1280);
+            const skel = skeletonCanvasRef.current;
+            if (skel) {
+              skel.width = vw;
+              skel.height = vh;
+            }
+          });
+        }
+        if (previous) previous.getTracks().forEach((t) => t.stop());
+        lastAcquiredOrientationRef.current = orientation;
+      } catch {
+        /* keep the existing stream if the re-acquire fails */
+      }
+    };
+    reacquire();
+    return () => {
+      cancelled = true;
+    };
+  }, [orientation, isPhone, phase]);
+
   const handleExit = useCallback(() => {
     const socket = socketRef.current;
 
