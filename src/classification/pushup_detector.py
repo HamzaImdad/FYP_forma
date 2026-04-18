@@ -48,7 +48,6 @@ from ..utils.constants import (
     LEFT_KNEE,
     LEFT_SHOULDER,
     LEFT_WRIST,
-    MIN_VISIBILITY,
     NOSE,
     RIGHT_ANKLE,
     RIGHT_ELBOW,
@@ -94,14 +93,34 @@ MAX_REP_HISTORY = 200
 # effective frame rate without requiring exact threshold-crossing frames.
 REP_COMPLETE_UP = 140    # raw elbow at/above this → considered "up"
 REP_START_DOWN = 135     # raw elbow below this → committed descent (UP → GOING_DOWN)
-REP_DEPTH_MAX = 115      # min raw elbow during rep must reach this → valid depth
+REP_DEPTH_MAX = 115      # ideal-form depth — drives DOWN/GOING_UP transitions + scoring
+REP_COUNT_DEPTH = 125    # counting-threshold — tracked min elbow must reach this for rep commit
 REP_BOTTOM_CLEAR = 120   # raw elbow above this while at bottom → ascending started
+# REP_DEPTH_MAX vs REP_COUNT_DEPTH: mobile side-view measurement noise drags
+# the averaged elbow above 115° at the trough even on genuinely deep reps.
+# Counting uses 125° so legitimate mobile reps register; scoring still uses
+# 115° so partial-depth reps get the lower form-score they deserve.
+
+# Visibility floor for per-landmark angle computation in this detector only.
+# Standard MIN_VISIBILITY=0.5 is too strict for side-view floor camera:
+# the far-side wrist/elbow routinely drops to 0.3-0.5 during the descent
+# because it's occluded by the near-side torso. 0.4 matches the client-side
+# body-chain visibility gate already used in WorkoutPage.tsx.
+PUSHUP_ANGLE_VIS = 0.4
+
+# Bailout guard — only fire the "didn't go deep enough" reset when the
+# tracked minimum is clearly above depth. Below this, the occlusion-recovery
+# path (first valid frame after a None gap arriving already near the top)
+# would silently erase a legitimate rep.
+BAILOUT_MIN_GUARD = 135.0
 
 # Single-frame None tolerance for _avg_elbow_angle. During fast movement
 # a single frame of low-visibility is common; freezing the rep FSM on
 # every such frame loses reps. Reuse the last raw elbow for up to
 # MAX_NONE_TOLERANCE consecutive frames before we actually give up.
-MAX_NONE_TOLERANCE = 5
+# Raised from 5 → 15 because mobile self-occlusion at the bottom of a
+# push-up plus Railway RTT jitter can span 8+ frames at realistic 10-12fps.
+MAX_NONE_TOLERANCE = 15
 
 # Sanity floor on the raw elbow reading. A real human elbow can't hyperflex
 # much below ~40° — if MediaPipe reports 0–35° it's almost always because
@@ -307,8 +326,14 @@ class PushUpDetector:
         # as a deep-bend commit.
         if elbow_angle is not None and elbow_angle < MIN_REAL_ELBOW_DEG:
             elbow_angle = None
+        # Skip the jump guard on the first valid frame after a None gap —
+        # `_last_raw_elbow` is stale and the true elbow can legitimately
+        # have moved >80° across the gap (e.g. full descent during a 400ms
+        # occlusion). `_consec_none_frames` is still >0 here because the
+        # reset to 0 happens below, after these guards.
         if (elbow_angle is not None
                 and self._last_raw_elbow is not None
+                and self._consec_none_frames == 0
                 and abs(elbow_angle - self._last_raw_elbow) > MAX_ELBOW_JUMP_DEG):
             elbow_angle = None
 
@@ -704,7 +729,7 @@ class PushUpDetector:
         if (self._first_rep_started
                 and self._state != PushUpState.UP
                 and raw_elbow >= REP_COMPLETE_UP
-                and self._rep_min_elbow <= REP_DEPTH_MAX):
+                and self._rep_min_elbow <= REP_COUNT_DEPTH):
             elapsed = now - self._rep_start_time
             self._half_rep = 0.0
             rep_completed = True
@@ -742,13 +767,19 @@ class PushUpDetector:
                 self._half_rep = 0.5
                 self._bottom_frame_count = 0
             elif raw_elbow >= REP_COMPLETE_UP:
-                # Elbow is back up without ever crossing REP_DEPTH_MAX
-                # (and the primary commit check above didn't fire, so
-                # rep_min never reached depth). Genuine bailout.
-                if "Didn't go deep enough" not in self._current_rep_issues:
-                    self._current_rep_issues.append("Didn't go deep enough")
-                self._state = PushUpState.UP
-                self._rep_min_elbow = 180.0
+                # Elbow is back up without ever crossing REP_COUNT_DEPTH
+                # (primary commit above didn't fire). Only bail if the
+                # tracked minimum is well above depth — otherwise this is
+                # an occlusion-recovery where the user DID descend but
+                # the trough wasn't captured, and erasing rep_min would
+                # silently delete a legitimate rep.
+                if self._rep_min_elbow > BAILOUT_MIN_GUARD:
+                    if "Didn't go deep enough" not in self._current_rep_issues:
+                        self._current_rep_issues.append("Didn't go deep enough")
+                    self._state = PushUpState.UP
+                    self._rep_min_elbow = 180.0
+                # else: preserve state + rep_min; the next descent or a
+                # later primary-commit frame will resolve it.
 
         elif self._state == PushUpState.DOWN:
             self._bottom_frame_count += 1
@@ -1120,7 +1151,7 @@ class PushUpDetector:
     def _angle_at(
         self, pose: PoseResult, idx_a: int, idx_b: int, idx_c: int
     ) -> Optional[float]:
-        if not all(pose.is_visible(i, MIN_VISIBILITY) for i in (idx_a, idx_b, idx_c)):
+        if not all(pose.is_visible(i, PUSHUP_ANGLE_VIS) for i in (idx_a, idx_b, idx_c)):
             return None
         a = pose.get_world_landmark(idx_a)
         b = pose.get_world_landmark(idx_b)
