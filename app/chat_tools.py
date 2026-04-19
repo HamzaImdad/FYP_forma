@@ -976,11 +976,49 @@ def _sanitize_plan(
     title = str(draft.get("title") or "Workout plan").strip()[:80]
     summary = str(draft.get("summary") or "").strip()[:500]
     start_date = str(draft.get("start_date") or _dt.now().strftime("%Y-%m-%d"))
+    try:
+        target_weeks = int(draft.get("target_weeks") or 0)
+    except (TypeError, ValueError):
+        target_weeks = 0
     days_in = draft.get("days") or []
     if not isinstance(days_in, list) or not days_in:
         raise PlanRejected("plan has no days")
     if len(days_in) > 60:
         raise PlanRejected("plan too long (max 60 days)")
+
+    # Span check: if target_weeks is set, days MUST cover target_weeks * 7
+    # consecutive calendar dates starting from start_date. This catches the
+    # LLM-generates-one-template-week failure mode.
+    if target_weeks > 0:
+        expected = target_weeks * 7
+        if len(days_in) != expected:
+            raise PlanRejected(
+                f"target_weeks={target_weeks} requires exactly {expected} "
+                f"day entries, got {len(days_in)}. Generate one entry per "
+                f"calendar date from {start_date} for {expected} days, "
+                f"marking non-training days as is_rest=true."
+            )
+        try:
+            start_dt = _dt.fromisoformat(start_date).date()
+        except ValueError:
+            raise PlanRejected(f"invalid start_date {start_date!r} (use YYYY-MM-DD)")
+        expected_dates = {(start_dt + _td(days=i)).isoformat() for i in range(expected)}
+        got_dates = {
+            str((d or {}).get("day_date") or "").strip()
+            for d in days_in if isinstance(d, dict)
+        }
+        missing = expected_dates - got_dates
+        extra = got_dates - expected_dates
+        if missing or extra:
+            problems = []
+            if missing:
+                problems.append(f"missing dates: {sorted(missing)[:5]}")
+            if extra:
+                problems.append(f"unexpected dates: {sorted(extra)[:5]}")
+            raise PlanRejected(
+                f"day_dates do not form a contiguous {expected}-day span "
+                f"starting {start_date}. {'; '.join(problems)}"
+            )
 
     sanitized_days: List[Dict[str, Any]] = []
     for idx, d in enumerate(days_in):
@@ -1014,15 +1052,15 @@ def _sanitize_plan(
         )
     if not sanitized_days:
         raise PlanRejected("plan has no valid days after sanitization")
-    return (
-        {
-            "title": title,
-            "summary": summary,
-            "start_date": start_date,
-            "days": sanitized_days,
-        },
-        warnings,
-    )
+    out: Dict[str, Any] = {
+        "title": title,
+        "summary": summary,
+        "start_date": start_date,
+        "days": sanitized_days,
+    }
+    if target_weeks > 0:
+        out["target_weeks"] = target_weeks
+    return out, warnings
 
 
 def _apply_modifications(
@@ -1170,12 +1208,14 @@ def propose_plan(
     title: str,
     start_date: str,
     days: list,
+    target_weeks: int,
     summary: str = "",
 ) -> Dict[str, Any]:
     draft_in = {
         "title": title,
         "summary": summary,
         "start_date": start_date,
+        "target_weeks": target_weeks,
         "days": days,
     }
     try:
@@ -1317,6 +1357,18 @@ _PLAN_NEW_SCHEMAS: List[Dict[str, Any]] = [
                         "type": "string",
                         "description": "ISO date (YYYY-MM-DD) for day 1",
                     },
+                    "target_weeks": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 8,
+                        "description": (
+                            "Planned duration in weeks. The days array MUST "
+                            "contain exactly target_weeks * 7 consecutive "
+                            "calendar dates starting from start_date. "
+                            "Non-training days are entries with is_rest=true. "
+                            "The server rejects the call if the span is wrong."
+                        ),
+                    },
                     "days": {
                         "type": "array",
                         "items": {
@@ -1359,7 +1411,7 @@ _PLAN_NEW_SCHEMAS: List[Dict[str, Any]] = [
                         },
                     },
                 },
-                "required": ["title", "start_date", "days"],
+                "required": ["title", "start_date", "target_weeks", "days"],
             },
         },
     },
@@ -1481,6 +1533,19 @@ def make_plan_dispatcher(
     def dispatch(fn_name: str, args: Dict[str, Any]) -> Any:
         if fn_name == "propose_plan":
             try:
+                tw = args.get("target_weeks")
+                try:
+                    tw = int(tw) if tw is not None else 0
+                except (TypeError, ValueError):
+                    tw = 0
+                if tw < 1 or tw > 8:
+                    return {
+                        "error": "plan_rejected",
+                        "message": (
+                            "target_weeks must be an integer 1-8. Re-collect "
+                            "TIMEFRAME_WEEKS from the user and retry."
+                        ),
+                    }
                 return propose_plan(
                     user_id, db, conversation_id,
                     title=args.get("title") or "Workout plan",
@@ -1488,6 +1553,7 @@ def make_plan_dispatcher(
                     start_date=args.get("start_date")
                     or _dt.now().strftime("%Y-%m-%d"),
                     days=args.get("days") or [],
+                    target_weeks=tw,
                 )
             except PlanRejected as e:
                 return {"error": "plan_rejected", "message": str(e)}
