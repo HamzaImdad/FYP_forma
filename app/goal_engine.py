@@ -40,15 +40,18 @@ MAX_ACTIVE_GOALS = 20
 
 _MILESTONE_FRACTIONS = (0.25, 0.50, 0.75, 1.00)
 
-# Custom labels for plan_progress goals — so the Milestones page reads as
-# "Week 1 done / Halfway there / Final stretch / Plan complete" instead of
-# the generic "25% / 50% / 75% / 100%".
+# Custom labels for plan-seeded goals (plan_progress + consistency) — so the
+# Milestones page reads "First quarter done / Halfway there / Final stretch
+# / Plan complete" instead of the generic "25% / 50% / 75% / 100%".
 _PLAN_PROGRESS_LABELS = {
     0.25: "First quarter done",
     0.50: "Halfway there",
     0.75: "Final stretch",
     1.00: "Plan complete",
 }
+
+# Units whose thresholds must be integers ("complete 8.75 days" is nonsense).
+_INTEGER_UNITS = {"days", "sessions", "reps", "muscle_groups"}
 
 
 class GoalCapExceeded(ValueError):
@@ -443,14 +446,24 @@ def create_goal(
         plan_id=plan_id,
         target_reps=target_reps,
     )
-    # Auto-generate 25/50/75/100% milestones. Plan-progress goals get warmer
-    # human labels ("Halfway there") so the Milestones timeline reads well.
+    # Auto-generate 25/50/75/100% milestones. Plan-seeded goals (plan_progress
+    # + consistency) both get warm human labels so the Milestones timeline
+    # reads well. Integer-unit thresholds are rounded so we don't display
+    # "complete 8.75 days" — they become "9 days / 18 days / 26 days / 35 days".
+    use_warm_labels = goal_type in ("plan_progress", "consistency")
+    round_to_int = unit in _INTEGER_UNITS
     for frac in _MILESTONE_FRACTIONS:
-        if goal_type == "plan_progress":
+        if use_warm_labels:
             label = _PLAN_PROGRESS_LABELS[frac]
         else:
             label = f"{int(frac * 100)}%"
-        threshold = round(target_value * frac, 4)
+        threshold = target_value * frac
+        if round_to_int:
+            # Ceiling-ish: round halves up so the 25% milestone always has a
+            # non-zero integer for any target >= 4.
+            threshold = float(int(threshold + 0.5))
+        else:
+            threshold = round(threshold, 4)
         db.create_milestone(goal_id, label, threshold)
 
     # Seed the goal with its current value immediately — so a user who has
