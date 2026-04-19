@@ -34,7 +34,6 @@ function writeLastWeight(slug: string, weight: number): void {
 const MUSCLES: Record<string, string[]> = {
   pushup: ["Chest", "Shoulders", "Triceps", "Core"],
   squat: ["Quads", "Glutes", "Hamstrings", "Core"],
-  lunge: ["Quads", "Glutes", "Hamstrings", "Calves"],
   deadlift: ["Hamstrings", "Glutes", "Back", "Traps", "Core"],
   pullup: ["Lats", "Biceps", "Back", "Core"],
   plank: ["Core", "Shoulders", "Glutes"],

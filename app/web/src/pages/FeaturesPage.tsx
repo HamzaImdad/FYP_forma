@@ -465,7 +465,6 @@ function ExerciseGridVisual() {
   const slugs = [
     "ex_squat",
     "ex_deadlift",
-    "ex_lunge",
     "ex_pullup",
     "ex_pushup",
     "ex_plank",

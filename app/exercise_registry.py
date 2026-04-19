@@ -37,13 +37,10 @@ EXERCISE_FAMILIES: Dict[str, ExerciseMeta] = {
     "pullup":         {"family": "rep_count", "default_sets": 3, "weight_optional": False},
     "bicep_curl":     {"family": "rep_count", "default_sets": 3, "weight_optional": False},
     "tricep_dip":     {"family": "rep_count", "default_sets": 3, "weight_optional": False},
-    "lunge":          {"family": "rep_count", "default_sets": 3, "weight_optional": False},
     # weighted — progress = heavier weight for same/similar reps.
     # squat is `weight_optional`: target_weight_kg == 0 means bodyweight.
     "squat":          {"family": "weighted",  "default_sets": 5, "weight_optional": True},
-    "bench_press":    {"family": "weighted",  "default_sets": 5, "weight_optional": False},
     "deadlift":       {"family": "weighted",  "default_sets": 5, "weight_optional": False},
-    "overhead_press": {"family": "weighted",  "default_sets": 5, "weight_optional": False},
     # time_hold — progress = longer hold
     "plank":          {"family": "time_hold", "default_sets": 1, "weight_optional": False},
     # ── New exercises ──

@@ -112,7 +112,11 @@ export function WorkoutPage() {
   }
 
   const exercise = exerciseBySlug(exerciseParam);
-  const isPlank = exercise.slug === "plank";
+  // Covers every static-hold exercise (time-based HUD + "Hold" label instead
+  // of "Reps"). Derived from the registry families, so adding another
+  // time_hold exercise to EXERCISE_FAMILIES later automatically shows the
+  // right HUD without touching this page.
+  const isPlank = exercise.slug === "plank" || exercise.slug === "side_plank";
 
   // Weight for weight-based exercises (deadlift etc.) — read from ?weight=.
   // Only used for display + start_session payload; the detector never sees it.

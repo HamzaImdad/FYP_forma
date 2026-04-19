@@ -1,7 +1,6 @@
 export type ExerciseSlug =
   | "pushup"
   | "squat"
-  | "lunge"
   | "deadlift"
   | "pullup"
   | "plank"
@@ -64,19 +63,6 @@ export const EXERCISES: Exercise[] = [
       view: "front",
       headline: "Place the camera front or side",
       detail: "Front or side view at hip height, 2–3 m away. Either works — just keep your whole body from head to feet in frame through the full squat.",
-    },
-  },
-  {
-    slug: "lunge",
-    name: "Lunge",
-    tagline: "Front knee, back knee, upright torso.",
-    primary: false,
-    isWeighted: false,
-    preferredOrientation: "portrait",
-    cameraGuidance: {
-      view: "side",
-      headline: "Place the camera on your side",
-      detail: "Side view at hip height, 2–3 m away. The full lunge travel — front knee, back knee, torso — must stay in frame.",
     },
   },
   {

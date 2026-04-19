@@ -109,15 +109,14 @@ const FEATURES = [
 const EXERCISES = [
   ["01", "Squat", "ex_squat"],
   ["02", "Deadlift", "ex_deadlift"],
-  ["03", "Lunge", "ex_lunge"],
-  ["04", "Pull-up", "ex_pullup"],
-  ["05", "Push-up", "ex_pushup"],
-  ["06", "Plank", "ex_plank"],
-  ["07", "Bicep Curl", "ex_bicep_curl"],
-  ["08", "Tricep Dip", "ex_tricep_dip"],
-  ["09", "V-Up Crunch", "ex_crunch"],
-  ["10", "Lateral Raise", "ex_lateral_raise"],
-  ["11", "Side Plank", "ex_side_plank"],
+  ["03", "Pull-up", "ex_pullup"],
+  ["04", "Push-up", "ex_pushup"],
+  ["05", "Plank", "ex_plank"],
+  ["06", "Bicep Curl", "ex_bicep_curl"],
+  ["07", "Tricep Dip", "ex_tricep_dip"],
+  ["08", "V-Up Crunch", "ex_crunch"],
+  ["09", "Lateral Raise", "ex_lateral_raise"],
+  ["10", "Side Plank", "ex_side_plank"],
 ];
 
 const TRAINER_PILLARS: { title: string; body: ReactNode }[] = [

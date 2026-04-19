@@ -66,14 +66,6 @@ const RELIABILITY: { exercise: string; angles: { name: string; level: Reliabilit
     ],
   },
   {
-    exercise: "Lunge",
-    angles: [
-      { name: "Front knee", level: "high" },
-      { name: "Back knee", level: "medium" },
-      { name: "Torso upright", level: "high" },
-    ],
-  },
-  {
     exercise: "Bicep Curl",
     angles: [
       { name: "Elbow", level: "high" },

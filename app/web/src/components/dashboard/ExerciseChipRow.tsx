@@ -15,7 +15,6 @@ type Props = {
 
 const IMAGES: Record<string, string> = {
   squat: "/static/images/ex_squat.jpg",
-  lunge: "/static/images/ex_lunge.jpg",
   deadlift: "/static/images/ex_deadlift.jpg",
   pullup: "/static/images/ex_pullup.jpg",
   pushup: "/static/images/ex_pushup.jpg",

@@ -21,28 +21,6 @@
             "Rounding the lower back"
         ]
     },
-    "lunge": {
-        "display_name": "Forward Lunge",
-        "muscles": ["Quadriceps", "Glutes", "Hamstrings", "Calves"],
-        "camera_setup": "Stand facing the camera or from the side. Ensure both legs are fully visible from hips to feet. Side angle gives the best depth assessment.",
-        "camera_angle": "side",
-        "camera_distance": "2-3m",
-        "camera_height": "waist",
-        "instructions": [
-            "Stand with feet hip-width apart",
-            "Step forward with one leg, lowering your hips",
-            "Both knees should bend to approximately 90 degrees",
-            "Keep your torso upright and core engaged",
-            "Push through the front heel to return to start"
-        ],
-        "common_mistakes": [
-            "Front knee extending past the toes",
-            "Leaning the torso too far forward",
-            "Back knee not lowering enough",
-            "Losing balance due to narrow stance",
-            "Uneven weight distribution"
-        ]
-    },
     "deadlift": {
         "display_name": "Conventional Deadlift",
         "muscles": ["Hamstrings", "Glutes", "Lower Back", "Traps", "Core"],
@@ -63,50 +41,6 @@
             "Jerking the weight off the floor",
             "Hyperextending at the top",
             "Hips shooting up before the chest"
-        ]
-    },
-    "bench_press": {
-        "display_name": "Barbell Bench Press",
-        "muscles": ["Chest", "Shoulders", "Triceps"],
-        "camera_setup": "Position camera to the side of the bench at chest height. Both arms, shoulders, and the bar path should be visible. Front angle also works.",
-        "camera_angle": "side",
-        "camera_distance": "2-3m",
-        "camera_height": "chest",
-        "instructions": [
-            "Lie on the bench with eyes under the bar",
-            "Grip the bar slightly wider than shoulder-width",
-            "Unrack and lower the bar to your mid-chest with control",
-            "Keep your elbows at roughly 45 degrees from your body",
-            "Press the bar back up to lockout"
-        ],
-        "common_mistakes": [
-            "Flaring elbows out to 90 degrees",
-            "Bouncing the bar off the chest",
-            "Uneven bar path or grip",
-            "Lifting hips off the bench",
-            "Not using a full range of motion"
-        ]
-    },
-    "overhead_press": {
-        "display_name": "Overhead Press",
-        "muscles": ["Shoulders", "Triceps", "Upper Chest", "Core"],
-        "camera_setup": "Stand facing the camera or from the side. Full body from feet to hands overhead must be visible. Step back if arms go out of frame at the top.",
-        "camera_angle": "front",
-        "camera_distance": "3-4m",
-        "camera_height": "waist",
-        "instructions": [
-            "Stand with feet shoulder-width apart, bar at shoulder height",
-            "Grip the bar just outside shoulder-width",
-            "Brace your core and press the bar overhead",
-            "Lock out your arms at the top",
-            "Lower the bar with control back to shoulders"
-        ],
-        "common_mistakes": [
-            "Excessive lower back arching",
-            "Pressing the bar forward instead of straight up",
-            "Not achieving full lockout",
-            "Using leg drive (turning it into a push press)",
-            "Flaring the ribcage"
         ]
     },
     "pullup": {

@@ -2,9 +2,9 @@
 Central definitions for exercises, landmarks, joint angles, and skeleton connections.
 """
 
-# 10 target exercises
+# 10 target exercises (home-friendly; dropped bench_press, overhead_press, lunge)
 EXERCISES = [
-    "squat", "lunge", "deadlift", "bench_press", "overhead_press",
+    "squat", "deadlift",
     "pullup", "pushup", "plank", "bicep_curl", "tricep_dip",
     "crunch", "lateral_raise", "side_plank",
 ]

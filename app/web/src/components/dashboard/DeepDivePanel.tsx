@@ -48,7 +48,9 @@ export function DeepDivePanel({ exercise, displayName, onOpenSession }: Props) {
     );
   }
 
-  const isPlank = exercise === "plank";
+  // Static holds (plank + side_plank) — show hold timeline instead of
+  // tempo/depth charts.
+  const isPlank = exercise === "plank" || exercise === "side_plank";
   const hasReps = data.scores.some((s) => s.total_reps > 0);
   if (!hasReps && !isPlank) {
     return (

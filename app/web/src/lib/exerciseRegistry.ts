@@ -21,7 +21,6 @@ export const EXERCISE_FAMILIES: Record<string, ExerciseMeta> = {
   pullup:         { family: "rep_count", default_sets: 3, weight_optional: false },
   bicep_curl:     { family: "rep_count", default_sets: 3, weight_optional: false },
   tricep_dip:     { family: "rep_count", default_sets: 3, weight_optional: false },
-  lunge:          { family: "rep_count", default_sets: 3, weight_optional: false },
   // weighted — progress = heavier weight for same/similar reps.
   // squat is weight_optional: target_weight_kg === 0 means bodyweight.
   squat:          { family: "weighted",  default_sets: 5, weight_optional: true  },

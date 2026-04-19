@@ -228,7 +228,6 @@ export function AboutPage() {
           {[
             ["Squat", "ex_squat"],
             ["Deadlift", "ex_deadlift"],
-            ["Lunge", "ex_lunge"],
             ["Pull-up", "ex_pullup"],
             ["Push-up", "ex_pushup"],
             ["Plank", "ex_plank"],

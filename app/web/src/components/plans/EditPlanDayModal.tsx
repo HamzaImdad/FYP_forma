@@ -12,7 +12,6 @@ import {
 
 const KNOWN_EXERCISES: string[] = [
   "squat",
-  "lunge",
   "deadlift",
   "pullup",
   "pushup",
