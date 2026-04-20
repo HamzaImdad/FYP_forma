@@ -1,43 +1,56 @@
-# ExerVision
+# FORMA
 
-Real-time exercise form evaluation using computer vision and machine learning. ExerVision analyses body pose during exercises via webcam, classifies form as correct or incorrect, and provides instant visual feedback with colour-coded joint highlights.
+Real-time exercise form evaluator. Browser-based, runs locally on a consumer laptop, covers ten strength exercises, returns explainable per-joint feedback during the set rather than a grade at the end. Every webcam frame stays on the device.
 
-Built as a final-year project (BSc Computer Science, University of Greenwich).
+Final-year project (BSc Computer Science, University of Greenwich).
 
-## Features
+## What it does
 
-- **10 supported exercises**: squat, lunge, deadlift, bench press, overhead press, pull-up, push-up, plank, bicep curl, tricep dip
-- **3 classifier modes**: rule-based heuristics, ML (XGBoost/sklearn), and BiLSTM with temporal attention
-- **Real-time feedback**: colour-coded skeleton overlay (green = correct, red = incorrect) with per-joint granularity
-- **Rep counting**: automatic repetition detection and tracking per exercise
-- **Session reports**: per-rep form scores, common issues summary, and session duration
-- **Web interface**: browser-based UI with webcam capture, pause/resume, mirror toggle, and reconnection handling
+- **Real-time pose estimation** via MediaPipe BlazePose — 33 body landmarks per frame, hip-centred world coordinates in metres.
+- **Ten dedicated state-machine detectors** — squat, deadlift, pull-up, push-up, plank, bicep curl, tricep dip, crunch, lateral raise, side plank. Each emits rep counts, per-joint fault codes and a continuous 0–100 form score during the set.
+- **CNN-BiLSTM temporal comparator** — Conv1D front-end, two-layer BiLSTM with self-attention pooling, calibrated per-exercise thresholds on a held-out split. Serves as a learned baseline against the dedicated detectors.
+- **Full-stack web app** — React 19 SPA + Flask/Socket.IO backend with JWT cookie auth, per-user SQLite persistence, session capture (`trace.jsonl` per frame), and a drill-down dashboard driven by a 15-rule insights engine.
+- **Three coaching chatbots** — a personal coach that looks up your own training data, a plan creator that builds multi-week workout plans, and a public FAQ widget for logged-out visitors. Tool-dispatched, token-budgeted, and degrade gracefully without an API key.
+- **Goals + milestones + badges** — six goal types, auto-generated 25/50/75/100% milestones, and 14 achievement badges fired on session completion.
+- **Local-only processing** — webcam frames never leave the machine. The optional chatbot layer is the single outbound dependency, and the app runs fully offline without it.
 
 ## Architecture
 
 ```mermaid
 graph LR
-    A[Browser Webcam] -->|Base64 JPEG| B[Flask + Socket.IO Server]
+    A[Browser Webcam] -->|Base64 JPEG @ 15 FPS| B[Flask + Socket.IO]
     B --> C[MediaPipe BlazePose]
-    C --> D[Feature Extraction]
+    C --> D[Feature Extraction<br/>angles + landmarks]
     D --> E{Classifier}
-    E -->|Rule-Based| F[Joint Angle Thresholds]
-    E -->|ML| G[XGBoost / sklearn]
-    E -->|BiLSTM| H[Temporal Sequence Model]
-    F & G & H --> I[Feedback Engine]
-    I --> J[Skeleton Overlay + Panel]
-    J -->|Annotated Frame| A
+    E -->|primary| F[Dedicated Detector<br/>state machine + thresholds]
+    E -->|comparator| G[CNN-BiLSTM<br/>30-frame window]
+    F & G --> H[Feedback Engine<br/>per-joint colours + score]
+    H --> I[Session Capture<br/>trace.jsonl + DB]
+    H -->|processed event| A
+    I --> J[Dashboard<br/>insights + drill-down]
 ```
+
+One pipeline orchestrator per connected client owns the per-session state (see `src/pipeline/realtime.py`). The eight-step per-frame loop: pose estimation → visibility-weighted OneEuro smoothing → rep counting → feature extraction → classification → session tracking → feedback mapping → overlay rendering. Session traces are written per-frame to disk and replay-able for post-hoc analysis.
+
+## Tech stack
+
+- **Python 3.10**, Flask, Flask-SocketIO, Eventlet (for Railway WebSocket compatibility)
+- **PyTorch 2** (BiLSTM training and inference), scikit-learn (baseline classifiers)
+- **MediaPipe 0.10** (pose landmarker, video mode with detector-tracker cascade)
+- **SQLite** (user-scoped persistence: users, sessions, reps, goals, milestones, badges)
+- **React 19** + Vite 6 + Tailwind 4 + GSAP + Framer Motion + Lenis
+- **OpenAI API** (chatbot tool-use, gpt-4o with gpt-4o-mini degradation; optional)
+- **Docker** + Railway deployment
 
 ## Setup
 
 ### Prerequisites
 
-- Python 3.10+
-- Webcam (for real-time mode)
-- NVIDIA GPU (optional, for BiLSTM inference)
+- Python 3.10 or newer
+- Node 20+ (only needed if you want to rebuild the React frontend)
+- A webcam (for live sessions)
 
-### Installation
+### Install
 
 ```bash
 git clone https://github.com/HamzaImdad/FYP.git
@@ -45,60 +58,77 @@ cd FYP
 pip install -r requirements.txt
 ```
 
-### Running the Web App
+### Run the app
 
 ```bash
 python app/server.py
 ```
 
-Open http://localhost:5000 in your browser. Select an exercise, choose a classifier, and start a session.
+Open `http://localhost:5000`, sign up or sign in, pick an exercise, grant camera permission, and start a set.
 
-### Command-Line Options
+### Frontend development (optional)
+
+The production React build is served from `app/static/dist/`. To run the Vite dev server with hot reload:
 
 ```bash
-python app/server.py --host 0.0.0.0 --port 5000 --debug
+cd app/web
+npm install
+npm run dev         # dev server on :5173, proxies /api + /socket.io to Flask :5000
+npm run build       # production build → app/static/dist/
+npm run typecheck   # strict TS check
 ```
 
-## Project Structure
+## Project structure
 
 ```
-ExerVision/
-├── app/                          # Web application
-│   ├── server.py                 # Flask + Socket.IO server
-│   ├── exercise_data.json        # Exercise metadata (muscles, instructions)
-│   ├── static/
-│   │   ├── app.js                # Client-side logic
-│   │   ├── style.css             # UI styles
-│   │   └── favicon.svg           # Brand icon
-│   └── templates/
-│       └── index.html            # Main page template
-├── src/                          # Core library
-│   ├── pose_estimation/          # MediaPipe BlazePose wrapper
-│   ├── feature_extraction/       # Joint angles, temporal features, rep counting
-│   ├── classification/           # Rule-based, ML, and BiLSTM classifiers
-│   ├── feedback/                 # Colour-coded joint feedback engine
-│   ├── visualization/            # Skeleton overlay and HUD drawing
-│   ├── evaluation/               # Classifier accuracy metrics
-│   ├── pipeline/                 # Real-time orchestration pipeline
-│   └── utils/                    # Config, constants, geometry, temporal smoothing
-├── scripts/                      # Data collection, training, and evaluation scripts
-├── models/                       # Trained models and MediaPipe task files
-├── data/                         # Landmark CSVs (not committed)
-└── requirements.txt
+FYP/
+├── app/                            Web application
+│   ├── server.py                   Flask + Socket.IO entry point
+│   ├── auth.py                     JWT cookie auth, bcrypt hashing
+│   ├── database.py                 SQLite schema + per-user queries
+│   ├── session_capture.py          Per-frame trace.jsonl writer
+│   ├── insights.py                 15 dashboard insight rules
+│   ├── goal_engine.py              Goals + milestones
+│   ├── badge_engine.py             14 achievement badges
+│   ├── chat_engine.py              Chatbot SSE streaming + tool dispatch
+│   ├── chat_tools.py               Coach + plan-creator tool definitions
+│   ├── public_chat.py              Logged-out RAG chatbot
+│   ├── exercise_registry.py        Canonical exercise metadata
+│   └── web/                        React 19 SPA source (Vite, TS, Tailwind)
+├── src/                            Core library (imported by app + scripts)
+│   ├── pose_estimation/            MediaPipe wrapper
+│   ├── feature_extraction/         Angles, landmarks, rep counting
+│   ├── classification/             10 dedicated detectors + BiLSTM + rule-based
+│   ├── feedback/                   Score → text/colour mapping
+│   ├── visualization/              Skeleton overlay + HUD drawing
+│   ├── pipeline/                   Real-time orchestration
+│   └── utils/                      Geometry, temporal smoothing, constants
+├── scripts/                        Training, evaluation, data-pipeline scripts
+├── tests/                          Pytest suites (geometry, detectors, pipeline)
+├── models/
+│   ├── mediapipe/                  pose_landmarker_*.task
+│   └── trained/                    *_bilstm_v2.pt (ten BiLSTM models)
+├── reports/                        Evaluation artefacts (F1 tables, curves, figures)
+├── docs/                           Reference material
+├── Dockerfile                      Multi-stage build (React + Flask)
+├── requirements.txt
+└── README.md
 ```
 
-## Classifier Comparison
+The ten detectors live in `src/classification/{squat, deadlift, pullup, pushup, plank, bicep_curl, tricep_dip, crunch, lateral_raise, side_plank}_detector.py`, all inheriting from `base_detector.py`'s `RobustExerciseDetector` (apart from `pushup_detector.py`, a pre-refactor standalone implementation kept on its original interface).
 
-| Classifier | Approach | Temporal Context | Strengths |
-|---|---|---|---|
-| **Rule-Based** | Hand-crafted joint angle thresholds | No | Interpretable, no training data needed, per-joint feedback |
-| **ML (XGBoost)** | Trained on extracted features | No | Higher accuracy, learned decision boundaries |
-| **BiLSTM** | Bidirectional LSTM with attention | Yes (30 frames) | Captures movement dynamics, attention over timesteps |
+## Evaluation
 
-The BiLSTM classifier provides overall correct/incorrect judgment using temporal context, while per-joint colour feedback is always provided by the rule-based classifier for interpretability.
+The dedicated detectors are the primary classification path; the CNN-BiLSTM is evaluated on held-out test data with per-exercise threshold calibration on a separate split. Dedicated detectors run at ~82 FPS on an i7-14700HX (angle arithmetic, no tensor inference); the BiLSTM backend runs at ~35 FPS, comfortably above the 20 FPS real-time floor.
+
+Full evaluation — per-exercise F1/precision/recall, confusion matrices, threshold sweeps, v1-vs-v2 training curves, cross-exercise pretraining ablations, FPS benchmarks, user-study findings — is in the dissertation.
+
+## Report
+
+The full dissertation (design, implementation, evaluation, legal/social/ethical/professional considerations, critical review, conclusions) lives under `report/`. The built DOCX is at `report/FORMA_Final_Report.docx`; the per-chapter markdown sources are under `report/drafts/`.
 
 ## Acknowledgements
 
-- [MediaPipe](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker) for pose estimation
-- [Flask-SocketIO](https://flask-socketio.readthedocs.io/) for real-time communication
+- [MediaPipe](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker) for the pose landmarker
+- [Flask-SocketIO](https://flask-socketio.readthedocs.io/) for real-time transport
 - University of Greenwich, School of Computing and Mathematical Sciences
