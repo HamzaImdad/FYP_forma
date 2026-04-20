@@ -58,6 +58,28 @@ cd FYP
 pip install -r requirements.txt
 ```
 
+### Configure environment
+
+Copy the template and fill in at least `FORMA_JWT_SECRET`:
+
+```bash
+cp .env.example .env
+# edit .env in your editor
+```
+
+`OPENAI_API_KEY` is optional — the three chatbots are disabled without it; every other feature runs normally.
+
+### Build the frontend (first-time only)
+
+The Flask server serves the React SPA from `app/static/dist/`, which is not committed (standard for Vite projects). Build it once:
+
+```bash
+cd app/web
+npm install
+npm run build      # writes to app/static/dist/
+cd ../..
+```
+
 ### Run the app
 
 ```bash
@@ -66,16 +88,21 @@ python app/server.py
 
 Open `http://localhost:5000`, sign up or sign in, pick an exercise, grant camera permission, and start a set.
 
-### Frontend development (optional)
+### Docker (one-shot deploy)
 
-The production React build is served from `app/static/dist/`. To run the Vite dev server with hot reload:
+The included `Dockerfile` is multi-stage: it builds the React frontend, installs Python deps, and runs the server. Railway-ready.
+
+```bash
+docker build -t forma .
+docker run -p 5000:5000 --env-file .env forma
+```
+
+### Frontend development (optional)
 
 ```bash
 cd app/web
-npm install
-npm run dev         # dev server on :5173, proxies /api + /socket.io to Flask :5000
-npm run build       # production build → app/static/dist/
-npm run typecheck   # strict TS check
+npm run dev         # Vite dev server on :5173, proxies /api + /socket.io to Flask :5000
+npm run typecheck   # strict TS check, no emit
 ```
 
 ## Project structure
@@ -122,10 +149,6 @@ The ten detectors live in `src/classification/{squat, deadlift, pullup, pushup, 
 The dedicated detectors are the primary classification path; the CNN-BiLSTM is evaluated on held-out test data with per-exercise threshold calibration on a separate split. Dedicated detectors run at ~82 FPS on an i7-14700HX (angle arithmetic, no tensor inference); the BiLSTM backend runs at ~35 FPS, comfortably above the 20 FPS real-time floor.
 
 Full evaluation — per-exercise F1/precision/recall, confusion matrices, threshold sweeps, v1-vs-v2 training curves, cross-exercise pretraining ablations, FPS benchmarks, user-study findings — is in the dissertation.
-
-## Report
-
-The full dissertation (design, implementation, evaluation, legal/social/ethical/professional considerations, critical review, conclusions) lives under `report/`. The built DOCX is at `report/FORMA_Final_Report.docx`; the per-chapter markdown sources are under `report/drafts/`.
 
 ## Acknowledgements
 

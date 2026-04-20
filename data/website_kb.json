@@ -1,0 +1,450 @@
+[
+  {
+    "id": "Home#pair-0-0",
+    "route": "/",
+    "page": "Home",
+    "heading": "One correction at a time",
+    "text": "One correction at a time. A coach in your browser. No cloud, no lag."
+  },
+  {
+    "id": "Home#pair-1-1",
+    "route": "/",
+    "page": "Home",
+    "heading": "AI Chatbot",
+    "text": "AI Chatbot. Ask FORMA about your training history."
+  },
+  {
+    "id": "Home#pair-2-2",
+    "route": "/",
+    "page": "Home",
+    "heading": "Plans & Goals",
+    "text": "Plans & Goals. Tell it your goal. Get a plan."
+  },
+  {
+    "id": "Home#pair-3-3",
+    "route": "/",
+    "page": "Home",
+    "heading": "Milestones",
+    "text": "Milestones. Progress you can feel, not guilt."
+  },
+  {
+    "id": "Home#pair-4-4",
+    "route": "/",
+    "page": "Home",
+    "heading": "Body landmarks, every frame",
+    "text": "Body landmarks, every frame. MediaPipe BlazePose detects 33 points in world space — hips, knees, elbows, ears, the full skeleton. Tracked at full webcam framerate, hip-centered, in meters."
+  },
+  {
+    "id": "Home#pair-5-5",
+    "route": "/",
+    "page": "Home",
+    "heading": "Peer-reviewed thresholds",
+    "text": "Peer-reviewed thresholds. Every detector's angle thresholds trace back to research on joint range and injury risk. Not guessed, not generic — pulled from the literature, validated frame by frame."
+  },
+  {
+    "id": "Home#pair-6-6",
+    "route": "/",
+    "page": "Home",
+    "heading": "One detector per exercise",
+    "text": "One detector per exercise. Squat logic doesn't share code with deadlift. Each exercise has its own state machine, its own form checks, its own idea of what 'good' means. Specialised, not general."
+  },
+  {
+    "id": "Home#jsx-0-7",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "tracks 33 body landmarks in real time from your webcam — no wearables, no markers, no setup."
+  },
+  {
+    "id": "Home#jsx-1-8",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "Joint angles, body ratios and symmetry metrics are computed every frame, then compared against"
+  },
+  {
+    "id": "Home#jsx-4-9",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "Each exercise has its own state machine and form thresholds. Squat doesn't share logic with deadlift."
+  },
+  {
+    "id": "Home#jsx-7-10",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "Frames are processed at full speed with GPU acceleration. The feedback you see is the form you're holding"
+  },
+  {
+    "id": "Home#jsx-11-11",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "Works with just your webcam. No wearables, no sensors, no calibration ritual. Any laptop or desktop with a camera is"
+  },
+  {
+    "id": "Home#jsx-12-12",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "Per-rep form scores, set breakdowns, common-mistake heatmaps. Every session is logged so you can"
+  },
+  {
+    "id": "Home#jsx-16-13",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": ". No walls of text. No five warnings at once. Fix the important thing, then move on."
+  },
+  {
+    "id": "Home#jsx-21-14",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": ". No nagging, no cheerleading, no constant affirmations. Just space to train."
+  },
+  {
+    "id": "Home#jsx-26-15",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "Real-time AI feedback on your exercise technique. Ten exercises, thirty-three body landmarks, one trainer that never looks away."
+  },
+  {
+    "id": "Home#jsx-29-16",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "A good coach doesn't yell. Doesn't recite numbers. Doesn't pile on corrections while you're mid-rep. FORMA was designed with the same restraint."
+  },
+  {
+    "id": "Home#jsx-31-17",
+    "route": "/",
+    "page": "Home",
+    "heading": "Home",
+    "text": "Real-time form feedback is only the start. FORMA remembers your sessions, talks back when you ask, writes you training plans, and opens up its own internals when you want to see how it thinks."
+  },
+  {
+    "id": "About#pair-0-0",
+    "route": "/about",
+    "page": "About",
+    "heading": "Specialised beats general",
+    "text": "Specialised beats general. A purpose-built state machine with the right angle thresholds will outperform a general-purpose ML model on a feedback task — every time. FORMA uses dedicated detectors per exercise, not a single model trying to cover all 10."
+  },
+  {
+    "id": "About#pair-1-1",
+    "route": "/about",
+    "page": "About",
+    "heading": "Silence is a feature",
+    "text": "Silence is a feature. Constant feedback is noise. FORMA only speaks when something is wrong. If your form is holding, the app stays out of your way. A good coach doesn't narrate every rep."
+  },
+  {
+    "id": "About#pair-2-2",
+    "route": "/about",
+    "page": "About",
+    "heading": "Honesty over flattery",
+    "text": "Honesty over flattery. No vague encouragement. No false positives. Green means your form holds. Red means you need to fix it. If FORMA can't see clearly, it says so — it doesn't guess."
+  },
+  {
+    "id": "About#prop-9-3",
+    "route": "/about",
+    "page": "About",
+    "heading": "About",
+    "text": "Google's real-time pose estimator. 33 landmarks, world coordinates, visibility per point."
+  },
+  {
+    "id": "About#prop-10-4",
+    "route": "/about",
+    "page": "About",
+    "heading": "About",
+    "text": "Per-exercise state machines and form checks. No ML at inference — deterministic, fast, debuggable."
+  },
+  {
+    "id": "About#prop-11-5",
+    "route": "/about",
+    "page": "About",
+    "heading": "About",
+    "text": "Streams webcam frames to the detector and pushes feedback back to the browser in real time."
+  },
+  {
+    "id": "About#prop-12-6",
+    "route": "/about",
+    "page": "About",
+    "heading": "About",
+    "text": "TypeScript, Tailwind 4, Framer Motion, Lenis smooth scroll. Editorial typography and scroll-driven motion."
+  },
+  {
+    "id": "About#jsx-1-7",
+    "route": "/about",
+    "page": "About",
+    "heading": "About",
+    "text": "FORMA is a BSc Computer Science final-year project at the University of Greenwich. It started with a simple question:"
+  },
+  {
+    "id": "About#jsx-3-8",
+    "route": "/about",
+    "page": "About",
+    "heading": "About",
+    "text": "You can film yourself, but you don't know what to look for. You can ask a trainer, but trainers cost money and aren't in your living room at 7am. You can guess from YouTube tutorials, but nothing tells you"
+  },
+  {
+    "id": "About#jsx-5-9",
+    "route": "/about",
+    "page": "About",
+    "heading": "About",
+    "text": "So the project became this: take the hardware everyone already has — a webcam — and build a trainer out of it. One that watches every landmark on every frame, knows what good form looks like, and tells you the moment something breaks."
+  },
+  {
+    "id": "About#jsx-6-10",
+    "route": "/about",
+    "page": "About",
+    "heading": "About",
+    "text": "Everything you've read is running in the browser right now. Press the button."
+  },
+  {
+    "id": "How It Works#pair-0-0",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "Webcam frame",
+    "text": "Webcam frame. Captured at full webcam framerate. No special hardware, no wearables, no markers. Any laptop with a camera works — FORMA meets you where you already train."
+  },
+  {
+    "id": "How It Works#pair-1-1",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "MediaPipe BlazePose",
+    "text": "MediaPipe BlazePose. Google's pose estimator tracks 33 body landmarks in real time, with world-space coordinates and a confidence score per point."
+  },
+  {
+    "id": "How It Works#pair-2-2",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "Joint angles",
+    "text": "Joint angles. Vector math turns raw landmarks into biomechanical angles — knee flexion, hip hinge, elbow extension, spine neutrality."
+  },
+  {
+    "id": "How It Works#pair-3-3",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "Dedicated detector",
+    "text": "Dedicated detector. A state machine per exercise: TOP → GOING_DOWN → BOTTOM → GOING_UP → TOP. No shared logic between squat and deadlift."
+  },
+  {
+    "id": "How It Works#pair-4-4",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "Form score",
+    "text": "Form score. A weighted score comes out of the detector every frame, based on the form checks that matter for that specific exercise."
+  },
+  {
+    "id": "How It Works#pair-5-5",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "Feedback",
+    "text": "Feedback. Words, not numbers. \"Hips dropping.\" \"Go a little deeper.\" Spoken through the browser's own voice when the rep needs it."
+  },
+  {
+    "id": "How It Works#prop-2-6",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "Each frame is grabbed directly from the browser's MediaStream. No upload, no buffer, no round-trip."
+  },
+  {
+    "id": "How It Works#prop-5-7",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "BlazePose runs fully in the browser via WebAssembly. The model weights ship with the page; nothing is fetched at runtime."
+  },
+  {
+    "id": "How It Works#prop-8-8",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "Three-point angles computed per joint, filtered through a small rolling window to smooth jitter without introducing lag."
+  },
+  {
+    "id": "How It Works#prop-11-9",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "Each detector knows what bad form looks like for its specific exercise. Squat watches knee depth and torso lean. Bench watches elbow flare and bar path. The thresholds come from peer-reviewed biomechanics."
+  },
+  {
+    "id": "How It Works#prop-14-10",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "Green when your alignment holds. Orange when it slips. Red when something needs immediate correction — so you always know where you stand without reading numbers."
+  },
+  {
+    "id": "How It Works#prop-17-11",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "One correction at a time. Silence when you're good. FORMA only speaks when something is wrong — a good coach doesn't narrate every rep."
+  },
+  {
+    "id": "How It Works#jsx-1-12",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "A full pipeline pass — capture, pose estimation, angle math, detection, scoring, feedback — completes in under 50 ms on a consumer laptop. That means you see the correction before you finish the rep."
+  },
+  {
+    "id": "How It Works#jsx-2-13",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "Nothing round-trips to a server. Nothing waits in a queue. The entire loop lives on your machine, in your browser, running at webcam framerate."
+  },
+  {
+    "id": "How It Works#jsx-5-14",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "No video is uploaded. No frames are sent to a server. No silhouettes, no biometric templates, no cloud copy of your session. Pose estimation runs locally; the only thing the backend ever sees is the numeric session summary you choose to save."
+  },
+  {
+    "id": "How It Works#jsx-6-15",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "When FORMA can't see clearly, it says so — it doesn't guess. When it doesn't need to speak, it stays quiet. Trust is built by doing less, not more."
+  },
+  {
+    "id": "How It Works#jsx-7-16",
+    "route": "/how-it-works",
+    "page": "How It Works",
+    "heading": "How It Works",
+    "text": "Every exercise gets its own state machine and its own form checks. A squat detector does not share logic with a deadlift detector. Specialised beats general, every time."
+  },
+  {
+    "id": "Features#pair-0-0",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Every joint,\\nevery frame.",
+    "text": "Every joint,\\nevery frame.. MediaPipe BlazePose tracks 33 body landmarks in world-space at the speed of your webcam. Each frame goes through angle computation, state machine, detector — all in under 50 ms."
+  },
+  {
+    "id": "Features#pair-1-1",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Specialised, not\\ngeneral.",
+    "text": "Specialised, not\\ngeneral.. A squat detector watches knee depth and torso lean. A bench detector watches elbow flare and bar path. No one-size-fits-all ML model — each exercise gets its own state machine and its own thresholds."
+  },
+  {
+    "id": "Features#pair-2-2",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Words,\\nnot numbers.",
+    "text": "Words,\\nnot numbers.. Green when your alignment holds. Orange when it slips. Red when something needs immediate correction. One cue at a time — never a wall of text — and silence when you're good."
+  },
+  {
+    "id": "Features#pair-3-3",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Drill down\\nto the rep.",
+    "text": "Drill down\\nto the rep.. Every session logs to your history. Chips surface patterns (\\"
+  },
+  {
+    "id": "Features#pair-4-4",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Tell it your goal.\\nGet a plan.",
+    "text": "Tell it your goal.\\nGet a plan.. Set a goal — volume, frequency, a target lift — and FORMA generates a plan that adapts as you progress. Auto-generated milestones at 25, 50, 75, 100 percent. No spreadsheet."
+  },
+  {
+    "id": "Features#pair-5-5",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Progress you\\ncan feel.",
+    "text": "Progress you\\ncan feel.. Thirteen badges, each tied to a real achievement — first session, first ten sessions, first perfect form score, first 100-rep day. Celebration moments that aren't patronising, because they're earned."
+  },
+  {
+    "id": "Features#pair-6-6",
+    "route": "/features",
+    "page": "Features",
+    "heading": "A coach that\\nknows your history.",
+    "text": "A coach that\\nknows your history.. Ask FORMA about your training. \\"
+  },
+  {
+    "id": "Features#pair-7-7",
+    "route": "/features",
+    "page": "Features",
+    "heading": "A guide for\\nfirst-time visitors.",
+    "text": "A guide for\\nfirst-time visitors.. New here? The floating guide at the bottom-right answers questions about FORMA itself — what it does, what you need, how privacy works. It reads from an ingested knowledge base of this site."
+  },
+  {
+    "id": "Features#pair-8-8",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Your body,\\nyour machine.",
+    "text": "Your body,\\nyour machine.. No video uploaded. No frames sent to a server. No silhouettes, no biometric templates, no cloud copy. Pose estimation runs locally in your browser — the only thing the backend ever sees is the numeric summary you choose to save."
+  },
+  {
+    "id": "Features#jsx-1-9",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Features",
+    "text": "One product, built around the way you actually train. Pose detection to plans, dashboards to dedicated detectors — nine pieces that work the same way every session."
+  },
+  {
+    "id": "Features#jsx-2-10",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Features",
+    "text": "Everything on this page is running in the browser right now. Press the button."
+  },
+  {
+    "id": "Features#jsx-11-11",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Features",
+    "text": "= [ [50, 12], // head [50, 22], // neck [38, 26], [62, 26], // shoulders [30, 44], [70, 44], // elbows [24, 60], [76, 60], // wrists [44, 40], [56, 40], // spine [44, 58], [56, 58], // hips [42, 76], [58, 76], // knees [40, 92], [60, 92], // ankles ]; const lines: Array"
+  },
+  {
+    "id": "Features#jsx-12-12",
+    "route": "/features",
+    "page": "Features",
+    "heading": "Features",
+    "text": "= [ [0, 1], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7], [2, 8], [3, 9], [8, 10], [9, 11], [10, 12], [11, 13], [12, 14], [13, 15], ]; return ("
+  },
+  {
+    "id": "meta#what-is-forma",
+    "route": "/",
+    "page": "Meta",
+    "heading": "What is FORMA",
+    "text": "FORMA is a real-time computer vision form coach for ten foundational exercises: squat, deadlift, bench press, overhead press, lunge, pull-up, push-up, plank, bicep curl, tricep dip. It runs in your browser with just a webcam — no wearables, no installs, no uploads. Pose estimation is done on-device via MediaPipe BlazePose, and each exercise has its own dedicated detector that scores your form in real time."
+  },
+  {
+    "id": "meta#what-you-need",
+    "route": "/",
+    "page": "Meta",
+    "heading": "What you need",
+    "text": "You need a laptop or desktop with a webcam and a modern browser. No app install, no special hardware, no fitness tracker. FORMA works with your laptop's built-in camera."
+  },
+  {
+    "id": "meta#privacy",
+    "route": "/how-it-works",
+    "page": "Meta",
+    "heading": "Privacy and data",
+    "text": "FORMA processes your webcam frames locally in the browser. Nothing is uploaded — no video, no frames, no biometric templates. The only things that ever reach the backend are the numeric session summaries you choose to save, and only when you are signed in."
+  },
+  {
+    "id": "meta#how-to-start",
+    "route": "/",
+    "page": "Meta",
+    "heading": "How to start",
+    "text": "Click Sign In in the top-right, then switch to the Create Account tab. After signing up you land on the dashboard, where you can pick an exercise and start a session immediately."
+  },
+  {
+    "id": "meta#features-list",
+    "route": "/features",
+    "page": "Meta",
+    "heading": "Main features",
+    "text": "FORMA ships with nine main features: real-time pose detection, ten dedicated per-exercise detectors, form score with live feedback cues, drill-down dashboard and session history, adaptive plans and goals, milestones and badges, an AI coach that knows your training history, a floating website guide for visitors, and on-device processing for privacy."
+  }
+]
