@@ -144,6 +144,16 @@ FYP/
 
 The ten detectors live in `src/classification/{squat, deadlift, pullup, pushup, plank, bicep_curl, tricep_dip, crunch, lateral_raise, side_plank}_detector.py`, all inheriting from `base_detector.py`'s `RobustExerciseDetector` (apart from `pushup_detector.py`, a pre-refactor standalone implementation kept on its original interface).
 
+## Runtime vs evidence
+
+**What actually runs at inference time.** The live path is browser MediaPipe (fetched from Google's CDN) → Flask + Socket.IO server → a dedicated Python state-machine detector per exercise. No trained ML weights are loaded at inference — the ten dedicated detectors in `src/classification/` are pure angle math and finite state machines.
+
+**Required to run the app.** `app/`, `src/`, `requirements.txt`, a `.env` file with at least `FORMA_JWT_SECRET`, a built React bundle at `app/static/dist/` (produced by `npm run build`), and `reports/bilstm_v2_training_summary.json` (read by the server to display per-exercise F1 scores on the exercise-picker page).
+
+**Evidence-only, not needed at runtime.** `data/` (training dataset), `models/trained/*.pt` (CNN-BiLSTM baselines trained as a learned comparator for the dissertation's ML chapter), the rest of `reports/` (confusion matrices, ROC curves, training logs), `scripts/` (training and data-pipeline tools), `tests/` (pytest suite), `docs/` (biomechanics reference). `models/mediapipe/*.task` is used only by the legacy `/legacy` vanilla-UI fallback; the React SPA fetches MediaPipe from the CDN.
+
+**Role of the CNN-BiLSTM.** A trained baseline classifier kept for the report's ML comparison chapter. Never on the live inference path — see `src/pipeline/realtime.py:362–365`, where the pipeline short-circuits to the dedicated detector whenever one exists for the current exercise (all ten canonical exercises have one).
+
 ## Evaluation
 
 The dedicated detectors are the primary classification path; the CNN-BiLSTM is evaluated on held-out test data with per-exercise threshold calibration on a separate split. Dedicated detectors run at ~82 FPS on an i7-14700HX (angle arithmetic, no tensor inference); the BiLSTM backend runs at ~35 FPS, comfortably above the 20 FPS real-time floor.
