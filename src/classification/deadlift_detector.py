@@ -153,8 +153,26 @@ class DeadliftDetector(RobustExerciseDetector):
         pose = self._last_pose
         in_stance = bool(pose is not None and self._is_in_stance(pose, visibility_ok))
 
-        # ── ACTIVE → RESTING: stance-based (3s out-of-stance debounce) ──
+        # ── ACTIVE → RESTING ──
+        # Primary close: standing at lockout for REST_TOP_SECONDS (8s) —
+        # matches the squat pattern. This is what catches "user finished
+        # their set and is just standing there". Secondary close: below
+        # top for REST_BOTTOM_SECONDS (60s) — user gave up mid-rep / sat
+        # down. Fallback: 3s out-of-stance debounce (landmarks lost /
+        # walked off camera).
         if s == SessionState.ACTIVE:
+            if (
+                self._at_top_since is not None
+                and now - self._at_top_since >= REST_TOP_SECONDS
+            ):
+                self._close_active_set_or_rollback(now)
+                return
+            if (
+                self._below_top_since is not None
+                and now - self._below_top_since >= REST_BOTTOM_SECONDS
+            ):
+                self._close_active_set_or_rollback(now)
+                return
             if self._should_close_for_out_of_stance(now, in_stance):
                 self._close_active_set_or_rollback(now)
             else:

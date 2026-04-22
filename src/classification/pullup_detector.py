@@ -49,9 +49,14 @@ SWING_WARNING = 20
 SWING_BAD = 30
 
 # ── Anti-cheat: wrist Y variance ──
-# Fixed bar: wrists don't move, variance ≈ 0.
-# Standing arm pump: wrists move a lot, variance >> threshold.
+# Fixed bar: wrists barely move, but MediaPipe landmark noise + slight
+# grip adjustments + camera shake realistically produce ~0.02–0.05 on a
+# legitimate pull-up. A standing arm pump produces 0.05–0.15. So we use
+# two thresholds: a tight one for the form-score penalty (warn when
+# wrists wobble), and a loose one for the hard "not on a bar" detector.
 WRIST_Y_VAR_THRESHOLD = 0.015
+WRIST_Y_VAR_AIR_PUMP = 0.10
+WRIST_Y_VAR_ENTRY = 0.05
 
 # ── Kipping: hip angle (shoulder-hip-knee) ──
 HIP_ANGLE_STRICT = 160.0
@@ -204,7 +209,7 @@ class PullUpDetector(RobustExerciseDetector):
         if s == SessionState.SETUP:
             if (
                 self._wrists_above_head
-                and self._wrist_y_var_current < WRIST_Y_VAR_THRESHOLD
+                and self._wrist_y_var_current < WRIST_Y_VAR_ENTRY
                 and has_active_motion
             ):
                 self._session_state = SessionState.ACTIVE
@@ -217,7 +222,7 @@ class PullUpDetector(RobustExerciseDetector):
         if s == SessionState.RESTING:
             if (
                 self._wrists_above_head
-                and self._wrist_y_var_current < WRIST_Y_VAR_THRESHOLD
+                and self._wrist_y_var_current < WRIST_Y_VAR_ENTRY
                 and has_active_motion
             ):
                 self._session_state = SessionState.ACTIVE
@@ -440,8 +445,12 @@ class PullUpDetector(RobustExerciseDetector):
     def _should_count_rep(self, elapsed: float, angles: Dict[str, Optional[float]]) -> bool:
         if not super()._should_count_rep(elapsed, angles):
             return False
-        # Hard reject if wrists are moving (not on a bar)
-        if self._wrist_y_var_current > WRIST_Y_VAR_THRESHOLD:
+        # Hard reject only if wrists are moving so much the user can't possibly
+        # be on a fixed bar (standing arm pump, kipping out of control).
+        # Mild wrist noise from MediaPipe (< WRIST_Y_VAR_AIR_PUMP) is already
+        # penalised via `scores["wrist_cheat"]` in _assess_form, so we don't
+        # need to also hard-kill the rep here.
+        if self._wrist_y_var_current > WRIST_Y_VAR_AIR_PUMP:
             return False
         return True
 

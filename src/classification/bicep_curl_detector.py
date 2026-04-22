@@ -77,8 +77,14 @@ class BicepCurlDetector(RobustExerciseDetector):
     REP_DIRECTION = REP_DIRECTION_DECREASING
     REP_COMPLETE_TOP = 150.0
     REP_START_THRESHOLD = 145.0
-    REP_DEPTH_THRESHOLD = 55.0
-    REP_BOTTOM_CLEAR = 65.0
+    # Depth gate: side-view MediaPipe consistently reads elbow 10–15° higher
+    # than the true anatomical angle, and most users curl ~70% range rather
+    # than fully touching the shoulder. At 55° the gate was unreachable in
+    # practice (observed deepest across a 40s session: 62.5°). 75° counts
+    # anything past half-range; the form-score penalty at 60° is unchanged,
+    # so shallow curls still count but score lower.
+    REP_DEPTH_THRESHOLD = 75.0
+    REP_BOTTOM_CLEAR = 85.0
     MIN_REAL_PRIMARY_DEG = 20.0
     MAX_PRIMARY_JUMP_DEG = 80.0
 
@@ -177,6 +183,27 @@ class BicepCurlDetector(RobustExerciseDetector):
         in_stance = bool(pose is not None and self._is_in_stance(pose, visibility_ok))
 
         if s == SessionState.ACTIVE:
+            # Primary close: arms extended at top for CURL_REST_AT_TOP_S
+            # (8s) — mirrors the squat lockout-idle pattern. This is what
+            # catches "user finished their set and is just standing there
+            # with arms down". Secondary close: below top for
+            # CURL_REST_BELOW_TOP_S (60s) — user gave up mid-rep. Fallback:
+            # 3s out-of-stance debounce via the base helper (walked off
+            # camera / landmarks lost).
+            if (
+                self._at_top_since is not None
+                and now - self._at_top_since >= CURL_REST_AT_TOP_S
+            ):
+                self._close_active_set_or_rollback(now)
+                self._elbow_history.clear()
+                return
+            if (
+                self._below_top_since is not None
+                and now - self._below_top_since >= CURL_REST_BELOW_TOP_S
+            ):
+                self._close_active_set_or_rollback(now)
+                self._elbow_history.clear()
+                return
             if self._should_close_for_out_of_stance(now, in_stance):
                 self._close_active_set_or_rollback(now)
                 self._elbow_history.clear()
