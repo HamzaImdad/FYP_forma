@@ -53,8 +53,8 @@ One pipeline orchestrator per connected client owns the per-session state (see `
 ### Install
 
 ```bash
-git clone https://github.com/HamzaImdad/FYP.git
-cd FYP
+git clone https://github.com/HamzaImdad/FYP-final.git
+cd FYP-final
 pip install -r requirements.txt
 ```
 
